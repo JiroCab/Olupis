@@ -1,0 +1,24 @@
+#the mod name as displayed in-game
+displayName: "Olupis"
+
+#the internal name of your mod
+name: "olupis"
+
+#your name
+author: " [][scarlet]Rushie[][accent]Washie[white], NightmarishWolf"
+
+#the fully qualified main class of the mod
+main: "com.jirocab.planets.Main"
+
+#the mod description as seen in the mod dialog
+description: "Olupis, the hidden sister of serpulo"
+
+#the mod version
+version: 1.0
+
+#the minimum game build required to run this mod
+minGameVersion: 136
+
+hidden : false
+#this is a java mod
+java: true
