@@ -15,6 +15,7 @@ jobs:
         uses: actions/setup-java@v3.6.0
         with:
           java-version: 16
+          distribution: jdk
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
       - name: Get current date
