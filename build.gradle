@@ -80,7 +80,7 @@ jar{
 task deploy(type: Jar){
     dependsOn jarAndroid
     dependsOn jar
-    archiveFileName = "${project.archivesBaseName}.jar"
+    archiveFileName = "Olupis-but-a-zip"
 
     from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
 

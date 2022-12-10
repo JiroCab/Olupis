@@ -1,17 +1,16 @@
 package com.jirocab.planets.planets;
 
-import com.jirocab.planets.Registry;
-import com.jirocab.planets.content.OlupisBlocks;
+import com.jirocab.planets.content.*;
 import mindustry.content.Liquids;
 
 import static mindustry.content.TechTree.*;
 
 public class OlupisTechTree {
     public static void load(){
-        Registry.Olupis.techTree = nodeRoot("olupis", OlupisBlocks.mossyBoulder, () -> {
+        OlupisPlanets.olupis.techTree = nodeRoot("olupis", OlupisBlocks.mossyBoulder, () -> {
 
-            node(Registry.placeholder1, () -> {
-                node(Registry.placeholder2, () ->{
+            node(OlupisSectors.placeholder1, () -> {
+                node(OlupisSectors.placeholder2, () ->{
 
                 });
             });
@@ -24,9 +23,9 @@ public class OlupisTechTree {
                 });
             });
 
-            node(Registry.condensedBiomatter, () ->{
-                node(Registry.rustyIron, () ->{
-                    node(Registry.iron, () ->{
+            node(OlupisItemsLiquid.condensedBiomatter, () ->{
+                node(OlupisItemsLiquid.rustyIron, () ->{
+                    node(OlupisItemsLiquid.iron, () ->{
 
                     });
                 });
@@ -43,9 +42,9 @@ public class OlupisTechTree {
             });
 
             node(OlupisBlocks.architonnerre, ()-> {
-               // node(Registry.architronito, ()->{
+                node(OlupisBlocks.architronito, ()->{
 
-                //});
+                });
             });
 
             node(OlupisBlocks.unitReplicator, ()->{
