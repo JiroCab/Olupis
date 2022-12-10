@@ -33,4 +33,4 @@ jobs:
       uses: actions/upload-artifact@v2.2.1
       with:
         name: Olupis-packed-in-a-zip ${{steps.date.outputs.date }}
-        path: build/libs/Olupis-but-a-jar.jar
+        path: build/libs/Olupis.jar
