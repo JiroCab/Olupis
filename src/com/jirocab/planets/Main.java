@@ -8,6 +8,7 @@ import arc.util.Time;
 import mindustry.Vars;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.mod.Mod;
+import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 
 public class Main extends Mod{
@@ -27,7 +28,12 @@ public class Main extends Mod{
                 dialog.cont.add("idk why i still have this from the example mod, but why not", Color.darkGray).row();
                 dialog.show();
             });
-            Vars.ui.planet.shown(() ->Core.audio.play(Registry.space, Core.settings.getInt("ambientvol", 100)/100f, 0, 0, false));
+            Vars.ui.planet.shown(() -> {
+                if(Core.settings.getBool("olupis-space-sfx")) {Core.audio.play(Registry.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);}
+            });
+
+            Vars.ui.settings.sound.row();
+            Vars.ui.settings.sound.checkPref("olupis-space-sfx",true);
         });
 
     }

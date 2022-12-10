@@ -22,7 +22,7 @@ import mindustry.world.meta.BlockGroup;
 import static mindustry.Vars.*;
 
 public class Replicator extends PayloadBlock {
-    public float delay = 60f;
+    public float delay = 250f;
 
     public Replicator(String name){
         super(name);
@@ -122,7 +122,7 @@ public class Replicator extends PayloadBlock {
         @Override
         public void updateTile(){
             super.updateTile();
-            Time.runTask(delay, ()->{
+            Time.run(delay, ()->{
                 if(payload == null){
                     scl = 0f;
                     if(unit != null){

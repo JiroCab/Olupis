@@ -3,28 +3,34 @@ name: Java CI
 on: [push]
 
 jobs:
-  buildJar:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.5.0
-      - name: Set up PATH
-        run: |
-          echo "${ANDROID_HOME}/build-tools/30.0.1" >> $GITHUB_PATH
-      - name: Set up JDK 16
-        uses: actions/setup-java@v3.6.0
-        with:
-          java-version: 16
-          distribution: jdk
-      - name: Change wrapper permissions
-        run: chmod +x ./gradlew
-      - name: Get current date
-        id: date
-        run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')"
-      - name: Build mod jar
-        run: ./gradlew deploy
-      - name: Upload built jar file
-        uses: actions/upload-artifact@v3.1.1
-        with:
-          name: Olupis but its a jar
-          path: build/libs/Olupis-${{ steps.date.outputs.date }}.jar
+    - uses: actions/checkout@v2
+    - name: Set up JDK 16
+      uses: actions/setup-java@v1
+      with:
+        java-version: 16
+    - name: Setup Android SDK Tools
+      uses: android-actions/setup-android@v2.0.1
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+    - name: build-tools
+      run: sdkmanager "build-tools;29.0.3"
+    - name: Add Android SDK to PATH
+      run: echo "${ANDROID_HOME}/build-tools/29.0.3" >> $GITHUB_PATH
+    
+    - name: Change wrapper permissions
+      run: chmod +x ./gradlew
+    - name: Build mod jar
+      run: ./gradlew deploy
+    
+    - name: Get current date
+      id: date
+      run: echo "::$(date +'%Y-%m-%dT%H:%M:%S')"
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2.2.1
+      with:
+        name: Olupis-packed-in-a-zip ${{steps.date.outputs.date }}
+        path: build/libs/Olupis-but-a-jar.jar
