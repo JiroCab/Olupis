@@ -9,7 +9,7 @@ public class OlupisItemsLiquid {
 
     public static Item condensedBiomatter, rustyIron, iron, cobalt;
     public static Planet[] hideList = new Planet[]{Planets.erekir, Planets.serpulo, Planets.tantros};
-    public static final Seq<Item> nonOlupisItems = new Seq<>(), olupisOnlyItems = new Seq<>();
+    public static final Seq<Item> nonOlupisItems = new Seq<>(), olupisOnlyItems = new Seq<>(), olupisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam;
 
     public static  void LoadItems(){
@@ -40,7 +40,8 @@ public class OlupisItemsLiquid {
 
         nonOlupisItems.add(Items.erekirItems);
         nonOlupisItems.add(Items.serpuloItems);
-        olupisOnlyItems.addAll(rustyIron, iron, condensedBiomatter, cobalt, Items.sand, Items.lead, Items.graphite, Items.silicon);
+        olupisItems.addAll(rustyIron, iron, condensedBiomatter, cobalt, Items.sand, Items.lead, Items.graphite, Items.silicon, Items.beryllium, Items.copper);
+        olupisOnlyItems.addAll(olupisItems).removeAll(nonOlupisItems);
 
     }
 
@@ -68,9 +69,11 @@ public class OlupisItemsLiquid {
             canStayOn.add(Liquids.water);
         }};
 
-        steam = new Liquid("steam", Color.valueOf("efe3ff")){{
+        steam = new Liquid("steam", Color.valueOf("E0DAE9")){{
             gas = true;
             effect = StatusEffects.corroded;
+            heatCapacity = 0.2f;
+            boilPoint = 0.5f;
         }};
     }
 }

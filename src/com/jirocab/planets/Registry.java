@@ -26,10 +26,13 @@ public class Registry {
     public static void register() {
         OlupisItemsLiquid.LoadItems();
         OlupisItemsLiquid.LoadLiquids();
+        OlupisUnits.LoadUnits();
         OlupisBlocks.LoadWorldTiles();
         OlupisBlocks.LoadBlocks();
+        OlupisSchematic.LoadSchematics();
         OlupisPlanets.LoadPlanets();
         OlupisSectors.LoadSectors();
+
         //region Misc
         OlupisTechTree.load();
 
@@ -52,6 +55,8 @@ public class Registry {
         Blocks.darksandTaintedWater.attributes.set(Registry.hydro, 0.3f);
         Blocks.darksandWater.attributes.set(Registry.hydro, 0.3f);
         OlupisBlocks.redSandWater.attributes.set(Registry.hydro, 0.3f);
+        OlupisBlocks.mossyWater.attributes.set(Registry.hydro, 0.3f);
+        OlupisBlocks.yellowMossyWater.attributes.set(Registry.hydro, 0.3f);
 
     }
 

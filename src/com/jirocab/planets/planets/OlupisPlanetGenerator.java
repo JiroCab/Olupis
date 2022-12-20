@@ -9,10 +9,10 @@ import arc.util.Tmp;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
 import com.jirocab.planets.content.OlupisBlocks;
+import com.jirocab.planets.content.OlupisSchematic;
 import mindustry.ai.Astar;
 import mindustry.ai.BaseRegistry;
-import mindustry.content.Blocks;
-import mindustry.content.Liquids;
+import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.maps.generators.BaseGenerator;
 import mindustry.maps.generators.PlanetGenerator;
@@ -59,6 +59,11 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
             Blocks.grass, Blocks.shale,
             Blocks.grass, Blocks.shale
     );
+
+    {
+        baseSeed = 2;
+        defaultLoadout = OlupisSchematic.basicRemnant;
+    }
 
     float water = 2f / arr[0].length;
 
@@ -617,7 +622,7 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
 
         state.rules.waveSpacing = Mathf.lerp(60 * 65 * 2, 60f * 60f * 1f, Math.max(difficulty - waveTimeDec, 0f));
         state.rules.waves = sector.info.waves = true;
-        state.rules.env = sector.planet.defaultEnv;
+        //state.rules.env = sector.planet.defaultEnv;
         state.rules.enemyCoreBuildRadius = 600f;
 
         //spawn air only when spawn is blocked
