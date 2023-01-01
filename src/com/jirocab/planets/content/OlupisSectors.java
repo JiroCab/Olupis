@@ -1,6 +1,5 @@
 package com.jirocab.planets.content;
 
-import mindustry.type.Planet;
 import mindustry.type.SectorPreset;
 
 public class OlupisSectors {

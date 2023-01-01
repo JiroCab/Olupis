@@ -1,33 +1,34 @@
 package com.jirocab.planets.content;
 
+import arc.Core;
 import arc.graphics.Color;
-import com.jirocab.planets.planets.OlupisPlanetGenerator;
-import mindustry.content.Blocks;
+import com.jirocab.planets.world.planets.*;
 import mindustry.content.Planets;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.*;
-import mindustry.maps.planet.ErekirPlanetGenerator;
 import mindustry.type.Planet;
 import mindustry.world.meta.Env;
 
 public class OlupisPlanets {
-    public  static Planet olupis, olupisMoon;
+    public  static Planet olupis, arthin, spelta;
 
     public  static void LoadPlanets(){
-        olupis = new Planet("Olupis", Planets.sun, 1f, 3){{
+        olupis = new Planet("olupis", Planets.sun, 1f, 3){{
             generator = new OlupisPlanetGenerator();
-            meshLoader = () -> new HexMesh(this, 5);
+            meshLoader = () -> new HexMesh(this, 7);
             cloudMeshLoader = () -> new MultiMesh(
                     new HexSkyMesh(this, 11, 0.15f, 0.13f, 5, new Color().set(Color.valueOf("cee9f2")).mul(0.9f).a(0.75f), 2, 0.45f, 0.9f, 0.38f),
                     new HexSkyMesh(this, 1, 0.6f, 0.16f, 5, Color.white.cpy().lerp(Color.valueOf("cee9f2"), 0.55f).a(0.75f), 2, 0.45f, 1f, 0.41f)
             );
-
+            defaultCore = OlupisBlocks.coreRemnant;
+            unlockedOnLand.add(OlupisBlocks.coreRemnant);
+            defaultEnv = Env.terrestrial | Env.oxygen;
             launchCapacityMultiplier = 0.4f;
             sectorSeed = 2;
             allowWaves = true;
             allowWaveSimulation = false;
-            allowSectorInvasion = true;
+            allowSectorInvasion = false;
             allowLaunchSchematics = false;
             enemyCoreSpawnReplace = true;
             allowLaunchLoadout = true;
@@ -43,9 +44,8 @@ public class OlupisPlanets {
                 r.coreDestroyClear = true;
                 r.dropZoneRadius = 400f;
                 r.disableOutsideArea = false;
-                r.infiniteResources = true; //testing only
-                r.env = OlupisPlanets.olupis.defaultEnv;
-                r.hiddenBuildItems.addAll(olupis.hiddenItems);
+                //r.infiniteResources = true; //testing only
+                //r.env = this.defaultEnv;
             };
             atmosphereColor = Color.valueOf("87CEEB");
             atmosphereRadIn = 0.02f;
@@ -53,25 +53,23 @@ public class OlupisPlanets {
             startSector = 1;
             alwaysUnlocked = true;
             landCloudColor = Pal.engine.cpy().a(0.5f);
-            defaultEnv = Env.terrestrial | Env.oxygen ;
-            hiddenItems.addAll(OlupisItemsLiquid.olupisOnlyItems).removeAll(OlupisItemsLiquid.nonOlupisItems);
+            hiddenItems.addAll(OlupisItemsLiquid.nonOlupisItems).removeAll(OlupisItemsLiquid.olupisOnlyItems);
         }};
 
-        olupisMoon = new Planet("olupis-moon", OlupisPlanets.olupis, 0.5f, 1){{
-            generator = new ErekirPlanetGenerator();
-            meshLoader = () -> new HexMesh(this, 3);
-            cloudMeshLoader = () -> new MultiMesh(
-                    new HexSkyMesh(this, 2, 0.15f, 0.14f, 5, Color.valueOf("eba768").a(0.75f), 2, 0.42f, 1f, 0.43f),
-                    new HexSkyMesh(this, 3, 0.6f, 0.15f, 5, Color.valueOf("eea293").a(0.75f), 2, 0.42f, 1.2f, 0.45f)
-            );
+        //1st moon
+        arthin = new Planet("arthin", OlupisPlanets.olupis, 0.9f, 2){{
+            generator = new ArthinPlanetGenerator();
+            meshLoader = () -> new HexMesh(this, 5);
+            defaultCore = OlupisBlocks.coreRemnant;
             alwaysUnlocked = true;
-            defaultEnv = Env.space;
+            defaultEnv = olupis.defaultEnv;
             clearSectorOnLose = true;
-            defaultCore = Blocks.coreBastion;
             iconColor = Color.valueOf("61615B");
-            icon = "boulder";
-            hiddenItems.addAll(OlupisItemsLiquid.olupisOnlyItems).removeAll(OlupisItemsLiquid.nonOlupisItems);
+            icon = "effect";
+            allowSectorInvasion = true;
+            hiddenItems.addAll(OlupisItemsLiquid.nonOlupisItems).removeAll(OlupisItemsLiquid.olupisOnlyItems);
             enemyBuildSpeedMultiplier = 0.4f;
+            accessible = false;
 
             //TODO SHOULD there be lighting?
             updateLighting = true;
@@ -86,12 +84,37 @@ public class OlupisPlanets {
                 r.coreDestroyClear = true;
                 r.dropZoneRadius = 400f;
                 r.disableOutsideArea = false;
-                r.infiniteResources = true; //testing only
             };
+        }};
 
-            unlockedOnLand.add(Blocks.coreBastion);
+        spelta = new Planet("spelta", OlupisPlanets.olupis, 0.9f, 2){{
+            generator = new SpeltaPlanetGenerator();
+            meshLoader = () -> new HexMesh(this, 5);
+            defaultCore = OlupisBlocks.coreRemnant;
+            alwaysUnlocked = true;
+            defaultEnv = olupis.defaultEnv;
+            clearSectorOnLose = true;
+            iconColor = Color.valueOf("61615B");
+            icon = "effect";
+            allowSectorInvasion = true;
+            hiddenItems.addAll(OlupisItemsLiquid.nonOlupisItems).removeAll(OlupisItemsLiquid.olupisOnlyItems);
+            enemyBuildSpeedMultiplier = 0.4f;
+            accessible = false;
+
+            //TODO SHOULD there be lighting?
+            updateLighting = true;
+
+            ruleSetter = r -> {
+                r.waveTeam = Team.green;
+                r.placeRangeCheck = false;
+                r.attributes.clear();
+                r.showSpawns = true;
+                r.unitPayloadUpdate = true;
+                r.enemyCoreBuildRadius = 650f;
+                r.coreDestroyClear = true;
+                r.dropZoneRadius = 400f;
+                r.disableOutsideArea = false;
+            };
         }};
     }
-
-
 }

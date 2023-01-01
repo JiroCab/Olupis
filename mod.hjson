@@ -14,7 +14,7 @@ main: "com.jirocab.planets.Main"
 description: "Olupis, the hidden sister of serpulo"
 
 #the mod version
-version: 1.0
+version: 1.2
 
 #the minimum game build required to run this mod
 minGameVersion: 136

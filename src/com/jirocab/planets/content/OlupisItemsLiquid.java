@@ -2,14 +2,16 @@ package com.jirocab.planets.content;
 
 import arc.graphics.Color;
 import arc.struct.Seq;
+import com.jirocab.planets.world.NoBoilLiquidBulletType;
 import mindustry.content.*;
+import mindustry.entities.bullet.LiquidBulletType;
 import mindustry.type.*;
 
 public class OlupisItemsLiquid {
 
     public static Item condensedBiomatter, rustyIron, iron, cobalt;
     public static Planet[] hideList = new Planet[]{Planets.erekir, Planets.serpulo, Planets.tantros};
-    public static final Seq<Item> nonOlupisItems = new Seq<>(), olupisOnlyItems = new Seq<>();
+    public static final Seq<Item> nonOlupisItems = new Seq<>(), olupisOnlyItems = new Seq<>(), olupisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam;
 
     public static  void LoadItems(){
@@ -40,7 +42,8 @@ public class OlupisItemsLiquid {
 
         nonOlupisItems.add(Items.erekirItems);
         nonOlupisItems.add(Items.serpuloItems);
-        olupisOnlyItems.addAll(rustyIron, iron, condensedBiomatter, cobalt, Items.sand, Items.lead, Items.graphite, Items.silicon);
+        olupisItems.addAll(rustyIron, iron, condensedBiomatter, cobalt, Items.sand, Items.lead, Items.graphite, Items.silicon, Items.beryllium, Items.copper);
+        olupisOnlyItems.addAll(olupisItems).removeAll(nonOlupisItems);
 
     }
 
@@ -68,9 +71,12 @@ public class OlupisItemsLiquid {
             canStayOn.add(Liquids.water);
         }};
 
-        steam = new Liquid("steam", Color.valueOf("efe3ff")){{
-            gas = true;
+        steam = new Liquid("steam", Color.valueOf("E0DAE9")){{
+            /*hacky way so it acts like a liquid in NoBoilLiquidBulletType  but a gas outside of thar*/
+            gas = false;
             effect = StatusEffects.corroded;
+            heatCapacity = 0.35f;
+            boilPoint = 0f;
         }};
     }
 }
