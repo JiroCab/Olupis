@@ -2,7 +2,9 @@ package com.jirocab.planets.content;
 
 import arc.graphics.Color;
 import arc.struct.Seq;
+import com.jirocab.planets.world.NoBoilLiquidBulletType;
 import mindustry.content.*;
+import mindustry.entities.bullet.LiquidBulletType;
 import mindustry.type.*;
 
 public class OlupisItemsLiquid {
@@ -70,10 +72,11 @@ public class OlupisItemsLiquid {
         }};
 
         steam = new Liquid("steam", Color.valueOf("E0DAE9")){{
-            gas = true;
+            /*hacky way so it acts like a liquid in NoBoilLiquidBulletType  but a gas outside of thar*/
+            gas = false;
             effect = StatusEffects.corroded;
-            heatCapacity = 0.2f;
-            boilPoint = 0.5f;
+            heatCapacity = 0.35f;
+            boilPoint = 0f;
         }};
     }
 }

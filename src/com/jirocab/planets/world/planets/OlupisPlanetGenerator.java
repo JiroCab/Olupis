@@ -1,4 +1,4 @@
-package com.jirocab.planets.planets;
+package com.jirocab.planets.world.planets;
 
 import arc.graphics.Color;
 import arc.math.*;
@@ -8,14 +8,14 @@ import arc.util.Structs;
 import arc.util.Tmp;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
-import com.jirocab.planets.content.OlupisBlocks;
-import com.jirocab.planets.content.OlupisSchematic;
+import com.jirocab.planets.content.*;
 import mindustry.ai.Astar;
 import mindustry.ai.BaseRegistry;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.maps.generators.BaseGenerator;
 import mindustry.maps.generators.PlanetGenerator;
+import mindustry.type.ItemStack;
 import mindustry.type.Sector;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.Floor;
@@ -49,7 +49,7 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
             };
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
-            Blocks.grass, Blocks.rhyoliteBoulder,
+            Blocks.grass, OlupisBlocks.bush,
             Blocks.grass, Blocks.boulder,
             Blocks.sandWater, Blocks.water,
             Blocks.darksandWater, Blocks.darksandWater
@@ -61,7 +61,7 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
     );
 
     {
-        baseSeed = 2;
+        baseSeed = 69;
         defaultLoadout = OlupisSchematic.basicRemnant;
     }
 
@@ -388,27 +388,8 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
             });
         }
 
-        Seq<Block> ores = Seq.with(Blocks.oreCopper, Blocks.oreLead);
+        Seq<Block> ores = Seq.with(OlupisBlocks.oreIron, Blocks.oreLead);
         float poles = Math.abs(sector.tile.v.y);
-        float nmag = 0.5f;
-        float scl = 1f;
-        float addscl = 1.3f;
-
-        if(Simplex.noise3d(seed, 2, 0.5, scl, sector.tile.v.x, sector.tile.v.y, sector.tile.v.z)*nmag + poles > 0.25f*addscl){
-            ores.add(Blocks.oreCoal);
-        }
-
-        if(Simplex.noise3d(seed, 2, 0.5, scl, sector.tile.v.x + 1, sector.tile.v.y, sector.tile.v.z)*nmag + poles > 0.5f*addscl){
-            ores.add(Blocks.oreTitanium);
-        }
-
-        if(Simplex.noise3d(seed, 2, 0.5, scl, sector.tile.v.x + 2, sector.tile.v.y, sector.tile.v.z)*nmag + poles > 0.7f*addscl){
-            ores.add(Blocks.oreThorium);
-        }
-
-        if(rand.chance(0.25)){
-            ores.add(Blocks.oreScrap);
-        }
 
         FloatSeq frequencies = new FloatSeq();
         for(int i = 0; i < ores.size; i++){
@@ -622,7 +603,7 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
 
         state.rules.waveSpacing = Mathf.lerp(60 * 65 * 2, 60f * 60f * 1f, Math.max(difficulty - waveTimeDec, 0f));
         state.rules.waves = sector.info.waves = true;
-        //state.rules.env = sector.planet.defaultEnv;
+        state.rules.loadout.clear().add(new ItemStack(OlupisItemsLiquid.rustyIron, 100 * Math.round(sector.threat)));
         state.rules.enemyCoreBuildRadius = 600f;
 
         //spawn air only when spawn is blocked

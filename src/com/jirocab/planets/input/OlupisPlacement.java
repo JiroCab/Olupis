@@ -5,7 +5,6 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import mindustry.entities.units.BuildPlan;
-import mindustry.world.blocks.distribution.ItemBridge;
 import mindustry.world.blocks.power.BeamNode;
 
 import static mindustry.Vars.player;

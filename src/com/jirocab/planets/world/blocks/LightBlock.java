@@ -1,4 +1,4 @@
-package com.jirocab.planets.blocks;
+package com.jirocab.planets.world.blocks;
 
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;

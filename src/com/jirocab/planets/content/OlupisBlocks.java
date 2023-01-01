@@ -3,12 +3,15 @@ package com.jirocab.planets.content;
 import arc.graphics.Color;
 import arc.struct.EnumSet;
 import com.jirocab.planets.Registry;
-import com.jirocab.planets.blocks.*;
+import com.jirocab.planets.blocks.Wire;
+import com.jirocab.planets.world.NoBoilLiquidBulletType;
+import com.jirocab.planets.world.blocks.*;
 import mindustry.content.*;
-import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.LiquidBulletType;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
+import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
@@ -22,6 +25,7 @@ import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
+import mindustry.world.blocks.units.DroneCenter;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
@@ -31,7 +35,7 @@ public class OlupisBlocks {
     //region Blocks Variables
     public static Block
     //environment
-    olupisTree, bush, mossyBoulder, mossTree , treeStump, bigBoulder,
+    olupisTree, bush, mossyBoulder, mossTree,
 
     oreIron, oreIronWall, oreCobalt, OreCobaltWall,
 
@@ -45,8 +49,8 @@ public class OlupisBlocks {
     rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironJunction, ironBridge,
     rustyPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump,
     wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator,
-    steamDrill, hydroElectricDrill, oilSeparator,
-    architonnerre, architronito,
+    steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
+    corroder, dissolver,
     rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge,
     coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
     fortifiedMessageBlock
@@ -58,10 +62,12 @@ public class OlupisBlocks {
         oreIronWall = new OreBlock("ore-iron-wall", OlupisItemsLiquid.rustyIron){{
             wallOre = true;
         }};
+        oreCobalt = new OreBlock("ore-cobalt", OlupisItemsLiquid.cobalt);
 
         frozenGrass = new Floor("frozen-grass"){{
             attributes.set(Attribute.water, 0.15f);
             attributes.set(Registry.Bio, 0.08f);
+            asFloor().wall = Blocks.shrubs;
         }};
 
         olupisTree = new TreeBlock("olupis-tree");
@@ -84,11 +90,6 @@ public class OlupisBlocks {
             frozenGrass.asFloor().decoration = this;
         }};
 
-        /*bigBoulder = new Prop("big-boulder"){{
-            variants = 1;
-            size = 2;
-            frozenGrass.asFloor().decoration = this;
-        }};*/
 
         redSand = new Floor("red-sand-floor"){{
             itemDrop = Items.sand;
@@ -202,7 +203,7 @@ public class OlupisBlocks {
 
 
         lightWall = new LightBlock("light-wall"){{
-            requirements(Category.effect, BuildVisibility.lightingOnly, with());
+            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
             brightness = 0.75f;
             radius = 140f;
         }};
@@ -216,10 +217,10 @@ public class OlupisBlocks {
             requirements(Category.distribution, with(OlupisItemsLiquid.rustyIron, 1));
             health = 45;
             speed = 0.015f;
-            //displayedSpeed = 4.2f;
+            //displayedSpe  ed = 4.2f;
             buildCostMultiplier = 2f;
-            researchCost = with(OlupisItemsLiquid.rustyIron, 100);
-            variants = 0;
+            researchCost = with(OlupisItemsLiquid.rustyIron, 75);
+            //generateIcons = true;
         }};
 
         ironConveyor = new PowerConveyor("iron-conveyor"){{
@@ -235,26 +236,27 @@ public class OlupisBlocks {
             conductivePower = true;
             consumesPower = true;
             consumePower (1f/60);
-            researchCost = with(OlupisItemsLiquid.iron, 20);
         }};
 
-        /*cobaltConveyor = new Conveyor("cobalt-conveyor"){{
+        cobaltConveyor = new PowerConveyor("cobalt-conveyor"){{
             requirements(Category.distribution, with(OlupisItemsLiquid.iron,1 ));
             health = 70;
-            speed = 0.03f;
+            unpoweredSpeed = 0.03f;
+            poweredSpeed = 0.06f;
+            speed = 0.06f;
             itemCapacity = 1;
             buildCostMultiplier = 2f;
-            researchCost = with(OlupisItemsLiquid.cobalt, 500);
+            researchCost = with(OlupisItemsLiquid.iron, 100);
             hasPower = true;
             conductivePower = true;
             consumesPower = true;
             consumePower (1f/60);
-            researchCost = with(OlupisItemsLiquid.cobalt, 20);
-        }};*/
+        }};
 
         ironRouter = new Router("iron-router"){{
             requirements(Category.distribution, with(OlupisItemsLiquid.rustyIron, 3));
             buildCostMultiplier = 4f;
+            researchCost = with(OlupisItemsLiquid.rustyIron, 50);
         }};
 
         ironJunction = new Junction("iron-junction"){{
@@ -281,34 +283,49 @@ public class OlupisBlocks {
 
         //endregion
         //region Drills
-        steamDrill = new Drill("steam-drill"){{
-            requirements(Category.production, with(OlupisItemsLiquid.rustyIron, 24));
+        rustyDrill = new BurstDrill("rusty-drill"){{
+            requirements(Category.production, with(OlupisItemsLiquid.rustyIron, 25));
+            size = 3;
+            drillTime = 60f * 10f;
             tier = 1;
+            hasPower = true;
+            drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
+            consumePower(1f/60f);
+            consumeLiquid(Liquids.water, 0.02f).boost();
+        }};
+
+
+        steamDrill = new Drill("steam-drill"){{
+            //requirements(Category.production, with(OlupisItemsLiquid.iron, 25, OlupisItemsLiquid.rustyIron, 40));
+            //temp untill rusty drill is fully implemented & balanced
+            requirements(Category.production, with( OlupisItemsLiquid.rustyIron, 40));
+            tier = 2;
             drillTime = 600;
             size = 3;
             envEnabled ^= Env.space;
-            researchCost = with(OlupisItemsLiquid.rustyIron, 20);
+            researchCost = with(OlupisItemsLiquid.rustyIron, 100);
 
+            hasPower = true;
+            consumePower(1f/60f);
             consumeLiquid(Liquids.water, 0.05f);
-            consumeLiquid(Liquids.cryofluid, 0.06f).boost();
+            consumeLiquid(Liquids.slag, 0.06f).boost();
         }};
 
         hydroElectricDrill = new Drill("hydro-electric-drill"){{
-            requirements(Category.production, with(OlupisItemsLiquid.iron, 12));
-            tier = 2;
+            requirements(Category.production, with(OlupisItemsLiquid.iron, 55, OlupisItemsLiquid.rustyIron, 70, Items.lead, 30));
+            tier = 3;
             drillTime = 600;
             size = 4;
             envEnabled ^= Env.space;
-            researchCost = with(OlupisItemsLiquid.iron, 20);
 
             consumeLiquid(OlupisItemsLiquid.steam, 0.05f);
             consumePower(0.3f);
-            consumeLiquid(Liquids.cryofluid, 0.06f).boost();
+            consumeLiquid(Liquids.slag, 0.06f).boost();
         }};
 
         //endregion
         //region liquid
-        rustyPipe = new ArmoredConduit("rusty-pipe"){{
+        rustyPipe = new Conduit("rusty-pipe"){{
             requirements(Category.liquid, with(OlupisItemsLiquid.rustyIron, 5));
             botColor = Color.valueOf("928181");
             leaks = true;
@@ -352,15 +369,20 @@ public class OlupisBlocks {
             ((Conduit)rustyPipe).bridgeReplacement = this;
         }};
 
-        massDisplacementPump = new Pump("mass-displacement-pump"){{
-            requirements(Category.liquid, with(OlupisItemsLiquid.iron, 30));
-            pumpAmount = 0.3f;
-            liquidCapacity = 50f;
-            size = 4;
-            hasPower = true;
-            consumePower(0.6f);
+        rustyPump = new Pump("rusty-pump"){{
+            requirements(Category.liquid, with(OlupisItemsLiquid.rustyIron, 10));
+            pumpAmount = 0.05f;
+            liquidCapacity = 10f;
+            size = 1;
         }};
 
+        ironPump = new Pump("iron-pump"){{
+            requirements(Category.liquid, with(OlupisItemsLiquid.iron, 10));
+            pumpAmount = 0.1f;
+            liquidCapacity = 20f;
+            size = 2;
+            researchCost = with(OlupisItemsLiquid.rustyIron, 100);
+        }};
         displacementPump = new Pump("displacement-pump"){{
             requirements(Category.liquid, with(OlupisItemsLiquid.iron, 20));
             pumpAmount = 0.2f;
@@ -370,19 +392,16 @@ public class OlupisBlocks {
             consumePower(0.3f);
         }};
 
-        ironPump = new Pump("iron-pump"){{
-            requirements(Category.liquid, with(OlupisItemsLiquid.iron, 10));
-            pumpAmount = 0.1f;
-            liquidCapacity = 20f;
-            size = 2;
+
+        massDisplacementPump = new Pump("mass-displacement-pump"){{
+            requirements(Category.liquid, with(OlupisItemsLiquid.iron, 30));
+            pumpAmount = 0.3f;
+            liquidCapacity = 50f;
+            size = 4;
+            hasPower = true;
+            consumePower(0.6f);
         }};
 
-        rustyPump = new Pump("rusty-pump"){{
-            requirements(Category.liquid, with(OlupisItemsLiquid.rustyIron, 10));
-            pumpAmount = 0.05f;
-            liquidCapacity = 10f;
-            size = 1;
-        }};
 
         oilSeparator = new GenericCrafter("oil-separator"){{
             requirements(Category.liquid, with(OlupisItemsLiquid.iron, 50));
@@ -567,13 +586,13 @@ public class OlupisBlocks {
 
         //endregion
         //region Turrets
-        architonnerre = new LiquidTurret("architonnerre"){{
-            requirements(Category.turret, with(OlupisItemsLiquid.rustyIron, 20));
+        corroder = new LiquidTurret("corroder"){{ //architronito
+            requirements(Category.turret, with(OlupisItemsLiquid.rustyIron, 50));
             ammo(
                     Liquids.water, new LiquidBulletType(Liquids.water){{
-                        speed = 3.33f;
+                        speed = 5.55f;
                         hitSize = 5f;
-                        lifetime = 14f;
+                        lifetime = 10.5f;
                         drag = 0.009f;
 
                         damage = 6;
@@ -585,10 +604,10 @@ public class OlupisBlocks {
                         keepVelocity = false;
                         hittable = false;
                     }},
-                    OlupisItemsLiquid.steam, new LiquidBulletType(OlupisItemsLiquid.steam){{
+                    OlupisItemsLiquid.steam, new NoBoilLiquidBulletType(OlupisItemsLiquid.steam){{
                         speed = 7.7f;
                         hitSize = 7f;
-                        lifetime = 38f;
+                        lifetime = 8f;
                         pierce = true;
 
                         damage = 15f;
@@ -598,6 +617,7 @@ public class OlupisBlocks {
                         status = StatusEffects.corroded;
                         keepVelocity = false;
                         hittable = false;
+                        evaporatePuddles = true;
                     }}
             );
             recoil = 0.2f;
@@ -605,7 +625,6 @@ public class OlupisBlocks {
             range = 60f;
             shootCone = 50f;
             ammoUseEffect = Fx.shootLiquid;
-            shootSound = Sounds.steam;
             health = 1000;
             size = 2;
             targetAir = false;
@@ -614,13 +633,13 @@ public class OlupisBlocks {
             drawer = new DrawTurret("iron-");
         }};
 
-        architronito = new LiquidTurret("architronito"){{
-            requirements(Category.turret, with(OlupisItemsLiquid.rustyIron, 20));
+        dissolver = new LiquidTurret("dissolver"){{ //architonnerre
+            requirements(Category.turret, with(OlupisItemsLiquid.rustyIron, 100));
             ammo(
                     Liquids.water, new LiquidBulletType(Liquids.water){{
-                        speed = 3.33f;
+                        speed = 5.8f;
                         hitSize = 7f;
-                        lifetime = 27f;
+                        lifetime = 15.2f;
 
                         damage = 6;
                         pierce = true;
@@ -631,12 +650,12 @@ public class OlupisBlocks {
                         keepVelocity = false;
                         hittable = false;
                     }},
-                    OlupisItemsLiquid.steam, new LiquidBulletType(OlupisItemsLiquid.steam){{
+                    OlupisItemsLiquid.steam, new NoBoilLiquidBulletType(OlupisItemsLiquid.steam){{
                         speed = 8.8f;
-                        lifetime = 77f;
+                        lifetime = 10.7f;
                         hitSize = 7f;
 
-                        damage = 15f;
+                        damage = 10f;
                         ammoMultiplier = 3f;
                         pierce = true;
                         collidesAir = true;
@@ -644,6 +663,7 @@ public class OlupisBlocks {
                         status = StatusEffects.corroded;
                         keepVelocity = false;
                         hittable = false;
+                        evaporatePuddles = true;
                     }}
             );
             recoil = 0.2f;
@@ -663,12 +683,51 @@ public class OlupisBlocks {
 
         //endregion
         //region Power
+        wire = new BeamNode("wire"){{
+            requirements(Category.power, with(OlupisItemsLiquid.rustyIron, 5));
+            baseExplosiveness = 0.5f;
+            solid = false;
+            floating = true;
+            placeableLiquid = true;
+            range = 1;
+            consumePowerBuffered(1f);
+            consumesPower = outputsPower = true;
+            consumePower(1f/60f);
+        }};
+
+        superConductors = new Wire("super-conductor"){{
+            requirements(Category.power, with(OlupisItemsLiquid.cobalt, 20, OlupisItemsLiquid.iron, 10));
+            baseExplosiveness = 0.7f;
+            range = 1;
+            health = 150;
+            solid = false;
+            floating = true;
+        }};
+
+        wireBridge = new BeamNode("wire-bridge"){{
+            requirements(Category.power, with(OlupisItemsLiquid.rustyIron, 15));
+            baseExplosiveness = 0.5f;
+            consumesPower = outputsPower = true;
+            range = 5;
+            health = 100;
+            laserColor1 = Color.valueOf("ACB5BA");
+            laserColor2 = Color.valueOf("65717E");
+            floating = true;
+            laserWidth = 0.4f;
+            pulseMag = 0f;
+            consumePower(10f/ 60f);
+        }};
+
         windMills = new WindMill("wind-mill"){{
             requirements(Category.power, with(OlupisItemsLiquid.rustyIron, 30));
+            researchCost = with(OlupisItemsLiquid.rustyIron, 300);
+            attribute = Attribute.steam;
             size = 3;
             powerProduction = 10f/60f;
+            displayEfficiencyScale = 1.1f;
+
             drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
-                blurThresh = 0.01f;
+                blurThresh =  0.01f;
             }});
         }};
 
@@ -703,34 +762,6 @@ public class OlupisBlocks {
             drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
                 blurThresh = 0.01f;
             }});
-        }};
-
-        wire = new Wire("wire"){{
-            requirements(Category.power, with(OlupisItemsLiquid.rustyIron, 5));
-            consumePowerBuffered(2000f);
-            baseExplosiveness = 0.5f;
-            consumesPower = true;
-            solid = false;
-            consumePower(0.016f);
-            consumePowerBuffered(250f);
-            floating = true;
-            placeableLiquid = true;
-        }};
-
-        wireBridge = new BeamNode("wire-bridge"){{
-            requirements(Category.power, with(OlupisItemsLiquid.rustyIron, 15));
-            consumePowerBuffered(2000f);
-            baseExplosiveness = 0.5f;
-            consumesPower = outputsPower = true;
-            range = 5;
-            health = 100;
-            laserColor1 = Color.valueOf("ACB5BA");
-            laserColor2 = Color.valueOf("65717E");
-            floating = true;
-            laserWidth = 0.4f;
-            pulseMag = 0f;
-            consumePowerBuffered(50f);
-            consumePower(0.16f);
         }};
 
         //endregion
@@ -842,5 +873,27 @@ public class OlupisBlocks {
 
         //endregion
 
+    }
+    public static void AddAttributes(){
+
+        Blocks.grass.attributes.set(Registry.Bio, 0.1f);
+        Blocks.stone.attributes.set(Registry.Bio, 0.03f);
+        Blocks.charr.attributes.set(Registry.Bio, 0.03f);
+        Blocks.mud.attributes.set(Registry.Bio, 0.03f);
+        Blocks.dirt.attributes.set(Registry.Bio, 0.03f);
+        Blocks.snow.attributes.set(Registry.Bio, 0.01f);
+        Blocks.ice.attributes.set(Registry.Bio, 0.01f);
+        Blocks.craters.attributes.set(Registry.Bio, 0.5f);
+
+        Blocks.deepwater.attributes.set(Registry.hydro, 0.5f);
+        Blocks.deepTaintedWater.attributes.set(Registry.hydro, 0.3f);
+        Blocks.water.attributes.set(Registry.hydro, 0.3f);
+        Blocks.taintedWater.attributes.set(Registry.hydro, 0.3f);
+        Blocks.sandWater.attributes.set(Registry.hydro, 0.3f);
+        Blocks.darksandTaintedWater.attributes.set(Registry.hydro, 0.3f);
+        Blocks.darksandWater.attributes.set(Registry.hydro, 0.3f);
+        OlupisBlocks.redSandWater.attributes.set(Registry.hydro, 0.3f);
+        OlupisBlocks.mossyWater.attributes.set(Registry.hydro, 0.3f);
+        OlupisBlocks.yellowMossyWater.attributes.set(Registry.hydro, 0.3f);
     }
 }

@@ -9,20 +9,18 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.*;
 
-public class Wire extends Battery {
-    public @Nullable Block junctionReplacement, bridgeReplacement;
+public class Wire extends BeamNode {
+    public @Nullable Block  bridgeReplacement;
 
     public Wire(String name){
         super(name);
-        itemCapacity = 0;
-        conductivePower = true;
     }
 
     @Override
     public void init(){
         super.init();
 
-        if(bridgeReplacement == null || !(bridgeReplacement instanceof PowerBlock)) bridgeReplacement = OlupisBlocks.wireBridge;
+        if(bridgeReplacement == null || !(bridgeReplacement instanceof PowerBlock && bridgeReplacement == OlupisBlocks.wire)) bridgeReplacement = OlupisBlocks.wireBridge;
     }
 
     @Override
@@ -40,7 +38,7 @@ public class Wire extends Battery {
         addBar("batteries", PowerNode.makeBatteryBalance());
     }
 
-    public  class  WireBuild extends BatteryBuild{
+    public  class  WireBuild extends BeamNodeBuild{
         @Override
         public void draw(){
             Draw.rect(this.block.region, this.x, this.y, this.drawrot());

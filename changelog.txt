@@ -1,0 +1,35 @@
+== Olupis Major change log ==
+https://github.com/JiroCab/Olupis
+Last updated on 01/01/2023 (+8utc) by Jirocab
+
+= Beta 1-2 () =
+	+ Debug button to set a map's planet/block set to be olupis, disabled by default [settings > souund > olupis-debug]
+	+ "Space" sound can be turned off [settings > sound > olupis-space]
+	+ units added - gnat, mite, firefly, porter
+	+ steamDrill has a proper texture (Contributed by NightmarishWolf)
+	+ rustyDrill has a proper texture (Contributed by NightmarishWolf)
+	+ updated textures for - yellowBush, rustyPipe
+	+ Wind mills are affected by vents attribute
+	+ added blocks - ironJunction, ironBridge, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, hydroElectricGenerator, rustyDrill, oreCobalt
+	~ updated English bundles
+	~ `steamHood` renamed to `steamAgitator`
+	~ `architonnerre` renamed to `dissolver`
+	~ `architronito` renamed to `corroder`
+	~ wires now have proper power loss
+	~ nerfed energy capacity of `Wire` [250 -> 0]
+	~ nerfed energy capacity of `Wire bridges` [50 -> 0]
+	~ replaced placeholder maps
+	~ added moons `arthin` & `spelta`
+	~ updated placeholder textures
+	~ moved Block attributes from `Registry` to `OlupisBlocks`
+	~ `rustyPipe` is now a regular conduit instead of a armoredConduit
+	-- Internal blocks removed - treeStump, bigBoulder
+
+ 
+= Beta 1-1a/1-1 (4e9861a) == https://github.com/JiroCab/Olupis/commit/4e9861a9fa6cd088c677e1f7b3f44afa10a85c3b
+	+ Blocks Sets - garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoilder, steamHood, hydrochloricGraphitePress, ironSieve, rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, rustyPipe, ironPipe, pipeRouter, wire, wireBridge, superConductors, windMills, hydroMill, steamDrill, hydroElectricDrill, displacementPump, massDisplacementPump, ironPump, oilSeparator, architonnerre, architronito, rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, fortifiedMessageBlock
+	+ World tiles - redSand, redDune, redSandWater, greenShrubsIrregular,  mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStone, frozenGrass, yellowGrass, yellowTree, yellowBush, yellowShrubs, yellowShrubsIrregular,  mossyStone, mossierStone, mossiestStone, mossStoneWall, oreIron, oreIronWall, oreCobalt, OreCobaltWall, olupisTree, bush, mossyBoulder, mossTree , treeStump,
+	+ Items - condensedBiomatter, rustyIron, iron, cobalt
+	+ Liquid -  heavyOil, lightOil, steam
+	+ "Space!" Sound effect added when plant map dialog is shown
+	+ updated Tech tree

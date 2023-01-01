@@ -1,4 +1,4 @@
-package com.jirocab.planets.planets;
+package com.jirocab.planets.world.planets;
 
 import arc.struct.Seq;
 import com.jirocab.planets.content.*;
@@ -6,40 +6,38 @@ import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.game.Objectives;
 
-import static mindustry.content.Blocks.tankRefabricator;
-import static mindustry.content.SectorPresets.frozenForest;
 import static mindustry.content.TechTree.*;
 
 public class OlupisTechTree {
     public static void load(){
         OlupisPlanets.olupis.techTree = nodeRoot("olupis", OlupisBlocks.coreRemnant, () -> {
+
+            node(OlupisSectors.placeholder1, () -> {
+                node(OlupisSectors.placeholder2, Seq.with(
+                        new Objectives.SectorComplete(OlupisSectors.placeholder1)
+                ), () ->{
+
+                });
+            });
+
             node(OlupisBlocks.mossyBoulder, ()-> {
 
-
-                node(OlupisSectors.placeholder1, () -> {
-                    node(OlupisSectors.placeholder2, Seq.with(
-                            new Objectives.SectorComplete(OlupisSectors.placeholder1)
-                    ), () ->{
-
-                    });
-                });
-
-                node(OlupisBlocks.windMills, Seq.with(new Objectives.Research(OlupisBlocks.rustyIronConveyor)), () -> {
+                node(OlupisBlocks.windMills, Seq.with(new Objectives.Research(OlupisBlocks.steamDrill)), () -> {
                     node(OlupisBlocks.wire, () -> {
                         node(OlupisBlocks.rustElectrolyzer, () -> {
                             node(OlupisBlocks.garden,()->{
                                 node(OlupisBlocks.bioMatterPress, () ->{
-                                    //node(OlupisBlocks.hydrochloricGraphitePress, ()->{
+                                    node(OlupisBlocks.hydrochloricGraphitePress, ()->{
 
-                                    //});
+                                    });
                                 });
                             });
                         });
                         node(OlupisBlocks.wireBridge, ()-> {
                             node(OlupisBlocks.hydroMill, ()->{
-                                //node(OlupisBlocks.hydroElectricGenerator, () ->{
+                                node(OlupisBlocks.hydroElectricGenerator, () ->{
 
-                                // });
+                                 });
                             });
                         });
                     });
@@ -94,8 +92,8 @@ public class OlupisTechTree {
                 });
 
 
-                node(OlupisBlocks.architonnerre, Seq.with(new Objectives.Research(OlupisBlocks.rustyIronConveyor)), ()-> {
-                    node(OlupisBlocks.architronito, ()->{
+                node(OlupisBlocks.corroder, Seq.with(new Objectives.Research(OlupisBlocks.rustyIronConveyor)), ()-> {
+                    node(OlupisBlocks.dissolver, ()->{
 
                     });
                     node(OlupisBlocks.rustyWall, () ->{
@@ -113,7 +111,9 @@ public class OlupisTechTree {
                 });
 
                 node(OlupisBlocks.unitReplicator, Seq.with(new Objectives.Research(OlupisBlocks.rustyIronConveyor)), ()->{
+                    node(OlupisBlocks.unitReplicatorSmall, ()->{
 
+                    });
                 });
 
                 node(OlupisBlocks.fortifiedMessageBlock, Seq.with(new Objectives.Research(OlupisBlocks.rustyIronConveyor)), ()->{

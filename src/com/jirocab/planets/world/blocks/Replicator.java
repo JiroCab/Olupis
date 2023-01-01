@@ -1,4 +1,4 @@
-package com.jirocab.planets.blocks;
+package com.jirocab.planets.world.blocks;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -22,7 +22,7 @@ import mindustry.world.meta.BlockGroup;
 import static mindustry.Vars.*;
 
 public class Replicator extends PayloadBlock {
-    public float delay = 250f;
+    public float delay = 60f * 60f;
 
     public Replicator(String name){
         super(name);
@@ -122,6 +122,8 @@ public class Replicator extends PayloadBlock {
         @Override
         public void updateTile(){
             super.updateTile();
+            if (unlockedNowHost() && state.isCampaign()) return;
+
             Time.run(delay, ()->{
                 if(payload == null){
                     scl = 0f;

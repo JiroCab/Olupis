@@ -1,10 +1,9 @@
-package com.jirocab.planets.blocks;
+package com.jirocab.planets.world.blocks;
 
 import arc.math.Mathf;
 import mindustry.world.blocks.distribution.Conveyor;
 
 public class PowerConveyor extends Conveyor {
-    public float baseEfficiency = 0f;
     public float poweredSpeed = 1f;
     public float unpoweredSpeed = 0.5f;
     private static final float itemSpace = 0.4f;
@@ -16,7 +15,6 @@ public class PowerConveyor extends Conveyor {
     public class PowerConveyorBuild extends ConveyorBuild {
         @Override
         public void updateTile(){
-            float eff = enabled ? (efficiency + baseEfficiency) : 0f;
             float speed = power.status <=1 ? unpoweredSpeed : poweredSpeed;
 
             minitem = 1f;

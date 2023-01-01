@@ -2,6 +2,8 @@ package com.jirocab.planets.content;
 
 import arc.graphics.Color;
 import arc.math.geom.Rect;
+import com.jirocab.planets.world.NoBoilLiquidBulletType;
+import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.*;
@@ -34,13 +36,13 @@ public class OlupisUnits {
             constructor = UnitTypes.merui.constructor;
             controller = u -> new MinerAI();
 
-            speed = 2.6f;
+            speed = 2.7f;
             canBoost = true;
-            boostMultiplier = 0.85f;
-            rotateSpeed = 3.5f;
+            boostMultiplier = 0.75f;
+            rotateSpeed = 4f;
 
             hitSize = 9f;
-            health = 680;
+            health = 420;
             armor = 1f;
             legCount = 0;
 
@@ -85,13 +87,8 @@ public class OlupisUnits {
 
                 shootSound = Sounds.pew;
                 /*Gave up using LiquidBulletType*/
-                bullet = new BasicBulletType(7.7f ,4f){{
-                    width = 5f;
-                    height = 5f;
-                    frontColor = Color.white;
-                    backColor = Color.lightGray;
+                bullet = new NoBoilLiquidBulletType(OlupisItemsLiquid.steam){{
                     shootEffect = Fx.shootLiquid;
-                    smokeEffect = Fx.steam;
                     despawnEffect = Fx.steam;
                     hitEffect = Fx.steam;
 
@@ -100,6 +97,7 @@ public class OlupisUnits {
                     statusDuration = 2f *60f;
                     pierce = true;
                     pierceCap = 1;
+                    speed = 2f;
                     lifetime = 18f;
                 }};
             }});
