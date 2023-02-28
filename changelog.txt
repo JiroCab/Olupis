@@ -2,7 +2,34 @@
 https://github.com/JiroCab/Olupis
 Last updated on 01/01/2023 (+8utc) by Jirocab
 
-= Beta 1-2 () =
+= Beta 1-3 ()
+    + Added Placeholder1 for the two planets
+    + Olupis Tech tree now takes a items from all 3 planet's sectors
+	+ Added Raw Files of certain sprites (.aseprite & .ase Contributed by NightmarishWolf)
+    + Added Mod options to turn off invasive features
+	+ Added an option for Green team to have the corroded icon
+	+ Added Code play music via overriding the game music Seq (wip)
+    + World tiles added - pinkGrass, pinkGrassWater, pinkShrubs, pinkTree
+    + Units added - zoner
+    + Blocks added - shredder, fortifiedTank, fortifiedCanister, mendFieldProjector, taurus, rustyPump, iron junction,  rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic
+	~ Units Sprites updated - gnat
+    ~ Sprites Updated - iron, corroder, rustyIronConveyor, ironConveyor, cobaltConveyor, pipeBridge, pipeRouter, coreRemnant, windmill, garden, coreRemnant, ironWall, ironWallLarge, rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic
+    ~ Fixed certain blocks not having / improper Ui Icons
+	~ Fixed windMills generating light
+	~ Fixed steam being used as coolant by Serpulo turrets
+    ~ Updated README.md
+    ~ Updated Olupis TechTree
+    ~ Updated bundle.properties
+    ~ Updated Placeholder maps
+    ~ `rustyPipe` renamed to `leadPipe`
+    ~ Made some of Serpulo's items included in Olupis planets' items, will be whitelisting Olupis blocks instead & ban-hide other blocks
+    ~ updated debug button export map for changes above
+    ~ Packages changed 'com.jirocab.planets' to 'olupis' (Name was not final when orginal packages made and changing it now while it's early)
+	~ Bumped required Mindustry Version in build.gradle [v140.4 -> v141]
+    -- Removed rustyPipe Variants (No easy way to add variants)
+
+
+= Beta 1-2 (867d438) = https://github.com/JiroCab/Olupis/tree/867d438c8352ab358ad6c0cf5062fce78c26652c
 	+ Debug button to set a map's planet/block set to be olupis, disabled by default [settings > souund > olupis-debug]
 	+ "Space" sound can be turned off [settings > sound > olupis-space]
 	+ units added - gnat, mite, firefly, porter
