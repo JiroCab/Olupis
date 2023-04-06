@@ -5,12 +5,14 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Gamemode;
 import mindustry.gen.*;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
@@ -22,7 +24,9 @@ import mindustry.world.meta.BlockGroup;
 import static mindustry.Vars.*;
 
 public class Replicator extends PayloadBlock {
-    public float delay = 60f * 60f;
+    public float delay = 60f;
+
+    public Seq<UnitType> spawnableUnits = new Seq<>();
 
     public Replicator(String name){
         super(name);
@@ -43,14 +47,21 @@ public class Replicator extends PayloadBlock {
         group = BlockGroup.units;
         solid = true;
         privileged = true;
+        spawnableUnits.addAll(content.units().select(Replicator.this::canProduce).as());
 
-        config(UnitType.class, (ReplicatorBuild build, UnitType unit) -> {
+        config(Integer.class, (ReplicatorBuild build, Integer unit) -> {
             if(canProduce(unit) && build.unit != unit){
                 build.unit = unit;
                 build.block = null;
                 build.payload = null;
                 build.scl = 0f;
             }
+        });
+        config(Float.class,(ReplicatorBuild build,Float f) -> {
+            build.dynamicDelay = f;
+        });
+        config(String.class,(ReplicatorBuild build,String s) -> {
+            s.split(';')[0]
         });
 
         configClear((ReplicatorBuild build) -> {
@@ -61,7 +72,7 @@ public class Replicator extends PayloadBlock {
         });
     }
     public boolean accessible(){
-            return !privileged || state.rules.editor || state.playtestingMap != null;
+            return !privileged || state.rules.editor || state.playtestingMap != null || state.rules.mode() == Gamemode.sandbox;
     }
 
     @Override
@@ -90,6 +101,8 @@ public class Replicator extends PayloadBlock {
         public UnitType unit;
         public Block block;
         public @Nullable Vec2 commandPos;
+        public float dynamicDelay = 1;
+        public int selectedUnit = -1;
         public float scl;
 
         @Override
@@ -109,9 +122,14 @@ public class Replicator extends PayloadBlock {
                 deselect();
                 return;
             }
-            ItemSelection.buildTable(Replicator.this, table,
-                    content.units().select(Replicator.this::canProduce).as(),
-                    () -> (UnlockableContent)config(), this::configure, selectionRows, selectionColumns);
+            ItemSelection.buildTable(Replicator.this,
+                    table,
+                    spawnableUnits,
+                    () -> selectedUnit == -1 ? null : , this::configure, selectionRows, selectionColumns);
+            table.row();
+            table.add("Seconds between each spawn: " + dynamicDelay);
+            table.row();
+            table.slider(1,dynamicDelay*60,1f,dynamicDelay, true,this::configure);
         }
 
         @Override
@@ -148,7 +166,7 @@ public class Replicator extends PayloadBlock {
 
         @Override
         public Object config(){
-            return  unit;
+            return  unit + ";" + dynamicDelay;
         }
 
         @Override

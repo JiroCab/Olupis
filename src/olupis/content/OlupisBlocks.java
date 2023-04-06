@@ -634,13 +634,13 @@ public class OlupisBlocks {
         //endregion
         //region Units
         unitReplicator = new Replicator("unit-replicator"){{
-            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
             size = 5;
             delay = 5;
         }};
 
         unitReplicatorSmall = new Replicator("unit-replicator-small"){{
-            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
             size = 4;
             delay = 4;
         }};
