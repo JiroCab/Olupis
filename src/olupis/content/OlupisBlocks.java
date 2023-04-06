@@ -332,6 +332,7 @@ public class OlupisBlocks {
             drillTime = 60f * 10f;
             tier = 1;
             hasPower = true;
+            squareSprite = false;
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             consumePower(10f/60f);
             //TODO: Make it consume either steam or water
@@ -385,9 +386,9 @@ public class OlupisBlocks {
 
         displacementPump = new BurstPump("displacement-pump"){{
             requirements(Category.liquid, with(OlupisItemsLiquid.iron, 20));
-            pumpAmount = 2f;
+            pumpAmount = 120f;
             leakAmount = 0.02f;
-            liquidCapacity = 40f;
+            liquidCapacity = 150f;
             size = 3;
 
             consumePower(0.3f);
@@ -395,9 +396,9 @@ public class OlupisBlocks {
 
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{
             requirements(Category.liquid, with(OlupisItemsLiquid.iron, 30));
-            pumpAmount = 3f;
+            pumpAmount = 180f;
             leakAmount = 0.1f;
-            liquidCapacity = 50f;
+            liquidCapacity = 200f;
             size = 4;
 
             consumePower(0.6f);
