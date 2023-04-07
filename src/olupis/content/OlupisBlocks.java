@@ -257,6 +257,7 @@ public class OlupisBlocks {
             requirements(Category.distribution, with(OlupisItemsLiquid.rustyIron, 1));
             health = 45;
             speed = 0.015f;
+            displayedSpeed = 1f;
             buildCostMultiplier = 2f;
             researchCost = with(OlupisItemsLiquid.rustyIron, 75);
             //ui bug fix
@@ -269,12 +270,14 @@ public class OlupisBlocks {
             unpoweredSpeed = 0.015f;
             poweredSpeed = 0.03f;
             speed = 0.03f;
+            displayedSpeed = 2f;
             itemCapacity = 1;
             buildCostMultiplier = 2f;
             researchCost = with(OlupisItemsLiquid.iron, 100);
             hasPower = true;
             conductivePower = true;
             consumesPower = true;
+            noUpdateDisabled = true;
             consumePower (1f/60);
         }};
 
@@ -284,6 +287,7 @@ public class OlupisBlocks {
             unpoweredSpeed = 0.03f;
             poweredSpeed = 0.06f;
             speed = 0.06f;
+            displayedSpeed = 4f;
             itemCapacity = 1;
             buildCostMultiplier = 2f;
             researchCost = with(OlupisItemsLiquid.iron, 100);
