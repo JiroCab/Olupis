@@ -2,7 +2,12 @@
 https://github.com/JiroCab/Olupis
 Last updated on 01/01/2023 (+8utc) by Jirocab
 
-= Beta 1-3 ()
+= Beta 1-4 () =
+    + updated sprites for: wire, wireBridge (Contrubited by Ethanol10) [https://github.com/SuperEthanol10]
+    + added toxopid to gradle
+    //TODO: Update before pust to main
+
+= Beta 1-3 (01b8973) = https://github.com/JiroCab/Olupis/tree/01b8973727ccff584c453dd5cbe52a7e3a999117
     + Added Placeholder1 for the two planets
     + Olupis Tech tree now takes a items from all 3 planet's sectors
 	+ Added Raw Files of certain sprites (.aseprite & .ase Contributed by NightmarishWolf)
