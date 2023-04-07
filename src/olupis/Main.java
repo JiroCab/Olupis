@@ -30,7 +30,7 @@ public class Main extends Mod{
                 if(Core.settings.getBool("olupis-space-sfx")) {Core.audio.play(Registry.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);}
             });
             Registry.postRegister();
-            if(Core.settings.getBool("olupis-green-icon")) Team.green.emoji = Character.toString(Iconc.statusCorroded);
+            if(Core.settings.getBool("olupis-green-icon")) Team.green.emoji = Character.toString(Iconc.statusCorroded) ;
         });
 
         Events.on(EventType.WorldLoadEvent.class, l ->{
@@ -40,22 +40,18 @@ public class Main extends Mod{
             }
 
             /*Don't add Olupis block to Serpulo !*/
-            if ((state.isCampaign() && (state.getPlanet() == OlupisPlanets.olupis || state.getPlanet() == OlupisPlanets.spelta || state.getPlanet() == OlupisPlanets.arthin)) || state.rules.hiddenBuildItems.toSeq() == OlupisPlanets.olupis.hiddenItems){
-                if(state.rules.blockWhitelist){
-                    OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
-                    OlupisBlocks.sandBoxBlocks.each(b -> state.rules.bannedBlocks.add(b));
-                }else {
-                    OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.remove(b));
-                    OlupisBlocks.sandBoxBlocks.each(b -> state.rules.bannedBlocks.remove(b));
-                }
-
-                Log.info("olupis sector detected!");
-            } else if ( (state.isCampaign() && state.getPlanet() == Planets.serpulo) || state.rules.hiddenBuildItems.toSeq() == Planets.serpulo.hiddenItems){
-                if (state.rules.blockWhitelist){
-                    OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
-                } else {OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.remove(b));}
-
-                Log.info("non-olupis sector detected");}
+            if ( !state.rules.infiniteResources && (state.getPlanet() == Planets.serpulo || state.rules.env == Planets.serpulo.defaultEnv || state.rules.hiddenBuildItems.toSeq() != OlupisPlanets.olupis.hiddenItems)){
+                OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
+                state.rules.hideBannedBlocks = true;
+                Log.info("non-olupis sector detected");
+            }
+            if (!(state.rules.env == Vars.defaultEnv && state.rules.hiddenBuildItems.isEmpty() ) || (state.isCampaign() && (state.getPlanet() == OlupisPlanets.olupis || state.getPlanet() == OlupisPlanets.spelta || state.getPlanet() == OlupisPlanets.arthin))){ //TODO: Funny long If statement
+                /* TODO: Can't build on Sectors! (banned list is blank without this)*/
+                OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
+                state.rules.hideBannedBlocks = true;
+                state.rules.blockWhitelist = true;
+                Log.info("olupis sector detected");
+            }
 
             soundHandler.replaceSoundHandler();
         });

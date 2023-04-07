@@ -22,7 +22,7 @@ import mindustry.world.meta.BlockGroup;
 import static mindustry.Vars.*;
 
 public class Replicator extends PayloadBlock {
-    public int delay = 0, payloadTick;
+    public float delay = 60f * 60f;
 
     public Replicator(String name){
         super(name);
@@ -109,7 +109,6 @@ public class Replicator extends PayloadBlock {
                 deselect();
                 return;
             }
-
             ItemSelection.buildTable(Replicator.this, table,
                     content.units().select(Replicator.this::canProduce).as(),
                     () -> (UnlockableContent)config(), this::configure, selectionRows, selectionColumns);
@@ -125,8 +124,7 @@ public class Replicator extends PayloadBlock {
             super.updateTile();
             if (unlockedNowHost() && state.isCampaign()) return;
 
-
-            if(payloadTick >= delay){
+            Time.run(delay, ()->{
                 if(payload == null){
                     scl = 0f;
                     if(unit != null){
@@ -141,10 +139,8 @@ public class Replicator extends PayloadBlock {
                     }
                     payVector.setZero();
                     payRotation = rotdeg();
-                    payloadTick = 0;
                 }
-            } else {payloadTick++;}
-
+            });
             scl = Mathf.lerpDelta(scl, 1f, 0.1f);
 
             moveOutPayload();

@@ -60,13 +60,11 @@ public class OlupisBlocks {
     ; //endregion
 
     public static Color olupisBlockOutlineColour = Color.valueOf("371404");
-    public static ObjectSet<Block> olupisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>();
+    public static ObjectSet<Block> olupisBuildBlockSet = new ObjectSet<>();
 
     public static void LoadWorldTiles(){
         //region World Tiles
-        oreIron = new OreBlock("ore-iron", OlupisItemsLiquid.rustyIron){{
-            placeableLiquid = true;
-        }};
+        oreIron = new OreBlock("ore-iron", OlupisItemsLiquid.rustyIron);
         oreIronWall = new OreBlock("ore-iron-wall", OlupisItemsLiquid.rustyIron){{
             wallOre = true;
         }};
@@ -249,7 +247,6 @@ public class OlupisBlocks {
             requirements(Category.effect, BuildVisibility.sandboxOnly, with());
             brightness = 0.75f;
             radius = 140f;
-            alwaysUnlocked = true;
         }};
 
         //endregion
@@ -808,12 +805,13 @@ public class OlupisBlocks {
 
         //endregion
         //region Power
-        wire = new Wire("wire"){{
+        wire = new BeamNode("wire"){{
             requirements(Category.power, with(OlupisItemsLiquid.rustyIron, 5));
             baseExplosiveness = 0.5f;
             solid = false;
             floating = true;
             placeableLiquid = true;
+            range = 1;
             consumePowerBuffered(1f);
             consumesPower = outputsPower = true;
             consumePower(1f/60f);
@@ -822,6 +820,7 @@ public class OlupisBlocks {
         superConductors = new Wire("super-conductor"){{
             requirements(Category.power, with(OlupisItemsLiquid.cobalt, 20, OlupisItemsLiquid.iron, 10));
             baseExplosiveness = 0.7f;
+            range = 1;
             health = 150;
             solid = false;
             floating = true;
@@ -829,7 +828,7 @@ public class OlupisBlocks {
 
         wireBridge = new BeamNode("wire-bridge"){{
             requirements(Category.power, with(OlupisItemsLiquid.iron, 30, Items.lead, 15));
-            baseExplosiveness = 0.6f;
+            baseExplosiveness = 0.5f;
             consumesPower = outputsPower = true;
             range = 5;
             health = 100;
@@ -839,6 +838,7 @@ public class OlupisBlocks {
             laserWidth = 0.4f;
             pulseMag = 0f;
             consumePower(10f/ 60f);
+            ((Wire)superConductors).bridgeReplacement = this;
         }};
 
         windMills = new WindMill("wind-mill"){{
@@ -970,7 +970,7 @@ public class OlupisBlocks {
         taurus = new MendTurret("taurus"){{
             requirements(Category.effect, with(OlupisItemsLiquid.iron, 30, Items.lead, 40));
             size = 3;
-            flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
+            flags = EnumSet.of(BlockFlag.turret, BlockFlag.repair);
 
             shootType = new LaserBoltBulletType(5.2f, 13){{
                 lifetime = 30f;
@@ -1099,15 +1099,10 @@ public class OlupisBlocks {
                 mendFieldProjector, taurus,
                 fortifiedMessageBlock,
 
-                /* Legally required boulder*/
-                mossyBoulder
-        );
-
-        sandBoxBlocks.addAll(
                 /*just to make it easier for testing and/or sandbox*/
                 Blocks.itemSource, Blocks.itemVoid, Blocks.liquidSource, Blocks.liquidVoid, Blocks.payloadSource, Blocks.payloadVoid,
-                Blocks.worldProcessor, Blocks.logicProcessor, Blocks.microProcessor, Blocks.hyperProcessor, Blocks.message, Blocks.worldMessage, Blocks.reinforcedMessage,
-                Blocks.logicDisplay, Blocks.largeLogicDisplay, Blocks.canvas, Blocks.payloadConveyor, Blocks.payloadRouter
+                /* Legally required boulder*/
+                mossyBoulder
         );
     }
 }

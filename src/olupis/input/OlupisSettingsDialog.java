@@ -1,11 +1,8 @@
 package olupis.input;
 
 import arc.Core;
-import arc.scene.ui.layout.Table;
 import mindustry.Vars;
 import mindustry.gen.Icon;
-import mindustry.ui.Styles;
-import mindustry.ui.dialogs.SettingsMenuDialog;
 
 import static mindustry.Vars.*;
 
@@ -17,38 +14,26 @@ public class OlupisSettingsDialog {
 
     public void BuildDialog(){
         ui.settings.addCategory("@category.olupis.name", Icon.effect, table -> {
-            table.add("@settings.olupis-restart.name").row();
+
+            table.add("@olupis-restart").row();
             table.checkPref("olupis-green-icon", true);
 
-            BuildOlupisSoundSettings(table, false);
+            table.checkPref("olupis-space-sfx",true);
+            table.checkPref("olupis-hide-sound",true);
+            table.checkPref("olupis-debug",false);
+            table.checkPref("olupis-music",true);
+            table.checkPref("olupis-music-only",false);
         });
     }
 
-    public static void BuildOlupisSoundSettings(Table table, Boolean hide){
-        if(Core.settings.getBool("olupis-hide-sound") && hide)return;
-
-        boolean[] shown = {false};
-        table.row();
-        table.button("@setting.olupis-sound.name", Icon.downOpen, Styles.togglet, () ->{
-            shown[0] = !shown[0];
-        }).marginLeft(14f).width(260f).height(55f).checked(a -> shown[0]).row();
-
-        table.collapser(t -> {
-            SettingsMenuDialog.SettingsTable subTable = new SettingsMenuDialog.SettingsTable();
-            subTable.checkPref("olupis-space-sfx",true);
-            subTable.row();
-            subTable.checkPref("olupis-music-only",false);
-            subTable.row();
-            subTable.checkPref("olupis-music",true);
-            if (!hide){
-                subTable.row();
-                subTable.checkPref("olupis-hide-sound",true);
-            }
-            t.add(subTable);
-        }, () ->shown[0]).growX().row();
-    }
-
     public static void AddOlupisSoundSettings(){
-        BuildOlupisSoundSettings(Vars.ui.settings.sound, true);
+        if(Core.settings.getBool("olupis-hide-sound"))return;
+
+        Vars.ui.settings.sound.row();
+        Vars.ui.settings.sound.checkPref("olupis-space-sfx",true);
+        Vars.ui.settings.sound.row();
+        Vars.ui.settings.sound.checkPref("olupis-music-only",false);
+        Vars.ui.settings.sound.row();
+        Vars.ui.settings.sound.checkPref("olupis-music",true);
     }
 }
