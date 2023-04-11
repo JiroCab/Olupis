@@ -40,19 +40,6 @@ public class Main extends Mod{
             }
 
             /*Don't add Olupis block to Serpulo !*/
-            if ( !state.rules.infiniteResources && (state.getPlanet() == Planets.serpulo || state.rules.env == Planets.serpulo.defaultEnv || state.rules.hiddenBuildItems.toSeq() != OlupisPlanets.olupis.hiddenItems)){
-                OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
-                state.rules.hideBannedBlocks = true;
-                Log.info("non-olupis sector detected");
-            }
-            if (!(state.rules.env == Vars.defaultEnv && state.rules.hiddenBuildItems.isEmpty() ) || (state.isCampaign() && (state.getPlanet() == OlupisPlanets.olupis || state.getPlanet() == OlupisPlanets.spelta || state.getPlanet() == OlupisPlanets.arthin))){ //TODO: Funny long If statement
-                /* TODO: Can't build on Sectors! (banned list is blank without this)*/
-                OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
-                state.rules.hideBannedBlocks = true;
-                state.rules.blockWhitelist = true;
-                Log.info("olupis sector detected");
-            }
-
             soundHandler.replaceSoundHandler();
         });
 

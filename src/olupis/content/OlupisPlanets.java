@@ -2,6 +2,7 @@ package olupis.content;
 
 import arc.graphics.Color;
 import arc.struct.Seq;
+import mindustry.Vars;
 import mindustry.content.Planets;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
@@ -13,9 +14,10 @@ import mindustry.world.meta.Env;
 import olupis.world.planets.*;
 
 public class OlupisPlanets {
-    public static Planet olupis, arthin, spelta, system;
+    public static Planet olupis, arthin, spelta;
 
     public  static void LoadPlanets(){
+        Vars.content.planets().forEach(p -> p.hiddenItems.addAll(OlupisItemsLiquid.olupisOnlyItems));
         olupis = new Planet("olupis", Planets.sun, 1f, 3){{
             generator = new OlupisPlanetGenerator();
             meshLoader = () -> new HexMesh(this, 7);
@@ -56,7 +58,7 @@ public class OlupisPlanets {
             startSector = 1;
             alwaysUnlocked = true;
             landCloudColor = Pal.engine.cpy().a(0.5f);
-            hiddenItems.addAll(OlupisItemsLiquid.nonOlupisItems).removeAll(OlupisItemsLiquid.olupisOnlyItems);
+            hiddenItems.addAll(Vars.content.items()).removeAll(OlupisItemsLiquid.olupisItems);
             totalRadius = 2.7f;
         }};
 
@@ -71,7 +73,7 @@ public class OlupisPlanets {
             iconColor = Color.valueOf("61615B");
             icon = "effect";
             allowSectorInvasion = true;
-            hiddenItems.addAll(OlupisItemsLiquid.nonOlupisItems).removeAll(OlupisItemsLiquid.olupisOnlyItems);
+            hiddenItems.addAll(Vars.content.items()).removeAll(OlupisItemsLiquid.olupisItems);
             enemyBuildSpeedMultiplier = 0.4f;
             accessible = false;
             updateLighting = true;
@@ -99,7 +101,7 @@ public class OlupisPlanets {
             iconColor = Color.valueOf("61615B");
             icon = "effect";
             allowSectorInvasion = true;
-            hiddenItems.addAll(OlupisItemsLiquid.nonOlupisItems).removeAll(OlupisItemsLiquid.olupisOnlyItems);
+            hiddenItems.addAll(Vars.content.items()).removeAll(OlupisItemsLiquid.olupisItems);
             enemyBuildSpeedMultiplier = 0.4f;
             accessible = false;
 
@@ -117,28 +119,5 @@ public class OlupisPlanets {
                 r.disableOutsideArea = false;
             };
         }};
-
-        system = new Planet("system", OlupisPlanets.olupis, 0.4f){{
-            Seq<Sector> sectorSeq = new Seq<>();
-            olupis.sectors.forEach(sectorSeq::add);
-            arthin.sectors.forEach(sectorSeq::add);
-            spelta.sectors.forEach(sectorSeq::add);
-            sectors.set(sectorSeq);
-            meshLoader = () -> new HexMesh(this, 4);
-            accessible = false;
-            visible = false;
-            hideDetails = true;
-            unlocked = false;
-            generator = new AsteroidGenerator();
-            hasAtmosphere = false;
-            updateLighting = false;
-            camRadius = 0.68f * 3;
-            minZoom = 0.6f;
-            drawOrbit = false;
-            clipRadius = 2f;
-            defaultEnv = Env.space;
-
-        }};
-
     }
 }
