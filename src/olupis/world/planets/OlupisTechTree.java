@@ -6,11 +6,12 @@ import mindustry.game.Objectives;
 import olupis.content.*;
 
 import static mindustry.content.TechTree.*;
+import static olupis.content.OlupisPlanets.*;
 
 public class OlupisTechTree {
 
     public static void load(){
-        OlupisPlanets.system.techTree = nodeRoot("olupis", OlupisBlocks.coreRemnant, () -> {
+        system.techTree = nodeRoot("olupis", OlupisBlocks.coreRemnant, () -> {
 
             node(OlupisSectors.placeholder1, () -> {
                 node(OlupisSectors.placeholder2, Seq.with(
@@ -162,5 +163,8 @@ public class OlupisTechTree {
 
             });
         });
+        olupis.techTree = system.techTree;
+        arthin.techTree = system.techTree;
+        spelta.techTree = system.techTree;
     }
 }

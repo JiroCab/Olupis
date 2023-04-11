@@ -124,12 +124,11 @@ public class OlupisPlanets {
             arthin.sectors.forEach(sectorSeq::add);
             spelta.sectors.forEach(sectorSeq::add);
             sectors.set(sectorSeq);
-
             meshLoader = () -> new HexMesh(this, 4);
             accessible = false;
             visible = false;
             hideDetails = true;
-
+            unlocked = false;
             generator = new AsteroidGenerator();
             hasAtmosphere = false;
             updateLighting = false;

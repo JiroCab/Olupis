@@ -2,6 +2,8 @@ package olupis.content;
 
 import arc.graphics.Color;
 import arc.math.geom.Rect;
+import mindustry.entities.bullet.LightningBulletType;
+import mindustry.graphics.Pal;
 import olupis.world.NoBoilLiquidBulletType;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.MinerAI;
@@ -78,6 +80,49 @@ public class OlupisUnits {
                     layerOffset = -0.001f;
                     color = Color.valueOf("5C9F62");
             }});
+            weapons.add(
+                    new Weapon()
+                    {{
+                         reload = 300;
+                         x = 0;
+                         y = 0;
+                         shootStatus = StatusEffects.unmoving;
+                         shootStatusDuration = Fx.heal.lifetime;
+                         shoot.firstShotDelay = Fx.heal.lifetime-1;
+                         bullet = new BasicBulletType(0,-5)
+                         {{
+                                chargeEffect = Fx.heal;
+                                lifetime = 600;
+                                spin = 4;
+                                keepVelocity = false;
+                                drag = 0.9f;
+                                backColor = frontColor = trailColor = lightColor = Pal.heal;
+                                height = width = 20;
+                                bulletInterval = 30;
+                                shrinkX = 10f/60f;
+                                shrinkY = 10f/60f;
+                                collidesTeam = true;
+                                healAmount = 10;
+                                hitEffect = despawnEffect = Fx.heal;
+                                intervalBullets = 4;
+                                intervalSpread = 90;
+                                intervalRandomSpread = 45;
+                                intervalBullet = new BasicBulletType(4,-5)
+                                {{
+                                    lifetime = 60;
+                                    keepVelocity = false;
+                                    backColor = frontColor = trailColor = lightColor = Pal.heal;
+                                    trailWidth = 2;
+                                    trailLength = 20;
+                                    bulletInterval = 10;
+                                    collidesTeam = true;
+                                    healAmount = 10;
+                                    hitEffect = despawnEffect = Fx.heal;
+                                }};
+
+                         }};
+                    }}
+            );
         }};
 
         //endregion
