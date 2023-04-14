@@ -9,7 +9,7 @@ public class OlupisItemsLiquid {
 
     public static Item condensedBiomatter, rustyIron, iron, cobalt;
     public static Planet[] hideList = new Planet[]{Planets.erekir, Planets.serpulo, Planets.tantros};
-    public static final Seq<Item> nonOlupisItems = new Seq<>(), olupisOnlyItems = new Seq<>(), olupisItems = new Seq<>(), olupisExclusiveItems = new Seq<>();
+    public static final Seq<Item> olupisOnlyItems = new Seq<>(), olupisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam;
 
     public static  void LoadItems(){
@@ -38,11 +38,9 @@ public class OlupisItemsLiquid {
             buildable = false;
         }};
 
-        nonOlupisItems.add(Items.erekirItems);
-        olupisExclusiveItems.addAll(rustyIron, iron, condensedBiomatter, cobalt);
-        olupisItems.add(olupisExclusiveItems);
+        olupisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt);
+        olupisItems.add(olupisOnlyItems);
         olupisItems.add(Items.serpuloItems);
-        olupisOnlyItems.addAll(olupisItems).removeAll(nonOlupisItems);
 
     }
 

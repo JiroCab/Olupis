@@ -260,6 +260,7 @@ public class OlupisBlocks {
             requirements(Category.distribution, with(OlupisItemsLiquid.rustyIron, 1));
             health = 45;
             speed = 0.015f;
+            displayedSpeed = 1f;
             buildCostMultiplier = 2f;
             researchCost = with(OlupisItemsLiquid.rustyIron, 75);
             //ui bug fix
@@ -272,12 +273,14 @@ public class OlupisBlocks {
             unpoweredSpeed = 0.015f;
             poweredSpeed = 0.03f;
             speed = 0.03f;
+            displayedSpeed = 2f;
             itemCapacity = 1;
             buildCostMultiplier = 2f;
             researchCost = with(OlupisItemsLiquid.iron, 100);
             hasPower = true;
             conductivePower = true;
             consumesPower = true;
+            noUpdateDisabled = true;
             consumePower (1f/60);
         }};
 
@@ -287,6 +290,7 @@ public class OlupisBlocks {
             unpoweredSpeed = 0.03f;
             poweredSpeed = 0.06f;
             speed = 0.06f;
+            displayedSpeed = 4f;
             itemCapacity = 1;
             buildCostMultiplier = 2f;
             researchCost = with(OlupisItemsLiquid.iron, 100);
@@ -335,6 +339,7 @@ public class OlupisBlocks {
             drillTime = 60f * 10f;
             tier = 1;
             hasPower = true;
+            squareSprite = false;
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             consumePower(10f/60f);
             //TODO: Make it consume either steam or water
@@ -388,9 +393,9 @@ public class OlupisBlocks {
 
         displacementPump = new BurstPump("displacement-pump"){{
             requirements(Category.liquid, with(OlupisItemsLiquid.iron, 20));
-            pumpAmount = 2f;
+            pumpAmount = 120f;
             leakAmount = 0.02f;
-            liquidCapacity = 40f;
+            liquidCapacity = 150f;
             size = 3;
 
             consumePower(0.3f);
@@ -398,9 +403,9 @@ public class OlupisBlocks {
 
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{
             requirements(Category.liquid, with(OlupisItemsLiquid.iron, 30));
-            pumpAmount = 3f;
+            pumpAmount = 180f;
             leakAmount = 0.1f;
-            liquidCapacity = 50f;
+            liquidCapacity = 200f;
             size = 4;
 
             consumePower(0.6f);
@@ -636,13 +641,13 @@ public class OlupisBlocks {
         //endregion
         //region Units
         unitReplicator = new Replicator("unit-replicator"){{
-            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
             size = 5;
             delay = 5;
         }};
 
         unitReplicatorSmall = new Replicator("unit-replicator-small"){{
-            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
             size = 4;
             delay = 4;
         }};

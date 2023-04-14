@@ -4,13 +4,17 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.scene.ui.Label;
+import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.Gamemode;
 import mindustry.gen.*;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
@@ -22,7 +26,11 @@ import mindustry.world.meta.BlockGroup;
 import static mindustry.Vars.*;
 
 public class Replicator extends PayloadBlock {
-    public int delay = 0, payloadTick;
+    public float maxDelay = 30f;
+
+    public float delay = 1;
+    public Seq<UnitType> spawnableUnits = new Seq<>();
+
 
     public Replicator(String name){
         super(name);
@@ -37,31 +45,33 @@ public class Replicator extends PayloadBlock {
         clipSize = 120;
         noUpdateDisabled = true;
         clearOnDoubleTap = true;
+        teamPassable = true;
         regionRotated1 = 1;
         commandable = true;
         configurable = true;
         group = BlockGroup.units;
         solid = true;
         privileged = true;
+        spawnableUnits.addAll(content.units().select(Replicator.this::canProduce).as());
 
-        config(UnitType.class, (ReplicatorBuild build, UnitType unit) -> {
-            if(canProduce(unit) && build.unit != unit){
-                build.unit = unit;
-                build.block = null;
-                build.payload = null;
-                build.scl = 0f;
-            }
+        config(Integer.class, (ReplicatorBuild build, Integer unit) -> {
+            build.selectedUnit = unit;
+        });
+        config(Float.class,(ReplicatorBuild build,Float f) -> {
+            build.dynamicDelay = f;
+        });
+        config(String.class,(ReplicatorBuild build,String s) -> {
+            build.selectedUnit = Integer.parseInt(s.split(";")[0]);
+            build.dynamicDelay = Float.parseFloat(s.split(";")[1]);
         });
 
         configClear((ReplicatorBuild build) -> {
-            build.block = null;
-            build.unit = null;
-            build.payload = null;
-            build.scl = 0f;
+            build.selectedUnit = -1;
+            build.dynamicDelay = delay;
         });
     }
     public boolean accessible(){
-            return !privileged || state.rules.editor || state.playtestingMap != null;
+            return !privileged || state.rules.editor || state.playtestingMap != null || state.rules.mode() == Gamemode.sandbox;
     }
 
     @Override
@@ -87,9 +97,10 @@ public class Replicator extends PayloadBlock {
     }
 
     public class ReplicatorBuild extends PayloadBlockBuild<Payload>{
-        public UnitType unit;
-        public Block block;
         public @Nullable Vec2 commandPos;
+        public float dynamicDelay = delay,
+                    delayTimer = 0;
+        public int selectedUnit = -1;
         public float scl;
 
         @Override
@@ -109,10 +120,20 @@ public class Replicator extends PayloadBlock {
                 deselect();
                 return;
             }
-
-            ItemSelection.buildTable(Replicator.this, table,
-                    content.units().select(Replicator.this::canProduce).as(),
-                    () -> (UnlockableContent)config(), this::configure, selectionRows, selectionColumns);
+            ItemSelection.buildTable(Replicator.this,
+                    table,
+                    spawnableUnits,
+                    () -> selectedUnit == -1 ? null : spawnableUnits.get(selectedUnit) ,
+                    (i) -> configure(spawnableUnits.indexOf(i)),
+                    selectionRows, selectionColumns);
+            table.row();
+            Cell<Label> delayDisplay = table.add("Delay: " + dynamicDelay + " sec");
+            table.row();
+            table.slider(1,maxDelay,0.5f,dynamicDelay, true,(f) -> {
+                configure(f);
+                delayTimer = 0;
+                delayDisplay.get().setText("Delay: " + dynamicDelay + " sec");
+            });
         }
 
         @Override
@@ -123,36 +144,32 @@ public class Replicator extends PayloadBlock {
         @Override
         public void updateTile(){
             super.updateTile();
-            if (unlockedNowHost() && state.isCampaign()) return;
-
-
-            if(payloadTick >= delay){
-                if(payload == null){
+            delayTimer = Mathf.approachDelta(delayTimer,0,1);
+            if (delayTimer <= 0) {
+                delayTimer = dynamicDelay * 60;
+                if (unlockedNowHost() && state.isCampaign()) return;
+                if (payload == null) {
                     scl = 0f;
-                    if(unit != null){
-                        payload = new UnitPayload(unit.create(team));
-
-                        Unit p = ((UnitPayload)payload).unit;
-                        if(commandPos != null && p.isCommandable()){
+                    if (selectedUnit != -1) {
+                        payload = new UnitPayload(spawnableUnits.get(selectedUnit).create(team));
+                        Unit p = ((UnitPayload) payload).unit;
+                        if (commandPos != null && p.isCommandable()) {
                             p.command().commandPosition(commandPos);
                         }
-                    }else if(block != null){
-                        payload = new BuildPayload(block, team);
                     }
                     payVector.setZero();
                     payRotation = rotdeg();
                     payloadTick = 0;
                 }
-            } else {payloadTick++;}
+            }
 
             scl = Mathf.lerpDelta(scl, 1f, 0.1f);
-
             moveOutPayload();
         }
 
         @Override
         public Object config(){
-            return  unit;
+            return  selectedUnit + ";" + dynamicDelay;
         }
 
         @Override
@@ -169,15 +186,15 @@ public class Replicator extends PayloadBlock {
         @Override
         public void write(Writes write){
             super.write(write);
-            write.s(unit == null ? -1 : unit.id);
-            write.s(block == null ? -1 : block.id);
+            write.i(selectedUnit);
+            write.f(dynamicDelay);
         }
 
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
-            unit = Vars.content.unit(read.s());
-            block = Vars.content.block(read.s());
+            selectedUnit = read.i();
+            dynamicDelay = read.f();
         }
         @Override
         public boolean canPickup(){

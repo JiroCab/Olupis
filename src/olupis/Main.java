@@ -40,23 +40,6 @@ public class Main extends Mod{
             }
 
             /*Don't add Olupis block to Serpulo !*/
-            if ((state.isCampaign() && (state.getPlanet() == OlupisPlanets.olupis || state.getPlanet() == OlupisPlanets.spelta || state.getPlanet() == OlupisPlanets.arthin)) || state.rules.hiddenBuildItems.toSeq() == OlupisPlanets.olupis.hiddenItems){
-                if(state.rules.blockWhitelist){
-                    OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
-                    OlupisBlocks.sandBoxBlocks.each(b -> state.rules.bannedBlocks.add(b));
-                }else {
-                    OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.remove(b));
-                    OlupisBlocks.sandBoxBlocks.each(b -> state.rules.bannedBlocks.remove(b));
-                }
-
-                Log.info("olupis sector detected!");
-            } else if ( (state.isCampaign() && state.getPlanet() == Planets.serpulo) || state.rules.hiddenBuildItems.toSeq() == Planets.serpulo.hiddenItems){
-                if (state.rules.blockWhitelist){
-                    OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
-                } else {OlupisBlocks.olupisBuildBlockSet.each(b -> state.rules.bannedBlocks.remove(b));}
-
-                Log.info("non-olupis sector detected");}
-
             soundHandler.replaceSoundHandler();
         });
 
