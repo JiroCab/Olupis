@@ -31,6 +31,7 @@ public class Replicator extends PayloadBlock {
     public float delay = 1;
     public Seq<UnitType> spawnableUnits = new Seq<>();
 
+
     public Replicator(String name){
         super(name);
 
@@ -158,8 +159,10 @@ public class Replicator extends PayloadBlock {
                     }
                     payVector.setZero();
                     payRotation = rotdeg();
+                    payloadTick = 0;
                 }
             }
+
             scl = Mathf.lerpDelta(scl, 1f, 0.1f);
             moveOutPayload();
         }

@@ -30,7 +30,7 @@ public class Main extends Mod{
                 if(Core.settings.getBool("olupis-space-sfx")) {Core.audio.play(Registry.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);}
             });
             Registry.postRegister();
-            if(Core.settings.getBool("olupis-green-icon")) Team.green.emoji = Character.toString(Iconc.statusCorroded) ;
+            if(Core.settings.getBool("olupis-green-icon")) Team.green.emoji = Character.toString(Iconc.statusCorroded);
         });
 
         Events.on(EventType.WorldLoadEvent.class, l ->{
