@@ -43,8 +43,9 @@ public class OlupisBlocks {
 
         lightWall,
         redSand, redDune, redSandWater, greenShrubsIrregular,  mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStone,
+        lumaGrass, cinderBloomGrass,
         frozenGrass, yellowGrass, yellowBush, yellowShrubs, yellowShrubsIrregular,  mossyStone, mossierStone, mossiestStone,
-        mossStoneWall, mossyWater, yellowMossyWater, pinkGrass, pinkGrassWater, pinkShrubs,
+        mossStoneWall, mossyWater, yellowMossyWater, brimstoneSlag, pinkGrass, pinkGrassWater, pinkShrubs, lumaFlora,
 
         //Buildings
         garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve,
@@ -100,6 +101,11 @@ public class OlupisBlocks {
             frozenGrass.asFloor().decoration = this;
         }};
 
+        lumaFlora = new Prop("luma-flora"){{
+            variants = 2;
+            breakSound = Sounds.plantBreak;
+        }};
+
 
         redSand = new Floor("red-sand-floor"){{
             itemDrop = Items.sand;
@@ -118,10 +124,23 @@ public class OlupisBlocks {
 
         pinkGrass = new Floor("pink-grass"){{
             variants = 4;
-            playerUnmineable = true;
             attributes.set(Attribute.water, 0.15f);
             attributes.set(Registry.Bio, 0.08f);
             decoration = OlupisBlocks.mossyBoulder;
+        }};
+
+        lumaGrass = new Floor("luma-grass"){{
+            variants = 3;
+            attributes.set(Attribute.water, 0.15f);
+            attributes.set(Registry.Bio, 0.08f);
+            decoration = OlupisBlocks.lumaFlora;
+        }};
+
+        cinderBloomGrass = new Floor("cinder-bloom-grass"){{
+            variants = 1;
+            attributes.set(Attribute.water, 0.15f);
+            attributes.set(Registry.Bio, 0.08f);
+            //decoration = OlupisBlocks.lumaFlora;
         }};
 
         redDune = new StaticWall("red-dune-wall"){{
@@ -151,6 +170,23 @@ public class OlupisBlocks {
             cacheLayer = CacheLayer.water;
             albedo = 0.9f;
             supportsOverlay = true;
+        }};
+
+        brimstoneSlag = new Floor("brimstone-slag"){{
+            drownTime = 30f;
+            status = StatusEffects.melting;
+            statusDuration = 240f;
+            speedMultiplier = 0.19f;
+            damageTaken = 9999999f;
+            variants = 0;
+            liquidDrop = Liquids.slag;
+            isLiquid = true;
+            cacheLayer = CacheLayer.slag;
+            attributes.set(Attribute.heat, 0.90f);
+
+            emitLight = true;
+            lightRadius = 40f;
+            lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
         greenShrubsIrregular = new TallBlock("green-shrubs-irregular"){{
@@ -977,7 +1013,7 @@ public class OlupisBlocks {
             size = 3;
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
 
-            shootType = new LaserBoltBulletType(5.2f, 13){{
+            shootType = new LaserBoltBulletType(5.2f, -5){{
                 lifetime = 30f;
                 healPercent = 5f;
                 collidesTeam = true;
@@ -1085,8 +1121,12 @@ public class OlupisBlocks {
         ironConveyor.uiIcon = Core.atlas.find("olupis-iron-conveyor-0-0");
         cobaltConveyor.uiIcon = Core.atlas.find("olupis-cobalt-conveyor-0-0");
 
-        coreRemnant.uiIcon = Core.atlas.find("olupis-core-remnant-preview");
-        fortifiedContainer.uiIcon = Core.atlas.find("olupis-fortified-container-preview");
+        //wire.uiIcon = Core.atlas.find("olupis-wire-preview");
+        //superConductors.uiIcon = Core.atlas.find("olupis-super-conductor-preview");
+        wireBridge.uiIcon = Core.atlas.find("olupis-wire-bridge-preview");
+
+        coreRemnant.fullIcon = Core.atlas.find("olupis-core-remnant-preview");
+        fortifiedContainer.fullIcon = Core.atlas.find("olupis-fortified-container-preview");
 
     }
 

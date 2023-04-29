@@ -17,7 +17,6 @@ public class OlupisSettingsDialog {
 
     public void BuildDialog(){
         ui.settings.addCategory("@category.olupis.name", Icon.effect, table -> {
-            table.add("@settings.olupis-restart.name").row();
             table.checkPref("olupis-green-icon", true);
 
             BuildOlupisSoundSettings(table, false);
@@ -29,9 +28,9 @@ public class OlupisSettingsDialog {
 
         boolean[] shown = {false};
         table.row();
-        table.button("@setting.olupis-sound.name", Icon.downOpen, Styles.togglet, () ->{
+        table.button("@setting.olupis-sound-category", Icon.effect, Styles.togglet, () ->{
             shown[0] = !shown[0];
-        }).marginLeft(14f).width(260f).height(55f).checked(a -> shown[0]).row();
+        }).marginLeft(14f).growX().height(60).checked(a -> shown[0]).row();
 
         table.collapser(t -> {
             SettingsMenuDialog.SettingsTable subTable = new SettingsMenuDialog.SettingsTable();

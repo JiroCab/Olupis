@@ -1,15 +1,12 @@
 package olupis.content;
 
 import arc.graphics.Color;
-import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.Planets;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.*;
-import mindustry.maps.planet.AsteroidGenerator;
 import mindustry.type.Planet;
-import mindustry.type.Sector;
 import mindustry.world.meta.Env;
 import olupis.world.planets.*;
 
@@ -51,6 +48,7 @@ public class OlupisPlanets {
                 r.bannedBlocks.clear();
                 r.hideBannedBlocks = true;
                 OlupisBlocks.olupisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
+                OlupisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
             };
             atmosphereColor = Color.valueOf("87CEEB");
             atmosphereRadIn = 0.02f;

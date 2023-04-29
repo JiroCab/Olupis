@@ -8,16 +8,14 @@ import arc.scene.ui.Label;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
-import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Gamemode;
 import mindustry.gen.*;
 import mindustry.type.UnitType;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.payloads.*;
@@ -30,7 +28,6 @@ public class Replicator extends PayloadBlock {
 
     public float delay = 1;
     public Seq<UnitType> spawnableUnits = new Seq<>();
-
 
     public Replicator(String name){
         super(name);
@@ -71,7 +68,7 @@ public class Replicator extends PayloadBlock {
         });
     }
     public boolean accessible(){
-            return !privileged || state.rules.editor || state.playtestingMap != null || state.rules.mode() == Gamemode.sandbox;
+        return !privileged || state.rules.editor || state.playtestingMap != null || state.rules.mode() == Gamemode.sandbox;
     }
 
     @Override
@@ -99,7 +96,7 @@ public class Replicator extends PayloadBlock {
     public class ReplicatorBuild extends PayloadBlockBuild<Payload>{
         public @Nullable Vec2 commandPos;
         public float dynamicDelay = delay,
-                    delayTimer = 0;
+                delayTimer = 0;
         public int selectedUnit = -1;
         public float scl;
 
@@ -159,10 +156,8 @@ public class Replicator extends PayloadBlock {
                     }
                     payVector.setZero();
                     payRotation = rotdeg();
-                    payloadTick = 0;
                 }
             }
-
             scl = Mathf.lerpDelta(scl, 1f, 0.1f);
             moveOutPayload();
         }

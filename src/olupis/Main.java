@@ -5,15 +5,11 @@ import arc.Events;
 import arc.scene.Group;
 import arc.util.Log;
 import mindustry.Vars;
-import mindustry.content.Planets;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
-import mindustry.game.Team;
 import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
 import mindustry.mod.Mod;
 import mindustry.ui.Styles;
-import olupis.content.OlupisBlocks;
 import olupis.content.OlupisPlanets;
 import olupis.input.OlupisSettingsDialog;
 
@@ -25,21 +21,16 @@ public class Main extends Mod{
 
     public Main(){
         Events.on(ClientLoadEvent.class, e -> {
-            //show dialog upon startup
             Vars.ui.planet.shown(() -> {
                 if(Core.settings.getBool("olupis-space-sfx")) {Core.audio.play(Registry.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);}
             });
             Registry.postRegister();
-            if(Core.settings.getBool("olupis-green-icon")) Team.green.emoji = Character.toString(Iconc.statusCorroded);
         });
 
         Events.on(EventType.WorldLoadEvent.class, l ->{
             //debug and if someone needs to convert a map and said map does not have the Olupis Block set
-            if( Core.settings.getBool("olupis-debug")){
-                buildDebugUI(Vars.ui.hudGroup);
-            }
+            if( Core.settings.getBool("olupis-debug")) buildDebugUI(Vars.ui.hudGroup);
 
-            /*Don't add Olupis block to Serpulo !*/
             soundHandler.replaceSoundHandler();
         });
 

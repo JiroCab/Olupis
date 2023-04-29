@@ -9,6 +9,7 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Sounds;
 import mindustry.world.Block;
 import mindustry.world.blocks.power.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.BlockStatus;
 import olupis.content.OlupisBlocks;
@@ -44,6 +45,21 @@ public class Wire extends Battery {
         super.init();
 
         if(bridgeReplacement == null || !(bridgeReplacement instanceof BeamNode)) bridgeReplacement = OlupisBlocks.wireBridge;
+        checkNewDrawDefault();
+    }
+
+    void checkNewDrawDefault(){
+        if(drawer == null){
+            drawer = new DrawMulti(new DrawDefault(), new DrawRegion("-preview"));
+        }
+    }
+
+    @Override
+    public void load(){
+        checkNewDrawDefault();
+
+        super.load();
+        drawer.load(this);
     }
 
     @Override

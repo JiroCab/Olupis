@@ -13,16 +13,26 @@ import static mindustry.Vars.control;
 
 public class OlupisSounds extends SoundControl {
 
-    public static Music rick = new Music();
+    public static Music
+            rick = new Music(),
+            reclaiming_the_wasteland = new Music();
+    ;
+    public static Seq<Music>
+            olupisAmbient = new Seq<>(),
+            olupisBoss = new Seq<>();
 
     boolean olupisMusicSet = false;
-    public static Seq<Music> PreviousAmbientMusic;
+    public static Seq<Music> PreviousAmbientMusic, PreviousBossMusic;
 
     public static void LoadMusic(){
         Core.assets.load("music/rick.ogg", Music.class).loaded = (a) -> {
             //https://www.youtube.com/watch?v=Jd-Yckgrf08 @60% speed
             rick = a;
         };
+        Core.assets.load("music/reclaiming_the_wasteland.ogg", Music.class).loaded = (a) ->reclaiming_the_wasteland = a;
+
+        olupisBoss.add(rick);
+        olupisAmbient.add(reclaiming_the_wasteland, rick);
     }
 
 
@@ -33,7 +43,10 @@ public class OlupisSounds extends SoundControl {
                 if(olupisMusicSet) return;
 
                 PreviousAmbientMusic = control.sound.ambientMusic.copy();
-                control.sound.ambientMusic.clear().addAll(rick);
+                PreviousBossMusic = control.sound.bossMusic.copy();
+                control.sound.ambientMusic.clear().addAll(olupisAmbient);
+                control.sound.ambientMusic.clear().addAll(olupisBoss);
+
                 olupisMusicSet = true;
                 Log.debug("Olupis replaced SoundControl's music Seq(s)!");
             }else if (olupisMusicSet){
@@ -43,9 +56,5 @@ public class OlupisSounds extends SoundControl {
         });
     }
 
-    public OlupisSounds(){
-        ambientMusic.clear().add(rick);
-        setupFilters();
-    }
 
 }
