@@ -35,12 +35,9 @@ public class OlupisSettingsDialog {
         table.collapser(t -> {
             SettingsMenuDialog.SettingsTable subTable = new SettingsMenuDialog.SettingsTable();
             subTable.checkPref("olupis-space-sfx",true);
-            subTable.row();
             subTable.checkPref("olupis-music-only",false);
-            subTable.row();
             subTable.checkPref("olupis-music",true);
             if (!hide){
-                subTable.row();
                 subTable.checkPref("olupis-hide-sound",true);
             }
             t.add(subTable);
