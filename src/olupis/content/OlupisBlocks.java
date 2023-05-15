@@ -37,13 +37,13 @@ public class OlupisBlocks {
     //region Blocks Variables
     public static Block
         //environment
-        olupisTree, bush, mossyBoulder, mossTree, pinkTree, yellowTree, yellowTreeBlooming,
+        olupisTree, bush, mossyBoulder, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, infernalBloom,
 
-        oreIron, oreIronWall, oreCobalt,
+        oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead,
 
         lightWall,
         redSand, redDune, redSandWater, greenShrubsIrregular,  mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStone,
-        lumaGrass, cinderBloomGrass,
+        lumaGrass, cinderBloomGrass, cinderBloomy, cinderBloomer, cinderBloomiest,
         frozenGrass, yellowGrass, yellowBush, yellowShrubs, yellowShrubsIrregular,  mossyStone, mossierStone, mossiestStone,
         mossStoneWall, mossyWater, yellowMossyWater, brimstoneSlag, pinkGrass, pinkGrassWater, pinkShrubs, lumaFlora,
 
@@ -73,6 +73,11 @@ public class OlupisBlocks {
         }};
         oreCobalt = new OreBlock("ore-cobalt", OlupisItemsLiquid.cobalt);
 
+        /*uses ore's item as a name block in editor*/
+        oreOxidizedCopper = new OreBlock("ore-oxidized-copper", Items.copper);
+        oreOxidizedLead = new OreBlock("ore-oxidized-lead", Items.lead);
+
+
         frozenGrass = new Floor("frozen-grass"){{
             attributes.set(Attribute.water, 0.15f);
             attributes.set(Registry.Bio, 0.08f);
@@ -84,6 +89,10 @@ public class OlupisBlocks {
         yellowTree = new TreeBlock("yellow-tree");
         yellowTreeBlooming = new TreeBlock("yellow-tree-blooming");
         pinkTree = new TreeBlock("pink-tree");
+        infernalMegaBloom = new TreeBlock("infernal-megabloom"){{
+            variants = 4;
+            clipSize = 128f;
+        }};
 
         bush = new Prop("bush"){{
             variants = 2;
@@ -103,6 +112,11 @@ public class OlupisBlocks {
 
         lumaFlora = new Prop("luma-flora"){{
             variants = 2;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        infernalBloom = new Prop("infernal-bloom"){{
+            variants = 3;
             breakSound = Sounds.plantBreak;
         }};
 
@@ -136,17 +150,38 @@ public class OlupisBlocks {
             decoration = OlupisBlocks.lumaFlora;
         }};
 
-        cinderBloomGrass = new Floor("cinder-bloom-grass"){{
-            variants = 1;
-            attributes.set(Attribute.water, 0.15f);
-            attributes.set(Registry.Bio, 0.08f);
-            //decoration = OlupisBlocks.lumaFlora;
+        cinderBloomGrass = new Floor("cinder-bloom"){{
+            variants = 3;
+            attributes.set(Attribute.water, 0.25f);
+            attributes.set(Registry.Bio, 0.06f);
+            decoration = OlupisBlocks.infernalBloom;
+        }};
+
+        cinderBloomiest = new Floor("cinder-bloomiest"){{
+            variants = 3;
+            attributes.set(Registry.Bio, 0.01f);
+            decoration = OlupisBlocks.infernalBloom;
+        }};
+
+        cinderBloomer = new Floor("cinder-bloomier"){{
+            variants = 3;
+            attributes.set(Attribute.water, -0.05f);
+            attributes.set(Registry.Bio, 0.02f);
+            decoration = OlupisBlocks.infernalBloom;
+        }};
+
+        cinderBloomy = new Floor("cinder-bloomy"){{
+            variants = 3;
+            attributes.set(Attribute.water, -0.15f);
+            attributes.set(Registry.Bio, 0.03f);
+            decoration = Blocks.basaltBoulder;
         }};
 
         redDune = new StaticWall("red-dune-wall"){{
             redSand.asFloor().wall = this;
             attributes.set(Attribute.sand, 2f);
         }};
+
 
         redSandWater = new Floor("red-sand-water"){{
             speedMultiplier = 0.8f;
@@ -189,7 +224,7 @@ public class OlupisBlocks {
             lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
-        greenShrubsIrregular = new TallBlock("green-shrubs-irregular"){{
+        greenShrubsIrregular = new StaticTree("green-shrubs-irregular"){{
             variants = 2;
             clipSize = 128f;
         }};
@@ -197,7 +232,7 @@ public class OlupisBlocks {
         yellowShrubs = new StaticWall("yellow-shrubs");
         pinkShrubs = new StaticWall("pink-shrubs");
 
-        yellowShrubsIrregular = new TallBlock("yellow-shrubs-irregular"){{
+        yellowShrubsIrregular = new StaticTree("yellow-shrubs-irregular"){{
             variants = 2;
             clipSize = 128f;
         }};
@@ -205,7 +240,7 @@ public class OlupisBlocks {
         mossyStone = new Floor("mossy-stone"){{
             attributes.set(Attribute.water, 0.1f);
             attributes.set(Registry.Bio, 0.1f);
-            decoration = Blocks.stone;
+            decoration = Blocks.boulder;
         }};
 
         mossierStone = new Floor("mossier-stone"){{
@@ -218,11 +253,13 @@ public class OlupisBlocks {
             attributes.set(Attribute.water, 0.1f);
             attributes.set(Registry.Bio, 0.1f);
             decoration = OlupisBlocks.mossyBoulder;
+            mapColor = OlupisBlocks.mossierStone.mapColor;
         }};
 
         mossStone = new Floor("moss-stone"){{
             attributes.set(Attribute.water, 0.1f);
             attributes.set(Registry.Bio, 0.1f);
+            decoration =  OlupisBlocks.bush;
         }};
 
         mossyStoneWall = new StaticWall("mossy-stone-wall"){{
@@ -365,6 +402,17 @@ public class OlupisBlocks {
 
             ((PowerConveyor)ironConveyor).bridgeReplacement = this;
             ((Conveyor)rustyIronConveyor).bridgeReplacement = this;
+        }};
+
+        ironOverflow = new OverflowGate("iron-overflow"){{
+            requirements(Category.distribution, with(OlupisItemsLiquid.iron, 2, Items.lead, 5));
+            buildCostMultiplier = 3f;
+        }};
+
+        ironUnderflow = new OverflowGate("iron-underflow"){{
+            requirements(Category.distribution, with(OlupisItemsLiquid.iron, 2, Items.lead, 5));
+            buildCostMultiplier = 3f;
+            invert = true;
         }};
 
         //endregion

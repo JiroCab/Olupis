@@ -5,6 +5,7 @@ import arc.audio.Music;
 import mindustry.world.meta.Attribute;
 import olupis.content.*;
 import olupis.input.OlupisSettingsDialog;
+import olupis.input.OlupisSounds;
 import olupis.world.planets.OlupisTechTree;
 
 /*Handles all new content*/

@@ -28,9 +28,7 @@ public class OlupisSettingsDialog {
 
         boolean[] shown = {false};
         table.row();
-        table.button("@setting.olupis-sound-category", Icon.effect, Styles.togglet, () ->{
-            shown[0] = !shown[0];
-        }).marginLeft(14f).growX().height(60).checked(a -> shown[0]).row();
+        table.button("@setting.olupis-sound-category", Icon.effect, Styles.togglet, () -> shown[0] = !shown[0]).marginLeft(14f).growX().height(60f).checked(a -> shown[0]).padTop(5f).row();
 
         table.collapser(t -> {
             SettingsMenuDialog.SettingsTable subTable = new SettingsMenuDialog.SettingsTable();

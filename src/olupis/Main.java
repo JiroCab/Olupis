@@ -12,6 +12,7 @@ import mindustry.mod.Mod;
 import mindustry.ui.Styles;
 import olupis.content.OlupisPlanets;
 import olupis.input.OlupisSettingsDialog;
+import olupis.input.OlupisSounds;
 
 import static mindustry.Vars.*;
 
