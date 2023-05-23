@@ -37,15 +37,25 @@ public class OlupisBlocks {
     //region Blocks Variables
     public static Block
         //environment
-        olupisTree, bush, mossyBoulder, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, infernalBloom,
+        /*Trees*/
+        olupisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom,
 
+        /*Ores*/
         oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead,
 
-        lightWall,
-        redSand, redDune, redSandWater, greenShrubsIrregular,  mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStone,
-        lumaGrass, cinderBloomGrass, cinderBloomy, cinderBloomer, cinderBloomiest,
-        frozenGrass, yellowGrass, yellowBush, yellowShrubs, yellowShrubsIrregular,  mossyStone, mossierStone, mossiestStone,
-        mossStoneWall, mossyWater, yellowMossyWater, brimstoneSlag, pinkGrass, pinkGrassWater, pinkShrubs, lumaFlora,
+        /*Floors*/
+        redSand, lumaGrass, cinderBloomGrass, cinderBloomy, cinderBloomer, cinderBloomiest, mossyStone, mossierStone, mossiestStone, frozenGrass,
+        yellowGrass, pinkGrass, mossStone,
+
+        /*Liquid floors*/
+        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater,
+
+        /*walls*/
+        redDune, greenShrubsIrregular, greenShrubsCrooked, mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall, yellowShrubsIrregular, yellowShrubsCrooked, yellowShrubs,
+        pinkShrubs, lightWall,
+
+        /*props*/
+        yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom,
 
         //Buildings
         garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve,
@@ -224,15 +234,25 @@ public class OlupisBlocks {
             lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
-        greenShrubsIrregular = new StaticTree("green-shrubs-irregular"){{
+        yellowShrubs = new StaticWall("yellow-shrubs");
+        pinkShrubs = new StaticWall("pink-shrubs");
+
+        greenShrubsIrregular = new TallBlock("green-shrubs-irregular"){{
             variants = 2;
             clipSize = 128f;
         }};
 
-        yellowShrubs = new StaticWall("yellow-shrubs");
-        pinkShrubs = new StaticWall("pink-shrubs");
+        greenShrubsCrooked = new StaticTree("green-shrubs-crooked"){{
+            variants = 2;
+            clipSize = 128f;
+        }};
 
-        yellowShrubsIrregular = new StaticTree("yellow-shrubs-irregular"){{
+        yellowShrubsIrregular = new TallBlock("yellow-shrubs-irregular"){{
+            variants = 2;
+            clipSize = 128f;
+        }};
+
+        yellowShrubsCrooked = new TallBlock("yellow-shrubs-crooked"){{
             variants = 2;
             clipSize = 128f;
         }};
@@ -305,7 +325,7 @@ public class OlupisBlocks {
             supportsOverlay = true;
         }};
 
-        pinkTree = new Floor("pink-mossy-water"){{
+        lumaGrassWater = new Floor("luma-grass-water"){{
             speedMultiplier = 0.8f;
             variants = 0;
             status = StatusEffects.wet;
