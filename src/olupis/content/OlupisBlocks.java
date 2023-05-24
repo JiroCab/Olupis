@@ -91,7 +91,7 @@ public class OlupisBlocks {
         frozenGrass = new Floor("frozen-grass"){{
             attributes.set(Attribute.water, 0.15f);
             attributes.set(Registry.Bio, 0.08f);
-            asFloor().wall = Blocks.shrubs;
+            wall = Blocks.shrubs;
         }};
 
         olupisTree = new TreeBlock("olupis-tree");
@@ -355,7 +355,7 @@ public class OlupisBlocks {
             speed = 0.015f;
             displayedSpeed = 1f;
             buildCostMultiplier = 2f;
-            researchCost = with(OlupisItemsLiquid.rustyIron, 75);
+            researchCost = with(OlupisItemsLiquid.rustyIron, 25);
             //ui bug fix
             uiIcon = Core.atlas.find("olupis-rusty-iron-conveyor-0-0");
         }};
@@ -369,7 +369,7 @@ public class OlupisBlocks {
             displayedSpeed = 2f;
             itemCapacity = 1;
             buildCostMultiplier = 2f;
-            researchCost = with(OlupisItemsLiquid.iron, 100);
+            researchCost = with(OlupisItemsLiquid.iron, 50);
             hasPower = true;
             conductivePower = true;
             consumesPower = true;
@@ -386,7 +386,7 @@ public class OlupisBlocks {
             displayedSpeed = 4f;
             itemCapacity = 1;
             buildCostMultiplier = 2f;
-            researchCost = with(OlupisItemsLiquid.iron, 100);
+            researchCost = with(OlupisItemsLiquid.iron, 50);
             hasPower = true;
             conductivePower = true;
             consumesPower = true;
@@ -396,7 +396,7 @@ public class OlupisBlocks {
         ironRouter = new Router("iron-router"){{
             requirements(Category.distribution, with(OlupisItemsLiquid.rustyIron, 3));
             buildCostMultiplier = 4f;
-            researchCost = with(OlupisItemsLiquid.rustyIron, 50);
+            researchCost = with(OlupisItemsLiquid.rustyIron, 40);
         }};
 
         ironJunction = new Junction("iron-junction"){{
@@ -437,17 +437,18 @@ public class OlupisBlocks {
 
         //endregion
         //region Drills
-        rustyDrill = new BurstDrill("rusty-drill"){{
+        rustyDrill = new BoostableBurstDrill("rusty-drill"){{
             requirements(Category.production, with(OlupisItemsLiquid.rustyIron, 25));
             size = 3;
-            drillTime = 60f * 10f;
+            drillTime = 60f * 14f;
             tier = 1;
             hasPower = true;
             squareSprite = false;
+            researchCost = with(OlupisItemsLiquid.rustyIron,50);
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             consumePower(10f/60f);
             //TODO: Make it consume either steam or water
-            consumeLiquid(Liquids.water, 0.02f);
+            consumeLiquid(Liquids.water, 0.02f).boost();
         }};
 
 
@@ -520,7 +521,7 @@ public class OlupisBlocks {
             botColor = Color.valueOf("37323C");
             leaks = true;
             liquidCapacity = 5f;
-            researchCostMultiplier = 3;
+            researchCostMultiplier = 0.5f;
             underBullets = true;
             health = 60;
             liquidPressure = 0.95f;
@@ -537,6 +538,7 @@ public class OlupisBlocks {
 
         pipeRouter = new LiquidRouter("pipe-router"){{
             requirements(Category.liquid, with(Items.lead, 10));
+            researchCost = with(Items.lead,50);
             liquidCapacity = 20f;
             underBullets = true;
             solid = true;
@@ -560,6 +562,7 @@ public class OlupisBlocks {
 
         pipeJunction = new LiquidJunction("pipe-junction"){{
             requirements(Category.liquid, with(OlupisItemsLiquid.rustyIron, 10, Items.lead, 10));
+            researchCost = with(Items.lead,100,OlupisItemsLiquid.rustyIron,50);
             solid = false;
             ((Conduit)ironPipe).junctionReplacement = this;
             ((Conduit)leadPipe).junctionReplacement = this;
@@ -760,7 +763,7 @@ public class OlupisBlocks {
         //region Turrets
         corroder = new LiquidTurret("corroder"){{ //architronito
             requirements(Category.turret, with(OlupisItemsLiquid.rustyIron, 50, Items.lead, 10));
-            researchCost = with(OlupisItemsLiquid.rustyIron, 500);
+            researchCost = with(OlupisItemsLiquid.rustyIron, 100);
             ammo(
                     Liquids.water, new LiquidBulletType(Liquids.water){{
                         lifetime = 13f;
@@ -919,6 +922,7 @@ public class OlupisBlocks {
         //region Power
         wire = new Wire("wire"){{
             requirements(Category.power, with(OlupisItemsLiquid.rustyIron, 5));
+            researchCost = with(OlupisItemsLiquid.rustyIron,20);
             baseExplosiveness = 0.5f;
             solid = false;
             floating = true;
@@ -952,7 +956,7 @@ public class OlupisBlocks {
 
         windMills = new WindMill("wind-mill"){{
             requirements(Category.power, with(OlupisItemsLiquid.rustyIron, 30));
-            researchCost = with(OlupisItemsLiquid.rustyIron, 300);
+            researchCost = with(OlupisItemsLiquid.rustyIron, 75);
             attribute = Attribute.steam;
             size = 3;
             powerProduction = 10f/60f;
@@ -1000,24 +1004,28 @@ public class OlupisBlocks {
         //region Wall
         rustyWall = new Wall("rusty-wall"){{
             requirements(Category.defense,with(OlupisItemsLiquid.rustyIron, 12));
+            researchCost = with(OlupisItemsLiquid.rustyIron,80);
             size = 1;
             health =  320;
         }};
 
         rustyWallLarge = new Wall("rusty-wall-large"){{
             requirements(Category.defense,with(OlupisItemsLiquid.rustyIron, 48));
+            researchCost = with(OlupisItemsLiquid.rustyIron,200);
             size = 2;
             health =  1640;
         }};
 
         rustyWallHuge = new Wall("rusty-wall-huge"){{
-            requirements(Category.defense, ItemStack.mult(OlupisBlocks.rustyWall.requirements, 166));
+            requirements(Category.defense,with(OlupisItemsLiquid.rustyIron, 620));
+            researchCost = with(OlupisItemsLiquid.rustyIron,1000);
             size = 3;
             health = 1280;
         }};
 
         rustyWallGigantic = new Wall("rusty-wall-gigantic"){{
-            requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.mult(OlupisBlocks.rustyWall.requirements, 196));
+            requirements(Category.defense, BuildVisibility.sandboxOnly, with(OlupisItemsLiquid.rustyIron, 1500));
+            researchCost = with(OlupisItemsLiquid.rustyIron,4200);
             size = 4;
             health = 1940;
         }};

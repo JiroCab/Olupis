@@ -83,7 +83,7 @@ public class OlupisUnits {
             weapons.add(
                     new Weapon()
                     {{
-                         reload = 300;
+                         reload = 60*10;
                          x = 0;
                          y = 0;
                          shootStatus = StatusEffects.unmoving;
@@ -92,21 +92,21 @@ public class OlupisUnits {
                          bullet = new BasicBulletType(0,-5)
                          {{
                                 chargeEffect = Fx.heal;
-                                lifetime = 600;
+                                lifetime = 60*60;
                                 spin = 4;
                                 keepVelocity = false;
                                 drag = 0.9f;
                                 backColor = frontColor = trailColor = lightColor = Pal.heal;
                                 height = width = 20;
-                                bulletInterval = 30;
-                                shrinkX = 10f/60f;
-                                shrinkY = 10f/60f;
+                                bulletInterval = 15;
+                                shrinkX = 20f/60f;
+                                shrinkY = 30f/60f;
                                 collidesTeam = true;
                                 healAmount = 10;
                                 hitEffect = despawnEffect = Fx.heal;
-                                intervalBullets = 4;
-                                intervalSpread = 90;
-                                intervalRandomSpread = 45;
+                                intervalBullets = 2;
+                                intervalSpread = 180;
+                                intervalRandomSpread = 90;
                                 intervalBullet = new BasicBulletType(4,-5)
                                 {{
                                     lifetime = 60;
