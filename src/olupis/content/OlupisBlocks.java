@@ -2,7 +2,8 @@ package olupis.content;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.struct.*;
+import arc.struct.EnumSet;
+import arc.struct.ObjectSet;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -14,26 +15,28 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.blocks.power.BeamNode;
 import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.storage.*;
+import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.Registry;
 import olupis.world.NoBoilLiquidBulletType;
 import olupis.world.blocks.*;
 
-import static mindustry.type.ItemStack.with;
-import static mindustry.content.Items.*;
-import static mindustry.content.Liquids.*;
 import static mindustry.content.Blocks.*;
+import static mindustry.content.Items.*;
+import static mindustry.content.Liquids.oil;
+import static mindustry.type.ItemStack.with;
 import static olupis.content.OlupisItemsLiquid.*;
-import static olupis.content.OlupisUnits.*;
+import static olupis.content.OlupisUnits.gnat;
 
 public class OlupisBlocks {
     //region Blocks Variables
@@ -257,6 +260,7 @@ public class OlupisBlocks {
             clipSize = 128f;
         }};
 
+        /*Irregular varrients that don't show up on top of tress*/
         greenShrubsCrooked = new StaticTree("green-shrubs-crooked"){{
             variants = 2;
             clipSize = 128f;
@@ -613,7 +617,7 @@ public class OlupisBlocks {
             ((Conduit)ironPipe).junctionReplacement = this;
             ((Conduit)leadPipe).junctionReplacement = this;
             researchCost = with(lead,100, rustyIron,50);
-            requirements(Category.liquid, with(rustyIron, 10, lead, 10));
+            requirements(Category.liquid, with(rustyIron, 15, lead, 15));
         }};
 
         pipeBridge = new LiquidBridge("pipe-bridge"){{
@@ -1122,7 +1126,7 @@ public class OlupisBlocks {
             health = 960;
             size = 2;
 
-            variants = 4;
+            variants = 3;
 
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.mult(rustyScrapWall.requirements, 4));
         }};
@@ -1164,6 +1168,7 @@ public class OlupisBlocks {
 
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             requirements(Category.effect, with(iron, 30, Items.lead, 40));
+            drawer = new DrawTurret("iron-");
 
             shootType = new LaserBoltBulletType(5.2f, -5){{
                 lifetime = 30f;
@@ -1171,6 +1176,7 @@ public class OlupisBlocks {
                 collidesTeam = true;
                 backColor = Pal.heal;
                 frontColor = Color.white;
+                shootSound = Sounds.sap;
             }};
         }};
 
@@ -1280,43 +1286,15 @@ public class OlupisBlocks {
         yellowMossyWater.attributes.set(Registry.hydro, 0.3f);
     }
 
-    public static void NoIconFix(){
-        /*I have no idea what I did to the game or what I did wrong, but they don't want to generate the ui icons
-         so this is a workaround via manually assigning the uiIcon by hand -RushieWashie */
-        rustyIronConveyor.uiIcon = Core.atlas.find("olupis-rusty-iron-conveyor-0-0");
-        ironConveyor.uiIcon = Core.atlas.find("olupis-iron-conveyor-0-0");
-        cobaltConveyor.uiIcon = Core.atlas.find("olupis-cobalt-conveyor-0-0");
-
-        //wire.uiIcon = Core.atlas.find("olupis-wire-preview");
-        //superConductors.uiIcon = Core.atlas.find("olupis-super-conductor-preview");
-        wireBridge.uiIcon = Core.atlas.find("olupis-wire-bridge-preview");
-
-        coreRemnant.fullIcon = Core.atlas.find("olupis-core-remnant-preview");
-        fortifiedContainer.fullIcon = Core.atlas.find("olupis-fortified-container-preview");
-
-    }
-
     public static void OlupisBlocksPlacementFix(){
-        olupisBuildBlockSet.addAll(
-                //TODO: find a dynamic way to add them? so less copy paste
-                garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve,
-                rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironJunction, ironBridge,
-                leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
-                wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator,
-                steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
-                corroder, dissolver, shredder,
-                rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
-                coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
-                mendFieldProjector, taurus,
-                fortifiedMessageBlock,
-
-                /* Legally required boulder*/
-                mossyBoulder
-        );
+        olupisBuildBlockSet.clear();
+        Vars.content.blocks().each(b->{
+            if(b.name.startsWith("olupis-") && b.isVisible()) olupisBuildBlockSet.add(b);
+        });
 
         sandBoxBlocks.addAll(
                 /*just to make it easier for testing and/or sandbox*/
-                itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid,
+                itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid, powerSource, powerVoid,
                 worldProcessor, logicProcessor, microProcessor, hyperProcessor, message, worldMessage, reinforcedMessage,
                 logicDisplay, largeLogicDisplay, canvas, payloadConveyor, payloadRouter
         );

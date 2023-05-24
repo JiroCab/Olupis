@@ -16,6 +16,7 @@ you can figure out the rest, you got this, you're a smart cookie
 * NightmarishWolf - Sprites, Ideas, Organization
 * [Ethanol10](https://github.com/SuperEthanol10) - Sprites
 * [Siede](https://github.com/siede2010) - Programing, Sprites
+* [WMF Industries](https://github.com/WMF-Industries) - Programming
 
 ### Music Credits
 Ambient music:

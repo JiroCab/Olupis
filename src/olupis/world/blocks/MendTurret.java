@@ -4,6 +4,7 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.entities.Units;
+import mindustry.game.Team;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.meta.BlockGroup;
 
@@ -19,7 +20,7 @@ public class MendTurret extends PowerTurret {
 
         @Override
         public void updateTile(){
-            if(!validateTarget()) target = null;
+            if(!validateMendTarget()) target = null;
 
             float warmupTarget = (isShooting() && canConsume()) || charging() ? 1f : 0f;
             if(warmupTarget > 0 && shootWarmup >= minWarmup && !isControlled()){
@@ -62,10 +63,9 @@ public class MendTurret extends PowerTurret {
                 if(Float.isNaN(reloadCounter)) reloadCounter = 0;
 
                 if(timer(timerTarget, targetInterval)){
-                    findTarget();
+                    findDamaged();
                 }
-
-                if(validateTarget()){
+                if(validateMendTarget()){
                     boolean canShoot = true;
 
                     if(isControlled()){ //player behavior
@@ -74,7 +74,8 @@ public class MendTurret extends PowerTurret {
                     }else if(logicControlled()){ //logic behavior
                         canShoot = logicShooting;
                     }else{ //default AI behavior
-                        targetPosition(target);
+                        //targetPosition(target);
+                        targetPos.set(target.x(), target.y());
 
                         if(Float.isNaN(rotation)) rotation = 0;
                     }
@@ -102,16 +103,16 @@ public class MendTurret extends PowerTurret {
             }
         }
 
-        @Override
-        protected void findTarget(){
+        protected void findDamaged(){
             float range = range();
 
             /*Heal Tiles only*/
-            if (target == null || !target.within(this, range)){
-                target = Units.findAllyTile(team, x, y, range, b -> b.damaged() && b != this);
-            }
+            target = Units.findAllyTile(team, x, y, range, b -> b.damaged() && b != this);
         }
 
+        protected boolean validateMendTarget(){
+            return !Units.invalidateTarget(target, Team.derelict, x, y, range) || isControlled() || logicControlled();
+        }
     }
 
 }

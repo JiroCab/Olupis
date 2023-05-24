@@ -41,7 +41,6 @@ public class Registry {
 
     public static void postRegister(){
         OlupisBlocks.OlupisBlocksPlacementFix();
-        OlupisBlocks.NoIconFix();
         OlupisSettingsDialog.AddOlupisSoundSettings();
     }
 

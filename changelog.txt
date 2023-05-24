@@ -1,26 +1,28 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 01/01/2023 (+8utc) by Jirocab
+Last updated on 25/05/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-4 () =
-    + sprites Contributed by Ethanol10: wire, wireBridge [https://github.com/SuperEthanol10]
-    + sprites Contributed by NightmarishWolf: infernal-bloom , infernal-megabloom [https://github.com/SuperEthanol10]
-    + sprites Contributed by siede2010: iron-router, iron-junction, rustyDrill, rustyIronConveyor (corners) [https://github.com/siede2010]
-    + blocks added: brimstone-slag, lumaGrass
-    + added toxopid to gradle
+    + Sprites Contributed by Ethanol10: wire, wireBridge [https://github.com/SuperEthanol10]
+    + Sprites Contributed by NightmarishWolf: infernal-bloom , infernal-megabloom [https://github.com/SuperEthanol10]
+    + Sprites Contributed by siede2010: iron-router, iron-junction, rustyDrill, rustyIronConveyor (corners) [https://github.com/siede2010]
+    + Blocks added: brimstone-slag, lumaGrass, green-shrubs-crooked , yellow-shrubs-crooked
+    + Added toxopid to gradle
     + Gnat got a healing Turret (not final)
-    + added Wip raw cinderBloom, infernal-bloom , infernal-megabloom & enchanted_forest_pallet (Contributed by NightmarishWolf)
+    + Added Wip raw files: cinderBloom, infernal-bloom , infernal-megabloom & enchanted_forest_pallet (Contributed by NightmarishWolf)
+    + taurus now works as intended
     ~ Bug Fix: Burst pumps polish (siede2010)
     ~ Bug Fix: Power conveyors (siede2010)
     ~ Bug Fix: Item Bans & Tech tree changes (siede2010)
     ~ Bug Fix: Wires should have proper power loss, hopefully
-    ~ Bug Fix: `greenShrubsIrregular` & `yellowShrubsIrregular` appearing on top of trees
-    ~ moved `yellow-shrubs-irregular` & `green-shrubs-irregular` from `props > environment` for bug fix above
+    ~ Internal: `OlupisBlocks` clean up (WMF Industries)
+    ~ Internal: Updated Workflows to something more reasonable (WMF Industries)
     ~ sprites updated: mossyStone, mossierStone, mossiestStone, ironPipe, rusty-iron-conveyor (T sections), pinkTree, superConductors
     ~ Updated Olupis' sounds settings
     ~ Properly implementation of music via overriding the game music Seq
     ~ Updated bundle.properties (polish names & properly naming certain blocks)
-    -- removed `greenShrubsIrregular` & `yellowShrubsIrregular` shadows
+    -- removed `pinkTree`duplicate that was a floor named "pink-mossy-water
+    -- Internal removed `NoIconFix`and used proper `-full` & similar (thanks WMF Industry for letting Rushie know!)
     //TODO: Update before push to main
 
 = Beta 1-3 (01b8973) = https://github.com/JiroCab/Olupis/tree/01b8973727ccff584c453dd5cbe52a7e3a999117
