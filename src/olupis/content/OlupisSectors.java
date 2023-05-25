@@ -10,11 +10,10 @@ public class OlupisSectors {
         //region sectors
 
         placeholder1 = new SectorPreset("placeholder1",  OlupisPlanets.olupis, 1){{
+            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
+
             captureWave = 15;
             difficulty = 2;
-            addStartingItems = true;
-            alwaysUnlocked = true;
-            overrideLaunchDefaults = true;
         }};
 
         placeholder2 = new SectorPreset("placeholder2", OlupisPlanets.olupis, 69){{
@@ -24,19 +23,17 @@ public class OlupisSectors {
 
 
         placeholderArthin1 = new SectorPreset("placeholderArthin1",  OlupisPlanets.arthin, 0){{
+            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
+
             captureWave = 15;
             difficulty = 2;
-            addStartingItems = true;
-            alwaysUnlocked = true;
-            overrideLaunchDefaults = true;
         }};
 
         placeholderSpelta1 = new SectorPreset("placeholderSpelta1",  OlupisPlanets.spelta, 0){{
+            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
+
             captureWave = 15;
             difficulty = 2;
-            addStartingItems = true;
-            alwaysUnlocked = true;
-            overrideLaunchDefaults = true;
         }};
 
 
