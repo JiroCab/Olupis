@@ -1,21 +1,43 @@
 package olupis.content;
 
 import arc.graphics.Color;
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.Planets;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.*;
+import mindustry.maps.planet.AsteroidGenerator;
 import mindustry.type.Planet;
+import mindustry.type.Sector;
 import mindustry.world.meta.Env;
 import olupis.world.planets.*;
 
 public class OlupisPlanets {
-    public static Planet olupis, arthin, spelta;
+    public static Planet olupis, arthin, spelta, system;
+    private static final Seq<Sector> systemSector = new Seq<>();
 
     public  static void LoadPlanets(){
         Vars.content.planets().forEach(p -> p.hiddenItems.addAll(OlupisItemsLiquid.olupisOnlyItems));
-        olupis = new Planet("olupis", Planets.sun, 1f, 3){{
+
+        system = new Planet("system", Planets.sun, 0.4f){{
+            sectors.set(systemSector);
+            meshLoader = () -> new HexMesh(this, 4);
+            accessible = false;
+            visible = false;
+            hideDetails = true;
+            unlocked = false;
+            generator = new AsteroidGenerator();
+            hasAtmosphere = false;
+            updateLighting = false;
+            camRadius = 0.68f * 3;
+            minZoom = 0.6f;
+            drawOrbit = false;
+            clipRadius = 2f;
+            defaultEnv = Env.space;
+        }};
+
+        olupis = new Planet("olupis", Planets.sun, 1, 3){{
             generator = new OlupisPlanetGenerator();
             meshLoader = () -> new HexMesh(this, 7);
             cloudMeshLoader = () -> new MultiMesh(
@@ -58,6 +80,7 @@ public class OlupisPlanets {
             landCloudColor = Pal.engine.cpy().a(0.5f);
             hiddenItems.addAll(Vars.content.items()).removeAll(OlupisItemsLiquid.olupisItems);
             totalRadius = 2.7f;
+            systemSector.add(sectors);
         }};
 
         //1st moon
@@ -87,6 +110,7 @@ public class OlupisPlanets {
                 r.dropZoneRadius = 400f;
                 r.disableOutsideArea = false;
             };
+            systemSector.add(sectors);
         }};
 
         spelta = new Planet("spelta", OlupisPlanets.olupis, 0.9f, 2){{
@@ -116,6 +140,11 @@ public class OlupisPlanets {
                 r.dropZoneRadius = 400f;
                 r.disableOutsideArea = false;
             };
+            systemSector.add(sectors);
         }};
+    }
+
+    public  static void PostLoadPlanet(){
+        system.sectors.set(systemSector);
     }
 }

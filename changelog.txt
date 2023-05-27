@@ -4,7 +4,7 @@ Last updated on 25/05/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-4 () =
     + Sprites Contributed by Ethanol10: wire, wireBridge [https://github.com/SuperEthanol10]
-    + Sprites Contributed by NightmarishWolf: infernal-bloom , infernal-megabloom [https://github.com/SuperEthanol10]
+    + Sprites Contributed by NightmarishWolf: infernal-bloom, infernal-megabloom
     + Sprites Contributed by siede2010: iron-router, iron-junction, rustyDrill, rustyIronConveyor (corners) [https://github.com/siede2010]
     + Blocks added: brimstone-slag, lumaGrass, green-shrubs-crooked , yellow-shrubs-crooked
     + Added toxopid to gradle
@@ -22,7 +22,7 @@ Last updated on 25/05/2023 (+8utc) by Jirocab/RushieWashie
     ~ Properly implementation of music via overriding the game music Seq
     ~ Updated bundle.properties (polish names & properly naming certain blocks)
     -- removed `pinkTree`duplicate that was a floor named "pink-mossy-water
-    -- Internal removed `NoIconFix`and used proper `-full` & similar (thanks WMF Industry for letting Rushie know!)
+    -- Internal removed `NoIconFix`and used proper `-full` & similar (thanks WMF Industry for letting RushieWashie know!)
     //TODO: Update before push to main
 
 = Beta 1-3 (01b8973) = https://github.com/JiroCab/Olupis/tree/01b8973727ccff584c453dd5cbe52a7e3a999117

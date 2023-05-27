@@ -18,6 +18,8 @@ public class OlupisSettingsDialog {
     public void BuildDialog(){
         ui.settings.addCategory("@category.olupis.name", Icon.effect, table -> {
             table.checkPref("olupis-green-icon", true);
+            table.checkPref("olupis-green-name", true);
+            table.checkPref("olupis-debug", false);
 
             BuildOlupisSoundSettings(table, false);
         });

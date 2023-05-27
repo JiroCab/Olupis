@@ -14,7 +14,7 @@ main: "olupis.Main"
 description: "Yet another planet mod"
 
 #the mod version
-version: 1.3
+version: 1.4
 
 #the minimum game build required to run this mod
 minGameVersion: 136

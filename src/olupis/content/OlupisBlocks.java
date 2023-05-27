@@ -363,16 +363,6 @@ public class OlupisBlocks {
             albedo = 0.9f;
         }};
 
-
-        lightWall = new LightBlock("light-wall"){{
-            alwaysUnlocked = true;
-
-            brightness = 0.75f;
-            radius = 140f;
-
-            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
-        }};
-
         //endregion
     }
     public static void LoadBlocks(){
@@ -1164,19 +1154,23 @@ public class OlupisBlocks {
         }};
 
         taurus = new MendTurret("taurus"){{
-            size = 3;
-
-            flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             requirements(Category.effect, with(iron, 30, Items.lead, 40));
+            flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             drawer = new DrawTurret("iron-");
+            consumePower(3.3f);
 
-            shootType = new LaserBoltBulletType(5.2f, -5){{
+            size = 3;
+            reload = 20f;
+            shootType = new BasicBulletType(5.2f, -5, "olupis-diamond-bullet"){{
                 lifetime = 30f;
-                healPercent = 5f;
+                healPercent = 7f;
                 collidesTeam = true;
+                collidesAir =  false;
                 backColor = Pal.heal;
                 frontColor = Color.white;
                 shootSound = Sounds.sap;
+                width = 10f;
+                height = 16f;
             }};
         }};
 
@@ -1251,6 +1245,15 @@ public class OlupisBlocks {
             health = 560000;
 
             requirements(Category.effect, with(rustyIron, 1500, iron, 1000));
+        }};
+
+        lightWall = new PrivilegedLightBlock("light-wall"){{
+            alwaysUnlocked = true;
+
+            brightness = 0.75f;
+            radius = 140f;
+
+            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
         }};
         //endregion
         //region Logic

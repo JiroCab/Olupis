@@ -7,20 +7,22 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;
 import mindustry.gen.Icon;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.ui.Styles;
-import mindustry.world.Block;
 import mindustry.world.Tile;
+import mindustry.world.blocks.power.LightBlock;
 
 import static mindustry.Vars.*;
 
-public class LightBlock extends Block {
+public class PrivilegedLightBlock extends LightBlock {
     public float brightness = 0.9f;
     public float radius = 200f;
 
-    public LightBlock(String name){
+    public PrivilegedLightBlock(String name){
         super(name);
+        hasPower =false;
         configurable = true;
         saveConfig = true;
         update = true;
@@ -43,7 +45,6 @@ public class LightBlock extends Block {
     public boolean accessible(){
         return !privileged || state.rules.infiniteResources || state.playtestingMap != null;
     }
-
 
 
     public class lightBuild extends Building{
@@ -85,6 +86,11 @@ public class LightBlock extends Block {
             }
 
             return true;
+        }
+
+        @Override
+        public void drawLight(){
+            Drawf.light(x, y, lightRadius * Math.min(smoothTime, 2f), Tmp.c1.set(color), brightness * efficiency);
         }
 
         @Override

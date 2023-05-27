@@ -165,5 +165,6 @@ public class OlupisTechTree {
         });
         arthin.techTree = olupis.techTree;
         spelta.techTree = olupis.techTree;
+        system.techTree = olupis.techTree;
     }
 }

@@ -21,12 +21,7 @@ public class Main extends Mod{
     public OlupisSettingsDialog olupisSettings;
 
     public Main(){
-        Events.on(ClientLoadEvent.class, e -> {
-            Vars.ui.planet.shown(() -> {
-                if(Core.settings.getBool("olupis-space-sfx")) {Core.audio.play(Registry.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);}
-            });
-            Registry.postRegister();
-        });
+        Events.on(ClientLoadEvent.class, e -> Registry.postRegister());
 
         Events.on(EventType.WorldLoadEvent.class, l ->{
             //debug and if someone needs to convert a map and said map does not have the Olupis Block set
