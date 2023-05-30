@@ -64,7 +64,7 @@ public class OlupisBlocks {
 
         //Buildings
         garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve,
-        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironJunction, ironBridge, ironOverflow, ironUnderflow,
+        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader,
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator,
         steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
@@ -460,6 +460,13 @@ public class OlupisBlocks {
             buildCostMultiplier = 3f;
 
             requirements(Category.distribution, with(iron, 2, lead, 5));
+        }};
+
+        ironUnloader = new DirectionalUnloader("iron-unloader"){{
+            requirements(Category.distribution, with(iron, 20, graphite, 20, lead, 35));
+            health = 120;
+            speed = 2f;
+            solid = false;
         }};
 
         //endregion
@@ -911,8 +918,8 @@ public class OlupisBlocks {
             targetAir = false;
 
             size = 3;
-            health = 250;
-            armor = 2;
+            health = 350;
+            armor = 5;
             rotateSpeed = 10f;
             reload = 60f;
             range = 160;
@@ -933,6 +940,7 @@ public class OlupisBlocks {
                     rustyIron, new BasicBulletType(2.5f, 11){{
                         collidesTeam = true;
                         collideTerrain = collidesAir = false;
+                        status = StatusEffects.slow;
 
                         width = 40f;
                         height = 9f;
@@ -948,6 +956,7 @@ public class OlupisBlocks {
                     iron, new BasicBulletType(3f, 23){{
                         collidesTeam = collideTerrain = true;
                         collidesAir = false;
+                        status = StatusEffects.slow;
 
                         width = 40f;
                         height = 11f;
@@ -1019,6 +1028,8 @@ public class OlupisBlocks {
         }};
 
         hydroMill = new ThermalGeneratorNoLight("hydro-mill"){{
+            requirements(Category.power, with(iron, 30, rustyIron, 50));
+
             floating = true;
 
             powerProduction = 17f/60f;
@@ -1033,7 +1044,7 @@ public class OlupisBlocks {
                 blurThresh = 0.01f;
             }});
 
-            requirements(Category.power, with(iron, 30, rustyIron, 50));
+
         }};
 
         hydroElectricGenerator = new ThermalGeneratorNoLight("hydro-electric-generator"){{
@@ -1172,6 +1183,7 @@ public class OlupisBlocks {
                 width = 10f;
                 height = 16f;
             }};
+            limitRange(2);
         }};
 
         fortifiedVault = new StorageBlock("fortified-vault"){{
@@ -1277,6 +1289,7 @@ public class OlupisBlocks {
         ice.attributes.set(Registry.Bio, 0.01f);
         craters.attributes.set(Registry.Bio, 0.5f);
 
+
         deepwater.attributes.set(Registry.hydro, 0.5f);
         deepTaintedWater.attributes.set(Registry.hydro, 0.3f);
         Blocks.water.attributes.set(Registry.hydro, 0.3f);
@@ -1284,8 +1297,11 @@ public class OlupisBlocks {
         sandWater.attributes.set(Registry.hydro, 0.3f);
         darksandTaintedWater.attributes.set(Registry.hydro, 0.3f);
         darksandWater.attributes.set(Registry.hydro, 0.3f);
+
         redSandWater.attributes.set(Registry.hydro, 0.3f);
+        lumaGrassWater.attributes.set(Registry.hydro, 0.3f);
         mossyWater.attributes.set(Registry.hydro, 0.3f);
+        pinkGrassWater.attributes.set(Registry.hydro, 0.3f);
         yellowMossyWater.attributes.set(Registry.hydro, 0.3f);
     }
 

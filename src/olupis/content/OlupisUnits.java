@@ -2,9 +2,6 @@ package olupis.content;
 
 import arc.graphics.Color;
 import arc.math.geom.Rect;
-import mindustry.entities.bullet.LightningBulletType;
-import mindustry.graphics.Pal;
-import olupis.world.NoBoilLiquidBulletType;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.*;
@@ -13,11 +10,14 @@ import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.HoverPart;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.unit.TankUnitType;
 import mindustry.world.meta.BlockFlag;
+import olupis.world.NoBoilLiquidBulletType;
+import olupis.world.entities.bullets.HealOnlyBulletType;
 
 public class OlupisUnits {
 
@@ -87,31 +87,33 @@ public class OlupisUnits {
                              collidesTeam = true;
                              keepVelocity = false;
 
-                             lifetime = 60*60;
+                             lifetime = 10*60;
                              height = width = 20;
-                             spin = 4;
-                             bulletInterval = 15;
-                             healAmount = 10;
+                             spin = 3.5f;
+                             bulletInterval = 20;
+                             healAmount = 20;
                              drag = 0.9f;
 
                              backColor = frontColor = trailColor = lightColor = Pal.heal;
                              chargeEffect = hitEffect = despawnEffect = Fx.heal;
-                             shrinkX = 20f/60f;
-                             shrinkY = 30f/60f;
+                             shrinkX = 25f/60f;
+                             shrinkY = 35f/60f;
 
                              intervalBullets = 2;
                              intervalSpread = 180;
                              intervalRandomSpread = 90;
-                             intervalBullet = new BasicBulletType(4,-5) {{
+                             intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
                                  collidesTeam = true;
                                  keepVelocity = false;
 
                                  lifetime = 60;
-                                 bulletInterval = healAmount = 10;
+                                 bulletInterval = 10;
+                                 healAmount = 20;
+                                 homingPower = 0.09f;
 
                                  backColor = frontColor = trailColor = lightColor = Pal.heal;
-                                 trailWidth = 2;
-                                 trailLength = 20;
+                                 trailWidth = 1.5f;
+                                 trailLength = 15;
                                  hitEffect = despawnEffect = Fx.heal;
                              }};
 
