@@ -1,4 +1,4 @@
-package olupis.world;
+package olupis.world.entities.bullets;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -69,7 +69,7 @@ public class NoBoilLiquidBulletType extends BulletType {
     public void draw(Bullet b){
         super.draw(b);
         if(evaporatePuddles){
-            Draw.color(liquid.color, Tmp.c3.set(liquid.gasColor).a(0.8f), b.time / Mathf.randomSeed(b.id, lifetime));
+            Draw.color(liquid.color, Tmp.c3.set(liquid.gasColor).a(0.95f), b.time / Mathf.randomSeed(b.id, lifetime));
             Fill.circle(b.x, b.y, orbSize * (b.fin() * 0.9f + 1f));
         }else{
             Draw.color(liquid.color, Color.white, b.fout() / 100f);

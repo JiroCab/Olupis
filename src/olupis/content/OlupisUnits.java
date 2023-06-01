@@ -16,8 +16,11 @@ import mindustry.type.Weapon;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.unit.TankUnitType;
 import mindustry.world.meta.BlockFlag;
-import olupis.world.NoBoilLiquidBulletType;
+import olupis.world.ai.SearchAndDestroyFlyingAi;
 import olupis.world.entities.bullets.HealOnlyBulletType;
+import olupis.world.entities.bullets.NoBoilLiquidBulletType;
+import olupis.world.entities.units.AmmoLifeTimeUnitType;
+import olupis.world.entities.units.OlupisUnitType;
 
 public class OlupisUnits {
 
@@ -29,11 +32,9 @@ public class OlupisUnits {
         zoner
     ;
 
-    public static final Color olupisUnitOutLineColour = Color.valueOf("371404");
-
     public static void LoadUnits(){
         //region Core Units
-        gnat = new UnitType("gnat"){{
+        gnat = new OlupisUnitType("gnat"){{
             constructor = UnitTypes.merui.constructor;
             controller = u -> new MinerAI();
 
@@ -54,7 +55,6 @@ public class OlupisUnits {
             researchCostMultiplier = 0f;
             itemCapacity = 70;
 
-            outlineColor = olupisUnitOutLineColour;
             legCount = 0;
             legMoveSpace = 1.1f; //Limits world tiles movement
             shadowElevation = 0.1f;
@@ -125,39 +125,48 @@ public class OlupisUnits {
         //endregion
         //region Olupis Units
 
-        mite = new UnitType("mite"){{
+        mite = new AmmoLifeTimeUnitType("mite"){{
             constructor = UnitTypes.flare.constructor;
+            useUnitCap = false;
+            controller = u -> new SearchAndDestroyFlyingAi();
+            ammoDepleteAmount = 0.6f;
+            lightRadius = 15f;
+            lightOpacity = 50f;
 
             flying = true;
+            playerControllable  = logicControllable = false;
 
-            health = 50;
+            health = 80;
+            armor = 1;
             hitSize = 9;
             speed = 2.7f;
             accel = 0.08f;
             drag = 0.04f;
-            range = 35f;
+            range = 45f;
             itemCapacity = 10;
-            //targetAir = false;
 
             engineOffset = 5.75f;
-            outlineColor = olupisUnitOutLineColour;
 
             targetFlags = new BlockFlag[]{BlockFlag.generator, null};
             weapons.add(new Weapon(){{
                 y = x = 0f;
-                reload = 10f;
+                reload = shootCone = 10f;
+                autoTarget = true;
+                targetSwitchInterval = 380f;
+                targetInterval = 50f;
 
                 shootSound = Sounds.pew;
                 /*Gave up using LiquidBulletType*/
                 bullet = new NoBoilLiquidBulletType(OlupisItemsLiquid.steam){{
+                    useAmmo = true;
                     pierce = true;
 
                     speed = 2f;
                     lifetime = 18f;
                     pierceCap = 1;
-                    ammoMultiplier = 2;
+                    ammoMultiplier = 1.5f;
                     status = StatusEffects.corroded;
-                    statusDuration = 2f *60f;
+                    statusDuration = 1f *60f;
 
                     shootEffect = Fx.shootLiquid;
                     despawnEffect = Fx.steam;
@@ -166,7 +175,7 @@ public class OlupisUnits {
             }});
         }};
 
-        zoner = new UnitType("zoner"){{
+        zoner = new OlupisUnitType("zoner"){{
             constructor = UnitTypes.flare.constructor;
 
             lowAltitude = flying = true;
@@ -181,12 +190,11 @@ public class OlupisUnits {
 
             engineOffset = 5.5f;
             engineSize = 2f;
-            outlineColor = olupisUnitOutLineColour;
 
             weapons.add(new Weapon("olupis-zoner-weapon"){{
                 top = alternate = false;
 
-                reload = 15f;
+                reload = shootCone = 15f;
                 x = -1.8f;
                 y = -1f;
                 inaccuracy = 3f;
@@ -206,7 +214,7 @@ public class OlupisUnits {
 
         }};
 
-        firefly = new UnitType("firefly"){{
+        firefly = new OlupisUnitType("firefly"){{
             constructor = UnitTypes.mono.constructor;
             //there's no reason to command monos anywhere. it's just annoying.
             //haha, no
@@ -226,7 +234,6 @@ public class OlupisUnits {
 
             engineSize = 1.8f;
             engineOffset = 5.7f;
-            outlineColor = olupisUnitOutLineColour;
 
             ammoType = new PowerAmmoType(500);
         }};
@@ -244,7 +251,6 @@ public class OlupisUnits {
 
             treadPullOffset = 3;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
-            outlineColor = olupisUnitOutLineColour;
 
             abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 1, 0));
         }};

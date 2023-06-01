@@ -6,7 +6,8 @@ import arc.struct.EnumSet;
 import arc.struct.ObjectSet;
 import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.entities.bullet.*;
+import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.LiquidBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootSummon;
@@ -28,8 +29,8 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.Registry;
-import olupis.world.NoBoilLiquidBulletType;
 import olupis.world.blocks.*;
+import olupis.world.entities.bullets.NoBoilLiquidBulletType;
 
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
@@ -68,8 +69,8 @@ public class OlupisBlocks {
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator,
         steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
-        corroder, dissolver, shredder,
-        rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
+        corroder, dissolver, shredder, hive, escalation, recursor, shatter,
+    rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
         fortifiedMessageBlock
@@ -800,45 +801,7 @@ public class OlupisBlocks {
         //endregion
         //region Turrets
         corroder = new LiquidTurret("corroder"){{ //architronito
-            targetAir = true;
-
-            liquidCapacity = 5f;
-            recoil = 1;
-            shootY = 10f;
-            reload = 10f;
-            range = 75f;
-            shootCone = 50f;
-            health = 1000;
-            size = 2;
-
-            drawer = new DrawTurret("iron-"){{
-                parts.addAll(
-                        new RegionPart("-barrel"){{
-                            layerOffset = -0.1f;
-                            progress = PartProgress.recoil;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            y = 1f;
-                            mirror = false;
-                        }},  new RegionPart("-front-wing"){{
-                            layerOffset = -0.1f;
-                            progress = PartProgress.warmup;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, 0, -12f));
-                            mirror = true;
-                        }}, new RegionPart("-back-wing"){{
-                            layerOffset = -0.1f;
-                            progress = PartProgress.smoothReload;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -1f, 12f));
-                            mirror = true;
-                        }}
-                );
-            }};
-            outlineColor = olupisBlockOutlineColour;
-
-            researchCost = with(rustyIron, 100);
-            consumePower(1f);
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
             requirements(Category.turret, with(rustyIron, 50, lead, 10));
-
             ammo(
                     Liquids.water, new LiquidBulletType(Liquids.water){{
                         lifetime = 14f;
@@ -864,27 +827,49 @@ public class OlupisBlocks {
                         status = StatusEffects.corroded;
                     }}
             );
+            drawer = new DrawTurret("iron-"){{
+                parts.addAll(
+                        new RegionPart("-barrel"){{
+                            layerOffset = -0.1f;
+                            progress = PartProgress.recoil;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            y = 1f;
+                            mirror = false;
+                        }},  new RegionPart("-front-wing"){{
+                            layerOffset = -0.1f;
+                            progress = PartProgress.warmup;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, 0, -12f));
+                            mirror = true;
+                        }}, new RegionPart("-back-wing"){{
+                            layerOffset = -0.1f;
+                            progress = PartProgress.smoothReload;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -1f, 12f));
+                            mirror = true;
+                        }}
+                );
+            }};
+            targetAir = true;
+
+            liquidCapacity = 5f;
+            recoil = 1;
+            shootY = 10f;
+            reload = 10f;
+            range = 75f;
+            shootCone = 50f;
+            health = 1000;
+            size = 2;
+
+            outlineColor = olupisBlockOutlineColour;
+
+            researchCost = with(rustyIron, 100);
+            consumePower(1f);
+            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
+            loopSound = Sounds.steam;
+
         }};
 
         dissolver = new LiquidTurret("dissolver"){{ //architonnerre
-            targetAir = true;
-
-            recoil = 0.2f;
-            reload = 5f;
-            range = 130f;
-            shootCone = 50f;
-            health = 2500;
-            size = 3;
-
-            shootSound = Sounds.steam;
-            outlineColor = olupisBlockOutlineColour;
-            drawer = new DrawTurret("iron-");
-            //ammoUseEffect = OlupisFxs.shootSteamLarge;
-
-            consumePower(1.5f);
-            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
             requirements(Category.turret, with(iron, 50, lead, 50));
-
             ammo(
                     Liquids.water, new LiquidBulletType(Liquids.water){{
                         lifetime = 21.5f;
@@ -912,31 +897,27 @@ public class OlupisBlocks {
                         status = StatusEffects.corroded;
                     }}
             );
+            targetAir = true;
+
+            recoil = 0.2f;
+            reload = 5f;
+            range = 130f;
+            shootCone = 50f;
+            health = 2500;
+            size = 3;
+
+            outlineColor = olupisBlockOutlineColour;
+            drawer = new DrawTurret("iron-");
+
+            consumePower(1.5f);
+            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
+            loopSound = Sounds.steam;
         }};
 
         shredder = new ItemTurret("shredder"){{
-            targetAir = false;
-
-            size = 3;
-            health = 350;
-            armor = 5;
-            rotateSpeed = 10f;
-            reload = 60f;
-            range = 160;
-            shootCone = 15f;
-
-            shoot = new ShootSummon(0f, 0f, 0f, 0f);
-            shootY = Vars.tilesize * size;
-            ammoUseEffect = Fx.casing1;
-            outlineColor = olupisBlockOutlineColour;
-
-            coolant = consumeCoolant(0.1f);
-            limitRange(1f);
-            researchCostMultiplier = 0.05f;
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
-
             ammo(
-            //TODO: Some how ignore Allied Non-Solids??? (ex: mines & conveyors)
+                    //TODO: Some how ignore Allied Non-Solids??? (ex: mines & conveyors)
                     rustyIron, new BasicBulletType(2.5f, 11){{
                         collidesTeam = true;
                         collideTerrain = collidesAir = false;
@@ -954,23 +935,64 @@ public class OlupisBlocks {
                         backColor = Color.valueOf("ea8878");
                     }},
                     iron, new BasicBulletType(3f, 23){{
-                        collidesTeam = collideTerrain = true;
-                        collidesAir = false;
-                        status = StatusEffects.slow;
+                            collidesTeam = collideTerrain = true;
+                            collidesAir = false;
+                            status = StatusEffects.slow;
+                            width = 40f;
+                            height = 11f;
+                            lifetime = 50f;
+                            ammoMultiplier = 2;
+                            healPercent = 0f;
+                            pierceCap = 4;
+                            knockback = 2f;
+                            frontColor = Color.valueOf("ea8878");
+                            backColor = Color.valueOf("ea8878");
+                }}
+            );
 
-                        width = 40f;
-                        height = 11f;
-                        lifetime = 50f;
-                        ammoMultiplier = 2;
-                        healPercent = 0f;
-                        pierceCap = 4;
-                        knockback= 2f;
+            targetAir = false;
+            size = 3;
+            health = 350;
+            armor = 5;
+            rotateSpeed = 10f;
+            reload = 60f;
+            range = 160;
+            shootCone = 15f;
 
-                        frontColor = Color.valueOf("ea8878");
-                        backColor = Color.valueOf("ea8878");
+            shoot = new ShootSummon(0f, 0f, 0f, 0f);
+            shootY = Vars.tilesize * size;
+            ammoUseEffect = Fx.casing1;
+            outlineColor = olupisBlockOutlineColour;
+
+            coolant = consumeCoolant(0.1f);
+            limitRange(1f);
+            researchCostMultiplier = 0.05f;
+        }};
+
+        hive = new ItemTurret("hive"){{
+            requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
+            ammo(
+                    silicon, new BasicBulletType(2.5f, 11){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 1f;
+                        spawnUnit = OlupisUnits.mite;
                     }}
             );
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion("")
+            );
+
+            shootSound = Sounds.respawn;
+            shootY = 0f;
+            size = 4;
+            reload = 600f;
+            range = 650;
         }};
+
+        //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
+        //TODO: Recursor - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
+        //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 
         //endregion
         //region Power

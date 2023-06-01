@@ -12,6 +12,7 @@ import static mindustry.Vars.control;
 public class OlupisSounds {
 
     public static Music
+            space = new Music(),
             rick = new Music(),
             reclaiming_the_wasteland = new Music();
     public Seq<Music>
@@ -26,6 +27,8 @@ public class OlupisSounds {
         //https://www.youtube.com/watch?v=Jd-Yckgrf08 @60% speed
         Core.assets.load("music/rick.ogg", arc.audio.Music.class).loaded = a -> rick = a;
         Core.assets.load("music/reclaiming_the_wasteland.ogg", arc.audio.Music.class).loaded = a -> reclaiming_the_wasteland = a;
+
+        Core.assets.load("sounds/space.ogg", Music.class).loaded = (a) -> space = a;
     }
 
     //*least invasive approach, hopefully a mod that changes music still has the Seqs public*//
