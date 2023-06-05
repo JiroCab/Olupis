@@ -2,20 +2,21 @@ package olupis.content;
 
 import arc.graphics.Color;
 import arc.math.geom.Rect;
+import arc.struct.Seq;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.*;
 import mindustry.entities.abilities.UnitSpawnAbility;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.part.HoverPart;
-import mindustry.gen.Sounds;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.UnitType;
-import mindustry.type.Weapon;
+import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.unit.TankUnitType;
 import mindustry.world.meta.BlockFlag;
+import olupis.world.ai.OlupisMiningAi;
 import olupis.world.ai.SearchAndDestroyFlyingAi;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.NoBoilLiquidBulletType;
@@ -24,157 +25,20 @@ import olupis.world.entities.units.OlupisUnitType;
 
 public class OlupisUnits {
 
+    public static AmmoType lifeTimeDrill, lifeTimeWeapon;
     public static UnitType
         gnat,
         mite,
         porter,
         firefly,
-        zoner
+        zoner,
+        spirit
     ;
 
     public static void LoadUnits(){
-        //region Core Units
-        gnat = new OlupisUnitType("gnat"){{
-            constructor = UnitTypes.merui.constructor;
-            controller = u -> new MinerAI();
+        LoadAmmoType();
 
-            canBoost = allowLegStep = hovering = true;
-            legPhysicsLayer = false;
-
-            health = 420;
-            armor = 1f;
-            hitSize = 9f;
-            speed = 2.4f;
-            rotateSpeed = 4f;
-            boostMultiplier = 0.75f;
-            drag = 0.11f;
-            buildSpeed = 0.5f;
-            mineTier = 1;
-            mineSpeed = 5.5f;
-            groundLayer = Layer.legUnit - 1f;
-            researchCostMultiplier = 0f;
-            itemCapacity = 70;
-
-            legCount = 0;
-            legMoveSpace = 1.1f; //Limits world tiles movement
-            shadowElevation = 0.1f;
-            buildBeamOffset = 4.2f;
-            /*Corner Engines only*/
-            engineSize = -1;
-            setEnginesMirror(
-                    new UnitEngine(21 / 4f, 19 / 4f, 2.2f, 45f),
-                    new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
-            );
-
-                parts.add(new HoverPart(){{
-                    mirror = false;
-
-                    radius = 13f;
-                    phase = 320f;
-
-                    layerOffset = -0.001f;
-                    color = Color.valueOf("5C9F62");
-            }});
-
-            weapons.add(
-                    new Weapon() {{
-                         reload = 60*10;
-                         x = y = 0;
-                         shootStatus = StatusEffects.unmoving;
-                         shootStatusDuration = Fx.heal.lifetime;
-                         shoot.firstShotDelay = Fx.heal.lifetime-1;
-                         bullet = new BasicBulletType(0,-5) {{
-                             collidesTeam = true;
-                             keepVelocity = false;
-
-                             lifetime = 10*60;
-                             height = width = 20;
-                             spin = 3.5f;
-                             bulletInterval = 20;
-                             healAmount = 20;
-                             drag = 0.9f;
-
-                             backColor = frontColor = trailColor = lightColor = Pal.heal;
-                             chargeEffect = hitEffect = despawnEffect = Fx.heal;
-                             shrinkX = 25f/60f;
-                             shrinkY = 35f/60f;
-
-                             intervalBullets = 2;
-                             intervalSpread = 180;
-                             intervalRandomSpread = 90;
-                             intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
-                                 collidesTeam = true;
-                                 keepVelocity = false;
-
-                                 lifetime = 60;
-                                 bulletInterval = 10;
-                                 healAmount = 20;
-                                 homingPower = 0.09f;
-
-                                 backColor = frontColor = trailColor = lightColor = Pal.heal;
-                                 trailWidth = 1.5f;
-                                 trailLength = 15;
-                                 hitEffect = despawnEffect = Fx.heal;
-                             }};
-
-                         }};
-                    }}
-            );
-        }};
-
-        //endregion
-        //region Olupis Units
-
-        mite = new AmmoLifeTimeUnitType("mite"){{
-            constructor = UnitTypes.flare.constructor;
-            useUnitCap = false;
-            controller = u -> new SearchAndDestroyFlyingAi();
-            ammoDepleteAmount = 0.6f;
-            lightRadius = 15f;
-            lightOpacity = 50f;
-
-            flying = true;
-            playerControllable  = logicControllable = false;
-
-            health = 80;
-            armor = 1;
-            hitSize = 9;
-            speed = 2.7f;
-            accel = 0.08f;
-            drag = 0.04f;
-            range = 45f;
-            itemCapacity = 10;
-
-            engineOffset = 5.75f;
-
-            targetFlags = new BlockFlag[]{BlockFlag.generator, null};
-            weapons.add(new Weapon(){{
-                y = x = 0f;
-                reload = shootCone = 10f;
-                autoTarget = true;
-                targetSwitchInterval = 380f;
-                targetInterval = 50f;
-
-                shootSound = Sounds.pew;
-                /*Gave up using LiquidBulletType*/
-                bullet = new NoBoilLiquidBulletType(OlupisItemsLiquid.steam){{
-                    useAmmo = true;
-                    pierce = true;
-
-                    speed = 2f;
-                    lifetime = 18f;
-                    pierceCap = 1;
-                    ammoMultiplier = 1.5f;
-                    status = StatusEffects.corroded;
-                    statusDuration = 1f *60f;
-
-                    shootEffect = Fx.shootLiquid;
-                    despawnEffect = Fx.steam;
-                    hitEffect = Fx.steam;
-                }};
-            }});
-        }};
-
+        //region Olupis Regular Units
         zoner = new OlupisUnitType("zoner"){{
             constructor = UnitTypes.flare.constructor;
 
@@ -255,6 +119,216 @@ public class OlupisUnits {
             abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 1, 0));
         }};
         //endregion
+
+        //region Olupis Limited LifeTime Units
+
+        mite = new AmmoLifeTimeUnitType("mite"){{
+            constructor = UnitTypes.flare.constructor;
+            useUnitCap = false;
+            controller = u -> new SearchAndDestroyFlyingAi();
+            ammoDepleteAmount = 0.6f;
+            lightRadius = 15f;
+            lightOpacity = 50f;
+
+            flying = true;
+            playerControllable  = logicControllable = false;
+
+            health = 80;
+            armor = 1;
+            hitSize = 9;
+            speed = 2.7f;
+            accel = 0.08f;
+            drag = 0.04f;
+            range = 45f;
+            itemCapacity = 10;
+
+            engineOffset = 5.75f;
+
+            targetFlags = new BlockFlag[]{BlockFlag.generator, null};
+            weapons.add(new Weapon(){{
+                y = x = 0f;
+                reload = shootCone = 10f;
+                autoTarget = true;
+                targetSwitchInterval = 380f;
+                targetInterval = 50f;
+
+                shootSound = Sounds.pew;
+                ammoType = lifeTimeWeapon;
+                /*Gave up using LiquidBulletType*/
+                bullet = new NoBoilLiquidBulletType(OlupisItemsLiquid.steam){{
+                    useAmmo = true;
+                    pierce = true;
+
+                    speed = 2f;
+                    lifetime = 18f;
+                    pierceCap = 1;
+                    ammoMultiplier = 1.5f;
+                    status = StatusEffects.corroded;
+                    statusDuration = 1f *60f;
+
+                    shootEffect = Fx.shootLiquid;
+                    despawnEffect = Fx.steam;
+                    hitEffect = Fx.steam;
+                }};
+            }});
+        }};
+
+        spirit = new AmmoLifeTimeUnitType("spirit"){{
+            constructor = UnitEntity::create;
+            controller = u -> new OlupisMiningAi();
+
+            flying = miningDepletesAmmo = true;
+            isEnemy = useUnitCap = ammoDepletesOverTime = false;
+            mineTier = 1;
+            mineSpeed = 2f;
+            range = 30f;
+            ammoCapacity = 100;
+            itemCapacity = 30;
+            ammoDepleteAmount = 0.2f;
+
+
+            ammoType = lifeTimeDrill;
+        }};
+        //endregion
+
+        //region Olupis Core Units
+
+        gnat = new OlupisUnitType("gnat"){{
+            constructor = UnitTypes.merui.constructor;
+            controller = u -> new MinerAI();
+            mineItems = Seq.with(OlupisItemsLiquid.rustyIron, Items.lead, Items.scrap);
+
+            canBoost = allowLegStep = hovering = true;
+            legPhysicsLayer = false;
+
+            health = 420;
+            armor = 1f;
+            hitSize = 9f;
+            speed = 2.4f;
+            rotateSpeed = 4f;
+            boostMultiplier = 0.75f;
+            drag = 0.11f;
+            buildSpeed = 0.5f;
+            mineTier = 1;
+            mineSpeed = 5.5f;
+            groundLayer = Layer.legUnit - 1f;
+            researchCostMultiplier = 0f;
+            itemCapacity = 70;
+
+            legCount = 0;
+            legMoveSpace = 1.1f; //Limits world tiles movement
+            shadowElevation = 0.1f;
+            buildBeamOffset = 4.2f;
+            /*Corner Engines only*/
+            engineSize = -1;
+            setEnginesMirror(
+                    new UnitEngine(21 / 4f, 19 / 4f, 2.2f, 45f),
+                    new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
+            );
+
+            parts.add(new HoverPart(){{
+                mirror = false;
+
+                radius = 13f;
+                phase = 320f;
+
+                layerOffset = -0.001f;
+                color = Color.valueOf("5C9F62");
+            }});
+
+            weapons.add(
+                    new Weapon() {{
+                        reload = 60*10;
+                        x = y = 0;
+                        shootStatus = StatusEffects.unmoving;
+                        shootStatusDuration = Fx.heal.lifetime;
+                        shoot.firstShotDelay = Fx.heal.lifetime-1;
+                        bullet = new BasicBulletType(0,-5) {{
+                            collidesTeam = true;
+                            keepVelocity = false;
+
+                            lifetime = 10*60;
+                            height = width = 20;
+                            spin = 3.5f;
+                            bulletInterval = 20;
+                            healAmount = 20;
+                            drag = 0.9f;
+
+                            backColor = frontColor = trailColor = lightColor = Pal.heal;
+                            chargeEffect = hitEffect = despawnEffect = Fx.heal;
+                            shrinkX = 25f/60f;
+                            shrinkY = 35f/60f;
+
+                            intervalBullets = 2;
+                            intervalSpread = 180;
+                            intervalRandomSpread = 90;
+                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
+                                collidesTeam = true;
+                                keepVelocity = false;
+
+                                lifetime = 60;
+                                bulletInterval = 10;
+                                healAmount = 20;
+                                homingPower = 0.09f;
+
+                                backColor = frontColor = trailColor = lightColor = Pal.heal;
+                                trailWidth = 1.5f;
+                                trailLength = 15;
+                                hitEffect = despawnEffect = Fx.heal;
+                            }};
+
+                        }};
+                    }}
+            );
+        }};
+
+        //endregion
+    }
+
+    /*Common custom ammo types for the lifetime units*/
+    public static void LoadAmmoType(){
+
+        lifeTimeDrill = new AmmoType() {
+            @Override
+            public String icon() {
+                return Iconc.production + "";
+            }
+
+            @Override
+            public Color color() {
+                return Pal.ammo;
+            }
+
+            @Override
+            public Color barColor() {
+                return Color.green;
+            }
+
+            @Override
+            public void resupply(Unit unit) {}
+        };
+
+        lifeTimeWeapon = new AmmoType() {
+            @Override
+            public String icon() {
+                return Iconc.commandAttack + "";
+            }
+
+            @Override
+            public Color color() {
+                return Pal.accent;
+            }
+
+            @Override
+            public Color barColor() {
+                return Pal.ammo;
+            }
+
+            @Override
+            public void resupply(Unit unit) {}
+        };
+
+
     }
 
 

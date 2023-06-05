@@ -22,11 +22,20 @@ public class AmmoLifeTimeUnitType extends  OlupisUnitType {
     public  boolean ammoDepletesOverTime = true;
     /*Custom logic to kill unit on no ammo*/
     public  boolean killOnAmmoDepletes = true;
-    public float time;
     /*Amount to deplete per tick*/
-    public  Float ammoDepleteAmount = 0.2f;
+    public float ammoDepleteAmount = 0.2f;
+    /*Ammo amount that will trigger death*/
+    public float minimumAmmoBeforeKill = 0.1f;
+    /*mining depletes ammo*/
+    public boolean miningDepletesAmmo = false;
+    /*Time before depleting ammo*/
+    public float depleteAmmoOffset = 10f;
+    float startTime;
+
+    //TODO: Range limit them
 
     public AmmoLifeTimeUnitType(String name){
+        /*let's just hope that ammo is never removed at least not removed internally */
         super(name);
         envDisabled = Env.none;
     }
@@ -48,7 +57,7 @@ public class AmmoLifeTimeUnitType extends  OlupisUnitType {
             bars.row();
 
             if(state.rules.unitAmmo || killOnAmmoDepletes ){
-                bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> unit.ammo / ammoCapacity));
+                bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> unit.ammo / (ammoCapacity - minimumAmmoBeforeKill)));
                 bars.row();
             }
 
@@ -94,15 +103,24 @@ public class AmmoLifeTimeUnitType extends  OlupisUnitType {
 
     @Override
     public void update(Unit unit){
-        if (unit.ammo <= 0.1f && killOnAmmoDepletes){
-            Fx.drillSteam.at(unit);
-            Fx.steam.at(unit);
-            Sounds.explosion.at(unit);
+        if (unit.ammo <= minimumAmmoBeforeKill && killOnAmmoDepletes){
+            deathSFX(unit);
             unit.remove();
         }
 
-        if(ammoDepletesOverTime){
+        boolean shouldDeplete = (startTime+ depleteAmmoOffset) >= startTime;
+        if(ammoDepletesOverTime && shouldDeplete){
             unit.ammo = unit.ammo - ammoDepleteAmount;
         }
+
+        if(miningDepletesAmmo && unit.mining()){
+            unit.ammo = unit.ammo - ammoDepleteAmount;
+        }
+    }
+
+    public void deathSFX(Unit unit){
+        Fx.drillSteam.at(unit);
+        Fx.steam.at(unit);
+        Sounds.explosion.at(unit);
     }
 }

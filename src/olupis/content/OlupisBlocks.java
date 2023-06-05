@@ -16,8 +16,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.LiquidTurret;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.*;
@@ -63,16 +62,26 @@ public class OlupisBlocks {
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom,
 
-        //Buildings
-        garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve,
-        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader,
-        leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
-        wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator,
-        steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
+        //Buildings, sorted by category
         corroder, dissolver, shredder, hive, escalation, recursor, shatter,
-    rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
+
+        steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
+
+        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader,
+
+        leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
+
+        wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator,
+
+        rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
+
+        garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve,
+
+        spirtConstruct,
+
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
+
         fortifiedMessageBlock
     ; //endregion
 
@@ -784,6 +793,29 @@ public class OlupisBlocks {
 
         //endregion
         //region Units
+
+        spirtConstruct = new PowerTurret("spirit-construct"){{
+            requirements(Category.units, with(iron, 200, lead, 100, silicon, 60));
+            shootType = new BasicBulletType(2.5f, -1){{
+
+                shootEffect = Fx.unitLand;
+                ammoMultiplier = 1f;
+                spawnUnit = OlupisUnits.spirit;
+            }};
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion("")
+            );
+
+            consumePower(6f);
+            alwaysShooting = true;
+            shootSound = Sounds.respawn;
+            shootY = 0f;
+            size = 4;
+            reload = 600f;
+        }};
+
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
             delay = 5;

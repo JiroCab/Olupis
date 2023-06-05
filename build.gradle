@@ -79,8 +79,7 @@ jar{
     }
 
     from(rootDir){
-        include "mod.hjson", "changelog.txt"
-
+        include "mod.hjson", "changelog.txt", "icon.png"
     }
 
     from("assets/"){
