@@ -2,6 +2,7 @@ package olupis.world.ai;
 
 import arc.struct.Seq;
 import mindustry.Vars;
+import mindustry.ai.Pathfinder;
 import mindustry.content.Blocks;
 import mindustry.entities.units.AIController;
 import mindustry.gen.Building;
@@ -75,7 +76,15 @@ public class OlupisMiningAi extends AIController {
                 }
 
                 if(ore != null){
-                    moveTo(ore, unit.type.mineRange / 2f, 20f);
+
+                    //TODO: actually finish this
+                    if(!unit.type.flying){
+                        if (!unit.within(ore, unit.type.mineRange)){
+                            Tile pathfindTarget = Vars.pathfinder.getTargetTile(ore, Vars.pathfinder.getField(unit.team, unit.pathType(), Pathfinder.fieldCore));
+                            unit.movePref(vec.trns(unit.angleTo(pathfindTarget.worldx(), pathfindTarget.worldy()), unit.speed()));
+                        } else moveTo(ore, unit.type.mineRange / 2f, 20f);
+                    }
+                    else moveTo(ore, unit.type.mineRange / 2f, 20f);
 
                     if(ore.block() == Blocks.air && unit.within(ore, unit.type.mineRange)){
                         unit.mineTile = ore;
@@ -94,7 +103,7 @@ public class OlupisMiningAi extends AIController {
                 return;
             }
 
-            if(unit.within(core, unit.type.range)){
+            if(unit.within(core, Math.max(unit.type.range, unit.type.mineRange))){
                 if(core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
                     Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
                 }
@@ -103,7 +112,12 @@ public class OlupisMiningAi extends AIController {
                 mining = true;
             }
 
-            circle(core, unit.type.range / 1.8f);
+            if(!unit.type.flying){
+                if (!unit.within(core, unit.type.mineRange)){
+                    Tile pathfindTarget = Vars.pathfinder.getTargetTile(core.tile, Vars.pathfinder.getField(unit.team, unit.pathType(), Pathfinder.fieldCore));
+                    unit.movePref(vec.trns(unit.angleTo(pathfindTarget.worldx(), pathfindTarget.worldy()), unit.speed()));
+                } else circle(core, unit.type.mineRange / 2f);
+            } else circle(core, unit.type.range / 1.8f);
         }
     }
 }

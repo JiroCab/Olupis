@@ -7,7 +7,7 @@ import mindustry.type.*;
 
 public class OlupisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt;
+    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz;
     public static Planet[] hideList = new Planet[]{Planets.erekir, Planets.serpulo, Planets.tantros};
     public static final Seq<Item> olupisOnlyItems = new Seq<>(), olupisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam;
@@ -23,26 +23,26 @@ public class OlupisItemsLiquid {
             hiddenOnPlanets = hideList;
         }};
         rustyIron = new Item("rusty-iron", Color.valueOf("ccac8b")) {{
-            buildable = false;
-
             hardness = 1;
 
             hiddenOnPlanets = hideList;
         }};
         iron = new Item("iron", Color.valueOf("f0ece4")) {{
-            buildable = false;
-
             hardness = 2;
             healthScaling = 0.25f;
 
             hiddenOnPlanets = hideList;
         }};
         cobalt = new Item("cobalt", Color.valueOf("0b6e87")) {{
-            buildable = false;
-
             hardness = 2;
             charge = 0.5f;
             healthScaling = 0.25f;
+
+            hiddenOnPlanets = hideList;
+        }};
+        quartz = new Item("quartz", Color.valueOf("E2D6D5")){{
+            hardness = 2;
+            hiddenOnPlanets = hideList;
         }};
 
         olupisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt);

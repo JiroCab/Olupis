@@ -75,9 +75,9 @@ public class OlupisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
 
-        garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve,
+        garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve, siliconArcSmelter,
 
-        spirtConstruct,
+        construct,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
@@ -480,7 +480,7 @@ public class OlupisBlocks {
         }};
 
         //endregion
-        //region Drills
+        //region Drills / crafting
         rustyDrill = new BoostableBurstDrill("rusty-drill"){{
             hasPower = true;
             squareSprite = false;
@@ -524,6 +524,30 @@ public class OlupisBlocks {
             consumePower(0.3f);
             consumeLiquid(Liquids.slag, 0.06f).boost();
             requirements(Category.production, with(iron, 55, rustyIron, 70, lead, 30));
+        }};
+
+        garden = new AttributeCrafter("garden"){{
+            hasLiquids = hasPower = hasItems = legacyReadWarmup = true;
+
+            craftTime = 200;
+            size = 3;
+            maxBoost = 2.5f;
+            attribute = Registry.Bio;
+            //envRequired |= Env.terrestrial;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawRegion("-middle"),
+                    new DrawLiquidTile(Liquids.water){{alpha = 0.5f;}},
+                    new DrawDefault(),
+                    new DrawRegion("-top")
+            );
+            craftEffect = Fx.none;
+
+            outputItem = new ItemStack(condensedBiomatter, 1);
+            consumePower(80f / 60f);
+            consumeLiquid(Liquids.water, 18f / 60f);
+            requirements(Category.production, ItemStack.with(iron, 150, lead, 60, rustyIron, 30));
         }};
 
         //endregion
@@ -690,55 +714,6 @@ public class OlupisBlocks {
 
         //endregion
         //region Production
-        garden = new AttributeCrafter("garden"){{
-            hasLiquids = hasPower = hasItems = legacyReadWarmup = true;
-
-            craftTime = 200;
-            size = 3;
-            maxBoost = 2.5f;
-            attribute = Registry.Bio;
-            //envRequired |= Env.terrestrial;
-
-            drawer = new DrawMulti(
-                    new DrawRegion("-bottom"),
-                    new DrawRegion("-middle"),
-                    new DrawLiquidTile(Liquids.water){{alpha = 0.5f;}},
-                    new DrawDefault(),
-                    new DrawRegion("-top")
-            );
-            craftEffect = Fx.none;
-
-            outputItem = new ItemStack(condensedBiomatter, 1);
-            consumePower(80f / 60f);
-            consumeLiquid(Liquids.water, 18f / 60f);
-            requirements(Category.production, ItemStack.with(iron, 30, lead, 30));
-        }};
-
-        bioMatterPress = new GenericCrafter("biomatter-press"){{
-            hasLiquids = hasPower = true;
-
-            craftTime = 20f;
-            liquidCapacity = 60f;
-            size = 2;
-            health = 320;
-
-            drawer = new DrawMulti(
-                    new DrawRegion("-bottom"),
-                    new DrawPistons(){{
-                        sinMag = 1f;
-                    }},
-                    new DrawDefault(),
-                    new DrawLiquidRegion(),
-                    new DrawRegion("-top")
-            );
-            craftEffect = Fx.none;
-
-            outputLiquid = new LiquidStack(oil, 18f / 60f);
-            consumePower(0.7f);
-            consumeItem(condensedBiomatter, 1);
-            requirements(Category.crafting, with(iron, 100, lead, 10));
-        }};
-
         rustElectrolyzer = new GenericCrafter("rust-electrolyzer"){{
             hasPower = hasItems = hasLiquids = solid = outputsLiquid = true;
             rotate = false;
@@ -771,7 +746,44 @@ public class OlupisBlocks {
             outputItem = new ItemStack(Items.graphite, 1);
             consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, OlupisItemsLiquid.steam, 10f/60f));
             consumePower(30f/60f);
-            requirements(Category.crafting, with(OlupisItemsLiquid.iron, 150, rustyIron, 300));
+            requirements(Category.crafting, with(iron, 150, rustyIron, 300));
+        }};
+
+        siliconArcSmelter = new GenericCrafter("silicon-arc-smelters") {{
+            hasPower= hasItems = true;
+            craftTime = 30f;
+            itemCapacity = 20;
+            size = 4;
+
+            outputItem = new ItemStack(silicon, 1);
+            consumeItems(with(quartz, 2, graphite, 1));
+            consumePower(30f/60f);
+            requirements(Category.crafting, with(lead, 100, graphite, 60, iron, 30));
+        }};
+
+        bioMatterPress = new GenericCrafter("biomatter-press"){{
+            hasLiquids = hasPower = true;
+
+            craftTime = 20f;
+            liquidCapacity = 60f;
+            size = 2;
+            health = 320;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawPistons(){{
+                        sinMag = 1f;
+                    }},
+                    new DrawDefault(),
+                    new DrawLiquidRegion(),
+                    new DrawRegion("-top")
+            );
+            craftEffect = Fx.none;
+
+            outputLiquid = new LiquidStack(oil, 18f / 60f);
+            consumePower(0.7f);
+            consumeItem(condensedBiomatter, 1);
+            requirements(Category.crafting, with(iron, 100, lead, 30));
         }};
 
         ironSieve  = new GenericCrafter("iron-sieve"){{
@@ -794,7 +806,7 @@ public class OlupisBlocks {
         //endregion
         //region Units
 
-        spirtConstruct = new PowerTurret("spirit-construct"){{
+        construct = new PowerTurret("construct"){{
             requirements(Category.units, with(iron, 200, lead, 100, silicon, 60));
             shootType = new BasicBulletType(2.5f, -1){{
 
@@ -835,23 +847,24 @@ public class OlupisBlocks {
         corroder = new LiquidTurret("corroder"){{ //architronito
             requirements(Category.turret, with(rustyIron, 50, lead, 10));
             ammo(
-                    Liquids.water, new LiquidBulletType(Liquids.water){{
-                        lifetime = 14f;
-                        speed = 5.5f;
-                        drag = 0.008f;
-                        damage = 6;
-                        statusDuration = 60f * 2;
-                        ammoMultiplier = 5f;
+                Liquids.water, new LiquidBulletType(Liquids.water){{
+                    lifetime = 19f;
+                    speed = 5.5f;
+                    drag = 0.008f;
+                    damage = 15;
+                    statusDuration = 60f * 2;
+                    ammoMultiplier = 5f;
+                    rangeChange = 20f;
 
-                        status = StatusEffects.corroded;
-                        layer = Layer.bullet -2f;
-                    }},
-                    steam, new NoBoilLiquidBulletType(steam){{
+                    status = StatusEffects.corroded;
+                    layer = Layer.bullet -2f;
+                }},
+                steam, new NoBoilLiquidBulletType(steam){{
                         evaporatePuddles = true;
 
                         lifetime = 10f;
                         speed = 7.7f;
-                        damage = 15f;
+                        damage = 26f;
                         drag = 0.009f;
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 4;
@@ -884,11 +897,10 @@ public class OlupisBlocks {
 
             liquidCapacity = 5f;
             recoil = 1;
-            shootY = 10f;
-            reload = 10f;
-            range = 75f;
+            shootY = reload = 10f;
+            range = 85f;
             shootCone = 50f;
-            health = 1000;
+            health = 1500;
             size = 2;
 
             outlineColor = olupisBlockOutlineColour;
@@ -904,13 +916,14 @@ public class OlupisBlocks {
             requirements(Category.turret, with(iron, 50, lead, 50));
             ammo(
                     Liquids.water, new LiquidBulletType(Liquids.water){{
-                        lifetime = 21.5f;
+                        lifetime = 30f;
                         speed = 5.8f;
                         hitSize = 7f;
-                        damage = 6;
+                        damage = 24;
                         drag = 0.0009f;
-                        ammoMultiplier = 5f;
+                        ammoMultiplier = 4f;
                         statusDuration = 60f * 2;
+                        rangeChange = 40f;
 
                         status = StatusEffects.corroded;
                         layer = Layer.bullet -2f;
@@ -922,7 +935,7 @@ public class OlupisBlocks {
                         lifetime = 14.5f;
                         speed = 8.8f;
                         hitSize = 7f;
-                        damage = 10f;
+                        damage = 20f;
                         drag = 0.0009f;
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 4;

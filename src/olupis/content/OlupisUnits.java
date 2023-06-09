@@ -4,7 +4,6 @@ import arc.graphics.Color;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import mindustry.ai.UnitCommand;
-import mindustry.ai.types.MinerAI;
 import mindustry.content.*;
 import mindustry.entities.abilities.UnitSpawnAbility;
 import mindustry.entities.bullet.BasicBulletType;
@@ -124,17 +123,16 @@ public class OlupisUnits {
 
         mite = new AmmoLifeTimeUnitType("mite"){{
             constructor = UnitTypes.flare.constructor;
-            useUnitCap = false;
             controller = u -> new SearchAndDestroyFlyingAi();
             ammoDepleteAmount = 0.6f;
             lightRadius = 15f;
             lightOpacity = 50f;
 
             flying = true;
-            playerControllable  = logicControllable = false;
+            playerControllable  = logicControllable = useUnitCap = false;
 
             health = 80;
-            armor = 1;
+            armor = 5;
             hitSize = 9;
             speed = 2.7f;
             accel = 0.08f;
@@ -142,7 +140,6 @@ public class OlupisUnits {
             range = 45f;
             itemCapacity = 10;
 
-            engineOffset = 5.75f;
 
             targetFlags = new BlockFlag[]{BlockFlag.generator, null};
             weapons.add(new Weapon(){{
@@ -158,17 +155,17 @@ public class OlupisUnits {
                 bullet = new NoBoilLiquidBulletType(OlupisItemsLiquid.steam){{
                     useAmmo = true;
                     pierce = true;
+                    damage = 10f;
 
                     speed = 2f;
                     lifetime = 18f;
                     pierceCap = 1;
                     ammoMultiplier = 1.5f;
                     status = StatusEffects.corroded;
-                    statusDuration = 1f *60f;
+                    statusDuration = 1.5f *60f;
 
                     shootEffect = Fx.shootLiquid;
-                    despawnEffect = Fx.steam;
-                    hitEffect = Fx.steam;
+                    despawnEffect = hitEffect = Fx.steam;
                 }};
             }});
         }};
@@ -180,7 +177,7 @@ public class OlupisUnits {
             flying = miningDepletesAmmo = true;
             isEnemy = useUnitCap = ammoDepletesOverTime = false;
             mineTier = 1;
-            mineSpeed = 2f;
+            mineSpeed = 3.5f;
             range = 30f;
             ammoCapacity = 100;
             itemCapacity = 30;
@@ -195,7 +192,7 @@ public class OlupisUnits {
 
         gnat = new OlupisUnitType("gnat"){{
             constructor = UnitTypes.merui.constructor;
-            controller = u -> new MinerAI();
+            controller = u -> new OlupisMiningAi();
             mineItems = Seq.with(OlupisItemsLiquid.rustyIron, Items.lead, Items.scrap);
 
             canBoost = allowLegStep = hovering = true;
