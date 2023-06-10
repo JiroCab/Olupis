@@ -46,7 +46,7 @@ public class OlupisBlocks {
         olupisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom,
 
         /*Ores*/
-        oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead,
+        oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead, oreQuartz,
 
         /*Floors*/
         redSand, lumaGrass, cinderBloomGrass, cinderBloomy, cinderBloomer, cinderBloomiest, mossyStone, mossierStone, mossiestStone, frozenGrass,
@@ -63,7 +63,7 @@ public class OlupisBlocks {
         yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom,
 
         //Buildings, sorted by category
-        corroder, dissolver, shredder, hive, escalation, recursor, shatter,
+        corroder, dissolver, shredder, hive, escalation, blitz, shatter,
 
         steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
 
@@ -101,6 +101,10 @@ public class OlupisBlocks {
         /*uses ore's item as a name block in editor*/
         oreOxidizedCopper = new OreBlock("ore-oxidized-copper", copper);
         oreOxidizedLead = new OreBlock("ore-oxidized-lead", lead);
+
+        oreQuartz = new OreBlock("ore-quartz", quartz){{
+          variants = 1;
+        }};
 
         frozenGrass = new Floor("frozen-grass"){{
             attributes.set(Attribute.water, 0.15f);
@@ -848,28 +852,29 @@ public class OlupisBlocks {
             requirements(Category.turret, with(rustyIron, 50, lead, 10));
             ammo(
                 Liquids.water, new LiquidBulletType(Liquids.water){{
-                    lifetime = 19f;
-                    speed = 5.5f;
-                    drag = 0.008f;
-                    damage = 15;
-                    statusDuration = 60f * 2;
-                    ammoMultiplier = 5f;
-                    rangeChange = 20f;
+                        status = StatusEffects.corroded;
+                        layer = Layer.bullet -2f;
 
-                    status = StatusEffects.corroded;
-                    layer = Layer.bullet -2f;
+                        lifetime = 19.5f;
+                        speed = 5.5f;
+                        drag = 0.008f;
+                        damage = 15;
+                        statusDuration = 60f * 2;
+                        ammoMultiplier = 5f;
+                        rangeChange = 15f;
+
                 }},
                 steam, new NoBoilLiquidBulletType(steam){{
-                        evaporatePuddles = true;
+                        evaporatePuddles = pierce = true;
+                        status = StatusEffects.corroded;
 
-                        lifetime = 10f;
-                        speed = 7.7f;
-                        damage = 26f;
+                        lifetime = 12f;
+                        speed = 8f;
+                        damage = 28f;
                         drag = 0.009f;
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 4;
-
-                        status = StatusEffects.corroded;
+                        pierceCap = 2;
                     }}
             );
             drawer = new DrawTurret("iron-"){{
@@ -898,7 +903,7 @@ public class OlupisBlocks {
             liquidCapacity = 5f;
             recoil = 1;
             shootY = reload = 10f;
-            range = 85f;
+            range = 90f;
             shootCone = 50f;
             health = 1500;
             size = 2;
@@ -916,7 +921,7 @@ public class OlupisBlocks {
             requirements(Category.turret, with(iron, 50, lead, 50));
             ammo(
                     Liquids.water, new LiquidBulletType(Liquids.water){{
-                        lifetime = 30f;
+                        lifetime = 28.5f;
                         speed = 5.8f;
                         hitSize = 7f;
                         damage = 24;
@@ -924,6 +929,7 @@ public class OlupisBlocks {
                         ammoMultiplier = 4f;
                         statusDuration = 60f * 2;
                         rangeChange = 40f;
+                        size = 3;
 
                         status = StatusEffects.corroded;
                         layer = Layer.bullet -2f;
@@ -935,7 +941,7 @@ public class OlupisBlocks {
                         lifetime = 14.5f;
                         speed = 8.8f;
                         hitSize = 7f;
-                        damage = 20f;
+                        damage = 22f;
                         drag = 0.0009f;
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 4;
@@ -971,13 +977,11 @@ public class OlupisBlocks {
                         width = 40f;
                         height = 9f;
                         lifetime = 60f;
-                        ammoMultiplier = 2;
+                        ammoMultiplier = pierceCap = 2;
                         healPercent = 0f;
-                        pierceCap = 3;
-                        knockback= 2f;
+                        knockback= 3f;
 
-                        frontColor = Color.valueOf("ea8878");
-                        backColor = Color.valueOf("ea8878");
+                        frontColor = backColor = Color.valueOf("ea8878");
                     }},
                     iron, new BasicBulletType(3f, 23){{
                             collidesTeam = collideTerrain = true;
@@ -989,9 +993,8 @@ public class OlupisBlocks {
                             ammoMultiplier = 2;
                             healPercent = 0f;
                             pierceCap = 4;
-                            knockback = 2f;
-                            frontColor = Color.valueOf("ea8878");
-                            backColor = Color.valueOf("ea8878");
+                            knockback = 3f;
+                            frontColor = backColor = Color.valueOf("ea8878");
                 }}
             );
 
@@ -1036,7 +1039,7 @@ public class OlupisBlocks {
         }};
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
-        //TODO: Recursor - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
+        //TODO: Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 
         //endregion
@@ -1137,7 +1140,7 @@ public class OlupisBlocks {
         //region Wall
         rustyWall = new Wall("rusty-wall"){{
             size = 1;
-            health =  320;
+            health =  350;
 
             researchCost = with(rustyIron,80);
             requirements(Category.defense,with(rustyIron, 12));
@@ -1145,7 +1148,7 @@ public class OlupisBlocks {
 
         rustyWallLarge = new Wall("rusty-wall-large"){{
             size = 2;
-            health =  1640;
+            health =  1700;
 
             researchCost = with(rustyIron,200);
             requirements(Category.defense,with(rustyIron, 48));
@@ -1153,7 +1156,7 @@ public class OlupisBlocks {
 
         rustyWallHuge = new Wall("rusty-wall-huge"){{
             size = 3;
-            health = 1280;
+            health = 2690;
 
             researchCost = with(rustyIron,1000);
             requirements(Category.defense,with(rustyIron, 620));
@@ -1161,7 +1164,7 @@ public class OlupisBlocks {
 
         rustyWallGigantic = new Wall("rusty-wall-gigantic"){{
             size = 4;
-            health = 1940;
+            health = 3600;
 
             researchCost = with(rustyIron,4200);
             requirements(Category.defense, BuildVisibility.sandboxOnly, with(rustyIron, 1500));
@@ -1169,14 +1172,14 @@ public class OlupisBlocks {
 
         ironWall = new Wall("iron-wall"){{
             size = 1;
-            health = 640;
+            health = 700;
 
             requirements(Category.defense,with(iron, 12));
         }};
 
         ironWallLarge = new Wall("iron-wall-large"){{
             size = 2;
-            health = 2530;
+            health = 2800;
 
             requirements(Category.defense,with(iron, 196));
         }};
@@ -1239,6 +1242,7 @@ public class OlupisBlocks {
 
             size = 3;
             reload = 20f;
+
             shootType = new BasicBulletType(5.2f, -5, "olupis-diamond-bullet"){{
                 lifetime = 30f;
                 healPercent = 7f;
