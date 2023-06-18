@@ -34,26 +34,26 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
     Block[][] arr =
             {
-                    { OlupisBlocks.mossyWater, OlupisBlocks.mossStone, OlupisBlocks.mossiestStone, OlupisBlocks.mossierStone, OlupisBlocks.mossyStone, Blocks.stone },
-                    { OlupisBlocks.mossyWater, OlupisBlocks.mossiestStone, OlupisBlocks.mossierStone, OlupisBlocks.mossyStone, Blocks.stone, Blocks.grass},
-                    { OlupisBlocks.mossyWater, OlupisBlocks.mossierStone, OlupisBlocks.mossyStone, Blocks.stone, OlupisBlocks.mossyStone, OlupisBlocks.mossierStone},
-                    {OlupisBlocks.mossyWater, OlupisBlocks.mossyWater, OlupisBlocks.mossierStone, OlupisBlocks.mossyStone, Blocks.stone, OlupisBlocks.mossyStone, Blocks.stone},
-                    {Blocks.water, Blocks.sandWater, Blocks.sandWater, OlupisBlocks.mossierStone, Blocks.stone, OlupisBlocks.mossyStone, OlupisBlocks.mossierStone},
-                    {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.dirt, OlupisBlocks.mossyStone, Blocks.dirt, Blocks.stone, Blocks.grass },
+                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossStone, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone },
+                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, Blocks.grass},
+                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, NyfalisBlocks.mossierStone},
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, Blocks.stone},
+                    {Blocks.water, Blocks.sandWater, Blocks.sandWater, NyfalisBlocks.mossierStone, Blocks.stone, NyfalisBlocks.mossyStone, NyfalisBlocks.mossierStone},
+                    {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.dirt, NyfalisBlocks.mossyStone, Blocks.dirt, Blocks.stone, Blocks.grass },
                     { Blocks.sandWater, Blocks.sandWater, Blocks.dirt, Blocks.dirt, Blocks.stone, Blocks.grass, Blocks.grass},
-                    { Blocks.water, Blocks.dirt, Blocks.dirt, Blocks.stone, Blocks.grass, Blocks.grass, Blocks.stone, OlupisBlocks.frozenGrass},
-                    {Blocks.dirt, Blocks.stone, Blocks.grass, OlupisBlocks.frozenGrass, Blocks.stone, OlupisBlocks.frozenGrass , Blocks.stone},
-                    {Blocks.dirt, Blocks.stone, Blocks.grass, OlupisBlocks.frozenGrass, Blocks.ice, OlupisBlocks.frozenGrass},
-                    {Blocks.snow, Blocks.stone, Blocks.grass, OlupisBlocks.frozenGrass, Blocks.ice, OlupisBlocks.frozenGrass}
+                    { Blocks.water, Blocks.dirt, Blocks.dirt, Blocks.stone, Blocks.grass, Blocks.grass, Blocks.stone, NyfalisBlocks.frozenGrass},
+                    {Blocks.dirt, Blocks.stone, Blocks.grass, NyfalisBlocks.frozenGrass, Blocks.stone, NyfalisBlocks.frozenGrass , Blocks.stone},
+                    {Blocks.dirt, Blocks.stone, Blocks.grass, NyfalisBlocks.frozenGrass, Blocks.ice, NyfalisBlocks.frozenGrass},
+                    {Blocks.snow, Blocks.stone, Blocks.grass, NyfalisBlocks.frozenGrass, Blocks.ice, NyfalisBlocks.frozenGrass}
             };
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
-            Blocks.grass, OlupisBlocks.bush,
+            Blocks.grass, NyfalisBlocks.bush,
             Blocks.grass, Blocks.boulder,
-            OlupisBlocks.mossStone, OlupisBlocks.mossyBoulder,
-            OlupisBlocks.mossiestStone, OlupisBlocks.mossyBoulder,
-            OlupisBlocks.mossierStone, OlupisBlocks.mossyBoulder,
-            OlupisBlocks.mossStone, OlupisBlocks.mossyBoulder,
+            NyfalisBlocks.mossStone, NyfalisBlocks.mossyBoulder,
+            NyfalisBlocks.mossiestStone, NyfalisBlocks.mossyBoulder,
+            NyfalisBlocks.mossierStone, NyfalisBlocks.mossyBoulder,
+            NyfalisBlocks.mossStone, NyfalisBlocks.mossyBoulder,
             Blocks.sandWater, Blocks.water,
             Blocks.darksandWater, Blocks.darksandWater
     );
@@ -65,7 +65,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
     {
         baseSeed = 69;
-        defaultLoadout = OlupisSchematic.basicRemnant;
+        defaultLoadout = NyfalisSchematic.basicRemnant;
     }
 
     float water = 2f / arr[0].length;
@@ -135,8 +135,10 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
     protected void generate(){
 
         class Room{
-            int x, y, radius;
-            ObjectSet<Room> connected = new ObjectSet<>();
+            final int x;
+            final int y;
+            final int radius;
+            final ObjectSet<Room> connected = new ObjectSet<>();
 
             Room(int x, int y, int radius){
                 this.x = x;
@@ -391,7 +393,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
             });
         }
 
-        Seq<Block> ores = Seq.with(OlupisBlocks.oreIron, Blocks.oreLead);
+        Seq<Block> ores = Seq.with(NyfalisBlocks.oreIron, Blocks.oreLead);
         float poles = Math.abs(sector.tile.v.y);
 
 
@@ -484,8 +486,8 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
                     }
                 }
 
-                if(any && ((block == Blocks.shrubs || block == OlupisBlocks.greenShrubsIrregular) || (all && block == Blocks.air && floor == Blocks.snow && rand.chance(0.03)))){
-                    block = OlupisBlocks.olupisTree;
+                if(any && ((block == Blocks.shrubs || block == NyfalisBlocks.greenShrubsIrregular) || (all && block == Blocks.air && floor == Blocks.snow && rand.chance(0.03)))){
+                    block = NyfalisBlocks.nyfalisTree;
                 }
             }
 
@@ -535,7 +537,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
         state.rules.waveSpacing = Mathf.lerp(60 * 65 * 2, 60f * 60f * 1f, Math.max(difficulty - waveTimeDec, 0f));
         state.rules.waves = sector.info.waves = true;
-        state.rules.loadout.clear().add(new ItemStack(OlupisItemsLiquid.rustyIron, 100 * Math.round(sector.threat)));
+        state.rules.loadout.clear().add(new ItemStack(NyfalisItemsLiquid.rustyIron, 100 * Math.round(sector.threat)));
         state.rules.enemyCoreBuildRadius = 600f;
 
         //spawn air only when spawn is blocked

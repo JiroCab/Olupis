@@ -1,6 +1,5 @@
 package olupis.world.blocks;
 
-import arc.math.Mathf;
 import mindustry.world.blocks.distribution.Conveyor;
 
 public class PowerConveyor extends Conveyor {

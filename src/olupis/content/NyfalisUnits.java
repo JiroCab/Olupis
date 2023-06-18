@@ -15,14 +15,14 @@ import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.unit.TankUnitType;
 import mindustry.world.meta.BlockFlag;
-import olupis.world.ai.OlupisMiningAi;
+import olupis.world.ai.NyfalisMiningAi;
 import olupis.world.ai.SearchAndDestroyFlyingAi;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.NoBoilLiquidBulletType;
 import olupis.world.entities.units.AmmoLifeTimeUnitType;
-import olupis.world.entities.units.OlupisUnitType;
+import olupis.world.entities.units.NyfalisUnitType;
 
-public class OlupisUnits {
+public class NyfalisUnits {
 
     public static AmmoType lifeTimeDrill, lifeTimeWeapon;
     public static UnitType
@@ -33,12 +33,14 @@ public class OlupisUnits {
         zoner,
         spirit
     ;
+    //TODO: Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
+    //TODO: Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
 
     public static void LoadUnits(){
         LoadAmmoType();
 
-        //region Olupis Regular Units
-        zoner = new OlupisUnitType("zoner"){{
+        //region Nyfalis Regular Units
+        zoner = new NyfalisUnitType("zoner"){{
             constructor = UnitTypes.flare.constructor;
 
             lowAltitude = flying = true;
@@ -77,7 +79,7 @@ public class OlupisUnits {
 
         }};
 
-        firefly = new OlupisUnitType("firefly"){{
+        firefly = new NyfalisUnitType("firefly"){{
             constructor = UnitTypes.mono.constructor;
             //there's no reason to command monos anywhere. it's just annoying.
             //haha, no
@@ -119,8 +121,7 @@ public class OlupisUnits {
         }};
         //endregion
 
-        //region Olupis Limited LifeTime Units
-
+        //region Nyfalis Limited LifeTime Units
         mite = new AmmoLifeTimeUnitType("mite"){{
             constructor = UnitTypes.flare.constructor;
             controller = u -> new SearchAndDestroyFlyingAi();
@@ -152,7 +153,7 @@ public class OlupisUnits {
                 shootSound = Sounds.pew;
                 ammoType = lifeTimeWeapon;
                 /*Gave up using LiquidBulletType*/
-                bullet = new NoBoilLiquidBulletType(OlupisItemsLiquid.steam){{
+                bullet = new NoBoilLiquidBulletType(NyfalisItemsLiquid.steam){{
                     useAmmo = true;
                     pierce = true;
                     damage = 10f;
@@ -172,7 +173,7 @@ public class OlupisUnits {
 
         spirit = new AmmoLifeTimeUnitType("spirit"){{
             constructor = UnitEntity::create;
-            controller = u -> new OlupisMiningAi();
+            controller = u -> new NyfalisMiningAi();
 
             flying = miningDepletesAmmo = true;
             isEnemy = useUnitCap = ammoDepletesOverTime = false;
@@ -188,12 +189,12 @@ public class OlupisUnits {
         }};
         //endregion
 
-        //region Olupis Core Units
+        //region Nyfalis Core Units
 
-        gnat = new OlupisUnitType("gnat"){{
-            constructor = UnitTypes.merui.constructor;
-            controller = u -> new OlupisMiningAi();
-            mineItems = Seq.with(OlupisItemsLiquid.rustyIron, Items.lead, Items.scrap);
+        gnat = new NyfalisUnitType("gnat"){{
+            constructor = UnitEntity::create;
+            controller = u -> new NyfalisMiningAi();
+            mineItems = Seq.with(NyfalisItemsLiquid.rustyIron, Items.lead, Items.scrap);
 
             canBoost = allowLegStep = hovering = true;
             legPhysicsLayer = false;
@@ -219,8 +220,8 @@ public class OlupisUnits {
             /*Corner Engines only*/
             engineSize = -1;
             setEnginesMirror(
-                    new UnitEngine(21 / 4f, 19 / 4f, 2.2f, 45f),
-                    new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
+                new UnitEngine(21 / 4f, 19 / 4f, 2.2f, 45f),
+                new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
             );
 
             parts.add(new HoverPart(){{

@@ -8,7 +8,7 @@ import mindustry.graphics.Pal;
 import static arc.graphics.g2d.Draw.color;
 import static arc.math.Angles.randLenVectors;
 
-public class OlupisFxs{
+public class NyfalisFxs{
     //TODO: Find a use for this
 
     public static final Effect

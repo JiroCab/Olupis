@@ -10,21 +10,22 @@ import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
 import mindustry.ui.Styles;
-import olupis.content.OlupisPlanets;
-import olupis.input.OlupisSettingsDialog;
-import olupis.input.OlupisSounds;
+import olupis.content.NyfalisPlanets;
+import olupis.input.NyfalisSettingsDialog;
+import olupis.input.NyfalisSounds;
 
 import static mindustry.Vars.*;
 
 public class Main extends Mod{
-    public OlupisSounds soundHandler = new OlupisSounds();
-    public OlupisSettingsDialog olupisSettings;
+    public NyfalisSounds soundHandler = new NyfalisSounds();
+    public NyfalisSettingsDialog nyfalisSettings;
 
     public Main(){
-        Events.on(ClientLoadEvent.class, e -> Registry.postRegister());
+        if(headless)return;
 
+        Events.on(ClientLoadEvent.class, e -> Registry.postRegister());
         Events.on(EventType.WorldLoadEvent.class, l ->{
-            //debug and if someone needs to convert a map and said map does not have the Olupis Block set
+            //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set
             if( Core.settings.getBool("olupis-debug")) buildDebugUI(Vars.ui.hudGroup);
 
             soundHandler.replaceSoundHandler();
@@ -36,8 +37,8 @@ public class Main extends Mod{
         group.fill(t -> {
             t.visible(() -> Vars.ui.hudfrag.shown);
             t.bottom().left();
-            t.button("Export w/ Olupis", Icon.file, Styles.squareTogglet, () -> {
-                OlupisPlanets.olupis.applyRules(state.rules);
+            t.button("Export w/ Nyfalis", Icon.file, Styles.squareTogglet, () -> {
+                NyfalisPlanets.nyfalis.applyRules(state.rules);
                 ui.paused.show();
             }).width(155f).height(50f).margin(12f).checked(false);
         });
@@ -47,12 +48,12 @@ public class Main extends Mod{
     @Override
     public void loadContent(){
         Registry.register();
-        Log.info("OwO, Olupis content Loaded!");
+        Log.info("OwO, Nyfalis (Olupis) content Loaded! Hope you enjoy nya~");
     }
 
     @Override
     public void init() {
-        olupisSettings = new OlupisSettingsDialog();
+        nyfalisSettings = new NyfalisSettingsDialog();
     }
 
 

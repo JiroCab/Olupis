@@ -10,7 +10,7 @@ import mindustry.world.blocks.power.BeamNode;
 import static mindustry.Vars.player;
 import static mindustry.input.Placement.isSidePlace;
 
-public class OlupisPlacement {
+public class NyfalisPlacement {
     private static final Seq<BuildPlan> plans1 = new Seq<>();
 
 

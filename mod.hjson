@@ -1,11 +1,12 @@
 #the mod name as displayed in-game
-displayName: "Olupis"
+displayName: "Nyfalis (Olupis)"
 
 #the internal name of your mod
+#TODO: Use nyfalis as the internal name
 name: "olupis"
 
 #your name
-author: "RushieWashie, NightmarishWolf"
+author: "RushieWashie, Remington Thomas, Ethanol10, Siede, WMF Industries"
 
 #the fully qualified main class of the mod
 main: "olupis.Main"

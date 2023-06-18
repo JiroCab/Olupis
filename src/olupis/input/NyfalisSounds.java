@@ -5,25 +5,26 @@ import arc.audio.Music;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.Vars;
-import olupis.content.OlupisPlanets;
+import olupis.content.NyfalisPlanets;
 
-import static mindustry.Vars.control;
+import static mindustry.Vars.*;
 
-public class OlupisSounds {
+public class NyfalisSounds {
 
     public static Music
             space = new Music(),
             rick = new Music(),
             reclaiming_the_wasteland = new Music();
     public Seq<Music>
-            olupisAmbient = new Seq<>(),
-            olupisBoss = new Seq<>(),
-            olupisDark = new Seq<>();
+            nyfalisAmbient = new Seq<>(),
+            nyfalisBoss = new Seq<>(),
+            nyfalisDark = new Seq<>();
 
-    boolean olupisMusicSet = false;
+    boolean nyfalisMusicSet = false;
     public static Seq<Music> previousAmbientMusic, previousBossMusic, previousDarkMusic;
 
     public static void LoadMusic(){
+        if(headless) return;
         //https://www.youtube.com/watch?v=Jd-Yckgrf08 @60% speed
         Core.assets.load("music/rick.ogg", arc.audio.Music.class).loaded = a -> rick = a;
         Core.assets.load("music/reclaiming_the_wasteland.ogg", arc.audio.Music.class).loaded = a -> reclaiming_the_wasteland = a;
@@ -34,33 +35,33 @@ public class OlupisSounds {
     //*least invasive approach, hopefully a mod that changes music still has the Seqs public*//
     public void replaceSoundHandler(){
         //funny long if statement
-        if(Core.settings.getBool("olupis-music-only") || Core.settings.getBool("olupis-music") && (Vars.state.getSector() != null && (Vars.state.getSector().planet == OlupisPlanets.olupis || Vars.state.getSector().planet == OlupisPlanets.arthin || Vars.state.getSector().planet == OlupisPlanets.spelta))){
-            if(olupisMusicSet) return;
+        if(Core.settings.getBool("olupis-music-only") || Core.settings.getBool("olupis-music") && (Vars.state.getSector() != null && (Vars.state.getSector().planet == NyfalisPlanets.nyfalis || Vars.state.getSector().planet == NyfalisPlanets.arthin || Vars.state.getSector().planet == NyfalisPlanets.spelta))){
+            if(nyfalisMusicSet) return;
 
             previousAmbientMusic = control.sound.ambientMusic.copy();
             previousBossMusic = control.sound.bossMusic.copy();
             previousDarkMusic = control.sound.darkMusic.copy();
 
-            olupisAmbient.add(reclaiming_the_wasteland, rick);
-            olupisDark.add(reclaiming_the_wasteland, rick);
-            olupisBoss.add(rick);
+            nyfalisAmbient.add(reclaiming_the_wasteland, rick);
+            nyfalisDark.add(reclaiming_the_wasteland, rick);
+            nyfalisBoss.add(rick);
 
             control.sound.ambientMusic.clear();
             control.sound.bossMusic.clear();
             control.sound.darkMusic.clear();
 
-            control.sound.darkMusic.set(olupisAmbient);
-            control.sound.ambientMusic.set(olupisDark);
-            control.sound.bossMusic.set(olupisBoss);
+            control.sound.darkMusic.set(nyfalisAmbient);
+            control.sound.ambientMusic.set(nyfalisDark);
+            control.sound.bossMusic.set(nyfalisBoss);
 
-            olupisMusicSet = true;
-            Log.info("Olupis replaced SoundControl's music Seq(s)!");
+            nyfalisMusicSet = true;
+            Log.info("Nyfalis replaced SoundControl's music Seq(s)!");
 
-        }else if (olupisMusicSet){
+        }else if (nyfalisMusicSet){
             control.sound.ambientMusic.clear().addAll(previousAmbientMusic );
             control.sound.bossMusic.clear().addAll(previousBossMusic);
             control.sound.ambientMusic.clear().addAll(previousAmbientMusic );
-            Log.info("Olupis Restored the previous SoundControl's music Seq(s)!");
+            Log.info("Nyfalis Restored the previous SoundControl's music Seq(s)!");
         }
     }
 

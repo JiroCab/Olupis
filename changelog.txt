@@ -3,26 +3,30 @@ https://github.com/JiroCab/Olupis
 Last updated on 25/05/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-4 () =
+    ~ !! Rebranded to `Nyfalis`
+
     + Sprites Contributed by Ethanol10: wire, wireBridge [https://github.com/SuperEthanol10]
-    + Sprites Contributed by NightmarishWolf: infernal-bloom, infernal-megabloom
+    + Sprites Contributed by Remington Thomas: infernal-bloom, infernal-megabloom, oreCobalt, oreIron, oreQuartz, Taurus [https://github.com/NightmarishWolf]
     + Sprites Contributed by siede2010: iron-router, iron-junction, rustyDrill, rustyIronConveyor (corners) [https://github.com/siede2010]
-    + Blocks added: brimstone-slag, lumaGrass, green-shrubs-crooked , yellow-shrubs-crooked
+    + Blocks added: brimstone-slag, lumaGrass, green-shrubs-crooked, yellow-shrubs-crooked, oreQuartz, hive, construct
     + Added toxopid to gradle
     + Gnat got a healing Turret (not final)
-    + Added Wip raw files: cinderBloom, infernal-bloom , infernal-megabloom & enchanted_forest_pallet (Contributed by NightmarishWolf)
-    + taurus now works as intended
+    + Internal: Added Wip raw files: cinderBloom, infernal-bloom , infernal-megabloom, enchanted_forest_pallet, wire, taurus, gnat (Remington Thomas)
+    + Taurus now works as intended
     ~ Bug Fix: Burst pumps polish (siede2010)
     ~ Bug Fix: Power conveyors (siede2010)
     ~ Bug Fix: Item Bans & Tech tree changes (siede2010)
     ~ Bug Fix: Wires should have proper power loss, hopefully
-    ~ Internal: `OlupisBlocks` clean up (WMF Industries)
+    ~ Internal: `NyfalisBlocks` clean up (WMF Industries)
     ~ Internal: Updated Workflows to something more reasonable (WMF Industries)
+    ~ Internal: Wip files separated based on contributor
     ~ sprites updated: mossyStone, mossierStone, mossiestStone, ironPipe, rusty-iron-conveyor (T sections), pinkTree, superConductors
-    ~ Updated Olupis' sounds settings
+    ~ Updated Nyfalis' sounds settings
     ~ Properly implementation of music via overriding the game music Seq
-    ~ Updated bundle.properties (polish names & properly naming certain blocks)
+    ~ Updated bundle.properties (more polished and proper name & descriptions) (WMF Industries)
     -- removed `pinkTree`duplicate that was a floor named "pink-mossy-water
-    -- Internal removed `NoIconFix`and used proper `-full` & similar (thanks WMF Industry for letting RushieWashie know!)
+    -- Internal removed `NoIconFix()`and used proper `-full` & similar (WMF Industry)
+
     //TODO: Update before push to main
 
 = Beta 1-3 (01b8973) = https://github.com/JiroCab/Olupis/tree/01b8973727ccff584c453dd5cbe52a7e3a999117
@@ -48,12 +52,12 @@ Last updated on 25/05/2023 (+8utc) by Jirocab/RushieWashie
     ~ Made some of Serpulo's items included in Olupis planets' items, will be whitelisting Olupis blocks instead & ban-hide other blocks
     ~ updated debug button export map for changes above
     ~ Packages changed 'com.jirocab.planets' to 'olupis' (Name was not final when orginal packages made and changing it now while it's early)
-	~ Bumped required Mindustry Version in build.gradle [v140.4 -> v141]
+	~ Bumped required Mindustry Version in build.gradle [v140.4 -> v145]
     -- Removed rustyPipe Variants (No easy way to add variants)
 
 
-= Beta 1-2 (867d438) = https://github.com/JiroCab/Olupis/tree/867d438c8352ab358ad6c0cf5062fce78c26652c
-	+ Debug button to set a map's planet/block set to be olupis, disabled by default [settings > souund > olupis-debug]
+= Beta 1-2 (867d438) == https://github.com/JiroCab/Olupis/tree/867d438c8352ab358ad6c0cf5062fce78c26652c
+	+ Debug button to set a map's planet/block set to be olupis, disabled by default [settings > sound > olupis-debug]
 	+ "Space" sound can be turned off [settings > sound > olupis-space]
 	+ units added - gnat, mite, firefly, porter
 	+ steamDrill has a proper texture (Contributed by NightmarishWolf)

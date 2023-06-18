@@ -22,7 +22,7 @@ import olupis.content.*;
 
 import static mindustry.Vars.*;
 
-public class OlupisPlanetGenerator extends PlanetGenerator{
+public class NyfalisPlanetGenerator extends PlanetGenerator{
     //alternate, less direct generation (wip)
     public static boolean alt = false;
 
@@ -38,18 +38,18 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
                     {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.sand, Blocks.salt, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.darksandWater, Blocks.stone, Blocks.stone, Blocks.stone},
                     {Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.salt, Blocks.salt, Blocks.salt, Blocks.sand, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.snow, Blocks.iceSnow, Blocks.ice},
                     {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.salt, Blocks.sand, Blocks.sand, Blocks.basalt, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice},
-                    {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.sand, Blocks.sand, OlupisBlocks.frozenGrass, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.snow, Blocks.ice},
-                    {Blocks.deepwater, Blocks.sandWater, Blocks.sand, Blocks.sand, OlupisBlocks.redSand, OlupisBlocks.redSand, Blocks.snow, Blocks.basalt, Blocks.basalt, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice},
-                    {Blocks.deepwater, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.basalt, OlupisBlocks.frozenGrass, Blocks.basalt, Blocks.hotrock, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice, Blocks.ice},
-                    {Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.darksand, OlupisBlocks.frozenGrass, Blocks.grass, Blocks.snow, Blocks.basalt, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice, Blocks.ice},
+                    {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.sand, Blocks.sand, NyfalisBlocks.frozenGrass, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.snow, Blocks.ice},
+                    {Blocks.deepwater, Blocks.sandWater, Blocks.sand, Blocks.sand, NyfalisBlocks.redSand, NyfalisBlocks.redSand, Blocks.snow, Blocks.basalt, Blocks.basalt, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice},
+                    {Blocks.deepwater, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.basalt, NyfalisBlocks.frozenGrass, Blocks.basalt, Blocks.hotrock, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice, Blocks.ice},
+                    {Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.darksand, NyfalisBlocks.frozenGrass, Blocks.grass, Blocks.snow, Blocks.basalt, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice, Blocks.ice},
                     {Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.grass, Blocks.ice, Blocks.ice, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice},
                     {Blocks.deepwater, Blocks.darksandWater, Blocks.darksand, Blocks.grass, Blocks.grass, Blocks.ice, Blocks.ice, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice},
-                    {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.grass, OlupisBlocks.frozenGrass, Blocks.grass, Blocks.iceSnow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice},
+                    {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.grass, NyfalisBlocks.frozenGrass, Blocks.grass, Blocks.iceSnow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice},
                     {Blocks.darksandWater, Blocks.darksand, Blocks.snow, Blocks.ice, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice}
             };
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
-            Blocks.grass, OlupisBlocks.bush,
+            Blocks.grass, NyfalisBlocks.bush,
             Blocks.grass, Blocks.boulder,
             Blocks.sandWater, Blocks.water,
             Blocks.darksandWater, Blocks.darksandWater
@@ -62,7 +62,7 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
 
     {
         baseSeed = 69;
-        defaultLoadout = OlupisSchematic.basicRemnant;
+        defaultLoadout = NyfalisSchematic.basicRemnant;
     }
 
     float water = 2f / arr[0].length;
@@ -132,8 +132,10 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
     protected void generate(){
 
         class Room{
-            int x, y, radius;
-            ObjectSet<Room> connected = new ObjectSet<>();
+            final int x;
+            final int y;
+            final int radius;
+            final ObjectSet<Room> connected = new ObjectSet<>();
 
             Room(int x, int y, int radius){
                 this.x = x;
@@ -388,7 +390,7 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
             });
         }
 
-        Seq<Block> ores = Seq.with(OlupisBlocks.oreIron, Blocks.oreLead);
+        Seq<Block> ores = Seq.with(NyfalisBlocks.oreIron, Blocks.oreLead);
         float poles = Math.abs(sector.tile.v.y);
 
         FloatSeq frequencies = new FloatSeq();
@@ -430,21 +432,21 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
                     floor = Blocks.grass;
                 }
             }
-            if(floor == OlupisBlocks.yellowGrass){
+            if(floor == NyfalisBlocks.yellowGrass){
                 if(Math.abs(0.5f - noise(x - 90, y, 4, 0.8, 65)) > 0.02){
-                    floor = OlupisBlocks.yellowGrass;
+                    floor = NyfalisBlocks.yellowGrass;
                 }
             }
-            if(floor == OlupisBlocks.pinkGrass){
+            if(floor == NyfalisBlocks.pinkGrass){
                 if(Math.abs(0.5f - noise(x - 90, y, 4, 0.8, 65)) > 0.02){
-                    floor = OlupisBlocks.pinkGrass;
+                    floor = NyfalisBlocks.pinkGrass;
                 }
             }
 
             /*Mosses*/
-            if(floor == OlupisBlocks.mossStone){
+            if(floor == NyfalisBlocks.mossStone){
                 if(Math.abs(0.5f - noise(x - 90, y, 4, 0.8, 65)) > 0.02){
-                    floor = OlupisBlocks.mossStone;
+                    floor = NyfalisBlocks.mossStone;
                 }
             }
 
@@ -501,8 +503,8 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
                     block = rand.chance(0.5) ? Blocks.whiteTree : Blocks.whiteTreeDead;
                 }
 
-                if(any && ((block == OlupisBlocks.mossStoneWall || block == OlupisBlocks.mossyStoneWall || block == OlupisBlocks.mossierStoneWall || block == OlupisBlocks.mossiestStoneWall) || (all && block == Blocks.air && (block == OlupisBlocks.mossStone || block == OlupisBlocks.mossyStone || block == OlupisBlocks.mossierStone|| block == OlupisBlocks.mossiestStone) && rand.chance(0.03)))){
-                    block = rand.chance(0.5) ? OlupisBlocks.mossTree : OlupisBlocks.olupisTree;
+                if(any && ((block == NyfalisBlocks.mossStoneWall || block == NyfalisBlocks.mossyStoneWall || block == NyfalisBlocks.mossierStoneWall || block == NyfalisBlocks.mossiestStoneWall) || (all && block == Blocks.air && (block == NyfalisBlocks.mossStone || block == NyfalisBlocks.mossyStone || block == NyfalisBlocks.mossierStone|| block == NyfalisBlocks.mossiestStone) && rand.chance(0.03)))){
+                    block = rand.chance(0.5) ? NyfalisBlocks.mossTree : NyfalisBlocks.nyfalisTree;
                 }
 
             }
@@ -626,7 +628,7 @@ public class OlupisPlanetGenerator extends PlanetGenerator{
 
         state.rules.waveSpacing = Mathf.lerp(60 * 65 * 2, 60f * 60f * 1f, Math.max(difficulty - waveTimeDec, 0f));
         state.rules.waves = sector.info.waves = true;
-        state.rules.loadout.clear().add(new ItemStack(OlupisItemsLiquid.rustyIron, 100 * Math.round(sector.threat)));
+        state.rules.loadout.clear().add(new ItemStack(NyfalisItemsLiquid.rustyIron, 100 * Math.round(sector.threat)));
         state.rules.enemyCoreBuildRadius = 600f;
 
         //spawn air only when spawn is blocked

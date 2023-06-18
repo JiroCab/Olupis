@@ -3,7 +3,7 @@ package olupis.content;
 import mindustry.game.Schematic;
 import mindustry.game.Schematics;
 
-public class OlupisSchematic {
+public class NyfalisSchematic {
 
     public static Schematic basicRemnant, basicVestige, basicRelic, basicShrine, basicTemple;
 

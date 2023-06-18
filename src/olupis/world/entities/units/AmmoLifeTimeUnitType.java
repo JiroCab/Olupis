@@ -17,7 +17,7 @@ import mindustry.world.meta.Env;
 import static mindustry.Vars.*;
 
 /*Unit that dies when it runs out of ammo, ammo Depletes over time*/
-public class AmmoLifeTimeUnitType extends  OlupisUnitType {
+public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*Custom logic to remove ammo over time*/
     public  boolean ammoDepletesOverTime = true;
     /*Custom logic to kill unit on no ammo*/
@@ -57,7 +57,7 @@ public class AmmoLifeTimeUnitType extends  OlupisUnitType {
             bars.row();
 
             if(state.rules.unitAmmo || killOnAmmoDepletes ){
-                bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> unit.ammo / (ammoCapacity - minimumAmmoBeforeKill)));
+                bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo  / ammoCapacity) - minimumAmmoBeforeKill));
                 bars.row();
             }
 
@@ -87,7 +87,7 @@ public class AmmoLifeTimeUnitType extends  OlupisUnitType {
                 table.add("[lightgray](" + ai.controller.tileX() + ", " + ai.controller.tileY() + ")").growX().wrap().left();
             }
             table.row();
-            table.label(() -> Iconc.settings + " " + (long)unit.flag + "").color(Color.lightGray).growX().wrap().left();
+            table.label(() -> Iconc.settings + " " + (long)unit.flag).color(Color.lightGray).growX().wrap().left();
             if(net.active() && ai.controller != null && ai.controller.lastAccessed != null){
                 table.row();
                 table.add(Core.bundle.format("lastaccessed", ai.controller.lastAccessed)).growX().wrap().left();

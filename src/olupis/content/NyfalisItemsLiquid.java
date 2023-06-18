@@ -5,11 +5,11 @@ import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.type.*;
 
-public class OlupisItemsLiquid {
+public class NyfalisItemsLiquid {
 
     public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz;
     public static Planet[] hideList = new Planet[]{Planets.erekir, Planets.serpulo, Planets.tantros};
-    public static final Seq<Item> olupisOnlyItems = new Seq<>(), olupisItems = new Seq<>();
+    public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam;
 
     public static  void LoadItems(){
@@ -45,9 +45,9 @@ public class OlupisItemsLiquid {
             hiddenOnPlanets = hideList;
         }};
 
-        olupisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt);
-        olupisItems.add(olupisOnlyItems);
-        olupisItems.add(Items.serpuloItems);
+        nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt);
+        nyfalisItems.add(nyfalisOnlyItems);
+        nyfalisItems.add(Items.serpuloItems);
 
     }
 

@@ -12,8 +12,8 @@ import mindustry.world.blocks.power.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.BlockStatus;
-import olupis.content.OlupisBlocks;
-import olupis.input.OlupisPlacement;
+import olupis.content.NyfalisBlocks;
+import olupis.input.NyfalisPlacement;
 
 public class Wire extends Battery {
     public @Nullable Block  bridgeReplacement;
@@ -44,7 +44,7 @@ public class Wire extends Battery {
     public void init(){
         super.init();
 
-        if(bridgeReplacement == null || !(bridgeReplacement instanceof BeamNode)) bridgeReplacement = OlupisBlocks.wireBridge;
+        if(bridgeReplacement == null || !(bridgeReplacement instanceof BeamNode)) bridgeReplacement = NyfalisBlocks.wireBridge;
         checkNewDrawDefault();
     }
 
@@ -66,7 +66,7 @@ public class Wire extends Battery {
     public void handlePlacementLine(Seq<BuildPlan> plans){
         if(bridgeReplacement == null ) return;
 
-        OlupisPlacement.calculateBridges(plans, (BeamNode) bridgeReplacement);
+        NyfalisPlacement.calculateBridges(plans, (BeamNode) bridgeReplacement);
     }
 
 

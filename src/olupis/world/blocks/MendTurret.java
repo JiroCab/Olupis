@@ -40,6 +40,12 @@ public class MendTurret extends PowerTurret {
             wasShooting = false;
 
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1 / recoilTime);
+            if(recoils > 0){
+                if(curRecoils == null) curRecoils = new float[recoils];
+                for(int i = 0; i < recoils; i++){
+                    curRecoils[i] = Mathf.approachDelta(curRecoils[i], 0, 1 / recoilTime);
+                }
+            }
             heat = Mathf.approachDelta(heat, 0, 1 / cooldownTime);
             charge = charging() ? Mathf.approachDelta(charge, 1, 1 / shoot.firstShotDelay) : 0;
 

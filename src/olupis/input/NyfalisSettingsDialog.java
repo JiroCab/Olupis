@@ -9,23 +9,25 @@ import mindustry.ui.dialogs.SettingsMenuDialog;
 
 import static mindustry.Vars.*;
 
-public class OlupisSettingsDialog {
+public class NyfalisSettingsDialog {
 
-    public OlupisSettingsDialog() {
-        BuildDialog();
+    public NyfalisSettingsDialog() {
+        if(!headless) BuildDialog();
     }
 
     public void BuildDialog(){
-        ui.settings.addCategory("@category.olupis.name", Icon.effect, table -> {
+        ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
             table.checkPref("olupis-green-icon", true);
             table.checkPref("olupis-green-name", true);
             table.checkPref("olupis-debug", false);
 
-            BuildOlupisSoundSettings(table, false);
+            table.row();
+
+            BuildNyfalisSoundSettings(table, false);
         });
     }
 
-    public static void BuildOlupisSoundSettings(Table table, Boolean hide){
+    public static void BuildNyfalisSoundSettings(Table table, Boolean hide){
         if(Core.settings.getBool("olupis-hide-sound") && hide)return;
 
         boolean[] shown = {false};
@@ -44,7 +46,7 @@ public class OlupisSettingsDialog {
         }, () ->shown[0]).growX().row();
     }
 
-    public static void AddOlupisSoundSettings(){
-        BuildOlupisSoundSettings(Vars.ui.settings.sound, true);
+    public static void AddNyfalisSoundSettings(){
+        BuildNyfalisSoundSettings(Vars.ui.settings.sound, true);
     }
 }
