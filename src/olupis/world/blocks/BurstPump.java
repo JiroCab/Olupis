@@ -17,6 +17,8 @@ import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.Pump;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 
 import static mindustry.Vars.*;
 
@@ -34,7 +36,7 @@ public class BurstPump extends Pump {
 
     public BurstPump(String name){
         super(name);
-        
+
     }
 
     public float getPumpTime(Liquid liquid){return pumpTime / pumpMultipliers.get(liquid, 1f);}
@@ -54,8 +56,7 @@ public class BurstPump extends Pump {
                 new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.lastPumpSpeed * 60 * e.timeScale(), 2)), () -> Pal.ammo, () -> e.warmup));
     }
     @Override
-    public void drawPlace(int x,int y,int rotation,boolean valid)
-    {
+    public void drawPlace(int x,int y,int rotation,boolean valid) {
         drawPotentialLinks(x, y);
         drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
 
@@ -87,59 +88,65 @@ public class BurstPump extends Pump {
         }
     }
 
-public class BurstPumpBuild extends PumpBuild{
-    //used so the lights don't fade out immediately
-    public float smoothProgress = 0f;
-    public float invertTime = 0f;
-    public float progress, warmup, timePumped, lastPumpSpeed;
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.remove(Stat.output);
+        stats.add(Stat.output, ((pumpAmount / pumpTime) + leakAmount) * 60f , StatUnit.liquidSecond);
+    }
 
-    
-        @Override
-        public void updateTile(){
-            if (liquidDrop == null) return;
-            
-            //if(invertTime > 0f) invertTime -= delta() / invertedTime;
-            smoothProgress = Mathf.lerpDelta(smoothProgress, progress / (pumpTime - 20f), 0.1f);
+    public class BurstPumpBuild extends PumpBuild{
+        //used so the lights don't fade out immediately
+        public float smoothProgress = 0f;
+        public float invertTime = 0f;
+        public float progress, warmup, timePumped, lastPumpSpeed;
 
-            if (timer(timerDump, dumpTime)){
-                dumpLiquid(liquidDrop);
-            }
 
-            float pumpTime = getPumpTime(liquidDrop);
-            smoothProgress = Mathf.lerpDelta(smoothProgress, progress/(pumpTime - 20f), 0.1f);
+            @Override
+            public void updateTile(){
+                if (liquidDrop == null) return;
 
-            if(liquids().currentAmount() < liquidCapacity && efficiency > 0 ){
-                warmup = Mathf.approachDelta(warmup, progress/pumpTime, 0.01f);
-                float speed = efficiency;
+                //if(invertTime > 0f) invertTime -= delta() / invertedTime;
+                smoothProgress = Mathf.lerpDelta(smoothProgress, progress / (pumpTime - 20f), 0.1f);
 
-                timePumped += speedCurve.apply(progress/pumpTime) * speed;
-                lastPumpSpeed = 1f / pumpTime * speed;
-                progress += delta() * speed;
-            } else  {
-                warmup = Mathf.approachDelta(warmup, 0f, 0.01f);
-                return;
-            }
-            if (liquids().currentAmount() < liquidCapacity){
-                if(progress >= pumpTime ){
-                    float emptySpaceLiquid = liquidCapacity - liquids.get(liquidDrop);
-                    //float maxPump = Math.min(liquidCapacity - liquids.get(liquidDrop) + (liquidCapacity / 2.5f), amount * pumpAmount * edelta());
-                    liquids.add(liquidDrop,Math.min(pumpAmount,emptySpaceLiquid));
-                    //invertedTime is not used anywhere
-                    //invertedTime = 1f;
-                    progress %= pumpTime;
-                    if(wasVisible){
-                        Effect.shake(shake, shake, this);
-                        drillSound.at(x, y, 1f + Mathf.range(drillSoundPitchRand), drillSoundVolume);
-                        pumpEffect.at(x + Mathf.range(pumpEffectRnd), y + Mathf.range(pumpEffectRnd), liquidDrop.color);
+                if (timer(timerDump, dumpTime)){
+                    dumpLiquid(liquidDrop);
+                }
+
+                float pumpTime = getPumpTime(liquidDrop);
+                smoothProgress = Mathf.lerpDelta(smoothProgress, progress/(pumpTime - 20f), 0.1f);
+
+                if(liquids().currentAmount() < liquidCapacity && efficiency > 0 ){
+                    warmup = Mathf.approachDelta(warmup, progress/pumpTime, 0.01f);
+                    float speed = efficiency;
+
+                    timePumped += speedCurve.apply(progress/pumpTime) * speed;
+                    lastPumpSpeed = 1f / pumpTime * speed;
+                    progress += delta() * speed;
+                } else  {
+                    warmup = Mathf.approachDelta(warmup, 0f, 0.01f);
+                    return;
+                }
+                if (liquids().currentAmount() < liquidCapacity){
+                    if(progress >= pumpTime ){
+                        float emptySpaceLiquid = liquidCapacity - liquids.get(liquidDrop);
+                        //float maxPump = Math.min(liquidCapacity - liquids.get(liquidDrop) + (liquidCapacity / 2.5f), amount * pumpAmount * edelta());
+                        liquids.add(liquidDrop,Math.min(pumpAmount,emptySpaceLiquid));
+                        //invertedTime is not used anywhere
+                        //invertedTime = 1f;
+                        progress %= pumpTime;
+                        if(wasVisible){
+                            Effect.shake(shake, shake, this);
+                            drillSound.at(x, y, 1f + Mathf.range(drillSoundPitchRand), drillSoundVolume);
+                            pumpEffect.at(x + Mathf.range(pumpEffectRnd), y + Mathf.range(pumpEffectRnd), liquidDrop.color);
+                        }
+                    } else{
+                          /*keep a very small amount output but keep the bursts as a main
+                               so its not annoying gameplay wise */
+                        liquids.add(liquidDrop, leakAmount);
+                        lastPumpSpeed = leakAmount;
                     }
-                } else{
-                      /*keep a very small amount output but keep the bursts as a main
-                           so its not annoying gameplay wise */
-                    liquids.add(liquidDrop, leakAmount);
-                    lastPumpSpeed = leakAmount;
                 }
             }
-
         }
-    }
 }

@@ -45,7 +45,7 @@ public class NyfalisItemsLiquid {
             hiddenOnPlanets = hideList;
         }};
 
-        nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt);
+        nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz);
         nyfalisItems.add(nyfalisOnlyItems);
         nyfalisItems.add(Items.serpuloItems);
 

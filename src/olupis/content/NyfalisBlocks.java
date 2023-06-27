@@ -1,8 +1,7 @@
 package olupis.content;
 
 import arc.graphics.Color;
-import arc.struct.EnumSet;
-import arc.struct.ObjectSet;
+import arc.struct.*;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.BasicBulletType;
@@ -36,7 +35,7 @@ import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.oil;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisItemsLiquid.*;
-import static olupis.content.NyfalisUnits.gnat;
+import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisBlocks {
     //TODO: Woof woof wants  different class for loading turrets content so this isn't 1400~ lines long, pain
@@ -897,7 +896,7 @@ public class NyfalisBlocks {
                         collidesTeam = true;
                         collideTerrain = collidesAir = false;
                         status = StatusEffects.slow;
-                        statusDuration = 60f * 3f;
+                        statusDuration = 60f * 2f;
                         width = 40f;
                         height = 9f;
                         lifetime = 60f;
@@ -909,12 +908,12 @@ public class NyfalisBlocks {
                             collidesTeam = collideTerrain = true;
                             collidesAir = false;
                             status = StatusEffects.slow;
-                            statusDuration = 60f * 4f;
+                            statusDuration = 60f * 3f;
                             width = 40f;
                             height = 11f;
                             lifetime = 50f;
                             ammoMultiplier = 2;
-                            pierceCap = 4;
+                            pierceCap = 3;
                             knockback = 3f;
                             frontColor = backColor = Color.valueOf("ea8878");
                 }}
@@ -937,7 +936,7 @@ public class NyfalisBlocks {
             researchCostMultiplier = 0.05f;
         }};
 
-        hive = new ItemTurret("hive"){{
+        hive = new ItemUnitTurret("hive"){{
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
             ammo(
                     silicon, new BasicBulletType(2.5f, 11){{
@@ -946,11 +945,8 @@ public class NyfalisBlocks {
                         spawnUnit = NyfalisUnits.mite;
                     }}
             );
-            drawer = new DrawMulti(
-                    new DrawRegion("-bottom"),
-                    new DrawRegion("")
-            );
 
+            displayUnits = Seq.with(mite);
             shootSound = Sounds.respawn;
             shootY = 0f;
             size = 4;
@@ -1155,7 +1151,8 @@ public class NyfalisBlocks {
                 shootSound = Sounds.sap;
                 width = 10f;
                 height = 16f;
-                //TODO: Change shoot fx
+                /*added slight homing so it can hit 1x1 blocks*/
+                homingPower = 0.02f;
             }};
             limitRange(2);
         }};
@@ -1178,16 +1175,17 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 75, iron, 50));
         }};
 
-        coreRemnant = new CoreBlock("core-remnant"){{
+        coreRemnant = new NoThrusterCoreBlock("core-remnant"){{
             alwaysUnlocked = isFirstTier = true;
             size = 2;
             unitType = gnat;
             itemCapacity = 1500;
             health = 3500;
-            requirements(Category.effect, with(rustyIron, 1000));
+
+            requirements(Category.effect, with(rustyIron, 1000, lead, 1000));
         }};
 
-        coreVestige = new CoreBlock("core-vestige"){{
+        coreVestige = new NoThrusterCoreBlock("core-vestige"){{
             unitType = gnat;
             size = 3;
             itemCapacity = 3000;

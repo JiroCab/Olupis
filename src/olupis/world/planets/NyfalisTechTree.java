@@ -1,17 +1,20 @@
 package olupis.world.planets;
 
 import arc.struct.Seq;
-import mindustry.content.*;
+import mindustry.content.Liquids;
 import mindustry.game.Objectives;
-import olupis.content.*;
+import olupis.content.NyfalisSectors;
 
+import static mindustry.content.Items.*;
 import static mindustry.content.TechTree.*;
+import static olupis.content.NyfalisBlocks.*;
+import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisTechTree {
 
     public static void load(){
-        nyfalis.techTree = nodeRoot("olupis", NyfalisBlocks.coreRemnant, () -> {
+        nyfalis.techTree = nodeRoot("olupis", coreRemnant, () -> {
 
             node(NyfalisSectors.placeholder1, () -> {
                 node(NyfalisSectors.placeholder2, Seq.with(
@@ -21,83 +24,90 @@ public class NyfalisTechTree {
                 });
             });
 
-            node(NyfalisBlocks.mossyBoulder, ()-> {
+            node(mossyBoulder, ()-> {
 
-                node(NyfalisBlocks.windMills, Seq.with(new Objectives.Research(NyfalisBlocks.rustyDrill)), () -> {
-                    node(NyfalisBlocks.wire, () -> {
-                        node(NyfalisBlocks.rustElectrolyzer, () -> {
-                            node(NyfalisBlocks.garden,()->{
-                                node(NyfalisBlocks.bioMatterPress, () ->{
-                                    node(NyfalisBlocks.hydrochloricGraphitePress, ()->{
+                node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
+                    node(windMills, () -> {
+                        node(rustElectrolyzer, () -> {
+                            node(garden,()->{
+                                node(bioMatterPress, () ->{
 
-                                    });
+                                });
+                            });
+                            node(hydrochloricGraphitePress, ()->{
+                                node(siliconArcSmelter, ()->{
+
                                 });
                             });
                         });
-                        node(NyfalisBlocks.wireBridge, ()-> {
-                            node(NyfalisBlocks.hydroMill, ()->{
-                                node(NyfalisBlocks.hydroElectricGenerator, () ->{
+                        node(wireBridge, ()-> {
+                            node(hydroMill, ()->{
+                                node(hydroElectricGenerator, () ->{
 
                                  });
                             });
                         });
-                        node(NyfalisBlocks.taurus, ()->{
+                        node(taurus, ()->{
 
                         });
                     });
                 });
 
-                node(NyfalisBlocks.pipeRouter, Seq.with(new Objectives.Research(NyfalisBlocks.rustyDrill)), () -> {
-                    node(NyfalisBlocks.rustyPump, () ->{
-                        node(NyfalisBlocks.leadPipe, ()->{
-                            node(NyfalisBlocks.fortifiedCanister, ()->{
-                                node(NyfalisBlocks.fortifiedTank, ()->{
+                node(leadPipe, Seq.with(new Objectives.Research(rustyDrill)), () -> {
+                    node(rustyPump, () ->{
+                        node(pipeRouter, ()->{
+                            node(fortifiedCanister, ()->{
+                                node(fortifiedTank, ()->{
 
                                 });
                             });
-                            node(NyfalisBlocks.pipeJunction, ()->{
-                                node(NyfalisBlocks.pipeBridge, ()-> {
+                            node(pipeJunction, ()->{
+                                node(pipeBridge, ()-> {
 
                                 });
                             });
-                            node(NyfalisBlocks.ironPipe, ()->{
+                            node(ironPipe, ()->{
 
                             });
-                        });
-                        node(NyfalisBlocks.steamBoiler, ()->{
-                            node(NyfalisBlocks.steamAgitator, ()->{
-
-                            });
-                        });
-                        node(NyfalisBlocks.ironPump, () -> {
-                            node(NyfalisBlocks.displacementPump, () -> {
-                                node(NyfalisBlocks.massDisplacementPump, () -> {
+                            node(steamBoiler, ()->{
+                                node(steamAgitator, ()->{
 
                                 });
                             });
-                        });
-                    });
-                });
-
-                node(NyfalisBlocks.ironRouter, () ->{
-                    node(NyfalisBlocks.rustyIronConveyor, () ->{
-                        node(NyfalisBlocks.ironJunction, ()->{
-                            node(NyfalisBlocks.ironBridge, ()->{
-                                node(NyfalisBlocks.fortifiedContainer, () ->{
-                                    node(NyfalisBlocks.fortifiedVault, () ->{
+                            node(ironPump, () -> {
+                                node(displacementPump, () -> {
+                                    node(massDisplacementPump, () -> {
 
                                     });
                                 });
                             });
                         });
-                        node(NyfalisBlocks.ironConveyor, ()->{
+                    });
+                });
 
+                node(rustyIronConveyor, () ->{
+                    node(ironRouter, () ->{
+                        node(ironJunction, ()->{
+                            node(ironBridge, ()->{
+
+                            });
+                        });
+                        node(ironConveyor, ()->{
+
+                        });
+
+                        node(ironUnloader, () ->{
+                            node(fortifiedContainer, () ->{
+                                node(fortifiedVault, () ->{
+
+                                });
+                            });
                         });
                     });
 
-                    node(NyfalisBlocks.rustyDrill, ()->{
-                        node(NyfalisBlocks.steamDrill, () ->{
-                            node(NyfalisBlocks.hydroElectricDrill, () ->{
+                    node(rustyDrill, ()->{
+                        node(steamDrill, () ->{
+                            node(hydroElectricDrill, () ->{
 
                             });
                         });
@@ -105,57 +115,71 @@ public class NyfalisTechTree {
                 });
 
 
-                node(NyfalisBlocks.corroder, Seq.with(new Objectives.Research(NyfalisBlocks.rustyIronConveyor)), ()-> {
-                    node(NyfalisBlocks.dissolver, ()->{
+                node(corroder, Seq.with(new Objectives.Research(ironRouter)), ()-> {
+                    node(dissolver, ()->{
 
                     });
-                    node(NyfalisBlocks.shredder, ()->{
+                    node(shredder, ()->{
+                        node(hive, ()->{
 
+                        });
                     });
-                    node(NyfalisBlocks.rustyWall, () ->{
-                        node(NyfalisBlocks.rustyWallLarge, ()->{
-                            node(NyfalisBlocks.rustyWallHuge, ()->{
+                    node(rustyWall, () ->{
+                        node(rustyWallLarge, ()->{
+                            node(rustyWallHuge, ()->{
 
                             });
                         });
-                        node(NyfalisBlocks.ironWall, ()->{
-                            node(NyfalisBlocks.ironWallLarge, ()->{
+                        node(ironWall, ()->{
+                            node(ironWallLarge, ()->{
 
                             });
                         });
                     });
                 });
 
-                node(NyfalisBlocks.unitReplicator, Seq.with(new Objectives.Research(NyfalisBlocks.rustyIronConveyor)), ()->{
-                    node(NyfalisBlocks.unitReplicatorSmall, ()->{
-
-                    });
-                });
-
-                node(NyfalisBlocks.fortifiedMessageBlock, Seq.with(new Objectives.Research(NyfalisBlocks.rustyIronConveyor)), ()->{
-
-                });
-
-
-                nodeProduce(NyfalisItemsLiquid.rustyIron, () ->{
-                    nodeProduce(Items.lead, () ->{
-
-                    });
-                    nodeProduce(NyfalisItemsLiquid.iron, () ->{
-                        nodeProduce(NyfalisItemsLiquid.condensedBiomatter, () ->{
+                node(construct, Seq.with(new Objectives.Research(ironRouter)), ()->{
+                    node(unitReplicator, ()->{
+                        node(unitReplicatorSmall, ()->{
 
                         });
-                        nodeProduce(NyfalisItemsLiquid.cobalt, ()->{
+                    });
+                });
+
+                node(taurus, Seq.with(new Objectives.Research(windMills)), ()->{
+
+                });
+
+                node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{
+
+                });
+
+
+                nodeProduce(rustyIron, () ->{
+                    nodeProduce(lead, () ->{
+                        nodeProduce(sand, () ->{
+                            nodeProduce(quartz, () ->{
+
+                            });
+                        });
+                    });
+                    nodeProduce(iron, () ->{
+                        nodeProduce(condensedBiomatter, () ->{
+
+                        });
+                        nodeProduce(cobalt, ()->{
 
                         });
                     });
                     nodeProduce(Liquids.water, ()->{
-                        nodeProduce(NyfalisItemsLiquid.steam, () ->{
+                        nodeProduce(steam, () ->{
 
                         });
                         nodeProduce(Liquids.oil,()->{
-                            nodeProduce(Items.graphite, ()->{
+                            nodeProduce(graphite, ()->{
+                                nodeProduce(silicon, ()->{
 
+                                });
                             });
                         });
                     });

@@ -1,6 +1,6 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 25/05/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 06/20/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-4 () =
     ~ !! Rebranded to `Nyfalis`
@@ -52,7 +52,7 @@ Last updated on 25/05/2023 (+8utc) by Jirocab/RushieWashie
     ~ Made some of Serpulo's items included in Olupis planets' items, will be whitelisting Olupis blocks instead & ban-hide other blocks
     ~ updated debug button export map for changes above
     ~ Packages changed 'com.jirocab.planets' to 'olupis' (Name was not final when orginal packages made and changing it now while it's early)
-	~ Bumped required Mindustry Version in build.gradle [v140.4 -> v145]
+	~ Bumped required Mindustry Version in build.gradle [v140.4 -> v141]
     -- Removed rustyPipe Variants (No easy way to add variants)
 
 

@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Scaling;
 import mindustry.ai.types.LogicAI;
 import mindustry.content.Blocks;
@@ -12,7 +13,10 @@ import mindustry.entities.abilities.Ability;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
+import mindustry.ui.Styles;
+import mindustry.world.Block;
 import mindustry.world.meta.Env;
+import mindustry.world.meta.Stat;
 
 import static mindustry.Vars.*;
 
@@ -31,13 +35,36 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*Time before depleting ammo*/
     public float depleteAmmoOffset = 10f;
     float startTime;
-
+    /*Block its created from displayed*/
+    public Seq<Block> displayedBlocks = new Seq<>();
     //TODO: Range limit them
 
     public AmmoLifeTimeUnitType(String name){
         /*let's just hope that ammo is never removed at least not removed internally */
         super(name);
         envDisabled = Env.none;
+    }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.tiles, table -> displayedBlocks.each(d -> {
+            if(d == null)return;
+            table.row();
+            table.table(Styles.grayPanel, b -> {
+                if(d.canBeBuilt()) b.image(d.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                b.table(info -> {
+                    info.add(d.localizedName).left();
+                    if (Core.settings.getBool("console")) {
+                        info.row();
+                        info.add(d.name).left().color(Color.lightGray);
+                    }
+                });
+                b.button("?", Styles.flatBordert, () -> ui.content.show(d)).size(40f).pad(10).right().grow().visible(d::unlockedNow);
+            }).growX().pad(5).row();
+        }));
     }
 
     @Override

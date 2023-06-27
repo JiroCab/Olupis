@@ -27,12 +27,12 @@ public class NyfalisUnits {
     public static AmmoType lifeTimeDrill, lifeTimeWeapon;
     public static UnitType
         gnat,
-        mite,
         porter,
         firefly,
         zoner,
         spirit
     ;
+    public static AmmoLifeTimeUnitType mite;
     //TODO: Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
     //TODO: Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
 
@@ -41,8 +41,7 @@ public class NyfalisUnits {
 
         //region Nyfalis Regular Units
         zoner = new NyfalisUnitType("zoner"){{
-            constructor = UnitTypes.flare.constructor;
-
+            constructor = UnitEntity::create;
             lowAltitude = flying = true;
 
             health = 220f;
@@ -123,13 +122,13 @@ public class NyfalisUnits {
 
         //region Nyfalis Limited LifeTime Units
         mite = new AmmoLifeTimeUnitType("mite"){{
-            constructor = UnitTypes.flare.constructor;
+            constructor = UnitEntity::create;
             controller = u -> new SearchAndDestroyFlyingAi();
-            ammoDepleteAmount = 0.6f;
+            ammoDepleteAmount = 0.55f;
             lightRadius = 15f;
             lightOpacity = 50f;
 
-            flying = true;
+            flying = targetGround = targetAir = true;
             playerControllable  = logicControllable = useUnitCap = false;
 
             health = 80;
@@ -142,13 +141,13 @@ public class NyfalisUnits {
             itemCapacity = 10;
 
 
-            targetFlags = new BlockFlag[]{BlockFlag.generator, null};
+            targetFlags = new BlockFlag[]{BlockFlag.factory, null};
             weapons.add(new Weapon(){{
                 y = x = 0f;
-                reload = shootCone = 10f;
-                autoTarget = true;
-                targetSwitchInterval = 380f;
-                targetInterval = 50f;
+                reload = 10f;
+                shootCone = 15f;
+                targetSwitchInterval = 60f;
+                targetInterval = 30f;
 
                 shootSound = Sounds.pew;
                 ammoType = lifeTimeWeapon;
@@ -208,10 +207,11 @@ public class NyfalisUnits {
             drag = 0.11f;
             buildSpeed = 0.5f;
             mineTier = 1;
-            mineSpeed = 5.5f;
+            mineSpeed = 7.5f;
             groundLayer = Layer.legUnit - 1f;
             researchCostMultiplier = 0f;
             itemCapacity = 70;
+            range = mineRange;
 
             legCount = 0;
             legMoveSpace = 1.1f; //Limits world tiles movement
@@ -325,8 +325,10 @@ public class NyfalisUnits {
             @Override
             public void resupply(Unit unit) {}
         };
+    }
 
-
+    public static void PostLoadUnits(){
+        mite.displayedBlocks = Seq.with(NyfalisBlocks.hive);
     }
 
 

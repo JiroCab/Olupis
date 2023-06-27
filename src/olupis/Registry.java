@@ -35,6 +35,7 @@ public class Registry {
         NyfalisPlanets.PostLoadPlanet();
         NyfalisTechTree.load();
         NyfalisBlocks.AddAttributes();
+        NyfalisUnits.PostLoadUnits();
         //endregion
 
     }

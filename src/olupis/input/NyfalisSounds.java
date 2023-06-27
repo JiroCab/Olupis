@@ -10,6 +10,7 @@ import olupis.content.NyfalisPlanets;
 import static mindustry.Vars.*;
 
 public class NyfalisSounds {
+    //TODO: Make a jar build w/o music for players that don't want/internet is slow
 
     public static Music
             space = new Music(),
