@@ -29,10 +29,12 @@ public class NyfalisUnits {
         gnat,
         porter,
         firefly,
-        zoner,
+        zoner
+    ;
+    public static AmmoLifeTimeUnitType
+        mite,
         spirit
     ;
-    public static AmmoLifeTimeUnitType mite;
     //TODO: Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
     //TODO: Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
 
@@ -328,7 +330,9 @@ public class NyfalisUnits {
     }
 
     public static void PostLoadUnits(){
+        /*Blocks are null while loading units, so this exists for as a work around*/
         mite.displayedBlocks = Seq.with(NyfalisBlocks.hive);
+        spirit.displayedBlocks = Seq.with(NyfalisBlocks.construct);
     }
 
 

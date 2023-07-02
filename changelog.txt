@@ -1,6 +1,6 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 06/20/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 03/07/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-4 () =
     ~ !! Rebranded to `Nyfalis`
@@ -10,9 +10,12 @@ Last updated on 06/20/2023 (+8utc) by Jirocab/RushieWashie
     + Sprites Contributed by siede2010: iron-router, iron-junction, rustyDrill, rustyIronConveyor (corners) [https://github.com/siede2010]
     + Blocks added: brimstone-slag, lumaGrass, green-shrubs-crooked, yellow-shrubs-crooked, oreQuartz, hive, construct
     + Added toxopid to gradle
-    + Gnat got a healing Turret (not final)
+    + Gnat got a healing Turret
     + Internal: Added Wip raw files: cinderBloom, infernal-bloom , infernal-megabloom, enchanted_forest_pallet, wire, taurus, gnat (Remington Thomas)
     + Taurus now works as intended
+    + Relic core now uses propeller used of thrusters
+    ~ Properly implementation of music via overriding the game music Seq
+    ~ Updated bundle.properties (more polished and proper name & descriptions) (WMF Industries)
     ~ Bug Fix: Burst pumps polish (siede2010)
     ~ Bug Fix: Power conveyors (siede2010)
     ~ Bug Fix: Item Bans & Tech tree changes (siede2010)
@@ -21,9 +24,6 @@ Last updated on 06/20/2023 (+8utc) by Jirocab/RushieWashie
     ~ Internal: Updated Workflows to something more reasonable (WMF Industries)
     ~ Internal: Wip files separated based on contributor
     ~ sprites updated: mossyStone, mossierStone, mossiestStone, ironPipe, rusty-iron-conveyor (T sections), pinkTree, superConductors
-    ~ Updated Nyfalis' sounds settings
-    ~ Properly implementation of music via overriding the game music Seq
-    ~ Updated bundle.properties (more polished and proper name & descriptions) (WMF Industries)
     -- removed `pinkTree`duplicate that was a floor named "pink-mossy-water
     -- Internal removed `NoIconFix()`and used proper `-full` & similar (WMF Industry)
 

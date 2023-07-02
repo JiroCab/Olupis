@@ -48,7 +48,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.tiles, table -> displayedBlocks.each(d -> {
+        stats.add(Stat.output, table -> displayedBlocks.each(d -> {
             if(d == null)return;
             table.row();
             table.table(Styles.grayPanel, b -> {

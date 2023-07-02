@@ -2,7 +2,6 @@ package olupis.content;
 
 import arc.func.Cons;
 import arc.graphics.Color;
-import arc.math.geom.Vec3;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.Planets;
@@ -19,7 +18,7 @@ import olupis.world.planets.*;
 public class NyfalisPlanets {
     public static Planet nyfalis, arthin, spelta, system;
     private static final Seq<Sector> systemSector = new Seq<>();
-    private static Vec3 systemMovement = new Vec3();
+
     public static Cons<Rules> commonRules = r ->{
         r.waveTeam = Team.green;
         r.placeRangeCheck = false;
@@ -40,7 +39,6 @@ public class NyfalisPlanets {
         Vars.content.planets().forEach(p -> p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems));
 
         system = new Planet("system", Planets.sun, 0.4f){{
-            position = systemMovement; /* Follow nyfalis without being loaded 1st*/
             sectors.set(systemSector);
             generator = new AsteroidGenerator();
             meshLoader = () -> new HexMesh(this, 4);
@@ -64,8 +62,8 @@ public class NyfalisPlanets {
             defaultEnv = Env.terrestrial | Env.oxygen;
             launchCapacityMultiplier = 0.4f;
             sectorSeed = 2;
-            allowWaves = enemyCoreSpawnReplace = allowLaunchLoadout = prebuildBase = alwaysUnlocked = true;
-            allowWaveSimulation = allowSectorInvasion = allowLaunchSchematics = false;
+            allowWaves = enemyCoreSpawnReplace = allowLaunchLoadout = prebuildBase = alwaysUnlocked = allowWaveSimulation = true;
+            allowSectorInvasion = allowLaunchSchematics = false;
             ruleSetter = commonRules;
             atmosphereColor = Color.valueOf("87CEEB");
             atmosphereRadIn = 0.02f;
@@ -75,7 +73,7 @@ public class NyfalisPlanets {
             hiddenItems.addAll(Vars.content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
             totalRadius = 2.7f;
             systemSector.add(sectors);
-            systemMovement = this.position;
+            system.position = this.position;
         }};
 
         //1st moon

@@ -28,22 +28,25 @@ public class NyfalisSettingsDialog {
     }
 
     public static void BuildNyfalisSoundSettings(Table table, Boolean hide){
-        if(Core.settings.getBool("olupis-hide-sound") && hide)return;
+        if(!Core.settings.getBool("olupis-hide-sound") && hide)return;
 
         boolean[] shown = {false};
         table.row();
-        table.button("@setting.olupis-sound-category", Icon.effect, Styles.togglet, () -> shown[0] = !shown[0]).marginLeft(14f).growX().height(60f).checked(a -> shown[0]).padTop(5f).row();
+        table.button("@setting.olupis-sound-category", Icon.effect, Styles.togglet, () -> shown[0] = !shown[0]).marginLeft(14f).growX().height(60f).checked(a -> shown[0]).padTop(5f).center().row();
 
         table.collapser(t -> {
             SettingsMenuDialog.SettingsTable subTable = new SettingsMenuDialog.SettingsTable();
-            subTable.checkPref("olupis-space-sfx",true);
-            subTable.checkPref("olupis-music-only",false);
-            subTable.checkPref("olupis-music",true);
             if (!hide){
                 subTable.checkPref("olupis-hide-sound",true);
-            }
+            } else  t.label(() -> "@settings.olupis-music-hint").top().center().padBottom(5f).row();
+
+            subTable.checkPref("olupis-space-sfx",true);
+            subTable.checkPref("olupis-music",true);
+            subTable.checkPref("olupis-music-only",false);
+            subTable.checkPref("olupis-music-add",true);
+            subTable.checkPref("olupis-music-custom-game",true);
             t.add(subTable);
-        }, () ->shown[0]).growX().row();
+        }, () ->shown[0]).growX().center().row();
     }
 
     public static void AddNyfalisSoundSettings(){

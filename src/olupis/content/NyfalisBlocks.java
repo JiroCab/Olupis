@@ -15,7 +15,8 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.*;
@@ -26,7 +27,6 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import olupis.Registry;
 import olupis.world.blocks.*;
 import olupis.world.entities.bullets.NoBoilLiquidBulletType;
 
@@ -34,6 +34,7 @@ import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.oil;
 import static mindustry.type.ItemStack.with;
+import static olupis.content.NyfalisAttribute.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
 
@@ -86,7 +87,7 @@ public class NyfalisBlocks {
     ; //endregion
 
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
-    public static ObjectSet<Block> nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>();
+    public static ObjectSet<Block> nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>();
 
     public static void LoadWorldTiles(){
         //region World Tiles
@@ -108,7 +109,7 @@ public class NyfalisBlocks {
 
         frozenGrass = new Floor("frozen-grass"){{
             attributes.set(Attribute.water, 0.15f);
-            attributes.set(Registry.Bio, 0.08f);
+            attributes.set(bio, 0.08f);
             wall = Blocks.shrubs;
         }};
 
@@ -160,48 +161,48 @@ public class NyfalisBlocks {
             variants = 4;
             decoration = yellowBush;
             attributes.set(Attribute.water, 0.15f);
-            attributes.set(Registry.Bio, 0.08f);
+            attributes.set(bio, 0.08f);
         }};
 
         pinkGrass = new Floor("pink-grass"){{
             variants = 4;
             decoration = mossyBoulder;
             attributes.set(Attribute.water, 0.15f);
-            attributes.set(Registry.Bio, 0.08f);
+            attributes.set(bio, 0.08f);
         }};
 
         lumaGrass = new Floor("luma-grass"){{
             variants = 3;
             decoration = lumaFlora;
             attributes.set(Attribute.water, 0.15f);
-            attributes.set(Registry.Bio, 0.08f);
+            attributes.set(bio, 0.08f);
         }};
 
         cinderBloomGrass = new Floor("cinder-bloom"){{
             variants = 3;
             decoration = infernalBloom;
             attributes.set(Attribute.water, 0.25f);
-            attributes.set(Registry.Bio, 0.06f);
+            attributes.set(bio, 0.06f);
         }};
 
         cinderBloomiest = new Floor("cinder-bloomiest"){{
             variants = 3;
             decoration = infernalBloom;
-            attributes.set(Registry.Bio, 0.01f);
+            attributes.set(bio, 0.01f);
         }};
 
         cinderBloomer = new Floor("cinder-bloomier"){{
             variants = 3;
             decoration = infernalBloom;
             attributes.set(Attribute.water, -0.05f);
-            attributes.set(Registry.Bio, 0.02f);
+            attributes.set(bio, 0.02f);
         }};
 
         cinderBloomy = new Floor("cinder-bloomy"){{
             variants = 3;
             decoration = Blocks.basaltBoulder;
             attributes.set(Attribute.water, -0.15f);
-            attributes.set(Registry.Bio, 0.03f);
+            attributes.set(bio, 0.03f);
         }};
 
         redDune = new StaticWall("red-dune-wall"){{
@@ -274,26 +275,26 @@ public class NyfalisBlocks {
         mossyStone = new Floor("mossy-stone"){{
             decoration = Blocks.boulder;
             attributes.set(Attribute.water, 0.1f);
-            attributes.set(Registry.Bio, 0.1f);
+            attributes.set(bio, 0.1f);
         }};
 
         mossierStone = new Floor("mossier-stone"){{
             decoration = mossyBoulder;
             attributes.set(Attribute.water, 0.1f);
-            attributes.set(Registry.Bio, 0.1f);
+            attributes.set(bio, 0.1f);
         }};
 
         mossiestStone = new Floor("mossiest-stone"){{
             decoration = mossyBoulder;
             mapColor = mossierStone.mapColor;
             attributes.set(Attribute.water, 0.1f);
-            attributes.set(Registry.Bio, 0.1f);
+            attributes.set(bio, 0.1f);
         }};
 
         mossStone = new Floor("moss-stone"){{
             decoration = bush;
             attributes.set(Attribute.water, 0.1f);
-            attributes.set(Registry.Bio, 0.1f);
+            attributes.set(bio, 0.1f);
         }};
 
         mossyStoneWall = new StaticWall("mossy-stone-wall"){{
@@ -497,7 +498,7 @@ public class NyfalisBlocks {
             size = 3;
             maxBoost = 2.5f;
 
-            attribute = Registry.Bio;
+            attribute = bio;
             craftEffect = Fx.none;
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),
@@ -737,18 +738,15 @@ public class NyfalisBlocks {
 
         //endregion
         //region Units
-        construct = new PowerTurret("construct"){{
+        construct = new PowerUnitTurret("construct"){{
             requirements(Category.units, with(iron, 200, lead, 100, silicon, 60));
             shootType = new BasicBulletType(2.5f, -1){{
                 shootEffect = Fx.unitLand;
                 ammoMultiplier = 1f;
-                spawnUnit = NyfalisUnits.spirit;
+                spawnUnit = spirit;
             }};
-            drawer = new DrawMulti(
-                new DrawRegion("-bottom"),
-                new DrawRegion("")
-            );
 
+            displayUnits = Seq.with(spirit);
             consumePower(6f);
             alwaysShooting = true;
             shootSound = Sounds.respawn;
@@ -937,13 +935,13 @@ public class NyfalisBlocks {
         }};
 
         hive = new ItemUnitTurret("hive"){{
-            requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
+            requirements(Category.turret, with(iron, 100, lead, 30, silicon, 30));
             ammo(
-                    silicon, new BasicBulletType(2.5f, 11){{
-                        shootEffect = Fx.shootBig;
-                        ammoMultiplier = 1f;
-                        spawnUnit = NyfalisUnits.mite;
-                    }}
+                silicon, new BasicBulletType(2.5f, 11){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    spawnUnit = mite;
+                }}
             );
 
             displayUnits = Seq.with(mite);
@@ -1008,7 +1006,7 @@ public class NyfalisBlocks {
             floating = true;
             powerProduction = 17f/60f;
             size = 3;
-            attribute = Registry.hydro;
+            attribute = hydro;
             generateEffect = Fx.steam;
             effectChance = 0.011f;
             ambientSound = Sounds.hum;
@@ -1022,7 +1020,7 @@ public class NyfalisBlocks {
             placeableLiquid = floating = true;
             powerProduction = 23f/60f;
             size = 5;
-            attribute = Registry.hydro;
+            attribute = hydro;
             generateEffect = Fx.steam;
             effectChance = 0.011f;
             ambientSound = Sounds.hum;
@@ -1175,7 +1173,7 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 75, iron, 50));
         }};
 
-        coreRemnant = new NoThrusterCoreBlock("core-remnant"){{
+        coreRemnant = new PropellerCoreBlock("core-remnant"){{
             alwaysUnlocked = isFirstTier = true;
             size = 2;
             unitType = gnat;
@@ -1185,7 +1183,7 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 1000, lead, 1000));
         }};
 
-        coreVestige = new NoThrusterCoreBlock("core-vestige"){{
+        coreVestige = new PropellerCoreBlock("core-vestige"){{
             unitType = gnat;
             size = 3;
             itemCapacity = 3000;
@@ -1232,28 +1230,28 @@ public class NyfalisBlocks {
         //endregion
     }
     public static void AddAttributes(){
-        grass.attributes.set(Registry.Bio, 0.1f);
-        stone.attributes.set(Registry.Bio, 0.03f);
-        charr.attributes.set(Registry.Bio, 0.03f);
-        mud.attributes.set(Registry.Bio, 0.03f);
-        dirt.attributes.set(Registry.Bio, 0.03f);
-        snow.attributes.set(Registry.Bio, 0.01f);
-        ice.attributes.set(Registry.Bio, 0.01f);
-        craters.attributes.set(Registry.Bio, 0.5f);
+        grass.attributes.set(bio, 0.1f);
+        stone.attributes.set(bio, 0.03f);
+        charr.attributes.set(bio, 0.03f);
+        mud.attributes.set(bio, 0.03f);
+        dirt.attributes.set(bio, 0.03f);
+        snow.attributes.set(bio, 0.01f);
+        ice.attributes.set(bio, 0.01f);
+        craters.attributes.set(bio, 0.5f);
 
-        deepwater.attributes.set(Registry.hydro, 0.5f);
-        deepTaintedWater.attributes.set(Registry.hydro, 0.3f);
-        Blocks.water.attributes.set(Registry.hydro, 0.3f);
-        taintedWater.attributes.set(Registry.hydro, 0.3f);
-        sandWater.attributes.set(Registry.hydro, 0.3f);
-        darksandTaintedWater.attributes.set(Registry.hydro, 0.3f);
-        darksandWater.attributes.set(Registry.hydro, 0.3f);
+        deepwater.attributes.set(hydro, 0.5f);
+        deepTaintedWater.attributes.set(hydro, 0.3f);
+        Blocks.water.attributes.set(hydro, 0.3f);
+        taintedWater.attributes.set(hydro, 0.3f);
+        sandWater.attributes.set(hydro, 0.3f);
+        darksandTaintedWater.attributes.set(hydro, 0.3f);
+        darksandWater.attributes.set(hydro, 0.3f);
 
-        redSandWater.attributes.set(Registry.hydro, 0.3f);
-        lumaGrassWater.attributes.set(Registry.hydro, 0.3f);
-        mossyWater.attributes.set(Registry.hydro, 0.3f);
-        pinkGrassWater.attributes.set(Registry.hydro, 0.3f);
-        yellowMossyWater.attributes.set(Registry.hydro, 0.3f);
+        redSandWater.attributes.set(hydro, 0.3f);
+        lumaGrassWater.attributes.set(hydro, 0.3f);
+        mossyWater.attributes.set(hydro, 0.3f);
+        pinkGrassWater.attributes.set(hydro, 0.3f);
+        yellowMossyWater.attributes.set(hydro, 0.3f);
     }
 
     public static void NyfalisBlocksPlacementFix(){
@@ -1261,6 +1259,8 @@ public class NyfalisBlocks {
         Vars.content.blocks().each(b->{
             if(b.name.startsWith("olupis-") && b.isVisible()) nyfalisBuildBlockSet.add(b);
         });
+
+        nyfalisCores.addAll(coreRemnant, coreRelic, coreShrine, coreTemple, coreVestige);
 
         sandBoxBlocks.addAll(
                 /*just to make it easier for testing and/or sandbox*/

@@ -8,21 +8,21 @@ import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.draw.*;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisUnits;
 
 import static mindustry.Vars.ui;
 
-public class ItemUnitTurret extends ItemTurret {
+public class PowerUnitTurret extends PowerTurret {
     /*Turret with fancy units as stats display*/
     public Seq<UnitType> displayUnits = Seq.with(NyfalisUnits.gnat);
-    public ItemUnitTurret(String name){
+    public PowerUnitTurret(String name){
         super(name);
 
         if(Core.settings.getBool("olupis-debug")){
-            drawer = new DrawMulti(new DrawTurret("iron-"));
+            drawer = new DrawMulti(new DrawTurret());
         }else drawer = new DrawMulti(
             new DrawRegion("-bottom"),
             new DrawRegion("")
@@ -53,7 +53,8 @@ public class ItemUnitTurret extends ItemTurret {
             }).growX().pad(5).row();
         }));
     }
-    public class ItemUnitTurretBuild extends ItemTurretBuild{
+    public class PowerUnitTurretBuild extends PowerTurret.PowerTurretBuild {
 
     }
+
 }

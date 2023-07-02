@@ -4,10 +4,13 @@ import arc.Core;
 import arc.audio.Music;
 import arc.struct.Seq;
 import arc.util.Log;
-import mindustry.Vars;
-import olupis.content.NyfalisPlanets;
+import mindustry.type.Planet;
+import olupis.content.NyfalisBlocks;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static mindustry.Vars.*;
+import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisSounds {
     //TODO: Make a jar build w/o music for players that don't want/internet is slow
@@ -35,8 +38,7 @@ public class NyfalisSounds {
 
     //*least invasive approach, hopefully a mod that changes music still has the Seqs public*//
     public void replaceSoundHandler(){
-        //funny long if statement
-        if(Core.settings.getBool("olupis-music-only") || Core.settings.getBool("olupis-music") && (Vars.state.getSector() != null && (Vars.state.getSector().planet == NyfalisPlanets.nyfalis || Vars.state.getSector().planet == NyfalisPlanets.arthin || Vars.state.getSector().planet == NyfalisPlanets.spelta))){
+        if(shouldReplaceMusic()){
             if(nyfalisMusicSet) return;
 
             previousAmbientMusic = control.sound.ambientMusic.copy();
@@ -47,13 +49,15 @@ public class NyfalisSounds {
             nyfalisDark.add(reclaiming_the_wasteland, rick);
             nyfalisBoss.add(rick);
 
-            control.sound.ambientMusic.clear();
-            control.sound.bossMusic.clear();
-            control.sound.darkMusic.clear();
+            if (Core.settings.getBool("olupis-music-add")){
+                control.sound.ambientMusic.clear();
+                control.sound.bossMusic.clear();
+                control.sound.darkMusic.clear();
+            }
 
-            control.sound.darkMusic.set(nyfalisAmbient);
-            control.sound.ambientMusic.set(nyfalisDark);
-            control.sound.bossMusic.set(nyfalisBoss);
+            control.sound.darkMusic.add(nyfalisAmbient);
+            control.sound.ambientMusic.add(nyfalisDark);
+            control.sound.bossMusic.add(nyfalisBoss);
 
             nyfalisMusicSet = true;
             Log.info("Nyfalis replaced SoundControl's music Seq(s)!");
@@ -64,6 +68,25 @@ public class NyfalisSounds {
             control.sound.ambientMusic.clear().addAll(previousAmbientMusic );
             Log.info("Nyfalis Restored the previous SoundControl's music Seq(s)!");
         }
+    }
+
+    public boolean shouldReplaceMusic(){
+        if (Core.settings.getBool("olupis-music-only")) return true;
+        if (Core.settings.getBool("olupis-music") && state.isCampaign()){
+            Planet sector = state.getSector().planet;
+            if(sector == arthin) return true;
+            if(sector == spelta) return true;
+            return sector == nyfalis;
+        }
+        if (Core.settings.getBool("olupis-music-custom-game") && !state.isCampaign()){
+            int env = state.rules.env;
+            /*Somewhat prevents rare cases with other (modded) planets with same env as nyfalis*/
+            AtomicBoolean hasCore = new AtomicBoolean(false);
+            NyfalisBlocks.nyfalisCores.each(c ->{if (state.stats.placedBlockCount.get(c, 0) >= 1) hasCore.set(true);});
+
+            return (env == nyfalis.defaultEnv && hasCore.get());
+        }
+        return false;
     }
 
 

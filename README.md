@@ -1,4 +1,4 @@
-# Olupis
+# Nyfalis (Olupis)
 A [Mindustry](https://github.com/Anuken/Mindustry) Java mod that aims to add a new planet that offers a bit of new experience
 
 # Misc Info
@@ -21,3 +21,4 @@ you can figure out the rest, you got this, you're a smart cookie
 ### Music Credits
 Ambient music:
 - rick -> https://www.youtube.com/watch?v=Jd-Yckgrf08 (@60% speed, placeholder)
+TODO: ACTULLY CREDIT THE MUSIC WE USED

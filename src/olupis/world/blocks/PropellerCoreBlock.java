@@ -11,9 +11,9 @@ import mindustry.world.blocks.storage.CoreBlock;
 
 import static mindustry.Vars.*;
 
-public class NoThrusterCoreBlock extends CoreBlock {
+public class PropellerCoreBlock extends CoreBlock {
 
-    public NoThrusterCoreBlock(String name){
+    public PropellerCoreBlock(String name){
         super(name);
     }
 
@@ -90,12 +90,10 @@ public class NoThrusterCoreBlock extends CoreBlock {
     }
 
 
-    public class NoThrusterCoreBuild extends CoreBuild {
+    public class PropellerCoreBuild extends CoreBuild {
 
         @Override
         public void updateLandParticles(){
-            float time = renderer.isLaunching() ? coreLandDuration - renderer.getLandTime() : renderer.getLandTime();
-
             if(renderer.getLandTime() >= 1f){
                 tile.getLinkedTiles(t -> {
                     if(Mathf.chance(0.4f)){

@@ -9,7 +9,7 @@ name: "olupis"
 author: "RushieWashie, Remington Thomas, Ethanol10, Siede, WMF Industries"
 
 #the fully qualified main class of the mod
-main: "olupis.Main"
+main: "olupis.NyfalisMain"
 
 #the mod description as seen in the mod dialog
 description: "Yet another planet mod"
