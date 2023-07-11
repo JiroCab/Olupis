@@ -20,6 +20,7 @@ public class NyfalisSettingsDialog {
             table.checkPref("olupis-green-icon", true);
             table.checkPref("olupis-green-name", true);
             table.checkPref("olupis-debug", false);
+            table.checkPref("olupis-auto-ban", true);
 
             table.row();
 
@@ -43,7 +44,7 @@ public class NyfalisSettingsDialog {
             subTable.checkPref("olupis-space-sfx",true);
             subTable.checkPref("olupis-music",true);
             subTable.checkPref("olupis-music-only",false);
-            subTable.checkPref("olupis-music-add",true);
+            subTable.checkPref("olupis-music-add",false);
             subTable.checkPref("olupis-music-custom-game",true);
             t.add(subTable);
         }, () ->shown[0]).growX().center().row();

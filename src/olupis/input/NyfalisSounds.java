@@ -49,7 +49,7 @@ public class NyfalisSounds {
             nyfalisDark.add(reclaiming_the_wasteland, rick);
             nyfalisBoss.add(rick);
 
-            if (Core.settings.getBool("olupis-music-add")){
+            if (!Core.settings.getBool("olupis-music-add")){
                 control.sound.ambientMusic.clear();
                 control.sound.bossMusic.clear();
                 control.sound.darkMusic.clear();
@@ -78,6 +78,7 @@ public class NyfalisSounds {
             if(sector == spelta) return true;
             return sector == nyfalis;
         }
+
         if (Core.settings.getBool("olupis-music-custom-game") && !state.isCampaign()){
             int env = state.rules.env;
             /*Somewhat prevents rare cases with other (modded) planets with same env as nyfalis*/

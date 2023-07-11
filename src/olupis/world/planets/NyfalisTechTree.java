@@ -14,6 +14,7 @@ import static olupis.content.NyfalisPlanets.*;
 public class NyfalisTechTree {
 
     public static void load(){
+        /*TODO: Redo most of the item costs*/
         nyfalis.techTree = nodeRoot("olupis", coreRemnant, () -> {
 
             node(NyfalisSectors.placeholder1, () -> {
@@ -28,7 +29,7 @@ public class NyfalisTechTree {
 
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
-                        node(rustElectrolyzer, () -> {
+                        node(rustElectrolyzer, Seq.with(new Objectives.Research(steam)), () -> {
                             node(garden,()->{
                                 node(bioMatterPress, () ->{
 
@@ -40,11 +41,14 @@ public class NyfalisTechTree {
                                 });
                             });
                         });
-                        node(wireBridge, ()-> {
-                            node(hydroMill, ()->{
-                                node(hydroElectricGenerator, () ->{
+                        node(hydroMill, ()->{
+                            node(hydroElectricGenerator, () ->{
 
-                                 });
+                            });
+                        });
+                        node(wireBridge, ()-> {
+                            node(superConductors, ()->{
+
                             });
                         });
                         node(taurus, ()->{
@@ -70,7 +74,7 @@ public class NyfalisTechTree {
 
                             });
                             node(steamBoiler, ()->{
-                                node(steamAgitator, ()->{
+                                node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
 
                                 });
                             });
@@ -87,13 +91,17 @@ public class NyfalisTechTree {
 
                 node(rustyIronConveyor, () ->{
                     node(ironRouter, () ->{
-                        node(ironJunction, ()->{
-                            node(ironBridge, ()->{
+                        node(ironDistributor, () -> {
+                            node(ironJunction, ()->{
+                                node(ironBridge, ()->{
 
+                                });
                             });
                         });
                         node(ironConveyor, ()->{
+                            node(cobaltConveyor, ()->{
 
+                            });
                         });
 
                         node(ironUnloader, () ->{
@@ -101,6 +109,12 @@ public class NyfalisTechTree {
                                 node(fortifiedVault, () ->{
 
                                 });
+                            });
+                        });
+
+                        node(ironOverflow, () ->{
+                            node(ironUnderflow, () -> {
+
                             });
                         });
                     });
@@ -144,10 +158,6 @@ public class NyfalisTechTree {
 
                         });
                     });
-                });
-
-                node(taurus, Seq.with(new Objectives.Research(windMills)), ()->{
-
                 });
 
                 node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{

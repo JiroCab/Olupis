@@ -8,7 +8,6 @@ public class PowerConveyor extends Conveyor {
 
     public PowerConveyor(String name){
         super(name);
-
     }
     public class PowerConveyorBuild extends ConveyorBuild {
         @Override

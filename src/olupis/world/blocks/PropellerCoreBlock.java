@@ -96,8 +96,10 @@ public class PropellerCoreBlock extends CoreBlock {
         public void updateLandParticles(){
             if(renderer.getLandTime() >= 1f){
                 tile.getLinkedTiles(t -> {
-                    if(Mathf.chance(0.4f)){
-                        Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx(), t.worldy()) + Mathf.range(30f), Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
+                    if(Mathf.chance(0.65f)){
+                        float rotation = Interp.pow2In.apply(renderer.getLandTime() / coreLandDuration ) * 540f;
+                        /*  -50 so it doesn't end at the corner and align with the propellers*/
+                        Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx(), t.worldy()) + rotation - 50, Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
                     }
                 });
 

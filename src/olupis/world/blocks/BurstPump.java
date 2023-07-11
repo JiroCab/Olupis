@@ -17,8 +17,7 @@ import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.blocks.production.Pump;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
@@ -36,7 +35,6 @@ public class BurstPump extends Pump {
 
     public BurstPump(String name){
         super(name);
-
     }
 
     public float getPumpTime(Liquid liquid){return pumpTime / pumpMultipliers.get(liquid, 1f);}

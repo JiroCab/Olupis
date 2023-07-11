@@ -10,13 +10,17 @@ import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
+import mindustry.type.Planet;
 import mindustry.ui.Styles;
 import olupis.content.*;
 import olupis.input.NyfalisSettingsDialog;
 import olupis.input.NyfalisSounds;
 import olupis.world.planets.NyfalisTechTree;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static mindustry.Vars.*;
+import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisMain extends Mod{
     public NyfalisSounds soundHandler = new NyfalisSounds();
@@ -61,9 +65,32 @@ public class NyfalisMain extends Mod{
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set
             if( Core.settings.getBool("olupis-debug")) buildDebugUI(Vars.ui.hudGroup);
 
+            /*avoids Nyfalis stuff on serpulo Ex: leadpipes*/
+            /*TODO: See if we can hide this in build visibility instead*/
+            if(shouldAutoBan()){
+                if(state.rules.blockWhitelist){
+                    NyfalisBlocks.nyfalisBuildBlockSet.each(b -> state.rules.bannedBlocks.remove(b));
+                }else NyfalisBlocks.nyfalisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
+            }
             soundHandler.replaceSoundHandler();
         });
 
+    }
+
+    public boolean shouldAutoBan(){
+        if(!Core.settings.getBool("olupis-auto-ban")) return false;
+        AtomicBoolean hasCore = new AtomicBoolean(false);
+        NyfalisBlocks.nyfalisCores.each(c ->{if (state.stats.placedBlockCount.get(c, 0) >= 1) hasCore.set(true);});
+
+        if(hasCore.get())return false;
+        if(state.rules.env == defaultEnv) return false;
+        if(state.isCampaign()){ Planet sector = state.getSector().planet;
+            if(sector == arthin) return false;
+            if(sector == spelta) return false;
+            return sector != nyfalis;
+        }
+
+        return false;
     }
 
     public static void buildDebugUI(Group group){

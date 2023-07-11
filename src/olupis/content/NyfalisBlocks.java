@@ -39,7 +39,7 @@ import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisBlocks {
-    //TODO: Woof woof wants  different class for loading turrets content so this isn't 1400~ lines long, pain
+    //TODO: Woof woof wants  different class for loading turrets content so this isn't 1400~ lines long, pain & debating if should do
     //region Blocks Variables
     public static Block
         //environment
@@ -68,7 +68,7 @@ public class NyfalisBlocks {
 
         steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
 
-        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader,
+        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
 
@@ -375,7 +375,7 @@ public class NyfalisBlocks {
 
             researchCost = with(iron, 50);
             consumePower (1f/60);
-            requirements(Category.distribution, with(iron,1 ));
+            requirements(Category.distribution, with(iron, 1 ));
         }};
 
         cobaltConveyor = new PowerConveyor("cobalt-conveyor"){{
@@ -391,14 +391,21 @@ public class NyfalisBlocks {
 
             researchCost = with(iron, 50);
             consumePower (1f/60);
-            requirements(Category.distribution, with(iron,1 ));
+            requirements(Category.distribution, with(cobalt, 1, lead, 5 ));
         }};
 
         ironRouter = new Router("iron-router"){{
             buildCostMultiplier = 4f;
 
             researchCost = with(rustyIron, 40);
-            requirements(Category.distribution, with(rustyIron, 3));
+            requirements(Category.distribution, with(rustyIron, 3, lead, 1));
+        }};
+
+        ironDistributor = new Router("iron-distributor"){{
+            buildCostMultiplier = 4f;
+            size = 2;
+            researchCost = with(rustyIron, 40);
+            requirements(Category.distribution, with(rustyIron, 16, lead, 4));
         }};
 
         ironJunction = new Junction("iron-junction"){{
@@ -406,7 +413,7 @@ public class NyfalisBlocks {
             capacity = 6;
             health = 50;
             armor = 1f;
-            buildCostMultiplier = 6f;
+            buildCostMultiplier = 2f;
 
             ((PowerConveyor)ironConveyor).junctionReplacement = this;
             ((Conveyor)rustyIronConveyor).junctionReplacement = this;
@@ -515,6 +522,24 @@ public class NyfalisBlocks {
 
         //endregion
         //region liquid
+        leadPipe = new Conduit("lead-pipe"){{
+            leaks = underBullets = true;
+            health = 60;
+            liquidPressure = 0.95f;
+            liquidCapacity = 5f;
+            botColor = Color.valueOf("37323C");
+            researchCostMultiplier = 0.5f;
+            requirements(Category.liquid, with(lead, 5));
+        }};
+
+        ironPipe = new ArmoredConduit("iron-pipe"){{
+            leaks = underBullets = true;
+            liquidCapacity = 20f;
+            botColor = Color.valueOf("252731");
+            researchCostMultiplier = 3;
+            requirements(Category.liquid, with(iron, 5, rustyIron, 5));
+        }};
+
         rustyPump = new Pump("rusty-pump"){{
             pumpAmount = 0.05f;
             liquidCapacity = 10f;
@@ -547,24 +572,6 @@ public class NyfalisBlocks {
             requirements(Category.liquid, with(iron, 30));
         }};
 
-        leadPipe = new Conduit("lead-pipe"){{
-            leaks = underBullets = true;
-            health = 60;
-            liquidPressure = 0.95f;
-            liquidCapacity = 5f;
-            botColor = Color.valueOf("37323C");
-            researchCostMultiplier = 0.5f;
-            requirements(Category.liquid, with(lead, 5));
-        }};
-
-        ironPipe = new ArmoredConduit("iron-pipe"){{
-            leaks = underBullets = true;
-            liquidCapacity = 20f;
-            botColor = Color.valueOf("252731");
-            researchCostMultiplier = 3;
-            requirements(Category.liquid, with(iron, 5, rustyIron, 5));
-        }};
-
         pipeRouter = new LiquidRouter("pipe-router"){{
             solid = underBullets = true;
             liquidCapacity = 20f;
@@ -593,6 +600,7 @@ public class NyfalisBlocks {
             ((Conduit)ironPipe).junctionReplacement = this;
             ((Conduit)leadPipe).junctionReplacement = this;
             researchCost = with(lead,100, rustyIron,50);
+
             /*expensive, since you can cheese the terribleness of pipes with this*/
             requirements(Category.liquid, with(rustyIron, 50, lead, 50));
         }};
@@ -1060,7 +1068,7 @@ public class NyfalisBlocks {
             size = 4;
             health = 3600;
             researchCost = with(rustyIron,4200);
-            requirements(Category.defense, BuildVisibility.sandboxOnly, with(rustyIron, 1500));
+            requirements(Category.defense, BuildVisibility.editorOnly, with(rustyIron, 1500));
         }};
 
         ironWall = new Wall("iron-wall"){{
@@ -1079,27 +1087,27 @@ public class NyfalisBlocks {
             size = 1;
             health = 240;
             variants = 1;
-            requirements(Category.defense, BuildVisibility.sandboxOnly, with(rustyIron, 6, scrap, 3));
+            requirements(Category.defense, BuildVisibility.editorOnly, with(rustyIron, 6, scrap, 3));
         }};
 
         rustyScrapWallLarge = new Wall("rusty-scrap-wall-large"){{
             health = 960;
             size = 2;
             variants = 3;
-            requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.mult(rustyScrapWall.requirements, 4));
+            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 4));
         }};
 
         rustyScrapWallHuge = new Wall("rusty-scrap-wall-huge"){{
             size = 3;
             health = 3840;
             variants  = 2;
-            requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.mult(rustyScrapWall.requirements, 9));
+            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 9));
         }};
 
         rustyScrapWallGigantic = new Wall("rusty-scrap-wall-gigantic"){{
             size = 4;
             health = 2530;
-            requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.mult(rustyScrapWall.requirements, 16));
+            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 16));
         }};
 
         //endregion
@@ -1155,15 +1163,6 @@ public class NyfalisBlocks {
             limitRange(2);
         }};
 
-        fortifiedVault = new StorageBlock("fortified-vault"){{
-            coreMerge = false;
-            size = 3;
-            itemCapacity = 2700;
-            scaledHealth = 120;
-            health =  1500;
-            requirements(Category.effect, with(rustyIron, 150, iron, 100));
-        }};
-
         fortifiedContainer = new StorageBlock("fortified-container"){{
             coreMerge = false;
             size = 2;
@@ -1173,6 +1172,15 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 75, iron, 50));
         }};
 
+        fortifiedVault = new StorageBlock("fortified-vault"){{
+            coreMerge = false;
+            size = 3;
+            itemCapacity = 2700;
+            scaledHealth = 120;
+            health =  1500;
+            requirements(Category.effect, with(rustyIron, 150, iron, 100));
+        }};
+
         coreRemnant = new PropellerCoreBlock("core-remnant"){{
             alwaysUnlocked = isFirstTier = true;
             size = 2;
@@ -1180,7 +1188,7 @@ public class NyfalisBlocks {
             itemCapacity = 1500;
             health = 3500;
 
-            requirements(Category.effect, with(rustyIron, 1000, lead, 1000));
+            requirements(Category.effect, with(rustyIron, 1500, lead, 1500));
         }};
 
         coreVestige = new PropellerCoreBlock("core-vestige"){{
@@ -1219,7 +1227,7 @@ public class NyfalisBlocks {
             alwaysUnlocked = true;
             brightness = 0.75f;
             radius = 140f;
-            requirements(Category.effect, BuildVisibility.sandboxOnly, with());
+            requirements(Category.effect, BuildVisibility.editorOnly, with());
         }};
         //endregion
         //region Logic

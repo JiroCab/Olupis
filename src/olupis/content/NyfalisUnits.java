@@ -22,6 +22,9 @@ import olupis.world.entities.bullets.NoBoilLiquidBulletType;
 import olupis.world.entities.units.AmmoLifeTimeUnitType;
 import olupis.world.entities.units.NyfalisUnitType;
 
+import static mindustry.content.Items.*;
+import static olupis.content.NyfalisItemsLiquid.*;
+
 public class NyfalisUnits {
 
     public static AmmoType lifeTimeDrill, lifeTimeWeapon;
@@ -154,7 +157,7 @@ public class NyfalisUnits {
                 shootSound = Sounds.pew;
                 ammoType = lifeTimeWeapon;
                 /*Gave up using LiquidBulletType*/
-                bullet = new NoBoilLiquidBulletType(NyfalisItemsLiquid.steam){{
+                bullet = new NoBoilLiquidBulletType(steam){{
                     useAmmo = true;
                     pierce = true;
                     damage = 10f;
@@ -193,27 +196,28 @@ public class NyfalisUnits {
         //region Nyfalis Core Units
 
         gnat = new NyfalisUnitType("gnat"){{
-            constructor = UnitEntity::create;
+            constructor = LegsUnit::create;
             controller = u -> new NyfalisMiningAi();
-            mineItems = Seq.with(NyfalisItemsLiquid.rustyIron, Items.lead, Items.scrap);
+            ammoType = new PowerAmmoType(1000);
+            mineItems = Seq.with(rustyIron, lead, Items.scrap);
 
-            canBoost = allowLegStep = hovering = true;
             legPhysicsLayer = false;
+            canBoost = allowLegStep = hovering = true;
 
-            health = 420;
             armor = 1f;
             hitSize = 9f;
             speed = 2.4f;
-            rotateSpeed = 4f;
-            boostMultiplier = 0.75f;
             drag = 0.11f;
-            buildSpeed = 0.5f;
+            health = 420;
             mineTier = 1;
-            mineSpeed = 7.5f;
-            groundLayer = Layer.legUnit - 1f;
-            researchCostMultiplier = 0f;
+            rotateSpeed = 4.5f;
+            mineSpeed = 8f;
+            buildSpeed = 0.5f;
             itemCapacity = 70;
             range = mineRange;
+            boostMultiplier = 0.75f;
+            researchCostMultiplier = 0f;
+            groundLayer = Layer.legUnit - 1f;
 
             legCount = 0;
             legMoveSpace = 1.1f; //Limits world tiles movement
@@ -246,35 +250,31 @@ public class NyfalisUnits {
                         bullet = new BasicBulletType(0,-5) {{
                             collidesTeam = true;
                             keepVelocity = false;
-
-                            lifetime = 10*60;
-                            height = width = 20;
-                            spin = 3.5f;
-                            bulletInterval = 20;
-                            healAmount = 20;
-                            drag = 0.9f;
-
                             backColor = frontColor = trailColor = lightColor = Pal.heal;
                             chargeEffect = hitEffect = despawnEffect = Fx.heal;
+
+                            lifetime = 10*60;
+                            spin = 3.5f;
+                            drag = 0.9f;
                             shrinkX = 25f/60f;
                             shrinkY = 35f/60f;
-
                             intervalBullets = 2;
                             intervalSpread = 180;
                             intervalRandomSpread = 90;
+                            height = width = bulletInterval = healAmount = 20;
+
                             intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
                                 collidesTeam = true;
                                 keepVelocity = false;
+                                hitEffect = despawnEffect = Fx.heal;
+                                backColor = frontColor = trailColor = lightColor = Pal.heal;
 
                                 lifetime = 60;
-                                bulletInterval = 10;
-                                healAmount = 20;
-                                homingPower = 0.09f;
-
-                                backColor = frontColor = trailColor = lightColor = Pal.heal;
-                                trailWidth = 1.5f;
                                 trailLength = 15;
-                                hitEffect = despawnEffect = Fx.heal;
+                                trailWidth = 1.5f;
+                                healAmount = 20;
+                                bulletInterval = 10;
+                                homingPower = 0.09f;
                             }};
 
                         }};
