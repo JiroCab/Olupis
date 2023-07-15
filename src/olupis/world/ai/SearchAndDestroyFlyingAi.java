@@ -20,7 +20,7 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
         unloadPayloads();
 
         if(target != null && unit.hasWeapons()){
-            idleAfter = Time.delta + delay;
+            idleAfter = Time.time + delay;
             if(suicideOnSuicideUnits && suicideOnTarget ){
                 /*screw crawlers in particular*/
                 moveTo(target, 0);

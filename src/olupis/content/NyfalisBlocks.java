@@ -66,24 +66,25 @@ public class NyfalisBlocks {
         //Buildings, sorted by category
         corroder, dissolver, shredder, hive, escalation, blitz, shatter,
 
-        steamDrill, hydroElectricDrill, oilSeparator, rustyDrill,
+        rustyDrill, steamDrill, hydroElectricDrill,
 
         rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
+         steamBoiler, steamAgitator, broiler, oilSeparator,
 
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator,
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
 
-        garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoiler, steamAgitator, hydrochloricGraphitePress, ironSieve, siliconArcSmelter,
+        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter,
 
-        construct,
+        construct, unitReplicator, unitReplicatorSmall,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
 
-        fortifiedMessageBlock
+        fortifiedMessageBlock, mechanicalProcessor, mechanicalSwitch, mechanical
     ; //endregion
 
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
@@ -365,17 +366,18 @@ public class NyfalisBlocks {
 
         ironConveyor = new PowerConveyor("iron-conveyor"){{
             hasPower = conductivePower = consumesPower = noUpdateDisabled = true;
+
             health = 70;
             speed = 0.03f;
-            displayedSpeed = 2f;
-            unpoweredSpeed = 0.015f;
-            poweredSpeed = 0.03f;
             itemCapacity = 1;
-            buildCostMultiplier = 2f;
+            poweredSpeed = 0.03f;
+            unpoweredSpeed = 0.005f;
+            displayedSpeedPowered = 4.2f;
+            displayedSpeed = buildCostMultiplier = 2f;
 
             researchCost = with(iron, 50);
-            consumePower (1f/60);
-            requirements(Category.distribution, with(iron, 1 ));
+            consumePower (1f/60).boost();
+            requirements(Category.distribution, with(iron, 1, rustyIron, 5 ));
         }};
 
         cobaltConveyor = new PowerConveyor("cobalt-conveyor"){{
@@ -383,11 +385,11 @@ public class NyfalisBlocks {
 
             health = 70;
             speed = 0.06f;
-            displayedSpeed = 4f;
-            unpoweredSpeed = 0.03f;
-            poweredSpeed = 0.06f;
             itemCapacity = 1;
-            buildCostMultiplier = 2f;
+            poweredSpeed = 0.06f;
+            unpoweredSpeed = 0.015f;
+            displayedSpeedPowered = 9f;
+            displayedSpeed =buildCostMultiplier = 2f;
 
             researchCost = with(iron, 50);
             consumePower (1f/60);
@@ -476,7 +478,7 @@ public class NyfalisBlocks {
             //requirements(Category.production, with(NyfalisItemsLiquid.iron, 25, NyfalisItemsLiquid.rustyIron, 40));
             hasPower = true;
             tier = 2;
-            drillTime = 600;
+            drillTime = 330;
             size = 3;
 
             envEnabled ^= Env.space;
@@ -659,6 +661,21 @@ public class NyfalisBlocks {
 
             outputLiquid = new LiquidStack(steam, 10/60f);
             requirements(Category.liquid, with(rustyIron, 30, lead, 10));
+        }};
+
+        broiler = new GenericCrafter("broiler"){{
+            hasLiquids = hasPower = true;
+
+            size = 2;
+            health = 600;
+            craftTime = 10f;
+
+            consumePower(1f);
+            consumeItem(rustyIron, 2);
+            consumeItem(scrap, 1).boost();
+            outputLiquid = new LiquidStack(Liquids.slag, 12f / 60f);
+            drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion());
+            requirements(Category.liquid, with(graphite, 50, iron, 40, lead, 80, silicon, 10));
         }};
 
         //endregion
@@ -895,6 +912,23 @@ public class NyfalisBlocks {
         }};
 
         shredder = new ItemTurret("shredder"){{
+            targetAir = false;
+
+            size = 3;
+            armor = 5;
+            health = 750;
+            reload = 60f;
+            range = 160;
+            shootCone = 15f;
+            rotateSpeed = 10f;
+            shootY = Vars.tilesize * size;
+            ammoUseEffect = Fx.casing1;
+            researchCostMultiplier = 0.05f;
+            outlineColor = nyfalisBlockOutlineColour;
+
+            limitRange(1f);
+            coolant = consumeCoolant(0.1f);
+            shoot = new ShootSummon(0f, 0f, 0f, 0f);
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
             ammo(
                     //TODO: Some how ignore Allied Non-Solids??? (ex: mines & conveyors)
@@ -924,22 +958,6 @@ public class NyfalisBlocks {
                             frontColor = backColor = Color.valueOf("ea8878");
                 }}
             );
-
-            targetAir = false;
-            size = 3;
-            health = 350;
-            armor = 5;
-            rotateSpeed = 10f;
-            reload = 60f;
-            range = 160;
-            shootCone = 15f;
-            shoot = new ShootSummon(0f, 0f, 0f, 0f);
-            shootY = Vars.tilesize * size;
-            ammoUseEffect = Fx.casing1;
-            outlineColor = nyfalisBlockOutlineColour;
-            coolant = consumeCoolant(0.1f);
-            limitRange(1f);
-            researchCostMultiplier = 0.05f;
         }};
 
         hive = new ItemUnitTurret("hive"){{

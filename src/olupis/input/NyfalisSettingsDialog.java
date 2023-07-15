@@ -19,8 +19,8 @@ public class NyfalisSettingsDialog {
         ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
             table.checkPref("olupis-green-icon", true);
             table.checkPref("olupis-green-name", true);
-            table.checkPref("olupis-debug", false);
             table.checkPref("olupis-auto-ban", true);
+            table.checkPref("olupis-debug", false);
 
             table.row();
 

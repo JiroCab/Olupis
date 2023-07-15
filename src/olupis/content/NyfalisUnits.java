@@ -29,10 +29,18 @@ public class NyfalisUnits {
 
     public static AmmoType lifeTimeDrill, lifeTimeWeapon;
     public static UnitType
+        /*Air units*/
+        aero, striker, falcon, vortex, tempest,
+        zoner,
+
+        /*segmented units*/
+        venom, serpent, reaper, goliath,
+
+        /*core units*/
         gnat,
-        porter,
-        firefly,
-        zoner
+
+        /*Misc/pending purpse units*/
+        porter, firefly
     ;
     public static AmmoLifeTimeUnitType
         mite,

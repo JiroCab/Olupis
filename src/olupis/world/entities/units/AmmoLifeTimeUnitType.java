@@ -34,6 +34,8 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     public boolean miningDepletesAmmo = false;
     /*Time before depleting ammo*/
     public float depleteAmmoOffset = 10f;
+    /*Manually controlling and moving items depletes ammo*/
+    public boolean carryingMaxDepletes = true;
     float startTime;
     /*Block its created from displayed*/
     public Seq<Block> displayedBlocks = new Seq<>();
@@ -52,7 +54,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             if(d == null)return;
             table.row();
             table.table(Styles.grayPanel, b -> {
-                if(d.canBeBuilt()) b.image(d.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                if(d.canBeBuilt() && d.isVisible()) b.image(d.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
                 else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
 
                 b.table(info -> {
@@ -141,6 +143,10 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         }
 
         if(miningDepletesAmmo && unit.mining()){
+            unit.ammo = unit.ammo - ammoDepleteAmount;
+        }
+
+        if(unit.stack.amount == unit.itemCapacity() && carryingMaxDepletes && unit.ammo >= minimumAmmoBeforeKill +0.05f ){
             unit.ammo = unit.ammo - ammoDepleteAmount;
         }
     }

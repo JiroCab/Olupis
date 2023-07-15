@@ -1,21 +1,34 @@
 package olupis.world.blocks;
 
 import mindustry.world.blocks.distribution.Conveyor;
+import mindustry.world.meta.*;
 
 public class PowerConveyor extends Conveyor {
-    public float poweredSpeed = 1f;
-    public float unpoweredSpeed = 0.5f;
+    public float poweredSpeed = 1f, unpoweredSpeed = 0.5f, displayedSpeedPowered = displayedSpeed;
+    /*Minimum threshold of power before we're considered unpowered*/
+    public float powerRequired = 20f / 60f;
 
     public PowerConveyor(String name){
         super(name);
+        speed = unpoweredSpeed;
     }
+
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(new Stat("olupis-powerforgiveness", StatCat.power), powerRequired * -60f , StatUnit.powerSecond);
+        stats.add(new Stat("olupis-itemsmovedpowered", StatCat.items), displayedSpeedPowered, StatUnit.itemsSecond);
+    }
+
     public class PowerConveyorBuild extends ConveyorBuild {
         @Override
         public void updateTile(){
-            float s = speed;
-            speed = power.status <=0.5f ? unpoweredSpeed : poweredSpeed;
+            float pwr = power.status * (block.consPower.buffered ? block.consPower.capacity : 1f);
+            speed = pwr <= powerRequired ? unpoweredSpeed : poweredSpeed;
+
+            boolean db = pwr >= 1f, db1 = pwr <= powerRequired;
             super.updateTile();
-            speed = s;
             noSleep();
         }
         @Override
@@ -31,6 +44,14 @@ public class PowerConveyor extends Conveyor {
             next = front();
             nextc = next instanceof ConveyorBuild && next.team == team ? (ConveyorBuild)next : null;
             aligned = nextc != null && rotation == next.rotation;
+        }
+
+        @Override
+        public BlockStatus status(){
+            float pwr = power.status * (block.consPower.buffered ? block.consPower.capacity : 1f);
+            if (pwr >= powerRequired && pwr != 1 ) return BlockStatus.noOutput;
+            if (pwr >= powerRequired ) return BlockStatus.active;
+            return BlockStatus.noInput;
         }
     }
 }
