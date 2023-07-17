@@ -5,9 +5,9 @@ import arc.Events;
 import arc.scene.Group;
 import arc.util.Log;
 import mindustry.Vars;
-import mindustry.game.EventType;
+import mindustry.content.Planets;
+import mindustry.game.*;
 import mindustry.game.EventType.ClientLoadEvent;
-import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
 import mindustry.type.Planet;
@@ -67,10 +67,12 @@ public class NyfalisMain extends Mod{
 
             /*avoids Nyfalis stuff on serpulo Ex: leadpipes*/
             /*TODO: See if we can hide this in build visibility instead*/
+            /*TODO: Doesn't apply in custom games*/
+            Log.err(shouldAutoBan() + " ");
             if(shouldAutoBan()){
                 if(state.rules.blockWhitelist){
-                    NyfalisBlocks.nyfalisBuildBlockSet.each(b -> state.rules.bannedBlocks.remove(b));
-                }else NyfalisBlocks.nyfalisBuildBlockSet.each(b -> state.rules.bannedBlocks.add(b));
+                    state.rules.bannedBlocks.removeAll(NyfalisBlocks.nyfalisBuildBlockSet.toSeq());
+                }else state.rules.bannedBlocks.addAll(NyfalisBlocks.nyfalisBuildBlockSet);
             }
             soundHandler.replaceSoundHandler();
         });
@@ -78,19 +80,19 @@ public class NyfalisMain extends Mod{
     }
 
     public boolean shouldAutoBan(){
+        if(net.client())return false;
         if(!Core.settings.getBool("olupis-auto-ban")) return false;
-        AtomicBoolean hasCore = new AtomicBoolean(false);
-        NyfalisBlocks.nyfalisCores.each(c ->{if (state.stats.placedBlockCount.get(c, 0) >= 1) hasCore.set(true);});
-
-        if(hasCore.get())return false;
-        if(state.rules.env == defaultEnv) return false;
         if(state.isCampaign()){ Planet sector = state.getSector().planet;
             if(sector == arthin) return false;
             if(sector == spelta) return false;
             return sector != nyfalis;
         }
-
-        return false;
+        if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun) return false;
+        AtomicBoolean hasCore = new AtomicBoolean(false);
+        NyfalisBlocks.nyfalisCores.each(c -> {
+            if (indexer.isBlockPresent(c)) hasCore.set(true);
+        });
+        return !hasCore.get();
     }
 
     public static void buildDebugUI(Group group){
