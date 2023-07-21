@@ -39,7 +39,7 @@ public class NyfalisUnits {
         /*core units*/
         gnat,
 
-        /*Misc/pending purpse units*/
+        /*Misc/pending purpose units*/
         porter, firefly
     ;
     public static AmmoLifeTimeUnitType

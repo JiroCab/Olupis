@@ -4,14 +4,17 @@ import arc.Core;
 import arc.Events;
 import arc.scene.Group;
 import arc.util.Log;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Planets;
-import mindustry.game.*;
+import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
 import mindustry.type.Planet;
 import mindustry.ui.Styles;
+import mindustry.world.Block;
 import olupis.content.*;
 import olupis.input.NyfalisSettingsDialog;
 import olupis.input.NyfalisSounds;
@@ -47,36 +50,36 @@ public class NyfalisMain extends Mod{
     }
 
     public NyfalisMain(){
-        if(headless)return;
+        Events.on(EventType.WorldLoadEvent.class, l ->{
+            /*Delayed so custom games are affected*/
+            Time.run(1 * Time.toSeconds, () ->{
+                if(shouldAutoBan()) {
+                    Log.debug("Nyfalis has banned its blocks!");
+                    if (!state.rules.blockWhitelist) {
+                        state.rules.bannedBlocks.addAll(NyfalisBlocks.nyfalisBuildBlockSet);
+                    } else state.rules.bannedBlocks.removeAll(NyfalisBlocks.nyfalisBuildBlockSet.toSeq());
+                }
+            });
+            if(headless)return;
 
+            //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
+            if( Core.settings.getBool("olupis-debug")) buildDebugUI(Vars.ui.hudGroup);
+            soundHandler.replaceSoundHandler();
+        });
+
+        if(headless)return;
         Events.on(ClientLoadEvent.class, e -> {
             NyfalisBlocks.NyfalisBlocksPlacementFix();
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
 
             Vars.ui.planet.shown(() -> {
-                if(Core.settings.getBool("olupis-space-sfx")) {Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);}
+                if(Core.settings.getBool("olupis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);
             });
 
             /*For those people who don't like the name/icon or overwrites in general*/
             if(Core.settings.getBool("olupis-green-icon")) Team.green.emoji = "\uf7a6";
             if(Core.settings.getBool("olupis-green-name")) Team.green.name = "olupis-green";
         });
-        Events.on(EventType.WorldLoadEvent.class, l ->{
-            //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set
-            if( Core.settings.getBool("olupis-debug")) buildDebugUI(Vars.ui.hudGroup);
-
-            /*avoids Nyfalis stuff on serpulo Ex: leadpipes*/
-            /*TODO: See if we can hide this in build visibility instead*/
-            /*TODO: Doesn't apply in custom games*/
-            Log.err(shouldAutoBan() + " ");
-            if(shouldAutoBan()){
-                if(state.rules.blockWhitelist){
-                    state.rules.bannedBlocks.removeAll(NyfalisBlocks.nyfalisBuildBlockSet.toSeq());
-                }else state.rules.bannedBlocks.addAll(NyfalisBlocks.nyfalisBuildBlockSet);
-            }
-            soundHandler.replaceSoundHandler();
-        });
-
     }
 
     public boolean shouldAutoBan(){
@@ -89,9 +92,12 @@ public class NyfalisMain extends Mod{
         }
         if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun) return false;
         AtomicBoolean hasCore = new AtomicBoolean(false);
-        NyfalisBlocks.nyfalisCores.each(c -> {
-            if (indexer.isBlockPresent(c)) hasCore.set(true);
-        });
+        for (Block c : NyfalisBlocks.nyfalisCores) {
+            if (indexer.isBlockPresent(c)) {
+                hasCore.set(true);
+                break;
+            }
+        }
         return !hasCore.get();
     }
 

@@ -15,6 +15,8 @@ import mindustry.type.Sector;
 import mindustry.world.meta.Env;
 import olupis.world.planets.*;
 
+import static mindustry.Vars.content;
+
 public class NyfalisPlanets {
     public static Planet nyfalis, arthin, spelta, system;
     private static final Seq<Sector> systemSector = new Seq<>();
@@ -36,7 +38,10 @@ public class NyfalisPlanets {
     };
 
     public  static void LoadPlanets(){
-        Vars.content.planets().forEach(p -> p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems));
+        content.planets().forEach( p -> {
+            if(p.name.contains("olupis-"))return;
+            p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
+        });
 
         system = new Planet("system", Planets.sun, 0.4f){{
             sectors.set(systemSector);
