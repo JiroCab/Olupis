@@ -116,7 +116,6 @@ public class NyfalisBlocks {
             itemDrop = Items.sand;
             playerUnmineable = true;
             attributes.set(Attribute.oil, 1.5f);
-            decoration = mindustry.content.Blocks.redStoneBoulder;
         }};
 
         lumaGrass = new Floor("luma-grass"){{
@@ -143,7 +142,7 @@ public class NyfalisBlocks {
         frozenGrass = new Floor("frozen-grass"){{
             attributes.set(Attribute.water, 0.15f);
             attributes.set(bio, 0.08f);
-            wall = Blocks.shrubs;
+            wall = shrubs;
         }};
 
         cinderBloomGrass = new Floor("cinder-bloom"){{
@@ -156,7 +155,7 @@ public class NyfalisBlocks {
         cinderBloomy = new Floor("cinder-bloomy"){{
             variants = 3;
             attributes.set(bio, 0.03f);
-            decoration = Blocks.basaltBoulder;
+            decoration = basaltBoulder;
             attributes.set(Attribute.water, -0.15f);
         }};
 
@@ -181,7 +180,7 @@ public class NyfalisBlocks {
 
         mossyStone = new Floor("mossy-stone"){{
             attributes.set(bio, 0.1f);
-            decoration = Blocks.boulder;
+            decoration = boulder;
             attributes.set(Attribute.water, 0.1f);
         }};
 
@@ -312,7 +311,7 @@ public class NyfalisBlocks {
         bush = new Prop("bush"){{
             variants = 2;
             breakSound = Sounds.plantBreak;
-            mindustry.content.Blocks.grass.asFloor().decoration = this;
+            grass.asFloor().decoration = this;
         }};
 
         mossyBoulder = new Prop("mossy-boulder"){{
@@ -1358,7 +1357,7 @@ public class NyfalisBlocks {
 
         deepwater.attributes.set(hydro, 0.5f);
         sandWater.attributes.set(hydro, 0.3f);
-        Blocks.water.attributes.set(hydro, 0.3f);
+        water.attributes.set(hydro, 0.3f);
         taintedWater.attributes.set(hydro, 0.3f);
         darksandWater.attributes.set(hydro, 0.3f);
         deepTaintedWater.attributes.set(hydro, 0.3f);

@@ -21,7 +21,7 @@ public class ItemUnitTurret extends ItemTurret {
     public ItemUnitTurret(String name){
         super(name);
 
-        if(Core.settings.getBool("olupis-debug")){
+        if(Core.settings.getBool("nyfalis-debug")){
             drawer = new DrawMulti(new DrawTurret("iron-"));
         }else drawer = new DrawMulti(
             new DrawRegion("-bottom"),

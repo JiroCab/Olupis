@@ -34,7 +34,7 @@ public class NyfalisPlanets {
         r.bannedBlocks.clear();
         r.hideBannedBlocks = true;
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
-        NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
+        //NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
     };
 
     public  static void LoadPlanets(){
@@ -43,16 +43,18 @@ public class NyfalisPlanets {
             p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
         });
 
+        /*I Exist so Tech Tree's Item pool is shared among the 3 planets*/
         system = new Planet("system", Planets.sun, 0.4f){{
             sectors.set(systemSector);
             generator = new AsteroidGenerator();
-            meshLoader = () -> new HexMesh(this, 4);
+            meshLoader = () -> new HexMesh(this, 3);
             accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = false;
             hideDetails = true;
             camRadius = 0.68f * 3;
-            minZoom = 0.6f;
+            minZoom = 0.7f;
             clipRadius = 2f;
             defaultEnv = Env.space;
+            icon = "rename";
         }};
 
         nyfalis = new Planet("olupis", Planets.sun, 1, 3){{

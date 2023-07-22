@@ -12,7 +12,9 @@ author: "RushieWashie, Remington Thomas, Ethanol10, Siede, WMF Industries"
 main: "olupis.NyfalisMain"
 
 #the mod description as seen in the mod dialog
-description: "Yet another planet mod"
+description: "(\u26A0Work in progress\u26A0) Yet another planet mod"
+
+subtitle: "Yet another planet mod, v1.4"
 
 #the mod version
 version: 1.4
@@ -20,7 +22,9 @@ version: 1.4
 #the minimum game build required to run this mod
 minGameVersion: 136
 
+#this is a content mod
 hidden : false
+
 #this is a java mod
 java: true
 

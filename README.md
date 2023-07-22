@@ -20,5 +20,4 @@ you can figure out the rest, you got this, you're a smart cookie
 
 ### Music Credits
 Ambient music:
-- rick -> https://www.youtube.com/watch?v=Jd-Yckgrf08 (@60% speed, placeholder)
-TODO: ACTULLY CREDIT THE MUSIC WE USED
+TODO: ACTUALLY CREDIT THE MUSIC WE USED

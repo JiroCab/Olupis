@@ -2,9 +2,10 @@ package olupis;
 
 import arc.Core;
 import arc.Events;
+import arc.graphics.g2d.TextureRegion;
 import arc.scene.Group;
-import arc.util.Log;
-import arc.util.Time;
+import arc.scene.ui.Label;
+import arc.util.*;
 import mindustry.Vars;
 import mindustry.content.Planets;
 import mindustry.game.EventType;
@@ -14,12 +15,14 @@ import mindustry.gen.Icon;
 import mindustry.mod.Mod;
 import mindustry.type.Planet;
 import mindustry.ui.Styles;
+import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import olupis.content.*;
 import olupis.input.NyfalisSettingsDialog;
 import olupis.input.NyfalisSounds;
 import olupis.world.planets.NyfalisTechTree;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static mindustry.Vars.*;
@@ -63,7 +66,7 @@ public class NyfalisMain extends Mod{
             if(headless)return;
 
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
-            if( Core.settings.getBool("olupis-debug")) buildDebugUI(Vars.ui.hudGroup);
+            if( Core.settings.getBool("nyfalis-debug")) buildDebugUI(Vars.ui.hudGroup);
             soundHandler.replaceSoundHandler();
         });
 
@@ -71,20 +74,21 @@ public class NyfalisMain extends Mod{
         Events.on(ClientLoadEvent.class, e -> {
             NyfalisBlocks.NyfalisBlocksPlacementFix();
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
+            disclaimerDialog();
 
             Vars.ui.planet.shown(() -> {
-                if(Core.settings.getBool("olupis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);
+                if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);
             });
 
             /*For those people who don't like the name/icon or overwrites in general*/
-            if(Core.settings.getBool("olupis-green-icon")) Team.green.emoji = "\uf7a6";
-            if(Core.settings.getBool("olupis-green-name")) Team.green.name = "olupis-green";
+            if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";
+            if(Core.settings.getBool("nyfalis-green-name")) Team.green.name = "nyfalis-green";
         });
     }
 
     public boolean shouldAutoBan(){
         if(net.client())return false;
-        if(!Core.settings.getBool("olupis-auto-ban")) return false;
+        if(!Core.settings.getBool("nyfalis-auto-ban")) return false;
         if(state.isCampaign()){ Planet sector = state.getSector().planet;
             if(sector == arthin) return false;
             if(sector == spelta) return false;
@@ -118,5 +122,34 @@ public class NyfalisMain extends Mod{
         nyfalisSettings = new NyfalisSettingsDialog();
     }
 
+    public static void disclaimerDialog(){
+        BaseDialog dialog = new BaseDialog("@nyfalis-disclaimer.name");
+        dialog.centerWindow();
+
+        dialog.cont.setOrigin(Align.center);
+        dialog.cont.table(t -> {
+            t.defaults().growY().growX().center();
+
+            Label header = new Label("@nyfalis-disclaimer.header");
+            Label body = new Label("@nyfalis-disclaimer.body");
+            header.setAlignment(Align.center);
+            header.setWrap(true);
+            body.setWrap(true);
+            body.setAlignment(Align.center);
+
+            t.add(header).row();
+            /*Very convoluted way to load the mod icon, because I'm not bright to think of any other way*/
+            TextureRegion icon = new TextureRegion(mods.list().find(a -> Objects.equals(a.name, "olupis")).iconTexture);
+            t.table(a -> a.image(icon).scaling(Scaling.bounded).row()).tooltip("Art By RushieWashie").maxSize(700).margin(14).pad(3).center().row();
+
+            t.add(body).row();
+
+
+        }).growX().growY().center().top().row();
+
+        dialog.cont.button("@back", Icon.left, dialog::hide).padTop(-1f).size(220f, 55f).bottom();
+        dialog.closeOnBack();
+        dialog.show();
+    }
 
 }

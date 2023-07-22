@@ -6,6 +6,7 @@ import mindustry.Vars;
 import mindustry.gen.Icon;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
+import olupis.NyfalisMain;
 
 import static mindustry.Vars.*;
 
@@ -17,35 +18,36 @@ public class NyfalisSettingsDialog {
 
     public void BuildDialog(){
         ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
-            table.checkPref("olupis-green-icon", true);
-            table.checkPref("olupis-green-name", true);
-            table.checkPref("olupis-auto-ban", true);
-            table.checkPref("olupis-debug", false);
+            table.checkPref("nyfalis-green-icon", true);
+            table.checkPref("nyfalis-green-name", true);
+            table.checkPref("nyfalis-auto-ban", true);
+            table.checkPref("nyfalis-debug", false);
 
             table.row();
 
             BuildNyfalisSoundSettings(table, false);
+            table.button("@nyfalis-disclaimer.name", NyfalisMain::disclaimerDialog).margin(14).width(260f).pad(6);
         });
     }
 
     public static void BuildNyfalisSoundSettings(Table table, Boolean hide){
-        if(!Core.settings.getBool("olupis-hide-sound") && hide)return;
+        if(!Core.settings.getBool("nyfalis-hide-sound") && hide)return;
 
         boolean[] shown = {false};
         table.row();
-        table.button("@setting.olupis-sound-category", Icon.effect, Styles.togglet, () -> shown[0] = !shown[0]).marginLeft(14f).growX().height(60f).checked(a -> shown[0]).padTop(5f).center().row();
+        table.button("@setting.nyfalis-sound-category", Icon.effect, Styles.togglet, () -> shown[0] = !shown[0]).margin(14f).growX().height(60f).checked(a -> shown[0]).pad(5f).center().row();
 
         table.collapser(t -> {
             SettingsMenuDialog.SettingsTable subTable = new SettingsMenuDialog.SettingsTable();
             if (!hide){
-                subTable.checkPref("olupis-hide-sound",true);
-            } else  t.label(() -> "@settings.olupis-music-hint").top().center().padBottom(5f).row();
+                subTable.checkPref("nyfalis-hide-sound",true);
+            } else  t.label(() -> "@settings.nyfalis-music-hint").top().center().padBottom(5f).margin(3).row();
 
-            subTable.checkPref("olupis-space-sfx",true);
-            subTable.checkPref("olupis-music",true);
-            subTable.checkPref("olupis-music-only",false);
-            subTable.checkPref("olupis-music-add",false);
-            subTable.checkPref("olupis-music-custom-game",true);
+            subTable.checkPref("nyfalis-space-sfx",true);
+            subTable.checkPref("nyfalis-music",true);
+            subTable.checkPref("nyfalis-music-only",false);
+            subTable.checkPref("nyfalis-music-add",false);
+            subTable.checkPref("nyfalis-music-custom-game",true);
             t.add(subTable);
         }, () ->shown[0]).growX().center().row();
     }

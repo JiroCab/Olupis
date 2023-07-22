@@ -4,28 +4,33 @@ Last updated on 03/07/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-4 () =
     ~ !! Rebranded to `Nyfalis`
+    ~ Mod browser Visible, w/ Wip disclaimer
 
-    + Sprites Contributed by Ethanol10: wire, wireBridge [https://github.com/SuperEthanol10]
-    + Sprites Contributed by Remington Thomas: infernal-bloom, infernal-megabloom, oreCobalt, oreIron, oreQuartz, Taurus [https://github.com/NightmarishWolf]
-    + Sprites Contributed by siede2010: iron-router, iron-junction, rustyDrill, rustyIronConveyor (corners) [https://github.com/siede2010]
-    + Blocks added: brimstone-slag, lumaGrass, green-shrubs-crooked, yellow-shrubs-crooked, oreQuartz, hive, construct
     + Added toxopid to gradle
     + Gnat got a healing Turret
-    + Internal: Added Wip raw files: cinderBloom, infernal-bloom , infernal-megabloom, enchanted_forest_pallet, wire, taurus, gnat (Remington Thomas)
     + Taurus now works as intended
     + Relic core now uses propeller used of thrusters
-    ~ Properly implementation of music via overriding the game music Seq
-    ~ Updated bundle.properties (more polished and proper name & descriptions) (WMF Industries)
-    ~ Bug Fix: Burst pumps polish (siede2010)
+    + Failsafe banning of Nyfalis blocks on other planets (Toggleable)
+    + Sprites Contributed by Ethanol10: wire, wireBridge [https://github.com/SuperEthanol10]
+    + Sprites Contributed by siede2010: iron-router, iron-junction, rustyDrill, rustyIronConveyor (corners) [https://github.com/siede2010]
+    + Internal: Added Wip/Raw files: cinderBloom, infernal-bloom , infernal-megabloom, enchanted_forest_pallet, wire, taurus, gnat (Remington Thomas)
+    + Sprites Contributed by Remington Thomas: infernal-bloom, infernal-megabloom, oreCobalt, oreIron, oreQuartz, Taurus [https://github.com/NightmarishWolf]
+    + Blocks added: brimstone-slag, lumaGrass, green-shrubs-crooked, yellow-shrubs-crooked, oreQuartz, hive, construct, ironDistributor, broiler, grassyVent, mossyVent, stoneVent, basaltVent, quartzBattery
+    ~ Proper Tech tree balance
     ~ Bug Fix: Power conveyors (siede2010)
+    ~ Bug Fix: Burst pumps polish (siede2010)
+    ~ Internal: Wip files separated based on contributor
+    ~ Internal: `NyfalisBlocks` clean up (WMF Industries)
     ~ Bug Fix: Item Bans & Tech tree changes (siede2010)
     ~ Bug Fix: Wires should have proper power loss, hopefully
-    ~ Internal: `NyfalisBlocks` clean up (WMF Industries)
+    ~ Properly implementation of music via overriding the game music Seq
+    ~ Construct show their units they can build, said units show their construct
     ~ Internal: Updated Workflows to something more reasonable (WMF Industries)
-    ~ Internal: Wip files separated based on contributor
-    ~ sprites updated: mossyStone, mossierStone, mossiestStone, ironPipe, rusty-iron-conveyor (T sections), pinkTree, superConductors
+    ~ Updated bundle.properties (more polished and proper name & descriptions) (WMF Industries)
+    ~ sprites updated: mossyStone, mossierStone, mossiestStone, ironPipe, rusty-iron-conveyor (T sections), pinkTree, superConductors, ironJunction
+    -- removed Rick.ogg as it was a placeholder
     -- removed `pinkTree`duplicate that was a floor named "pink-mossy-water
-    -- Internal removed `NoIconFix()`and used proper `-full` & similar (WMF Industry)
+    -- Internal: removed `NoIconFix()`and used proper `-full` & similar (WMF Industry)
 
     //TODO: Update before push to main
 

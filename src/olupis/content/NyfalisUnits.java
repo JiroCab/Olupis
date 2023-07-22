@@ -250,16 +250,17 @@ public class NyfalisUnits {
 
             weapons.add(
                     new Weapon() {{
-                        reload = 60*10;
                         x = y = 0;
+                        reload = 60*10;
                         shootStatus = StatusEffects.unmoving;
                         shootStatusDuration = Fx.heal.lifetime;
                         shoot.firstShotDelay = Fx.heal.lifetime-1;
                         bullet = new BasicBulletType(0,-5) {{
                             collidesTeam = true;
                             keepVelocity = false;
-                            backColor = frontColor = trailColor = lightColor = Pal.heal;
                             chargeEffect = hitEffect = despawnEffect = Fx.heal;
+                            backColor = frontColor = trailColor = lightColor = Pal.heal;
+                            shootSound = Sounds.sap;
 
                             lifetime = 10*60;
                             spin = 3.5f;

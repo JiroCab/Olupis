@@ -10,18 +10,20 @@ public class OverflowSorter extends Sorter {
 
     public OverflowSorter(String name){
         super(name);
+        hasItems = true;
     }
 
     public class OverflowSorterBuild extends SorterBuild{
 
         public Building getTileTarget(Item item, Building source, boolean flip){
-            int dir = relativeToEdge(source.tile);
+            int dir = source.relativeTo(tile.x, tile.y);
             if(dir == -1) return null;
             Building to = nearby((dir + 2) % 4);
             boolean
                     fromInst = source.block.instantTransfer,
                     canForward = to != null && to.team == team && !(fromInst && to.block.instantTransfer) && to.acceptItem(this, item),
-                    inv = invert == enabled
+                    inv = invert == enabled,
+                    sorter = sortItem != null;
             ;
 
             if(((item == sortItem) != invert) == enabled) {
@@ -30,25 +32,22 @@ public class OverflowSorter extends Sorter {
                     return null;
                 }
                 to = nearby(dir);
-            } else if(sortItem == null && (canForward || !inv)){
-                return to;
-            } else {
-
+            } else if(sorter || (!canForward || inv)){
                 Building a = nearby(Mathf.mod(dir - 1, 4));
                 Building b = nearby(Mathf.mod(dir + 1, 4));
-                boolean ac = a != null && !(a.block.instantTransfer && fromInst) &&
-                        a.acceptItem(this, item);
-                boolean bc = b != null && !(b.block.instantTransfer && fromInst) &&
-                        b.acceptItem(this, item);
+                boolean ac = a != null && !(fromInst && a.block.instantTransfer) && a.team == team && a.acceptItem(this, item);
+                boolean bc = b != null && !(fromInst && b.block.instantTransfer) && b.team == team && b.acceptItem(this, item);
 
-                if(!ac && !bc && sortItem == null && inv && !canForward ){
-                    return to;
+                if(!ac && !bc && !sorter){
+                    return inv && canForward ? to : null;
                 }
 
                 if(ac && !bc){
                     to = a;
                 }else if(bc && !ac){
                     to = b;
+                }else if(!bc && sorter){
+                    return null;
                 }else{
                     to = (rotation & (1 << dir)) == 0 ? a : b;
                     if(flip) rotation ^= (1 << dir);

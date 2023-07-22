@@ -21,7 +21,7 @@ public class PowerUnitTurret extends PowerTurret {
     public PowerUnitTurret(String name){
         super(name);
 
-        if(Core.settings.getBool("olupis-debug")){
+        if(Core.settings.getBool("nyfalis-debug")){
             drawer = new DrawMulti(new DrawTurret());
         }else drawer = new DrawMulti(
             new DrawRegion("-bottom"),
