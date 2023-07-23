@@ -1,4 +1,7 @@
-apply plugin: "java"
+plugins {
+    id 'java'
+    id("fr.xpdustry.toxopid") version "3.0.0"
+}
 
 version '1.0'
 
@@ -14,9 +17,14 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v141'
-    jabelVersion = "93fde537c7"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+}
+
+import fr.xpdustry.toxopid.spec.ModPlatform
+toxopid {
+    compileVersion.set("$rootProject.mindusty_ver")
+    runtimeVersion.set("$rootProject.mindusty_ver")
+    platforms.add(ModPlatform.DESKTOP)
 }
 
 //java 8 backwards compatibility flag
@@ -27,17 +35,18 @@ allprojects{
 }
 
 dependencies{
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.MindustryJitpack:core:$mindustryVersion"
+    compileOnly "com.github.Anuken.Arc:arc-core:$rootProject.mindusty_ver"
+    compileOnly "com.github.Anuken.MindustryJitpack:core:$rootProject.mindusty_ver"
 
-    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+    annotationProcessor "com.github.Anuken:jabel:$rootProject.jabel_ver"
 }
+
 
 //force arc version
 configurations.all{
     resolutionStrategy.eachDependency { details ->
         if(details.requested.group == 'com.github.Anuken.Arc'){
-            details.useVersion "$mindustryVersion"
+            details.useVersion "$rootProject.mindusty_ver"
         }
     }
 }
@@ -69,8 +78,7 @@ jar{
     }
 
     from(rootDir){
-        include "mod.hjson", "changelog.txt"
-
+        include "mod.hjson", "changelog.txt", "icon.png"
     }
 
     from("assets/"){

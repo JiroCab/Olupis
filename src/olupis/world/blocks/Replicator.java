@@ -8,25 +8,31 @@ import arc.scene.ui.Label;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
-import mindustry.ctype.UnlockableContent;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Gamemode;
-import mindustry.gen.*;
+import mindustry.gen.Building;
+import mindustry.gen.Bullet;
+import mindustry.gen.Unit;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
-import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.payloads.Payload;
+import mindustry.world.blocks.payloads.PayloadBlock;
+import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.meta.BlockGroup;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.content;
+import static mindustry.Vars.state;
 
 public class Replicator extends PayloadBlock {
-    public float maxDelay = 30f;
+    public float maxDelay = 30f, speedScl, time, progress;
 
     public float delay = 1;
     public Seq<UnitType> spawnableUnits = new Seq<>();
@@ -53,12 +59,10 @@ public class Replicator extends PayloadBlock {
         privileged = true;
         spawnableUnits.addAll(content.units().select(Replicator.this::canProduce).as());
 
-        config(Integer.class, (ReplicatorBuild build, Integer unit) -> {
-            build.selectedUnit = unit;
-        });
-        config(Float.class,(ReplicatorBuild build,Float f) -> {
-            build.dynamicDelay = f;
-        });
+        config(Integer.class, (ReplicatorBuild build, Integer unit) -> build.selectedUnit = unit);
+
+        config(Float.class,(ReplicatorBuild build,Float f) -> build.dynamicDelay = f);
+
         config(String.class,(ReplicatorBuild build,String s) -> {
             build.selectedUnit = Integer.parseInt(s.split(";")[0]);
             build.dynamicDelay = Float.parseFloat(s.split(";")[1]);
@@ -70,7 +74,7 @@ public class Replicator extends PayloadBlock {
         });
     }
     public boolean accessible(){
-            return !privileged || state.rules.editor || state.playtestingMap != null || state.rules.mode() == Gamemode.sandbox;
+        return !privileged || state.rules.editor || state.playtestingMap != null || state.rules.mode() == Gamemode.sandbox;
     }
 
     @Override
@@ -98,7 +102,7 @@ public class Replicator extends PayloadBlock {
     public class ReplicatorBuild extends PayloadBlockBuild<Payload>{
         public @Nullable Vec2 commandPos;
         public float dynamicDelay = delay,
-                    delayTimer = 0;
+                delayTimer = 0;
         public int selectedUnit = -1;
         public float scl;
 
@@ -144,6 +148,10 @@ public class Replicator extends PayloadBlock {
         public void updateTile(){
             super.updateTile();
             delayTimer = Mathf.approachDelta(delayTimer,0,1);
+            speedScl = Mathf.lerpDelta(speedScl, 0f, 0.05f);
+            time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
+            progress += edelta() * Vars.state.rules.unitBuildSpeed(team);
+
             if (delayTimer <= 0) {
                 delayTimer = dynamicDelay * 60;
                 if (unlockedNowHost() && state.isCampaign()) return;
@@ -173,6 +181,11 @@ public class Replicator extends PayloadBlock {
         public void draw(){
             Draw.rect(region, x, y);
             Draw.rect(outRegion, x, y, rotdeg());
+
+            if(selectedUnit != -1){
+                Draw.draw(Layer.blockOver, () -> Drawf.construct(this, spawnableUnits.get(selectedUnit), rotdeg() - 90f, progress / delay, speedScl, time ));
+            }
+
             Draw.rect(topRegion, x, y);
 
             Draw.scl(scl);

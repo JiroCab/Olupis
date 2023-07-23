@@ -1,26 +1,31 @@
 #the mod name as displayed in-game
-displayName: "Olupis"
+displayName: "Nyfalis (Olupis)"
 
 #the internal name of your mod
+#TODO: Use nyfalis as the internal name
 name: "olupis"
 
 #your name
-author: "RushieWashie, NightmarishWolf"
+author: "RushieWashie, Remington Thomas, Ethanol10, Siede, WMF Industries"
 
 #the fully qualified main class of the mod
-main: "olupis.Main"
+main: "olupis.NyfalisMain"
 
 #the mod description as seen in the mod dialog
-description: "Yet another planet mod"
+description: "(\u26A0Work in progress\u26A0) Yet another planet mod"
+
+subtitle: "Yet another planet mod, v1.4"
 
 #the mod version
-version: 1.3
+version: 1.4
 
 #the minimum game build required to run this mod
 minGameVersion: 136
 
+#this is a content mod
 hidden : false
+
 #this is a java mod
 java: true
 
-hideBrowser: true
+hideBrowser: false

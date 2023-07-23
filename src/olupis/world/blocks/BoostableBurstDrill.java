@@ -1,9 +1,13 @@
 package olupis.world.blocks;
 
+import arc.Core;
 import arc.math.Mathf;
+import arc.util.Strings;
 import mindustry.content.Liquids;
 import mindustry.entities.Effect;
+import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
+import mindustry.ui.Bar;
 import mindustry.world.blocks.production.BurstDrill;
 
 public class BoostableBurstDrill extends BurstDrill {
@@ -12,8 +16,21 @@ public class BoostableBurstDrill extends BurstDrill {
     {
         super(name);
     }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+
+
+        addBar("drillspeed", (DrillBuild e) ->{
+            int b = e.liquids.get(boostLiquid) > 0 ? 2 : 1;
+            return new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.lastDrillSpeed * 60 * e.timeScale() * b, 2)), () -> Pal.ammo, () -> e.warmup);
+        });
+    }
+
     public class BoostableBurstDrillBuild extends BurstDrillBuild
     {
+
         @Override
         public void updateTile(){
             if(dominantItem == null){
@@ -33,7 +50,7 @@ public class BoostableBurstDrill extends BurstDrill {
             if(items.total() <= itemCapacity - dominantItems && dominantItems > 0 && efficiency > 0){
                 warmup = Mathf.approachDelta(warmup, progress / drillTime, 0.01f);
 
-                float speed = efficiency;
+                float speed = Mathf.lerp(1f, liquidBoostIntensity, optionalEfficiency) * efficiency;
 
                 timeDrilled += speedCurve.apply(progress / drillTime) * speed;
 

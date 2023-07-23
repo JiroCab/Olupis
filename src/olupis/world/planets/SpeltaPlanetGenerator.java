@@ -38,7 +38,7 @@ public class SpeltaPlanetGenerator extends PlanetGenerator{
             };
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
-            Blocks.grass, OlupisBlocks.bush,
+            Blocks.grass, NyfalisBlocks.bush,
             Blocks.grass, Blocks.boulder,
             Blocks.sandWater, Blocks.water,
             Blocks.darksandWater, Blocks.darksandWater
@@ -51,7 +51,7 @@ public class SpeltaPlanetGenerator extends PlanetGenerator{
 
     {
         baseSeed = 69;
-        defaultLoadout = OlupisSchematic.basicRemnant;
+        defaultLoadout = NyfalisSchematic.basicRemnant;
     }
 
     float water = 2f / arr[0].length;
@@ -121,8 +121,10 @@ public class SpeltaPlanetGenerator extends PlanetGenerator{
     protected void generate(){
 
         class Room{
-            int x, y, radius;
-            ObjectSet<Room> connected = new ObjectSet<>();
+            final int x;
+            final int y;
+            final int radius;
+            final ObjectSet<Room> connected = new ObjectSet<>();
 
             Room(int x, int y, int radius){
                 this.x = x;
@@ -377,7 +379,7 @@ public class SpeltaPlanetGenerator extends PlanetGenerator{
             });
         }
 
-        Seq<Block> ores = Seq.with(OlupisBlocks.oreIron, Blocks.oreLead);
+        Seq<Block> ores = Seq.with(NyfalisBlocks.oreIron, Blocks.oreLead);
         float poles = Math.abs(sector.tile.v.y);
 
         FloatSeq frequencies = new FloatSeq();
@@ -592,7 +594,7 @@ public class SpeltaPlanetGenerator extends PlanetGenerator{
 
         state.rules.waveSpacing = Mathf.lerp(60 * 65 * 2, 60f * 60f * 1f, Math.max(difficulty - waveTimeDec, 0f));
         state.rules.waves = sector.info.waves = true;
-        state.rules.loadout.clear().add(new ItemStack(OlupisItemsLiquid.rustyIron, 100 * Math.round(sector.threat)));
+        state.rules.loadout.clear().add(new ItemStack(NyfalisItemsLiquid.rustyIron, 100 * Math.round(sector.threat)));
         state.rules.enemyCoreBuildRadius = 600f;
 
         //spawn air only when spawn is blocked

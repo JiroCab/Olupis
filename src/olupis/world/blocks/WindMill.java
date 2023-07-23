@@ -37,7 +37,7 @@ public class WindMill extends PowerGenerator {
         if(displayEfficiency && sumAttribute(attribute, x, y) != 0){
             drawPlaceText(Core.bundle.formatFloat("bar.efficiency", sumAttribute(attribute, x, y) * 100, 1), x, y, valid);
         }
-        if (Core.settings.getBool("olupis-debug")) drawPlaceText(Core.bundle.formatFloat("bar.efficiency", ((attribute.env() + sumAttribute(attribute, x, y)) * powerProduction + powerProduction ) , 1),  x , y - 2, valid);
+        if (Core.settings.getBool("nyfalis-debug")) drawPlaceText(Core.bundle.formatFloat("bar.efficiency", ((attribute.env() + sumAttribute(attribute, x, y)) * powerProduction + powerProduction ) , 1),  x , y - 2, valid);
     }
 
 
