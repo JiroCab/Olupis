@@ -28,4 +28,4 @@ hidden : false
 #this is a java mod
 java: true
 
-hideBrowser: true
+hideBrowser: false
