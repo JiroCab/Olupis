@@ -120,14 +120,12 @@ public class NyfalisBlocks {
 
         lumaGrass = new Floor("luma-grass"){{
             variants = 3;
-            decoration = lumaFlora;
             attributes.set(bio, 0.08f);
             attributes.set(Attribute.water, 0.15f);
         }};
 
         yellowGrass = new Floor("yellow-grass"){{
             variants = 4;
-            decoration = yellowBush;
             attributes.set(bio, 0.08f);
             attributes.set(Attribute.water, 0.15f);
         }};
@@ -135,7 +133,6 @@ public class NyfalisBlocks {
         pinkGrass = new Floor("pink-grass"){{
             variants = 4;
             attributes.set(bio, 0.08f);
-            decoration = mossyBoulder;
             attributes.set(Attribute.water, 0.15f);
         }};
 
@@ -145,54 +142,46 @@ public class NyfalisBlocks {
             wall = shrubs;
         }};
 
-        cinderBloomGrass = new Floor("cinder-bloom"){{
-            variants = 3;
-            attributes.set(bio, 0.06f);
-            decoration = infernalBloom;
-            attributes.set(Attribute.water, 0.25f);
-        }};
-
         cinderBloomy = new Floor("cinder-bloomy"){{
             variants = 3;
             attributes.set(bio, 0.03f);
-            decoration = basaltBoulder;
             attributes.set(Attribute.water, -0.15f);
         }};
 
         cinderBloomier = new Floor("cinder-bloomier"){{
             variants = 3;
             attributes.set(bio, 0.02f);
-            decoration = infernalBloom;
             attributes.set(Attribute.water, -0.05f);
         }};
 
         cinderBloomiest = new Floor("cinder-bloomiest"){{
             variants = 3;
             attributes.set(bio, 0.01f);
-            decoration = infernalBloom;
+        }};
+
+        cinderBloomGrass = new Floor("cinder-bloom"){{
+            variants = 3;
+            attributes.set(bio, 0.06f);
+            attributes.set(Attribute.water, 0.25f);
         }};
 
         mossierStone = new Floor("mossier-stone"){{
-            decoration = mossyBoulder;
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
         mossyStone = new Floor("mossy-stone"){{
             attributes.set(bio, 0.1f);
-            decoration = boulder;
             attributes.set(Attribute.water, 0.1f);
         }};
 
         mossiestStone = new Floor("mossiest-stone"){{
             attributes.set(bio, 0.1f);
-            decoration = mossyBoulder;
             mapColor = mossierStone.mapColor;
             attributes.set(Attribute.water, 0.1f);
         }};
 
         mossStone = new Floor("moss-stone"){{
-            decoration = bush;
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
@@ -301,11 +290,14 @@ public class NyfalisBlocks {
         yellowBush = new Prop("yellow-bush"){{
             variants = 2;
             frozenGrass.asFloor().decoration = this;
+            yellowGrass.asFloor().decoration = this;
         }};
 
         lumaFlora = new Prop("luma-flora"){{
             variants = 2;
             breakSound = Sounds.plantBreak;
+            lumaGrass.asFloor().decoration = this;
+            pinkGrass.asFloor().decoration = this;
         }};
 
         bush = new Prop("bush"){{
@@ -317,11 +309,16 @@ public class NyfalisBlocks {
         mossyBoulder = new Prop("mossy-boulder"){{
             variants = 2;
             frozenGrass.asFloor().decoration = this;
+            mossierStone.asFloor().decoration = this;
+            mossiestStone.asFloor().decoration = this;
         }};
 
         infernalBloom = new Prop("infernal-bloom"){{
             variants = 3;
             breakSound = Sounds.plantBreak;
+            cinderBloomGrass.asFloor().decoration = this;
+            cinderBloomier.asFloor().decoration = this;
+            cinderBloomiest.asFloor().decoration = this;
         }};
 
         //endregion
@@ -1355,9 +1352,9 @@ public class NyfalisBlocks {
         snow.attributes.set(bio, 0.01f);
         craters.attributes.set(bio, 0.5f);
 
+        water.attributes.set(hydro, 0.3f);
         deepwater.attributes.set(hydro, 0.5f);
         sandWater.attributes.set(hydro, 0.3f);
-        water.attributes.set(hydro, 0.3f);
         taintedWater.attributes.set(hydro, 0.3f);
         darksandWater.attributes.set(hydro, 0.3f);
         deepTaintedWater.attributes.set(hydro, 0.3f);
@@ -1368,6 +1365,10 @@ public class NyfalisBlocks {
         pinkGrassWater.attributes.set(hydro, 0.3f);
         lumaGrassWater.attributes.set(hydro, 0.3f);
         yellowMossyWater.attributes.set(hydro, 0.3f);
+
+        mossyStone.asFloor().decoration = bush;
+        mossyStone.asFloor().decoration = boulder;
+        cinderBloomy.asFloor().decoration = basaltBoulder;
     }
 
     public static void NyfalisBlocksPlacementFix(){
