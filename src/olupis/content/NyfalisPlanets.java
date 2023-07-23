@@ -15,8 +15,6 @@ import mindustry.type.Sector;
 import mindustry.world.meta.Env;
 import olupis.world.planets.*;
 
-import static mindustry.Vars.content;
-
 public class NyfalisPlanets {
     public static Planet nyfalis, arthin, spelta, system;
     private static final Seq<Sector> systemSector = new Seq<>();
@@ -38,10 +36,11 @@ public class NyfalisPlanets {
     };
 
     public  static void LoadPlanets(){
-        content.planets().forEach( p -> {
-            if(p.name.contains("olupis-"))return;
+        /*.forEach() Crashes mobile*/
+        for (Planet p : Vars.content.planets()) {
+            if (p.name.contains("olupis-")) continue;
             p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
-        });
+        }
 
         /*I Exist so Tech Tree's Item pool is shared among the 3 planets*/
         system = new Planet("system", Planets.sun, 0.4f){{
