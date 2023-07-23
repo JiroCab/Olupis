@@ -37,7 +37,7 @@ public class NyfalisPlanets {
 
     public  static void LoadPlanets(){
         /*.forEach() Crashes mobile*/
-        for (Planet p : content.planets()) {
+        for (Planet p : Vars.content.planets()) {
             if (p.name.contains("olupis-")) continue;
             p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
         }
