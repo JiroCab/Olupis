@@ -6,7 +6,7 @@ import arc.struct.Seq;
 import mindustry.ai.UnitCommand;
 import mindustry.content.*;
 import mindustry.entities.abilities.UnitSpawnAbility;
-import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.entities.part.HoverPart;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
@@ -46,121 +46,207 @@ public class NyfalisUnits {
         mite,
         spirit
     ;
-    //TODO: Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
-    //TODO: Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
 
     public static void LoadUnits(){
         LoadAmmoType();
 
         //region Nyfalis Regular Units
         zoner = new NyfalisUnitType("zoner"){{
-            constructor = UnitEntity::create;
-            lowAltitude = flying = true;
-
-            health = 220f;
             hitSize = 11f;
-            speed = 3.55f;
-            rotateSpeed = 19f;
             drag = 0.05f;
             accel = 0.11f;
-            itemCapacity = 70;
-
-            engineOffset = 5.5f;
+            health = 220f;
+            speed = 3.55f;
             engineSize = 2f;
+            rotateSpeed = 19f;
+            itemCapacity = 70;
+            engineOffset = 5.5f;
 
+            lowAltitude = flying = true;
+            constructor = UnitEntity::create;
             weapons.add(new Weapon("olupis-zoner-weapon"){{
                 top = alternate = false;
-
-                reload = shootCone = 15f;
                 x = -1.8f;
                 y = -1f;
                 inaccuracy = 3f;
-
+                reload = shootCone = 15f;
                 ejectEffect = Fx.casing1;
 
                 bullet = new BasicBulletType(2.5f, 5){{
-                    lifetime = 60f;
-                    homingPower = 0.04f;
                     width = 7;
                     height = 9f;
-
-                    smokeEffect = Fx.shootSmallSmoke;
+                    lifetime = 60f;
+                    homingPower = 0.04f;
                     shootEffect = Fx.none;
+                    smokeEffect = Fx.shootSmallSmoke;
                 }};
             }});
+        }};
 
+        //TODO: Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
+        aero = new NyfalisUnitType("aero"){{
+            hitSize = 11f;
+            drag = 0.05f;
+            accel = 0.11f;
+            health = 220f;
+            speed = 3.55f;
+            engineSize = 2f;
+            rotateSpeed = 19f;
+            itemCapacity = 70;
+            engineOffset = 5.5f;
+
+            lowAltitude = flying = true;
+            constructor = UnitEntity::create;
+            weapons.add(new Weapon("olupis-zoner-weapon"){{
+                top = alternate = false;
+                alwaysContinuous = continuous = true;
+                shake = 0f;
+                reload = 60f;
+                shootY = 1.5f;
+                inaccuracy = 3f;
+                shootCone = 15f;
+                x = y = recoil = 0f;
+                ejectEffect = Fx.casing1;
+
+                bullet = new ContinuousLaserBulletType(){{
+                    damage = 5;
+                    width = 1.5f;
+                    length = lifetime = 60f;
+                    homingPower = 0.04f;
+                    makeFire = false;
+                    shootEffect = Fx.none;
+                    smokeEffect = Fx.shootSmallSmoke;
+                    colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
+                }};
+            }});
+        }};
+
+        //TODO: Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
+        striker = new NyfalisUnitType("striker"){{
+            hitSize = 11f;
+            drag = 0.05f;
+            accel = 0.08f;
+            health = 350f;
+            speed = 5.2f;
+            engineSize = 2f;
+            rotateSpeed = 19f;
+            itemCapacity = 70;
+            engineOffset = 5.5f;
+
+            lowAltitude = flying = true;
+            constructor = UnitEntity::create;
+            weapons.add(new Weapon(""){{
+                x = -1.8f;
+                y = -1f;
+                inaccuracy = 3f;
+                reload = shootCone = 15f;
+                top = alternate = false;
+                ejectEffect = Fx.casing1;
+
+                bullet = new LightningBulletType(){{
+                    damage = 14f;
+                    shootEffect = Fx.lightningShoot;
+                    lightningColor = hitColor = Pal.regen;
+                    lightningLength = lightningLengthRand = 7;
+
+                    lightningType = new BulletType(0.0001f, 0f){{
+                        lifetime = Fx.lightning.lifetime;
+                        hitEffect = Fx.hitLancer;
+                        despawnEffect = Fx.none;
+                        status = StatusEffects.shocked;
+                        statusDuration = 10f;
+                        hittable = false;
+                        collidesTeam = true;
+                    }};
+                }};
+            }});
+            weapons.add(new Weapon(){{
+                minShootVelocity = 0.8f;
+                ignoreRotation = alwaysShooting=  true;
+                reload = 12f;
+                shootCone = 180f;
+                ejectEffect = Fx.none;
+                inaccuracy = 15f;
+                shootSound = Sounds.none;
+                bullet = new LightningBulletType(){{
+                    damage = 14f;
+                    shootEffect = Fx.lightningShoot;
+                    lightningColor = hitColor = Pal.regen;
+                    lightningLength = lightningLengthRand = 7;
+
+                    lightningType = new BulletType(0.0001f, 0f){{
+                        lifetime = Fx.lightning.lifetime;
+                        hitEffect = Fx.hitLancer;
+                        despawnEffect = Fx.none;
+                        status = StatusEffects.shocked;
+                        statusDuration = 10f;
+                        hittable = false;
+                        collidesTeam = true;
+                    }};
+                }};
+            }});
         }};
 
         firefly = new NyfalisUnitType("firefly"){{
             constructor = UnitTypes.mono.constructor;
-            //there's no reason to command monos anywhere. it's just annoying.
-            //haha, no
-            //controller = u -> new MinerAI();
             defaultCommand = UnitCommand.mineCommand;
+            ammoType = new PowerAmmoType(500);
 
             flying = true;
             isEnemy = false;
 
+            range = 50f;
             health = 100;
             speed = 1.5f;
             drag = 0.06f;
             accel = 0.12f;
             mineTier = 1;
             mineSpeed = 2.5f;
-            range = 50f;
-
             engineSize = 1.8f;
             engineOffset = 5.7f;
-
-            ammoType = new PowerAmmoType(500);
         }};
 
         porter = new TankUnitType("porter"){{
-            constructor = UnitTypes.risso.constructor;
-
             health = 850;
             armor = 6f;
             hitSize = 12f;
             speed = 0.75f;
-            rotateSpeed = 3.5f;
             itemCapacity = 0;
+            treadPullOffset = 3;
+            rotateSpeed = 3.5f;
             researchCostMultiplier = 0f;
 
-            treadPullOffset = 3;
+            constructor = UnitTypes.risso.constructor;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
-
             abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 1, 0));
         }};
         //endregion
 
         //region Nyfalis Limited LifeTime Units
         mite = new AmmoLifeTimeUnitType("mite"){{
-            constructor = UnitEntity::create;
-            controller = u -> new SearchAndDestroyFlyingAi();
-            ammoDepleteAmount = 0.55f;
-            lightRadius = 15f;
-            lightOpacity = 50f;
-
-            flying = targetGround = targetAir = true;
-            playerControllable  = logicControllable = useUnitCap = false;
-
-            health = 80;
             armor = 5;
             hitSize = 9;
+            range = 45f;
+            health = 80;
             speed = 2.7f;
             accel = 0.08f;
             drag = 0.04f;
-            range = 45f;
+            lightRadius = 15f;
+            lightOpacity = 50f;
             itemCapacity = 10;
+            ammoDepleteAmount = 0.55f;
 
-
+            flying = targetGround = targetAir = true;
+            playerControllable  = logicControllable = useUnitCap = false;
+            constructor = UnitEntity::create;
+            controller = u -> new SearchAndDestroyFlyingAi();
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
             weapons.add(new Weapon(){{
                 y = x = 0f;
                 reload = 10f;
                 shootCone = 15f;
-                targetSwitchInterval = 60f;
                 targetInterval = 30f;
+                targetSwitchInterval = 60f;
 
                 shootSound = Sounds.pew;
                 ammoType = lifeTimeWeapon;
@@ -168,15 +254,14 @@ public class NyfalisUnits {
                 bullet = new NoBoilLiquidBulletType(steam){{
                     useAmmo = true;
                     pierce = true;
-                    damage = 10f;
 
                     speed = 2f;
                     lifetime = 18f;
+                    damage = 10f;
                     pierceCap = 1;
                     ammoMultiplier = 1.5f;
                     status = StatusEffects.corroded;
                     statusDuration = 1.5f *60f;
-
                     shootEffect = Fx.shootLiquid;
                     despawnEffect = hitEffect = Fx.steam;
                 }};
@@ -184,60 +269,54 @@ public class NyfalisUnits {
         }};
 
         spirit = new AmmoLifeTimeUnitType("spirit"){{
-            constructor = UnitEntity::create;
-            controller = u -> new NyfalisMiningAi();
-
-            flying = miningDepletesAmmo = true;
-            isEnemy = useUnitCap = ammoDepletesOverTime = false;
+            range = 30f;
             mineTier = 1;
             mineSpeed = 3.5f;
-            range = 30f;
-            ammoCapacity = 100;
             itemCapacity = 30;
+            ammoCapacity = 100;
             ammoDepleteAmount = 0.2f;
 
-
             ammoType = lifeTimeDrill;
+            constructor = UnitEntity::create;
+            controller = u -> new NyfalisMiningAi();
+            flying = miningDepletesAmmo = true;
+            isEnemy = useUnitCap = ammoDepletesOverTime = false;
         }};
         //endregion
 
         //region Nyfalis Core Units
-
         gnat = new NyfalisUnitType("gnat"){{
-            constructor = LegsUnit::create;
-            controller = u -> new NyfalisMiningAi();
-            ammoType = new PowerAmmoType(1000);
-            mineItems = Seq.with(rustyIron, lead, Items.scrap);
-
-            legPhysicsLayer = false;
-            canBoost = allowLegStep = hovering = true;
-
             armor = 1f;
             hitSize = 9f;
             speed = 2.4f;
             drag = 0.11f;
             health = 420;
             mineTier = 1;
-            rotateSpeed = 4.5f;
-            mineSpeed = 8f;
+            legCount = 0;
+            /*Corner Engines only*/
+            engineSize = -1;
+            mineSpeed = 8.5f;
             buildSpeed = 0.5f;
             itemCapacity = 70;
+            rotateSpeed = 4.5f;
             range = mineRange;
+            legMoveSpace = 1.1f; //Limits world tiles movement
+            shadowElevation = 0.1f;
+            buildBeamOffset = 4.2f;
             boostMultiplier = 0.75f;
             researchCostMultiplier = 0f;
             groundLayer = Layer.legUnit - 1f;
 
-            legCount = 0;
-            legMoveSpace = 1.1f; //Limits world tiles movement
-            shadowElevation = 0.1f;
-            buildBeamOffset = 4.2f;
-            /*Corner Engines only*/
-            engineSize = -1;
+            legPhysicsLayer = false;
+            canBoost = allowLegStep = hovering = true;
+            constructor = LegsUnit::create;
+            controller = u -> new NyfalisMiningAi();
+            ammoType = new PowerAmmoType(1000);
+            mineItems = Seq.with(rustyIron, lead, scrap);
             setEnginesMirror(
                 new UnitEngine(21 / 4f, 19 / 4f, 2.2f, 45f),
                 new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
             );
-
             parts.add(new HoverPart(){{
                 mirror = false;
 
@@ -256,15 +335,9 @@ public class NyfalisUnits {
                         shootStatusDuration = Fx.heal.lifetime;
                         shoot.firstShotDelay = Fx.heal.lifetime-1;
                         bullet = new BasicBulletType(0,-5) {{
-                            collidesTeam = true;
-                            keepVelocity = false;
-                            chargeEffect = hitEffect = despawnEffect = Fx.heal;
-                            backColor = frontColor = trailColor = lightColor = Pal.heal;
-                            shootSound = Sounds.sap;
-
-                            lifetime = 10*60;
                             spin = 3.5f;
                             drag = 0.9f;
+                            lifetime = 10*60;
                             shrinkX = 25f/60f;
                             shrinkY = 35f/60f;
                             intervalBullets = 2;
@@ -272,25 +345,29 @@ public class NyfalisUnits {
                             intervalRandomSpread = 90;
                             height = width = bulletInterval = healAmount = 20;
 
-                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
-                                collidesTeam = true;
-                                keepVelocity = false;
-                                hitEffect = despawnEffect = Fx.heal;
-                                backColor = frontColor = trailColor = lightColor = Pal.heal;
+                            collidesTeam = true;
+                            keepVelocity = false;
+                            hitEffect = despawnEffect = Fx.heal;
+                            backColor = frontColor = trailColor = lightColor = Pal.heal;
 
+                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
                                 lifetime = 60;
                                 trailLength = 15;
                                 trailWidth = 1.5f;
                                 healAmount = 20;
                                 bulletInterval = 10;
                                 homingPower = 0.09f;
+
+                                collidesTeam = true;
+                                keepVelocity = false;
+                                hitEffect = despawnEffect = Fx.heal;
+                                backColor = frontColor = trailColor = lightColor = Pal.heal;
                             }};
 
                         }};
                     }}
             );
         }};
-
         //endregion
     }
 

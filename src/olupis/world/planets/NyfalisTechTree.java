@@ -14,14 +14,26 @@ import static olupis.content.NyfalisPlanets.*;
 public class NyfalisTechTree {
 
     public static void load(){
-        /*TODO: Redo most of the item costs*/
         nyfalis.techTree = nodeRoot("olupis", coreRemnant, () -> {
+            node(system, () -> {
+                node(arthin, () ->{
+                    node(NyfalisSectors.sanctuary, () -> {
 
-            node(NyfalisSectors.placeholder1, () -> {
-                node(NyfalisSectors.placeholder2, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.placeholder1)
-                ), () ->{
+                    });
+                });
+                node(nyfalis, () ->{
+                    node(NyfalisSectors.placeholder1, () -> {
+                        node(NyfalisSectors.placeholder2, Seq.with(
+                                new Objectives.SectorComplete(NyfalisSectors.placeholder1)
+                        ), () ->{
 
+                        });
+                    });
+                });
+                node(spelta, () ->{
+                    node(NyfalisSectors.placeholderSpelta1, ()-> {
+
+                    });
                 });
             });
 

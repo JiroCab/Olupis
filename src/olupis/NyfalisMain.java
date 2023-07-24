@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static mindustry.Vars.*;
+import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisMain extends Mod{
@@ -46,7 +47,7 @@ public class NyfalisMain extends Mod{
 
         NyfalisPlanets.PostLoadPlanet();
         NyfalisTechTree.load();
-        NyfalisBlocks.AddAttributes();
+        NyfalisAttribute.AddAttributes();
         NyfalisUnits.PostLoadUnits();
 
         Log.info("OwO, Nyfalis (Olupis) content Loaded! Hope you enjoy nya~");
@@ -59,8 +60,8 @@ public class NyfalisMain extends Mod{
                 if(shouldAutoBan()) {
                     Log.debug("Nyfalis has banned its blocks!");
                     if (!state.rules.blockWhitelist) {
-                        state.rules.bannedBlocks.addAll(NyfalisBlocks.nyfalisBuildBlockSet);
-                    } else state.rules.bannedBlocks.removeAll(NyfalisBlocks.nyfalisBuildBlockSet.toSeq());
+                        state.rules.bannedBlocks.addAll(NyfalisBlocks.allNyfalisBlocks);
+                    } else state.rules.bannedBlocks.removeAll(NyfalisBlocks.allNyfalisBlocks.toSeq());
                 }
             });
             if(headless)return;
@@ -79,6 +80,12 @@ public class NyfalisMain extends Mod{
             Vars.ui.planet.shown(() -> {
                 if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);
             });
+
+            arthin.uiIcon = bush.fullIcon;
+            nyfalis.uiIcon = redSandBoulder.fullIcon;
+            spelta.uiIcon = pinkTree.fullIcon;
+            system.uiIcon = Icon.planet.getRegion();
+            Events.fire(new EventType.UnlockEvent(system));
 
             /*For those people who don't like the name/icon or overwrites in general*/
             if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";
