@@ -91,7 +91,7 @@ public class NyfalisTurrets {
             loopSound = Sounds.steam;
             consumePower(1f);
             outlineColor = nyfalisBlockOutlineColour;
-            researchCost = with(rustyIron, 100);
+            researchCost = with(rustyIron, 100, lead, 100);
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
         }};
 

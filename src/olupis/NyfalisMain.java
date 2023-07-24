@@ -85,6 +85,7 @@ public class NyfalisMain extends Mod{
             nyfalis.uiIcon = redSandBoulder.fullIcon;
             spelta.uiIcon = pinkTree.fullIcon;
             system.uiIcon = Icon.planet.getRegion();
+            //this unresearches it self
             Events.fire(new EventType.UnlockEvent(system));
 
             /*For those people who don't like the name/icon or overwrites in general*/

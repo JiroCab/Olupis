@@ -9,7 +9,6 @@ public class NyfalisSectors {
     public  static SectorPreset
             /*Arthin*/
             sanctuary,
-
             /*Nyfalis*/
             placeholder1, placeholder2,
             /*Spelta*/
@@ -19,10 +18,11 @@ public class NyfalisSectors {
     public static void LoadSectors(){
         //region Arthin
         sanctuary = new SectorPreset("sanctuary", arthin, 2){{
-            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
+             alwaysUnlocked = overrideLaunchDefaults = true;
+            addStartingItems = false;
 
             captureWave = 15;
-            difficulty = 0;
+            difficulty = 1;
         }};
 
         //endregion

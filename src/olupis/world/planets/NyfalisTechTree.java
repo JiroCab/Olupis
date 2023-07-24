@@ -137,7 +137,7 @@ public class NyfalisTechTree {
 
                             });
                         });
-                        node(ironSieve, () ->{
+                        node(ironSieve, Seq.with(new Objectives.Research(rustElectrolyzer), new Objectives.Produce(sand)),() ->{
 
                         });
                     });

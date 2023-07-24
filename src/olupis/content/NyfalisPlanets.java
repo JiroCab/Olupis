@@ -21,17 +21,13 @@ public class NyfalisPlanets {
     private static final Seq<Sector> systemSector = new Seq<>();
 
     public static Cons<Rules> commonRules = r ->{
-        r.waveTeam = Team.green;
-        r.placeRangeCheck = false;
-        r.showSpawns = true;
-        r.unitPayloadUpdate = true;
         r.enemyCoreBuildRadius = 650f;
-        r.coreDestroyClear = true;
         r.dropZoneRadius = 400f;
-        r.disableOutsideArea = false;
-        r.blockWhitelist = true;
+        r.waveTeam = Team.green;
+        r.placeRangeCheck = r.disableOutsideArea = false;
+        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.blockWhitelist = r.hideBannedBlocks = true;
+
         r.bannedBlocks.clear();
-        r.hideBannedBlocks = true;
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
         NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
     };
@@ -85,8 +81,7 @@ public class NyfalisPlanets {
 
         //1st moon
         arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.9f, 2){{
-            accessible = false;
-            alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = true;
+            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = true;
 
             enemyBuildSpeedMultiplier = 0.4f;
             icon = "effect";
@@ -101,8 +96,7 @@ public class NyfalisPlanets {
         }};
 
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
-            alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = true;
-            accessible = false;
+            alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
 
             enemyBuildSpeedMultiplier = 0.4f;
             icon = "effect";

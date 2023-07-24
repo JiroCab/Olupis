@@ -439,7 +439,7 @@ public class NyfalisBlocks {
         ironRouter = new Router("iron-router"){{
             buildCostMultiplier = 4f;
 
-            researchCost = with(rustyIron, 40);
+            researchCost = with(rustyIron, 40, lead, 40);
             requirements(Category.distribution, with(rustyIron, 3, lead, 1));
         }};
 
