@@ -28,6 +28,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     public  boolean killOnAmmoDepletes = true;
     /*Amount to deplete per tick*/
     public float ammoDepleteAmount = 0.2f;
+    public float ammoDepleteAmountPassive = ammoDepleteAmount;
     /*Ammo amount that will trigger death*/
     public float minimumAmmoBeforeKill = 0.1f;
     /*mining depletes ammo*/
@@ -139,7 +140,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
 
         boolean shouldDeplete = (startTime+ depleteAmmoOffset) >= startTime;
         if(ammoDepletesOverTime && shouldDeplete){
-            unit.ammo = unit.ammo - ammoDepleteAmount;
+            unit.ammo = unit.ammo - ammoDepleteAmountPassive;
         }
 
         if(miningDepletesAmmo && unit.mining()){

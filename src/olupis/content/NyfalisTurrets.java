@@ -142,6 +142,7 @@ public class NyfalisTurrets {
         }};
 
         shredder = new ItemTurret("shredder"){{
+            //TODO: rework, shotgun/tri shot, home/ricochets  on hit, BTD6 quincy style
             targetAir = false;
 
             size = 3;
@@ -213,6 +214,8 @@ public class NyfalisTurrets {
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO: Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
+
+        //TODO: Avenger, Aegis AA SAMM Turrets
 
         //endregion
     }

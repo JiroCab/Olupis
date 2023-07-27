@@ -109,6 +109,8 @@ public class NyfalisPlanets {
             meshLoader = () -> new HexMesh(this, 5);
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
+
+        //TODO: rework the planets generators
     }
 
     public  static void PostLoadPlanet(){

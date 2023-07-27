@@ -7,6 +7,7 @@ import arc.util.Scaling;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
+import mindustry.ui.Bar;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.draw.*;
@@ -28,6 +29,18 @@ public class PowerUnitTurret extends PowerTurret {
             new DrawRegion("")
         );
 
+    }
+
+    public void setBars(){
+        super.setBars();
+
+        addBar("progress", (PowerUnitTurretBuild entity) ->
+                new Bar(
+                        "bar.progress",
+                        Pal.regen,
+                        () -> entity.reloadCounter / reload
+                )
+        );
     }
 
     @Override

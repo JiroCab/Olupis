@@ -34,11 +34,11 @@ public class ItemUnitTurret extends ItemTurret {
     public void setBars(){
         super.setBars();
 
-        addBar("progress", (ItemTurretBuild entity) ->
+        addBar("bar.progress", (ItemTurretBuild entity) ->
                 new Bar(
-                        "stat.progress",
+                        "bar.progress",
                         Pal.regen,
-                        () -> (float)entity.reloadCounter / reload
+                        () -> entity.reloadCounter / reload
                 )
         );
     }

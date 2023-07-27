@@ -62,7 +62,7 @@ public class NyfalisBlocks {
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom,
 
         //Buildings, sorted by category
-        corroder, dissolver, shredder, hive, escalation, blitz, shatter,
+        corroder, dissolver, shredder, hive, escalation, blitz, shatter, avenger, aegis,
 
         rustyDrill, steamDrill, hydroElectricDrill,
 
@@ -77,7 +77,7 @@ public class NyfalisBlocks {
 
         garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver,
 
-        construct, unitReplicator, unitReplicatorSmall,
+        construct, arialConstruct, groundConstruct, unitReplicator, unitReplicatorSmall,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
@@ -580,7 +580,7 @@ public class NyfalisBlocks {
             liquidPressure = 0.95f;
             researchCostMultiplier = 0.5f;
             botColor = Color.valueOf("37323C");
-            requirements(Category.liquid, with(lead, 5));
+            requirements(Category.liquid, with(lead, 1, rustyIron, 1));
         }};
 
         ironPipe = new ArmoredConduit("iron-pipe"){{
@@ -844,6 +844,9 @@ public class NyfalisBlocks {
             requirements(Category.units, with(iron, 200, lead, 100, silicon, 60, rustyIron, 200));
         }};
 
+        //TODO: arialConstruct -> offensive air units
+        //TODO: groundConstruct -> offensive ground units
+
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
             delay = 5f;
@@ -868,7 +871,7 @@ public class NyfalisBlocks {
             consumePower(1f/60f);
             researchCost = with(rustyIron,20);
             consumePowerBuffered(1f);
-            requirements(Category.power, with(rustyIron, 5));
+            requirements(Category.power, with(rustyIron, 2));
         }};
 
         superConductors = new Wire("super-conductor"){{
@@ -959,7 +962,7 @@ public class NyfalisBlocks {
         rustyWall = new Wall("rusty-wall"){{
             size = 1;
             health =  350;
-            researchCost = with(rustyIron,80);
+            researchCost = with(rustyIron,100);
             requirements(Category.defense,with(rustyIron, 12));
         }};
 

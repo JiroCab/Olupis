@@ -15,8 +15,7 @@ import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.unit.TankUnitType;
 import mindustry.world.meta.BlockFlag;
-import olupis.world.ai.NyfalisMiningAi;
-import olupis.world.ai.SearchAndDestroyFlyingAi;
+import olupis.world.ai.*;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.NoBoilLiquidBulletType;
 import olupis.world.entities.units.AmmoLifeTimeUnitType;
@@ -57,7 +56,7 @@ public class NyfalisUnits {
             accel = 0.11f;
             health = 220f;
             speed = 3.55f;
-            engineSize = 2f;
+            engineSize = 1.5f;
             rotateSpeed = 19f;
             itemCapacity = 70;
             engineOffset = 5.5f;
@@ -83,103 +82,120 @@ public class NyfalisUnits {
             }});
         }};
 
-        //TODO: Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
+        //Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
         aero = new NyfalisUnitType("aero"){{
             hitSize = 11f;
-            drag = 0.05f;
-            accel = 0.11f;
-            health = 220f;
-            speed = 3.55f;
-            engineSize = 2f;
-            rotateSpeed = 19f;
-            itemCapacity = 70;
+            health = 250f;
+            speed = 3.6f;
+            engineSize = 4f;
+            rotateSpeed = 30f;
+            itemCapacity = 30;
             engineOffset = 5.5f;
+            drag = accel = 0.08f;
 
-            lowAltitude = flying = true;
+            lowAltitude = false;
+            flying = circleTarget = alwaysShootWhenMoving = true;
+            aiController = AgressiveFlyingAi::new;
             constructor = UnitEntity::create;
-            weapons.add(new Weapon("olupis-zoner-weapon"){{
-                top = alternate = false;
-                alwaysContinuous = continuous = true;
+            weapons.add(new Weapon(""){{
+                top = mirror = false;
+                continuous = alwaysContinuous =  parentizeEffects = true;
                 shake = 0f;
-                reload = 60f;
-                shootY = 1.5f;
-                inaccuracy = 3f;
-                shootCone = 15f;
-                x = y = recoil = 0f;
-                ejectEffect = Fx.casing1;
+                y = 3f;
+                x = recoil = 0f;
+                reload = shootCone = 30f;
+                ejectEffect = Fx.none;
+                shootSound = Sounds.electricHum;
+                layerOffset = Layer.flyingUnit -1f;
 
                 bullet = new ContinuousLaserBulletType(){{
-                    damage = 5;
-                    width = 1.5f;
-                    length = lifetime = 60f;
-                    homingPower = 0.04f;
-                    makeFire = false;
-                    shootEffect = Fx.none;
-                    smokeEffect = Fx.shootSmallSmoke;
+                    width = 2f;
+                    length = 30;
+                    lifetime = 32f;
+                    pierceCap = 2;
+                    frontLength = 17f;
+                    damage = 15f / 12f;
+                    homingPower = 0.06f;
+                    incendChance = incendSpread = 0f;
+                    pierce = true;
+                    removeAfterPierce = false;
+                    smokeEffect = shootEffect = Fx.none;
+                    chargeEffect = Fx.lightningShoot;
                     colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
                 }};
             }});
         }};
 
-        //TODO: Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
+        //Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
         striker = new NyfalisUnitType("striker"){{
             hitSize = 11f;
             drag = 0.05f;
-            accel = 0.08f;
+            accel = 0.07f;
             health = 350f;
-            speed = 5.2f;
-            engineSize = 2f;
-            rotateSpeed = 19f;
+            speed = 5.5f;
+            armor = 3f;
+            engineSize = 4f;
             itemCapacity = 70;
-            engineOffset = 5.5f;
+            engineOffset = 13.5f;
+            rotateSpeed = baseRotateSpeed = 30f;
 
-            lowAltitude = flying = true;
             constructor = UnitEntity::create;
+            aiController = AgressiveFlyingAi::new;
+            lowAltitude = flying = circleTarget = true;
             weapons.add(new Weapon(""){{
-                x = -1.8f;
-                y = -1f;
+                x = 0;
+                y = 1.5f;
                 inaccuracy = 3f;
                 reload = shootCone = 15f;
-                top = alternate = false;
-                ejectEffect = Fx.casing1;
 
+                ejectEffect = Fx.sparkShoot;
+                shootSound = Sounds.laser;
+                top = alternate =  mirror = false;
+                alwaysShootWhenMoving = true;
                 bullet = new LightningBulletType(){{
-                    damage = 14f;
+                    damage = 13f;
+                    drawSize = 55f;
+                    pierceCap = 5;
+                    lightningLength = lightningLengthRand = 12;
+                    pierce = true;
                     shootEffect = Fx.lightningShoot;
                     lightningColor = hitColor = Pal.regen;
-                    lightningLength = lightningLengthRand = 7;
-
                     lightningType = new BulletType(0.0001f, 0f){{
+                        pierceCap = 5;
+                        statusDuration = 10f;
                         lifetime = Fx.lightning.lifetime;
                         hitEffect = Fx.hitLancer;
                         despawnEffect = Fx.none;
-                        status = StatusEffects.shocked;
-                        statusDuration = 10f;
                         hittable = false;
-                        collidesTeam = true;
+                        status = StatusEffects.shocked;
+                        collidesTeam = pierce = true;
                     }};
                 }};
             }});
             weapons.add(new Weapon(){{
-                minShootVelocity = 0.8f;
-                ignoreRotation = alwaysShooting=  true;
-                reload = 12f;
+                x = 0f;
+                reload = 30;
+                inaccuracy = 30f;
                 shootCone = 180f;
+                minShootVelocity = 5.2f;
+
                 ejectEffect = Fx.none;
-                inaccuracy = 15f;
-                shootSound = Sounds.none;
+                shootSound = Sounds.spark;
+                ignoreRotation = alwaysShooting=  true;
                 bullet = new LightningBulletType(){{
-                    damage = 14f;
+                    damage = 10;
+                    lightningLength = lightningLengthRand = 8;
+
+                    status = StatusEffects.none;
                     shootEffect = Fx.lightningShoot;
                     lightningColor = hitColor = Pal.regen;
-                    lightningLength = lightningLengthRand = 7;
-
+                    parentizeEffects = autoTarget = autoFindTarget = true;
+                    top = alternate =  mirror =  aiControllable = controllable = false;
                     lightningType = new BulletType(0.0001f, 0f){{
                         lifetime = Fx.lightning.lifetime;
                         hitEffect = Fx.hitLancer;
                         despawnEffect = Fx.none;
-                        status = StatusEffects.shocked;
-                        statusDuration = 10f;
+                        status = StatusEffects.none;
                         hittable = false;
                         collidesTeam = true;
                     }};
@@ -224,16 +240,16 @@ public class NyfalisUnits {
 
         //region Nyfalis Limited LifeTime Units
         mite = new AmmoLifeTimeUnitType("mite"){{
-            armor = 5;
+            armor = 10f;
             hitSize = 9;
             range = 45f;
-            health = 80;
+            health = 100;
             speed = 2.7f;
             accel = 0.08f;
             drag = 0.04f;
             lightRadius = 15f;
-            lightOpacity = 50f;
             itemCapacity = 10;
+            lightOpacity = 50f;
             ammoDepleteAmount = 0.55f;
 
             flying = targetGround = targetAir = true;
@@ -273,8 +289,9 @@ public class NyfalisUnits {
             mineTier = 1;
             mineSpeed = 3.5f;
             itemCapacity = 30;
-            ammoCapacity = 100;
-            ammoDepleteAmount = 0.2f;
+            ammoCapacity = 120;
+            ammoDepleteAmount = 0.15f;
+            ammoDepleteAmountPassive = 0.1f;
 
             ammoType = lifeTimeDrill;
             constructor = UnitEntity::create;
