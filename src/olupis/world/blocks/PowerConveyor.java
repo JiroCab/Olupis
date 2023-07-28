@@ -27,7 +27,6 @@ public class PowerConveyor extends Conveyor {
             float pwr = power.status * (block.consPower.buffered ? block.consPower.capacity : 1f);
             speed = pwr <= powerRequired ? unpoweredSpeed : poweredSpeed;
 
-            boolean db = pwr >= 1f, db1 = pwr <= powerRequired;
             super.updateTile();
             noSleep();
         }

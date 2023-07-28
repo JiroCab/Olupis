@@ -19,10 +19,9 @@ public class NyfalisItemsLiquid {
             buildable = false;
 
             flammability = 1.2f;
-
             hiddenOnPlanets = hideList;
         }};
-        rustyIron = new Item("rusty-iron", Color.valueOf("ccac8b")) {{
+        rustyIron = new Item("rusty-iron", Color.valueOf("8E320A")) {{
             hardness = 1;
 
             hiddenOnPlanets = hideList;

@@ -317,7 +317,7 @@ public class NyfalisBlocks {
         }};
 
         redSandBoulder = new Prop("red-sand-boulder"){{
-            variants = 3;
+            variants = 2;
             redSand.asFloor().decoration = this;
         }};
 
@@ -398,7 +398,7 @@ public class NyfalisBlocks {
         rustyIronConveyor = new Conveyor("rusty-iron-conveyor"){{
             health = 45;
             speed = 0.015f;
-            displayedSpeed = 1f;
+            displayedSpeed = 2f;
             buildCostMultiplier = 2f;
             researchCost = with(rustyIron, 25);
             requirements(Category.distribution, with(rustyIron, 1));
@@ -409,11 +409,11 @@ public class NyfalisBlocks {
 
             health = 70;
             speed = 0.03f;
-            itemCapacity = 1;
+            buildCostMultiplier = 2f;
             poweredSpeed = 0.03f;
-            unpoweredSpeed = 0.005f;
+            unpoweredSpeed = 0.006f;
             displayedSpeedPowered = 4.2f;
-            displayedSpeed = buildCostMultiplier = 2f;
+            displayedSpeed = itemCapacity = 1;
 
             researchCost = with(iron, 150);
             consumePower (1f/60).boost();
@@ -426,10 +426,11 @@ public class NyfalisBlocks {
             health = 70;
             speed = 0.06f;
             itemCapacity = 1;
+            displayedSpeed = 0f;
             poweredSpeed = 0.06f;
             unpoweredSpeed = 0.015f;
             displayedSpeedPowered = 9f;
-            displayedSpeed =buildCostMultiplier = 2f;
+            buildCostMultiplier = 2f;
 
             consumePower (1f/60);
             researchCost = with(cobalt, 1500, lead, 1500);
@@ -446,8 +447,8 @@ public class NyfalisBlocks {
         ironDistributor = new Router("iron-distributor"){{
             size = 2;
             buildCostMultiplier = 4f;
-            researchCost = with(rustyIron, 40, lead, 40);
-            requirements(Category.distribution, with(rustyIron, 16, lead, 4));
+            researchCost = with(rustyIron, 100, lead, 100);
+            requirements(Category.distribution, with(rustyIron, 3, lead, 3));
         }};
 
         ironJunction = new Junction("iron-junction"){{
@@ -905,9 +906,6 @@ public class NyfalisBlocks {
             consumeLiquid(oil, 0.2f).boost();
             researchCost = with(rustyIron, 75);
             requirements(Category.power, with(rustyIron, 30));
-            drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
-                blurThresh =  0.01f;
-            }});
         }};
 
         hydroMill = new ThermalGeneratorNoLight("hydro-mill"){{

@@ -12,11 +12,11 @@ public class NyfalisSectors {
             /*Nyfalis*/
             placeholder1, placeholder2,
             /*Spelta*/
-             dormantCell, placeholderSpelta1
+             dormantCell
         ;
 
     public static void LoadSectors(){
-        //region Arthin
+        //region Seredris
         sanctuary = new SectorPreset("sanctuary", arthin, 2){{
              alwaysUnlocked = overrideLaunchDefaults = true;
             addStartingItems = false;
@@ -39,15 +39,11 @@ public class NyfalisSectors {
             difficulty = 3;
         }};
         //endregion
-        //region Spelta
-        placeholderSpelta1 = new SectorPreset("placeholderSpelta1",  spelta, 0){{
-            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
-
-            captureWave = 15;
-            difficulty = 2;
+        //region Vorgin
+        dormantCell = new SectorPreset("dorment-cell", spelta, 1){{
+            /*Yes this map's lore may or may not be a reference to command and conquer*/
+            difficulty = 4;
         }};
-
-
 
     }
 }

@@ -31,7 +31,7 @@ public class NyfalisTechTree {
                     });
                 });
                 node(spelta, () ->{
-                    node(NyfalisSectors.placeholderSpelta1, ()-> {
+                    node(NyfalisSectors.dormantCell, ()-> {
 
                     });
                 });
