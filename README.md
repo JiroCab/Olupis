@@ -10,6 +10,7 @@ Building Locally works the same as most other mods,  use `./gradlew jar` or `./g
 alternatively you may use `./gradlew runMindustryClient `or `./gradlew runMindustryServer ` for testing with [Toxopid](https://github.com/Xpdustry/Toxopid).
 you can figure out the rest, you got this, you're a smart cookie
 
+[Discord server](https://discord.gg/S8wuZAF4ZZ) to talk and complain about the mod.
 
 ## Credits:
 * [RushieWashie](https://github.com/JiroCab) - Programming, Sprites
@@ -19,5 +20,4 @@ you can figure out the rest, you got this, you're a smart cookie
 * [WMF Industries](https://github.com/WMF-Industries) - Programming
 
 ### Music Credits
-Ambient music:
-TODO: ACTUALLY CREDIT THE MUSIC WE USED
+* Blossom, Dusk, Feu, Main Title, Reclaiming the Wasteland, Sparkles of Hope - [Terra Nil Soundtrack by Meydän](https://store.steampowered.com/app/2321920/Terra_Nil_Soundtrack/) 

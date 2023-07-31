@@ -28,7 +28,7 @@ public class NyfalisSectors {
         //endregion
         //region Nyfalis
         placeholder1 = new SectorPreset("placeholder1",  nyfalis, 1){{
-            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
+            addStartingItems = overrideLaunchDefaults = true;
 
             captureWave = 15;
             difficulty = 2;

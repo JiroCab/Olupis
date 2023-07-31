@@ -24,8 +24,8 @@ public class NyfalisPlanets {
         r.enemyCoreBuildRadius = 650f;
         r.dropZoneRadius = 400f;
         r.waveTeam = Team.green;
-        r.placeRangeCheck = r.disableOutsideArea = false;
-        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.blockWhitelist = r.hideBannedBlocks = true;
+        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = false;
+        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.blockWhitelist = r.hideBannedBlocks = r.coreIncinerates = r.fog = true;
 
         r.bannedBlocks.clear();
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
@@ -45,7 +45,7 @@ public class NyfalisPlanets {
             generator = new AsteroidGenerator();
             meshLoader = () -> new HexMesh(this, 3);
             accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = false;
-            hideDetails = true;
+            hideDetails = alwaysUnlocked = true;
             camRadius = 0.68f * 3;
             minZoom = 0.7f;
             clipRadius = 2f;
@@ -98,6 +98,7 @@ public class NyfalisPlanets {
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
             alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
 
+            startSector = 1;
             enemyBuildSpeedMultiplier = 0.4f;
             icon = "effect";
             ruleSetter = commonRules;

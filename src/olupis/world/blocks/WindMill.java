@@ -6,7 +6,13 @@ import arc.struct.EnumSet;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.world.blocks.power.PowerGenerator;
-import mindustry.world.meta.*;
+import mindustry.world.draw.DrawBlurSpin;
+import mindustry.world.draw.DrawDefault;
+import mindustry.world.draw.DrawMulti;
+import mindustry.world.meta.Attribute;
+import mindustry.world.meta.Env;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 
 public class WindMill extends PowerGenerator {
     //ThermalGenerator but Attribute multiples a base number and doesn't require the attribute tiles
@@ -20,6 +26,10 @@ public class WindMill extends PowerGenerator {
         super(name);
         flags = EnumSet.of();
         envEnabled ^= Env.space;
+
+        drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.5f * 9f){{
+            blurThresh =  0.01f;
+        }});
     }
 
     @Override

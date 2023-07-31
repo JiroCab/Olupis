@@ -30,7 +30,7 @@ import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisMain extends Mod{
-    public NyfalisSounds soundHandler = new NyfalisSounds();
+    public static NyfalisSounds soundHandler = new NyfalisSounds();
     public NyfalisSettingsDialog nyfalisSettings;
 
     @Override
@@ -85,8 +85,6 @@ public class NyfalisMain extends Mod{
             nyfalis.uiIcon = redSandBoulder.fullIcon;
             spelta.uiIcon = pinkTree.fullIcon;
             system.uiIcon = Icon.planet.getRegion();
-            //this unresearches it self
-            Events.fire(new EventType.UnlockEvent(system));
 
             /*For those people who don't like the name/icon or overwrites in general*/
             if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";

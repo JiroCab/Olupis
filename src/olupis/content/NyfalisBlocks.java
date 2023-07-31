@@ -604,7 +604,7 @@ public class NyfalisBlocks {
             size = 2;
             pumpAmount = 0.1f;
             liquidCapacity = 20f;
-            requirements(Category.liquid, with(iron, 10));
+            requirements(Category.liquid, with(iron, 10, lead, 10));
         }};
 
         displacementPump = new BurstPump("displacement-pump"){{
@@ -698,10 +698,10 @@ public class NyfalisBlocks {
             envEnabled = Env.any;
             attribute = Attribute.heat;
 
-            outputLiquid = new LiquidStack(steam, 12/60f);
             consumePower(1f);
             consumeLiquid(Liquids.water, 20/60f);
-            requirements(Category.liquid, with(rustyIron, 20));
+            outputLiquid = new LiquidStack(steam, 12/60f);
+            requirements(Category.liquid, with(rustyIron, 10, lead, 10));
         }};
 
         steamAgitator = new AttributeCrafter("steam-agitator"){{
@@ -717,9 +717,9 @@ public class NyfalisBlocks {
             attribute = Attribute.steam;
             minEfficiency = 9f - 0.0001f;
 
-            researchCost = with(lead, 300, rustyIron, 300);
+            researchCost = with(lead, 5000, rustyIron, 5000);
             outputLiquid = new LiquidStack(steam, 10/60f);
-            requirements(Category.liquid, with(rustyIron, 30, lead, 10));
+            requirements(Category.liquid, with(rustyIron, 30, lead, 30));
         }};
 
         broiler = new GenericCrafter("broiler"){{
@@ -974,8 +974,8 @@ public class NyfalisBlocks {
         rustyWallHuge = new Wall("rusty-wall-huge"){{
             size = 3;
             health = 2690;
-            researchCost = with(rustyIron,1000);
-            requirements(Category.defense,with(rustyIron, 620));
+            researchCost = with(rustyIron,1500);
+            requirements(Category.defense,with(rustyIron, 108));
         }};
 
         rustyWallGigantic = new Wall("rusty-wall-gigantic"){{
@@ -996,7 +996,7 @@ public class NyfalisBlocks {
             size = 2;
             health = 2800;
             researchCost = with(iron, 5000);
-            requirements(Category.defense,with(iron, 200));
+            requirements(Category.defense,with(iron, 48));
         }};
 
         rustyScrapWall = new Wall("rusty-scrap-wall"){{

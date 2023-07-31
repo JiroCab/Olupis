@@ -2,7 +2,11 @@
 https://github.com/JiroCab/Olupis
 Last updated on 23/07/2023 (+8utc) by Jirocab/RushieWashie
 
-= Beta 1-4 () =
+= Beta 1-5 () =
+
+TODO fill me up~
+
+= Beta 1-4 (e898d42) = https://github.com/JiroCab/Olupis/tree/e898d42d0b490a209939e90e4b9c7ae1a641b884
     ~ !! Rebranded to `Nyfalis`
     ~ Mod browser Visible, w/ in game Wip disclaimer
 

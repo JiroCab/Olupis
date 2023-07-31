@@ -10,6 +10,7 @@ import static mindustry.content.TechTree.*;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisPlanets.*;
+import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisTechTree {
 
@@ -22,7 +23,9 @@ public class NyfalisTechTree {
                     });
                 });
                 node(nyfalis, () ->{
-                    node(NyfalisSectors.placeholder1, () -> {
+                    node(NyfalisSectors.placeholder1, Seq.with(
+                            new Objectives.SectorComplete(NyfalisSectors.sanctuary)
+                    ), () -> {
                         node(NyfalisSectors.placeholder2, Seq.with(
                                 new Objectives.SectorComplete(NyfalisSectors.placeholder1)
                         ), () ->{
@@ -31,7 +34,17 @@ public class NyfalisTechTree {
                     });
                 });
                 node(spelta, () ->{
-                    node(NyfalisSectors.dormantCell, ()-> {
+                    node(NyfalisSectors.dormantCell, Seq.with(
+                            new Objectives.SectorComplete(NyfalisSectors.placeholder2)
+                    ), ()-> {
+
+                    });
+                });
+            });
+
+            node(gnat, ()->{
+                node(aero, () -> {
+                    node(striker, () -> {
 
                     });
                 });
@@ -87,6 +100,9 @@ public class NyfalisTechTree {
                             });
                             node(steamBoiler, ()->{
                                 node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
+
+                                });
+                                node(broiler, Seq.with(new Objectives.Research(graphite)),()->{
 
                                 });
                             });
@@ -211,6 +227,7 @@ public class NyfalisTechTree {
                 });
 
             });
+
         });
         arthin.techTree = nyfalis.techTree;
         spelta.techTree = nyfalis.techTree;

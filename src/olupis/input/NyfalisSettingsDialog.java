@@ -46,7 +46,7 @@ public class NyfalisSettingsDialog {
             subTable.checkPref("nyfalis-space-sfx",true);
             subTable.checkPref("nyfalis-music",true);
             subTable.checkPref("nyfalis-music-only",false);
-            subTable.checkPref("nyfalis-music-add",false);
+            subTable.checkPref("nyfalis-music-add",true, c -> NyfalisMain.soundHandler.nyfalisMusicSet = false);
             subTable.checkPref("nyfalis-music-custom-game",true);
             t.add(subTable);
         }, () ->shown[0]).growX().center().row();
