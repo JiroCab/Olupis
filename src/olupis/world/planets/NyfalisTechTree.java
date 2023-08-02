@@ -55,6 +55,16 @@ public class NyfalisTechTree {
 
             node(mossyBoulder, ()-> {
 
+                node(coreVestige, () ->{
+                    node(coreRelic, () -> {
+                        node(coreShrine, () -> {
+                            node(coreTemple, () -> {
+
+                            });
+                        });
+                    });
+                });
+
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
                         node(rustElectrolyzer, Seq.with(new Objectives.Research(steam)), () -> {

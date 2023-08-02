@@ -15,31 +15,34 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.entities.pattern.ShootPattern;
 import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
-import mindustry.world.blocks.ControlBlock;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
+
 /*CoreBlock  & PowerTurret's very horrible offspring*/
 public class PropellerCoreTurret extends PropellerCoreBlock {
     /*Refer to Turret for what these do*/
     public final int timerTarget = timers++, maxAmmo = 30,recoils = -1;
+    public final static float logicControlCooldown = 60 * 2;
     public float
-        recoil = 1f,
         reload = 10f,
-        rotateSpeed = 5,
-        range = 80f,
-        shootCone = 8f,
-        recoilPow = 1.8f,
-        targetInterval = 20,
-        ammoEjectBack = 1f,
-        cooldownTime = 20f,
-        soundPitchMin = 0.9f,
-        soundPitchMax = 1.1f,
-        shootWarmupSpeed = 0.1f,
-        recoilTime = -1f, elevation = -1f,
-        shootY = Float.NEGATIVE_INFINITY,
-        inaccuracy = 0f, velocityRnd = 0f,shootX = 0f, minRange = 0f,  minWarmup = 0f, warmupMaintainTime = 0f, xRand = 0f, shake = 0f
+            rotateSpeed = 5,
+            range = 80f,
+            shootCone = 8f,
+            recoilPow = 1.8f,
+            targetInterval = 20,
+            ammoEjectBack = 1f,
+            cooldownTime = 20f,
+            soundPitchMin = 0.9f,
+            soundPitchMax = 1.1f,
+            shootWarmupSpeed = 0.1f,
+            recoilTime = -1f, elevation = -1f,
+            recoil = 1f, fogRadiusMultiplier =1f,
+            shootY = Float.NEGATIVE_INFINITY,
+            inaccuracy = 0f, velocityRnd = 0f,shootX = 0f, minRange = 0f,  minWarmup = 0f, warmupMaintainTime = 0f, xRand = 0f, shake = 0f
     ;
     public boolean
             accurateDelay = true,  moveWhileCharging = true,  targetAir = true, targetGround = true,  targetUnderBlocks = true,  predictTarget = true,
@@ -61,11 +64,12 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
-        stats.add(Stat.inaccuracy, (int)inaccuracy, StatUnit.degrees);
-        stats.add(Stat.reload, 60f / (reload) * shoot.shots, StatUnit.perSecond);
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);
+        stats.add(Stat.inaccuracy, (int)inaccuracy, StatUnit.degrees);
+        stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
+        stats.add(Stat.reload, 60f / (reload) * shoot.shots, StatUnit.perSecond);
+        stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
     }
 
     @Override
@@ -78,106 +82,168 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
         super.init();
     }
 
+    @Override
+    public void drawPlace(int x, int y, int rotation, boolean valid){
+        super.drawPlace(x, y, rotation, valid);
+
+        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.placing);
+
+        if(fogRadiusMultiplier < 0.99f && state.rules.fog){
+            Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range * fogRadiusMultiplier, Pal.lightishGray);
+        }
+    }
+
     public void limitRange( float margin){
+        if(this.shootType == null) return;
         float realRange = shootType.rangeChange + range;
         //doesn't handle drag
         shootType.lifetime = (realRange + margin) / shootType.speed;
     }
 
-    public class PropellerCoreTurretBuild extends PropellerCoreBuild implements ControlBlock{
+    public class PropellerCoreTurretBuild extends PropellerCoreBuild {
         public @Nullable Posc target;
-        public boolean wasShooting;
+        public boolean wasShooting, logicShooting = false;
         public @Nullable float[] curRecoils;
         public Vec2 targetPos = new Vec2();
         public Vec2 recoilOffset = new Vec2();
         public BlockUnitc unit = (BlockUnitc) UnitTypes.block.create(team);
         public int totalAmmo, totalShots, barrelCounter, queuedBullets = 0;
-        public float curRecoil, heat, shootWarmup, charge, warmupHold = 0f, reloadCounter;
-        public float estimateDps(){
+        public float curRecoil, heat, shootWarmup, charge, warmupHold = 0f, reloadCounter, logicControlTime = -1;
+
+        public float estimateDps() {
             return shoot.shots / reload * 60f * 0f * potentialEfficiency * timeScale;
         }
 
         @Override
-        public double sense(LAccess sensor){
+        public double sense(LAccess sensor) {
             super.sense(sensor);
-            return switch(sensor){
+            return switch (sensor) {
                 case ammo -> totalAmmo;
                 case rotation -> rotation;
                 case shootX -> World.conv(targetPos.x);
                 case shootY -> World.conv(targetPos.y);
                 case shooting -> isShooting() ? 1 : 0;
                 case progress -> progress();
+                case range -> range();
                 default -> super.sense(sensor);
             };
         }
 
-        public boolean isShooting(){
-            return alwaysShooting || (isControlled() ? unit.isShooting() : target != null);
+        @Override
+        public void control(LAccess type, double p1, double p2, double p3, double p4) {
+            if (type == LAccess.shoot && !unit.isPlayer()) {
+                targetPos.set(World.unconv((float) p1), World.unconv((float) p2));
+                logicControlTime = logicControlCooldown;
+                logicShooting = !Mathf.zero(p3);
+            }
+
+            super.control(type, p1, p2, p3, p4);
         }
 
-        public BulletType useAmmo(){
+        @Override
+        public void control(LAccess type, Object p1, double p2, double p3, double p4) {
+            if (type == LAccess.shootp && (unit == null || !unit.isPlayer())) {
+                logicControlTime = logicControlCooldown;
+                logicShooting = !Mathf.zero(p2);
+
+                if (p1 instanceof Posc pos) {
+                    targetPosition(pos);
+                }
+            }
+
+            super.control(type, p1, p2, p3, p4);
+        }
+
+        public boolean isShooting() {
+            return alwaysShooting || (logicControlled() ? logicShooting : target != null);
+        }
+
+        public BulletType useAmmo() {
             //nothing used directly
             return shootType;
         }
 
-        public boolean hasAmmo(){return true;}
-        public BulletType peekAmmo(){return shootType;}
-        public boolean shouldTurn(){return moveWhileCharging || !charging();}
-        public boolean charging(){
+        public boolean hasAmmo() {
+            return true;
+        }
+
+        public BulletType peekAmmo() {
+            return shootType;
+        }
+
+        public boolean logicControlled() {
+            return logicControlTime > 0;
+        }
+
+        public boolean shouldTurn() {
+            return moveWhileCharging || !charging();
+        }
+
+        protected void handleBullet(@Nullable Bullet bullet, float offsetX, float offsetY, float angleOffset) {
+        }
+
+        protected boolean canHeal() {
+            return targetHealing && peekAmmo().collidesTeam && peekAmmo().heals();
+        }
+
+        protected boolean validateTarget() {
+            return !Units.invalidateTarget(target, canHeal() ? Team.derelict : team, x, y) || logicControlled();
+        }
+
+        protected void turnToTarget(float targetRot) {
+            rotation = (int) Angles.moveToward(rotation, targetRot, rotateSpeed * delta() * potentialEfficiency);
+        }
+
+        public boolean charging() {
             return queuedBullets > 0 && shoot.firstShotDelay > 0;
         }
-        protected void handleBullet(@Nullable Bullet bullet, float offsetX, float offsetY, float angleOffset){}
-        protected boolean canHeal(){return targetHealing && peekAmmo().collidesTeam && peekAmmo().heals();}
-        protected boolean validateTarget(){return !Units.invalidateTarget(target, canHeal() ? Team.derelict : team, x, y) || isControlled();}
 
-        protected void turnToTarget(float targetRot){rotation = (int) Angles.moveToward(rotation, targetRot, rotateSpeed * delta() * potentialEfficiency);}
-
-        public float range(){
-            if(peekAmmo() != null){
+        public float range() {
+            if (peekAmmo() != null) {
                 return range + peekAmmo().rangeChange;
             }
             return range;
         }
 
-        protected void findTarget(){
+        protected void findTarget() {
             float range = range();
 
-            if(targetAir && !targetGround){
+            if (targetAir && !targetGround) {
                 target = Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded() && unitFilter.get(e), unitSort);
-            }else{
+            } else {
                 target = Units.bestTarget(team, x, y, range, e -> !e.dead() && unitFilter.get(e) && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround), b -> targetGround && buildingFilter.get(b), unitSort);
             }
 
-            if(target == null && canHeal()){
+            if (target == null && canHeal()) {
                 target = Units.findAllyTile(team, x, y, range, b -> b.damaged() && b != this);
             }
         }
 
-        public void updateTile(){
+        public void updateTile() {
             unit.ammo(unit.type().ammoCapacity);
-            if(!validateTarget()) target = null;
+            if (!validateTarget()) target = null;
 
             float warmupTarget = (isShooting() && canConsume()) || charging() ? 1f : 0f;
-            if(warmupTarget > 0 && shootWarmup >= minWarmup && !isControlled()){
+            if (warmupTarget > 0 && shootWarmup >= minWarmup) {
                 warmupHold = 1f;
             }
-            if(warmupHold > 0f){
+            if (warmupHold > 0f) {
                 warmupHold -= Time.delta / warmupMaintainTime;
                 warmupTarget = 1f;
             }
 
-            if(linearWarmup){
+            if (linearWarmup) {
                 shootWarmup = Mathf.approachDelta(shootWarmup, warmupTarget, shootWarmupSpeed * (warmupTarget > 0 ? efficiency : 1f));
-            }else{
+            } else {
                 shootWarmup = Mathf.lerpDelta(shootWarmup, warmupTarget, shootWarmupSpeed * (warmupTarget > 0 ? efficiency : 1f));
             }
 
             wasShooting = false;
 
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1 / recoilTime);
-            if(recoils > 0){
-                if(curRecoils == null) curRecoils = new float[recoils];
-                for(int i = 0; i < recoils; i++){
+            if (recoils > 0) {
+                if (curRecoils == null) curRecoils = new float[recoils];
+                for (int i = 0; i < recoils; i++) {
                     curRecoils[i] = Mathf.approachDelta(curRecoils[i], 0, 1 / recoilTime);
                 }
             }
@@ -189,79 +255,89 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
             unit.team(team);
             recoilOffset.trns(rotation, -Mathf.pow(curRecoil, recoilPow) * recoil);
 
+            if (logicControlTime > 0) {
+                logicControlTime -= Time.delta;
+            }
+
             updateReload();
 
-            if(hasAmmo()){
-                if(Float.isNaN(reloadCounter)) reloadCounter = 0;
+            if (hasAmmo()) {
+                if (Float.isNaN(reloadCounter)) reloadCounter = 0;
 
-                if(timer(timerTarget, targetInterval)){
+                if (timer(timerTarget, targetInterval)) {
                     findTarget();
                 }
 
-                if(validateTarget()){
-                    //default AI behavior
-                    targetPosition(target);
+                if (validateTarget()) {
+                    boolean canShoot = true;
+                    if (logicControlled()) { //logic behavior
+                        canShoot = logicShooting;
+                    } else {
+                        //default AI behavior
+                        targetPosition(target);
+                    }
 
                     unit.aimX(targetPos.x);
                     unit.aimY(targetPos.y);
 
                     float targetRot = angleTo(targetPos);
 
-                    if(shouldTurn()){
+                    if (shouldTurn()) {
                         turnToTarget(targetRot);
                     }
 
-                    if(!alwaysShooting && Angles.angleDist(rotation, targetRot) < shootCone){
+                    if (!alwaysShooting && Angles.angleDist(rotation, targetRot) < shootCone && canShoot) {
                         wasShooting = true;
                         updateShooting();
                     }
                 }
 
-                if(alwaysShooting){
+                if (alwaysShooting) {
                     wasShooting = true;
                     updateShooting();
                 }
             }
         }
 
-        public void targetPosition(Posc pos){
-            if(!hasAmmo() || pos == null) return;
+        public void targetPosition(Posc pos) {
+            if (!hasAmmo() || pos == null) return;
             BulletType bullet = peekAmmo();
 
             var offset = Tmp.v1.setZero();
 
             //when delay is accurate, assume unit has moved by chargeTime already
-            if(accurateDelay && !moveWhileCharging && pos instanceof Hitboxc h){
+            if (accurateDelay && !moveWhileCharging && pos instanceof Hitboxc h) {
                 offset.set(h.deltaX(), h.deltaY()).scl(shoot.firstShotDelay / Time.delta);
             }
 
-            if(predictTarget){
+            if (predictTarget) {
                 targetPos.set(Predict.intercept(this, pos, offset.x, offset.y, bullet.speed <= 0.01f ? 99999999f : bullet.speed));
-            }else{
+            } else {
                 targetPos.set(pos);
             }
 
-            if(targetPos.isZero()){
+            if (targetPos.isZero()) {
                 targetPos.set(pos);
             }
         }
-        protected float baseReloadSpeed(){
+
+        protected float baseReloadSpeed() {
             return efficiency;
         }
 
 
-        protected void updateReload(){
-            float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
+        protected void updateReload() {
+            float multiplier = 1f;
             reloadCounter += delta() * multiplier * baseReloadSpeed();
 
             //cap reload for visual reasons
             reloadCounter = Math.min(reloadCounter, reload);
         }
 
-        protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover){
-            queuedBullets --;
+        protected void bullet(BulletType type, float xOffset, float yOffset, float angleOffset, Mover mover) {
+            queuedBullets--;
 
-            if(dead || !hasAmmo()) return;
+            if (dead || !hasAmmo()) return;
 
             float
                     xSpread = Mathf.range(xRand),
@@ -284,41 +360,41 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
                     rotation * Mathf.sign(xOffset)
             );
 
-            if(shake > 0){
+            if (shake > 0) {
                 Effect.shake(shake, shake, this);
             }
 
             curRecoil = 1f;
-            if(recoils > 0){
+            if (recoils > 0) {
                 curRecoils[barrelCounter % recoils] = 1f;
             }
             heat = 1f;
             totalShots++;
         }
 
-        protected void shoot(BulletType type){
+        protected void shoot(BulletType type) {
             float
                     bulletX = x + Angles.trnsx(rotation - 90, shootX, shootY),
                     bulletY = y + Angles.trnsy(rotation - 90, shootX, shootY);
 
-            if(shoot.firstShotDelay > 0){
+            if (shoot.firstShotDelay > 0) {
                 chargeSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
                 type.chargeEffect.at(bulletX, bulletY, rotation);
             }
 
             shoot.shoot(barrelCounter, (xOffset, yOffset, angle, delay, mover) -> {
                 queuedBullets++;
-                if(delay > 0f){
+                if (delay > 0f) {
                     Time.run(delay, () -> bullet(type, xOffset, yOffset, angle, mover));
-                }else{
+                } else {
                     bullet(type, xOffset, yOffset, angle, mover);
                 }
             }, () -> barrelCounter++);
         }
 
-        protected void updateShooting(){
+        protected void updateShooting() {
 
-            if(reloadCounter >= reload && !charging() && shootWarmup >= minWarmup){
+            if (reloadCounter >= reload && !charging() && shootWarmup >= minWarmup) {
                 BulletType type = peekAmmo();
 
                 shoot(type);
@@ -326,15 +402,5 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
                 reloadCounter %= reload;
             }
         }
-
-        @Override
-        public Unit unit(){
-            //make sure stats are correct
-            unit.tile(this);
-            unit.team(team);
-            return (Unit)unit;
-        }
     }
-
-
 }

@@ -26,7 +26,7 @@ public class NyfalisItemsLiquid {
 
             hiddenOnPlanets = hideList;
         }};
-        iron = new Item("iron", Color.valueOf("f0ece4")) {{
+        iron = new Item("iron", Color.valueOf("989AA4")) {{
             hardness = 2;
             healthScaling = 0.25f;
 

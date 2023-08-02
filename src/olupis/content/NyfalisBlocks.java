@@ -1,11 +1,13 @@
 package olupis.content;
 
 import arc.graphics.Color;
+import arc.graphics.g2d.Lines;
+import arc.math.geom.Vec2;
 import arc.struct.*;
 import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.entities.bullet.ArtilleryBulletType;
-import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.Effect;
+import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
@@ -22,12 +24,13 @@ import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.BeamNode;
 import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.world.blocks.*;
 
+import static arc.graphics.g2d.Draw.color;
+import static arc.graphics.g2d.Lines.stroke;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.oil;
@@ -1064,14 +1067,13 @@ public class NyfalisBlocks {
             shootType = new BasicBulletType(5.2f, -5, "olupis-diamond-bullet"){{
                 collidesTeam = true;
                 collidesAir =  false;
-
                 width = 10f;
                 height = 16f;
-                lifetime = 30f;
+                lifetime = 31f;
                 healPercent = 7f;
                 backColor = Pal.heal;
-                /*added slight homing so it can hit 1x1 blocks better or at all*/
-                homingPower = 0.02f;
+                /*added slight homing, so it can hit 1x1 blocks better or at all*/
+                homingPower = 0.03f;
                 frontColor = Color.white;
                 shootSound = Sounds.sap;
             }};
@@ -1106,7 +1108,7 @@ public class NyfalisBlocks {
         coreRemnant = new PropellerCoreBlock("core-remnant"){{
             alwaysUnlocked = isFirstTier = true;
             size = 2;
-            health = 3500;
+            health = 1750;
             itemCapacity = 1500;
 
             unitType = gnat;
@@ -1115,57 +1117,101 @@ public class NyfalisBlocks {
 
         coreVestige = new PropellerCoreBlock("core-vestige"){{
             size = 3;
-            health = 7000;
+            health = 3500;
             itemCapacity = 3000;
 
             unitType = gnat;
-            requirements(Category.effect, with(rustyIron, 1500, iron, 1000));
+            requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500));
         }};
 
-        coreRelic = new CoreBlock("core-relic"){{
+        coreRelic = new PropellerCoreTurret("core-relic"){{
             size = 4;
-            health = 140000;
+            reload = 72f;
+            health = 70000;
             itemCapacity = 4500;
+            range = 19.5f * Vars.tilesize;
 
             unitType = gnat;
-            requirements(Category.effect, with(rustyIron, 1500, iron, 1000));
+            shootEffect = Fx.none;
+            shootSound = Sounds.bigshot;
+            requirements(Category.effect, with(rustyIron, 4500, lead, 4500, iron, 3000, graphite, 3000));
+            shootType = new SapBulletType(){{
+                damage = 10f;
+                width = 0.8f;
+                lifetime = 40f;
+                sapStrength = 0f;
+                length = 19.5f * Vars.tilesize;
+                status = StatusEffects.none;
+                despawnEffect = Fx.none;
+                color = hitColor = rustyIron.color;
+                collidesTiles = false;
+                collidesAir = collidesGround = collidesTeam = true;
+            }};
         }};
 
-        coreShrine = new CoreBlock("core-shrine"){{
+        coreShrine = new PropellerCoreTurret("core-shrine"){{
             size = 5;
-            health = 280000;
+            reload = 55f;
+            health = 140000;
             itemCapacity = 6000;
+            range = 22.5f * Vars.tilesize;
 
             unitType = gnat;
-            requirements(Category.effect, with(rustyIron, 1500, iron, 1000));
+            limitRange(0);
+            shootEffect = Fx.none;
+            shootSound = Sounds.bigshot;
+            requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 6000, silicon, 4500, graphite, 4500, quartz, 4500));
+            shootType = new ArtilleryBulletType(3f, 25){{
+                lifetime = 80f;
+                knockback = 0.8f;
+                homingRange = 50f;
+                width = height = 9f;
+                splashDamage = 10f;
+                homingPower = 0.08f;
+                reloadMultiplier = 1.2f;
+                splashDamageRadius = 30f;
+
+                collidesTiles = false;
+                frontColor = iron.color;
+                backColor = rustyIron.color;
+                collidesAir = collidesGround;
+            }};
         }};
 
         coreTemple = new PropellerCoreTurret("core-temple"){{
             size = 6;
-            health = 560000;
+            reload = 35f;
+            health = 280000;
             itemCapacity = 7500;
-            targetGround = targetHealing = targetAir = true;
-            range = 235f;
-            reload = 60f;
-            shootSound = Sounds.bang;
-
-            shootType = new ArtilleryBulletType(3f, 20){{
-                    knockback = 0.8f;
-                    lifetime = 80f;
-                    width = height = 11f;
-                    collidesTiles = false;
-                    splashDamageRadius = 25f * 0.75f;
-                    splashDamage = 33f;
-                    reloadMultiplier = 1.2f;
-                    ammoMultiplier = 3f;
-                    homingPower = 0.08f;
-                    homingRange = 50f;
-                    collidesAir = collidesGround = collidesTeam = true;
-                    healPercent = 2f;
-            }};
+            range = 32 * Vars.tilesize;
 
             unitType = gnat;
-            requirements(Category.effect, with(rustyIron, 1500, iron, 1000));
+            shootEffect = Fx.none;
+            shootSound = Sounds.bigshot;
+            targetGround = targetHealing = targetAir = true;
+            requirements(Category.effect, with(rustyIron, 7500, lead, 7500, iron, 7500, silicon, 7500, graphite, 7500, quartz, 6000, cobalt, 6000));
+            shootType = new RailBulletType(){{
+                length = 235f;
+                damage = 48f;
+                pierceDamageFactor = 0.5f;
+                hitColor = iron.color;
+                hitEffect = endEffect = Fx.hitBulletColor.wrap(iron.color);
+                lineEffect = new Effect(20f, e -> {
+                    if(!(e.data instanceof Vec2 v)) return;
+                    color(e.color);
+                    stroke(e.fout() * 0.9f + 0.6f);
+                    Fx.rand.setSeed(e.id);
+                    for(int i = 0; i < 7; i++){
+                        Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                        Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                    }
+                    e.scaled(14f, b -> {
+                        stroke(b.fout() * 1.5f);
+                        color(e.color);
+                        Lines.line(e.x, e.y, v.x, v.y);
+                    });
+                });
+            }};
         }};
 
         lightWall = new PrivilegedLightBlock("light-wall"){{
