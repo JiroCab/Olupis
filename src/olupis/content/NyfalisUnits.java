@@ -95,7 +95,7 @@ public class NyfalisUnits {
             drag = accel = 0.08f;
 
             lowAltitude = false;
-            flying = circleTarget = alwaysShootWhenMoving = true;
+            flying = canCircleTarget = alwaysShootWhenMoving = true;
             aiController = AgressiveFlyingAi::new;
             constructor = UnitEntity::create;
             weapons.add(new Weapon(""){{
@@ -142,15 +142,15 @@ public class NyfalisUnits {
 
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
-            lowAltitude = flying = circleTarget = true;
+            lowAltitude = flying = canCircleTarget = true;
             weapons.add(new Weapon(""){{
                 x = 0;
                 y = 1.5f;
                 inaccuracy = 3f;
                 reload = shootCone = 15f;
 
-                ejectEffect = Fx.sparkShoot;
                 shootSound = Sounds.laser;
+                ejectEffect = Fx.sparkShoot;
                 top = alternate =  mirror = false;
                 alwaysShootWhenMoving = true;
                 bullet = new LightningBulletType(){{
