@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.struct.*;
 import mindustry.Vars;
 import mindustry.content.*;
+import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
@@ -1139,10 +1140,29 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 1500, iron, 1000));
         }};
 
-        coreTemple = new CoreBlock("core-temple"){{
+        coreTemple = new PropellerCoreTurret("core-temple"){{
             size = 6;
             health = 560000;
             itemCapacity = 7500;
+            targetGround = targetHealing = targetAir = true;
+            range = 235f;
+            reload = 60f;
+            shootSound = Sounds.bang;
+
+            shootType = new ArtilleryBulletType(3f, 20){{
+                    knockback = 0.8f;
+                    lifetime = 80f;
+                    width = height = 11f;
+                    collidesTiles = false;
+                    splashDamageRadius = 25f * 0.75f;
+                    splashDamage = 33f;
+                    reloadMultiplier = 1.2f;
+                    ammoMultiplier = 3f;
+                    homingPower = 0.08f;
+                    homingRange = 50f;
+                    collidesAir = collidesGround = collidesTeam = true;
+                    healPercent = 2f;
+            }};
 
             unitType = gnat;
             requirements(Category.effect, with(rustyIron, 1500, iron, 1000));

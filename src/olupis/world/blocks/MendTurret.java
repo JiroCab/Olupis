@@ -14,6 +14,7 @@ public class MendTurret extends PowerTurret {
         super(name);
         hasPower = true;
         group = BlockGroup.projectors;
+        targetHealing = true;
     }
 
     public class MendTurretBuild extends PowerTurretBuild{

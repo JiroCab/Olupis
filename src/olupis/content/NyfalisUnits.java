@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import mindustry.ai.UnitCommand;
+import mindustry.ai.types.HugAI;
 import mindustry.content.*;
 import mindustry.entities.abilities.UnitSpawnAbility;
 import mindustry.entities.bullet.*;
@@ -199,6 +200,38 @@ public class NyfalisUnits {
                         hittable = false;
                         collidesTeam = true;
                     }};
+                }};
+            }});
+        }};
+
+        venom = new NyfalisUnitType("venom"){{
+            constructor = CrawlUnit::create;
+            health = 20000;
+            armor = 12;
+            hitSize = 9f;
+            omniMovement = false;
+            drownTimeMultiplier = 4f;
+            segments = 3;
+            drawBody = false;
+            crushDamage = 2f;
+            aiController = HugAI::new;
+            targetAir = false;
+
+            segmentScl = segmentPhase = 10f;
+            speed = 3f;
+            rotateSpeed = 3f;
+
+            weapons.add(new Weapon("large-weapon"){{
+                reload = 13f;
+                x = 0f;
+                y = 2f;
+                mirror = false;
+                rotate = true;
+                ejectEffect = Fx.casing1;
+                bullet = new BasicBulletType(2.5f, 9){{
+                    width = 7f;
+                    height = 9f;
+                    lifetime = 60f;
                 }};
             }});
         }};
