@@ -55,15 +55,10 @@ public class NyfalisMain extends Mod{
 
     public NyfalisMain(){
         Events.on(EventType.WorldLoadEvent.class, l ->{
-            /*Delayed so custom games are affected*/
-            Time.run(1 * Time.toSeconds, () ->{
-                if(shouldAutoBan()) {
-                    Log.debug("Nyfalis has banned its blocks!");
-                    if (!state.rules.blockWhitelist) {
-                        state.rules.bannedBlocks.addAll(NyfalisBlocks.allNyfalisBlocks);
-                    } else state.rules.bannedBlocks.removeAll(NyfalisBlocks.allNyfalisBlocks.toSeq());
-                }
-            });
+            if(shouldAutoBan()) {
+                /*Hiding blocks w/o banning them mainly for custom games */
+                state.rules.hiddenBuildItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
+            }
             if(headless)return;
 
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing

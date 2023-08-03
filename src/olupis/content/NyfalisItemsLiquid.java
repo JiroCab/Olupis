@@ -5,10 +5,11 @@ import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.type.*;
 
+import static mindustry.Vars.content;
+
 public class NyfalisItemsLiquid {
 
     public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz;
-    public static Planet[] hideList = new Planet[]{Planets.erekir, Planets.serpulo, Planets.tantros};
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam;
 
@@ -19,35 +20,31 @@ public class NyfalisItemsLiquid {
             buildable = false;
 
             flammability = 1.2f;
-            hiddenOnPlanets = hideList;
         }};
         rustyIron = new Item("rusty-iron", Color.valueOf("8E320A")) {{
             hardness = 1;
-
-            hiddenOnPlanets = hideList;
         }};
         iron = new Item("iron", Color.valueOf("989AA4")) {{
             hardness = 2;
             healthScaling = 0.25f;
-
-            hiddenOnPlanets = hideList;
         }};
         cobalt = new Item("cobalt", Color.valueOf("0b6e87")) {{
             hardness = 2;
             charge = 0.5f;
             healthScaling = 0.25f;
-
-            hiddenOnPlanets = hideList;
         }};
         quartz = new Item("quartz", Color.valueOf("E2D6D5")){{
             hardness = 2;
-            hiddenOnPlanets = hideList;
         }};
 
         nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz);
         nyfalisItems.add(nyfalisOnlyItems);
         nyfalisItems.add(Items.serpuloItems);
 
+        /*.forEach() Crashes mobile*/
+        for (Planet p : content.planets()) {
+            if (!p.name.contains("olupis-")) p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
+        }
     }
 
     public static void LoadLiquids(){

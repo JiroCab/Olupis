@@ -27,22 +27,23 @@ public class NyfalisPlanetGenerator extends PlanetGenerator{
     public static boolean alt = false;
 
     BaseGenerator basegen = new BaseGenerator();
-    float scl = 5f;
+    float scl = 4.2f;
     float waterOffset = 0.07f;
     boolean genLakes = false;
 
     Block[][] arr =
             {
-                    {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.darksand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.darksandWater, Blocks.stone, Blocks.stone},
-                    {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.darksandWater, Blocks.stone, Blocks.stone, Blocks.stone},
+                    {Blocks.water, NyfalisBlocks.redSandWater, NyfalisBlocks.redSand, NyfalisBlocks.redSand, NyfalisBlocks.redSand, NyfalisBlocks.redSand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.stone, Blocks.stone, NyfalisBlocks.mossierStone},
+                    {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.stone,  NyfalisBlocks.mossierStone, Blocks.stone, NyfalisBlocks.redSand, NyfalisBlocks.redSand, NyfalisBlocks.redSandWater, Blocks.stone, Blocks.stone},
                     {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.sand, Blocks.salt, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.sand, Blocks.darksandWater, Blocks.stone, Blocks.stone, Blocks.stone},
                     {Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.salt, Blocks.salt, Blocks.salt, Blocks.sand, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.snow, Blocks.iceSnow, Blocks.ice},
-                    {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.salt, Blocks.sand, Blocks.sand, Blocks.basalt, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice},
-                    {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.sand, Blocks.sand, NyfalisBlocks.frozenGrass, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.snow, Blocks.ice},
-                    {Blocks.deepwater, Blocks.sandWater, Blocks.sand, Blocks.sand, NyfalisBlocks.redSand, NyfalisBlocks.redSand, Blocks.snow, Blocks.basalt, Blocks.basalt, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice},
-                    {Blocks.deepwater, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.basalt, NyfalisBlocks.frozenGrass, Blocks.basalt, Blocks.hotrock, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice, Blocks.ice},
+                    {Blocks.water, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.salt, NyfalisBlocks.redSand, Blocks.sand, Blocks.basalt, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice},
+                    {Blocks.water, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.sand, Blocks.sand, NyfalisBlocks.frozenGrass, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.snow, Blocks.ice},
+                    {Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.sand, NyfalisBlocks.redSand, NyfalisBlocks.redSand, Blocks.snow, Blocks.basalt, Blocks.basalt, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice},
+                    {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.basalt, NyfalisBlocks.frozenGrass, Blocks.basalt, Blocks.hotrock, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice, Blocks.ice},
+                    {Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.redStone, NyfalisBlocks.redSand, NyfalisBlocks.redSand, Blocks.snow, Blocks.basalt, Blocks.basalt, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice},
                     {Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.darksand, NyfalisBlocks.frozenGrass, Blocks.grass, Blocks.snow, Blocks.basalt, Blocks.basalt, Blocks.ice, Blocks.snow, Blocks.ice, Blocks.ice},
-                    {Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.grass, Blocks.ice, Blocks.ice, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice},
+                    {Blocks.darksandWater, Blocks.darksand, Blocks.darksand, Blocks.grass, Blocks.ice, Blocks.ice, Blocks.snow, Blocks.snow, NyfalisBlocks.mossStone, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice},
                     {Blocks.deepwater, Blocks.darksandWater, Blocks.darksand, Blocks.grass, Blocks.grass, Blocks.ice, Blocks.ice, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice},
                     {Blocks.water, Blocks.darksandWater, Blocks.darksand, Blocks.grass, NyfalisBlocks.frozenGrass, Blocks.grass, Blocks.iceSnow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice},
                     {Blocks.darksandWater, Blocks.darksand, Blocks.snow, Blocks.ice, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice, Blocks.ice}
@@ -51,13 +52,12 @@ public class NyfalisPlanetGenerator extends PlanetGenerator{
     ObjectMap<Block, Block> dec = ObjectMap.of(
             Blocks.grass, NyfalisBlocks.bush,
             Blocks.grass, Blocks.boulder,
-            Blocks.sandWater, Blocks.water,
-            Blocks.darksandWater, Blocks.darksandWater
+            NyfalisBlocks.redSand, Blocks.redStoneBoulder
     );
 
-    ObjectMap<Block, Block> tars = ObjectMap.of(
-            Blocks.grass, Blocks.shale,
-            Blocks.grass, Blocks.shale
+    ObjectMap<Block, Block> moss = ObjectMap.of(
+            Blocks.basalt, NyfalisBlocks.cinderBloomier,
+            Blocks.stone, NyfalisBlocks.mossierStone
     );
 
     {
@@ -87,7 +87,10 @@ public class NyfalisPlanetGenerator extends PlanetGenerator{
     public Color getColor(Vec3 position){
         Block block = getBlock(position);
         //replace salt with sand color
-        if(block == Blocks.salt) return Blocks.sand.mapColor;
+        if(block == Blocks.salt){
+            float ran = rand.random(0f, 1f);
+            return ran < 0.7 ? Blocks.sand.mapColor: Blocks.sandWater.mapColor;
+        }
         return Tmp.c1.set(block.mapColor).a(1f - block.albedo);
     }
 
@@ -112,11 +115,11 @@ public class NyfalisPlanetGenerator extends PlanetGenerator{
         height *= 1.2f;
         height = Mathf.clamp(height);
 
-        float tar = Simplex.noise3d(seed, 4, 0.55f, 1f/2f, position.x, position.y + 999f, position.z) * 0.3f + Tmp.v31.dst(0, 0, 1f) * 0.2f;
+        float mossR = Simplex.noise3d(seed, 4, 0.55f, 1f/2f, position.x, position.y + 999f, position.z) * 0.3f + Tmp.v31.dst(0, 0, 1f) * 0.2f;
 
         Block res = arr[Mathf.clamp((int)(temp * arr.length), 0, arr[0].length - 1)][Mathf.clamp((int)(height * arr[0].length), 0, arr[0].length - 1)];
-        if(tar > 0.5f){
-            return tars.get(res, res);
+        if(mossR > 0.5f){
+            return moss.get(res, res);
         }else{
             return res;
         }

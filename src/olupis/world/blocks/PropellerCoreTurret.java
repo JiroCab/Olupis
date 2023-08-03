@@ -5,7 +5,6 @@ import arc.func.Boolf;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.struct.ObjectMap;
 import arc.util.*;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
@@ -18,7 +17,8 @@ import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
-import mindustry.world.meta.*;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 
 import static mindustry.Vars.*;
 
@@ -69,7 +69,6 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
         stats.add(Stat.inaccuracy, (int)inaccuracy, StatUnit.degrees);
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
         stats.add(Stat.reload, 60f / (reload) * shoot.shots, StatUnit.perSecond);
-        stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
     }
 
     @Override

@@ -82,7 +82,6 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         table.table(bars -> {
             bars.defaults().growX().height(20f).pad(4);
 
-            //TODO overlay shields
             bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
 

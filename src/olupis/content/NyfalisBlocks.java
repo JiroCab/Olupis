@@ -635,8 +635,8 @@ public class NyfalisBlocks {
             solid = underBullets = true;
             liquidCapacity = 20f;
             liquidPressure = 0.85f; /* Nerfed so you can't bypass lead pipe being terrible */
-            researchCost = with(lead,50);
-            requirements(Category.liquid, with(lead, 10));
+            researchCost = with(lead,100, rustyIron, 100);
+            requirements(Category.liquid, with(lead, 5, rustyIron, 5));
         }};
 
         fortifiedCanister = new LiquidRouter("pipe-canister"){{
