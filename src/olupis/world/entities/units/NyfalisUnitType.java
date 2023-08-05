@@ -9,7 +9,7 @@ import olupis.content.NyfalisItemsLiquid;
 import olupis.world.ai.NyfalisCommand;
 
 public class NyfalisUnitType extends UnitType {
-    public boolean canCircleTarget = false, willCircle = true;
+    public boolean canCircleTarget = false;
 
     public NyfalisUnitType(String name){
         super(name);
@@ -27,8 +27,4 @@ public class NyfalisUnitType extends UnitType {
             commands = cmds.toArray();
         }
     }
-    public void updateCircle(boolean circle){
-       willCircle = circle;
-    }
-
 }

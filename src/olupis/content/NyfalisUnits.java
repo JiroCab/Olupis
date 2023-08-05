@@ -19,8 +19,7 @@ import mindustry.world.meta.BlockFlag;
 import olupis.world.ai.*;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.NoBoilLiquidBulletType;
-import olupis.world.entities.units.AmmoLifeTimeUnitType;
-import olupis.world.entities.units.NyfalisUnitType;
+import olupis.world.entities.units.*;
 
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisItemsLiquid.*;
@@ -204,27 +203,29 @@ public class NyfalisUnits {
             }});
         }};
 
-        venom = new NyfalisUnitType("venom"){{
+        venom = new SnekUnitType("venom"){{
             constructor = CrawlUnit::create;
             health = 20000;
             armor = 12;
             hitSize = 9f;
-            omniMovement = false;
+            legMoveSpace = 1.1f;
             drownTimeMultiplier = 4f;
-            segments = 3;
-            drawBody = false;
+            segments = 5;
+            omniMovement = drawBody = false;
             crushDamage = 2f;
             aiController = HugAI::new;
-            targetAir = false;
+            allowLegStep = true;
 
-            segmentScl = segmentPhase = 10f;
+            segmentScl = 8f;
+            segmentPhase = 10f;
+            crawlSlowdownFrac = 1f;
             speed = 3f;
             rotateSpeed = 3f;
 
-            weapons.add(new Weapon("large-weapon"){{
+            weapons.add(new Weapon(""){{
                 reload = 13f;
                 x = 0f;
-                y = 2f;
+                y = 8f;
                 mirror = false;
                 rotate = true;
                 ejectEffect = Fx.casing1;

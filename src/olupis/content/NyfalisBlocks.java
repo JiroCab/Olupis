@@ -17,6 +17,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.Wall;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.*;
@@ -1046,10 +1047,11 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(Items.lead, 30, iron, 25));
         }};
 
-        taurus = new MendTurret("taurus"){{
+        taurus = new PowerTurret("taurus"){{
             size = 3;
             recoils = 2;
             reload = 10f;
+            inaccuracy = 3f;
             shootEffect = Fx.shootHeal;
             outlineColor = nyfalisBlockOutlineColour;
 
@@ -1069,14 +1071,18 @@ public class NyfalisBlocks {
                 collidesAir =  false;
                 width = 10f;
                 height = 16f;
-                lifetime = 31f;
+                lifetime = 30f;
                 healPercent = 7f;
+                homingRange = 10f;
                 backColor = Pal.heal;
                 /*added slight homing, so it can hit 1x1 blocks better or at all*/
-                homingPower = 0.03f;
+                homingPower = 0.05f;
                 frontColor = Color.white;
                 shootSound = Sounds.sap;
             }};
+            hasPower = targetHealing = true;
+            targetAir = targetGround  = false;
+            group = BlockGroup.projectors;
             limitRange(2);
             consumePower(3.3f);
             shoot = new ShootAlternate(9f);

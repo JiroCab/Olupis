@@ -20,12 +20,9 @@ public class Wire extends Battery {
 
     public Wire(String name){
         super(name);
-        consumesPower = outputsPower = false;
-        drawDisabled = false;
-        allowDiagonal = false;
-        underBullets = true;
+        consumesPower = outputsPower = drawDisabled = allowDiagonal = solid = false;
+        underBullets = replaceable = true;
         priority = TargetPriority.transport;
-        solid = false;
         group = BlockGroup.power;
 
         ambientSound = Sounds.spark;
