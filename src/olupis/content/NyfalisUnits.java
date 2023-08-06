@@ -219,13 +219,27 @@ public class NyfalisUnits {
             segmentScl = 8f;
             segmentPhase = 10f;
             crawlSlowdownFrac = 1f;
-            speed = 3f;
-            rotateSpeed = 3f;
+            speed = 2.5f;
+            rotateSpeed = 8f;
 
-            weapons.add(new Weapon(""){{
-                reload = 13f;
+            weapons.add(new SnekWeapon("olupis-missiles-mount-teamed"){{
                 x = 0f;
                 y = 8f;
+                reload = 15f;
+                weaponSegmentParent = 3;
+                mirror = false;
+                rotate = true;
+                ejectEffect = Fx.casing1;
+                bullet = new BasicBulletType(2.5f, 9){{
+                    width = 7f;
+                    height = 9f;
+                    lifetime = 60f;
+                }};
+            }}, new SnekWeapon("olupis-missiles-mount-teamed"){{
+                x = 0f;
+                y = -11f;
+                reload = 15f;
+                weaponSegmentParent = 1;
                 mirror = false;
                 rotate = true;
                 ejectEffect = Fx.casing1;
