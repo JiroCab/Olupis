@@ -1051,7 +1051,7 @@ public class NyfalisBlocks {
             size = 3;
             recoils = 2;
             reload = 10f;
-            inaccuracy = 3f;
+            inaccuracy = 5f;
             shootEffect = Fx.shootHeal;
             outlineColor = nyfalisBlockOutlineColour;
 

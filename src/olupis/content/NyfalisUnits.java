@@ -14,7 +14,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
-import mindustry.type.unit.TankUnitType;
 import mindustry.world.meta.BlockFlag;
 import olupis.world.ai.*;
 import olupis.world.entities.bullets.HealOnlyBulletType;
@@ -30,26 +29,30 @@ public class NyfalisUnits {
     public static UnitType
         /*Air units*/
         aero, striker, falcon, vortex, tempest,
-        zoner,
+        zoner, region, district, division, territory,
 
         /*segmented units*/
         venom, serpent, reaper, goliath,
+
+        /*naval*/
+        porter,
 
         /*core units*/
         gnat,
 
         /*Misc/pending purpose units*/
-        porter, firefly
+         firefly
     ;
     public static AmmoLifeTimeUnitType
         mite,
-        spirit
+        //yes its just Phasmophobia ghost types
+        spirit, phantom,banshee, revenant, poltergeist
     ;
 
     public static void LoadUnits(){
         LoadAmmoType();
 
-        //region Nyfalis Regular Units
+        //region Air Units
         zoner = new NyfalisUnitType("zoner"){{
             hitSize = 11f;
             drag = 0.05f;
@@ -203,6 +206,28 @@ public class NyfalisUnits {
             }});
         }};
 
+        firefly = new NyfalisUnitType("firefly"){{
+            constructor = UnitTypes.mono.constructor;
+            defaultCommand = UnitCommand.mineCommand;
+            ammoType = new PowerAmmoType(500);
+
+            flying = true;
+            isEnemy = false;
+
+            range = 50f;
+            health = 100;
+            speed = 1.5f;
+            drag = 0.06f;
+            accel = 0.12f;
+            mineTier = 1;
+            mineSpeed = 2.5f;
+            engineSize = 1.8f;
+            engineOffset = 5.7f;
+        }};
+
+        //endregion
+
+        //region Ground Units
         venom = new SnekUnitType("venom"){{
             constructor = CrawlUnit::create;
             health = 20000;
@@ -251,26 +276,7 @@ public class NyfalisUnits {
             }});
         }};
 
-        firefly = new NyfalisUnitType("firefly"){{
-            constructor = UnitTypes.mono.constructor;
-            defaultCommand = UnitCommand.mineCommand;
-            ammoType = new PowerAmmoType(500);
-
-            flying = true;
-            isEnemy = false;
-
-            range = 50f;
-            health = 100;
-            speed = 1.5f;
-            drag = 0.06f;
-            accel = 0.12f;
-            mineTier = 1;
-            mineSpeed = 2.5f;
-            engineSize = 1.8f;
-            engineOffset = 5.7f;
-        }};
-
-        porter = new TankUnitType("porter"){{
+        porter = new NyfalisUnitType("porter"){{
             health = 850;
             armor = 6f;
             hitSize = 12f;
@@ -280,7 +286,7 @@ public class NyfalisUnits {
             rotateSpeed = 3.5f;
             researchCostMultiplier = 0f;
 
-            constructor = UnitTypes.risso.constructor;
+            constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
             abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 1, 0));
         }};

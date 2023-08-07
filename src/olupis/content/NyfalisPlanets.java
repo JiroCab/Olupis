@@ -104,7 +104,7 @@ public class NyfalisPlanets {
             systemSector.add(sectors);
             generator = new SpeltaPlanetGenerator();
             defaultCore = NyfalisBlocks.coreRemnant;
-            iconColor = NyfalisBlocks.pinkTree.lightColor;
+            iconColor = NyfalisBlocks.pinkTree.mapColor;
             defaultEnv = Env.terrestrial | Env.oxygen;
             meshLoader = () -> new HexMesh(this, 5);
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
