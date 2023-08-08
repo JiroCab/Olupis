@@ -40,7 +40,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     float startTime;
     /*Block its created from displayed*/
     public Seq<Block> displayedBlocks = new Seq<>();
-    //TODO: Range limit them
+    //TODO: Range limit them, deplete ammo when N tiles away from X & Y
 
     public AmmoLifeTimeUnitType(String name){
         /*let's just hope that ammo is never removed at least not removed internally */
@@ -51,7 +51,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.output, table -> displayedBlocks.each(d -> {
+        stats.add(Stat.input, table -> displayedBlocks.each(d -> {
             if(d == null)return;
             table.row();
             table.table(Styles.grayPanel, b -> {

@@ -13,7 +13,6 @@ public class OverflowSorter extends Sorter {
     }
 
     public class OverflowSorterBuild extends SorterBuild{
-        //TODO: Everything works but inverted an overflow gate (null underflow sorter)
         @Override
         public Building getTileTarget(Item item, Building source, boolean flip){
             boolean sorter = sortItem != null;
@@ -26,7 +25,7 @@ public class OverflowSorter extends Sorter {
                 inv = invert == enabled
             ;
 
-            if(((item == sortItem) != invert) == enabled) {
+            if(((item == sortItem) != invert) == enabled && sorter) {
                 //prevent 3-chains
                 if (isSame(source) && isSame(nearby(dir))) {
                     return null;

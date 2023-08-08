@@ -2,30 +2,33 @@ package olupis.content;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
 import mindustry.entities.Effect;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 
+import static arc.graphics.g2d.Draw.alpha;
 import static arc.graphics.g2d.Draw.color;
+import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 
 public class NyfalisFxs{
-    //TODO: Find a use for this
-
     public static final Effect
-        shootSteamSmall = new Effect(33f, 80f, e -> {
-            color(Pal.lancerLaser, Color.lightGray, Color.gray, e.fin());
-
-            randLenVectors(e.id, 10, e.finpow() * 70f, e.rotation, 10f, (x, y) -> {
-                Fill.circle(e.x + x, e.y + y, 0.85f + e.fout() * 1.6f);
+        hollowPointHit =  new Effect(30f, e -> {
+            color(Pal.lightOrange, Color.lightGray, Pal.lightishGray, e.fin());
+            alpha(e.fout(0.5f));
+            e.scaled(7f, s -> {
+                stroke(0.5f + s.fout());
+                Lines.circle(e.x, e.y, s.fin() * 3f);
             });
-        }),
-        //TODO: broken
-        shootSteamLarge = new Effect(33f, 80f, e -> {
-            color(Pal.lancerLaser, Color.lightGray, Color.gray, e.fin());
+            randLenVectors(e.id, 5, e.finpow() * 17f, (x, y) -> Fill.rect(
+                e.x + x + Mathf.randomSeedRange((long) (e.id + e.rotation + 7), 3f * e.fin()),
+                e.y + y + Mathf.randomSeedRange((long) (e.id + e.rotation + 8), 3f * e.fin()),
+                1f, 2f, e.rotation + e.fin() * 50f * e.rotation
+            ));
+        }).layer(Layer.bullet)
+    ;
 
-            randLenVectors(e.id, 10, e.finpow() * 70f, e.rotation, 10f, (x, y) -> {
-                Fill.circle(e.x + x, e.y + y, 1f + e.fout() * 1.6f);
-            });
-        });
 }
 

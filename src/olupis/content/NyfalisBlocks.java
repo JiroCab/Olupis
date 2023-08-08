@@ -71,7 +71,7 @@ public class NyfalisBlocks {
 
         rustyDrill, steamDrill, hydroElectricDrill,
 
-        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader,
+        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader, rustedBridge,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
         steamBoiler, steamAgitator, broiler, oilSeparator,
@@ -426,7 +426,8 @@ public class NyfalisBlocks {
         }};
 
         cobaltConveyor = new PowerConveyor("cobalt-conveyor"){{
-            hasPower = conductivePower = consumesPower = true;
+            hasPower = conductivePower = consumesPower = noUpdateDisabled =true;
+
 
             health = 70;
             speed = 0.06f;
@@ -451,6 +452,7 @@ public class NyfalisBlocks {
 
         ironDistributor = new Router("iron-distributor"){{
             size = 2;
+            health = 200;
             buildCostMultiplier = 4f;
             researchCost = with(rustyIron, 100, lead, 100);
             requirements(Category.distribution, with(rustyIron, 3, lead, 3));
@@ -469,20 +471,38 @@ public class NyfalisBlocks {
             requirements(Category.distribution, with(lead, 20, rustyIron, 30));
         }};
 
-        ironBridge = new BufferedItemBridge("iron-bridge"){{
+        rustedBridge = new BufferedItemBridge("rusted-bridge") {{
+            /*Same throughput as a rusty conv, slightly slower but insignificant*/
             fadeIn = moveArrows = false;
 
-            range = 4;
+            range = 3;
             armor = 1f;
             health = 50;
-            speed = 74f;
+            speed = 50.2f;
             arrowSpacing = 6f;
-            bufferCapacity = 14;
+            itemCapacity = 2;
+            bufferCapacity = 2;
 
-            researchCost = with(iron, 1000, rustyIron, 2500);
+            researchCost = with(lead, 300, rustyIron, 300);
             ((Conveyor)rustyIronConveyor).bridgeReplacement = this;
+            requirements(Category.distribution, with(rustyIron, 20, lead, 15));
+        }};
+
+        ironBridge = new BufferedItemBridge("iron-bridge"){{
+            /*Same throughput as a iron conv, slightly slower but insignificant */
+            fadeIn = moveArrows = false;
+
+            range = 6;
+            armor = 1f;
+            health = 50;
+            speed = 79.8f;
+            arrowSpacing = 6f;
+            itemCapacity = 5;
+            bufferCapacity = 6;
+
+            researchCost = with(iron, 2500, rustyIron, 5500, lead, 5500);
             ((PowerConveyor)ironConveyor).bridgeReplacement = this;
-            requirements(Category.distribution, with(iron, 10, rustyIron, 2));
+            requirements(Category.distribution, with(iron, 10, rustyIron, 5, lead, 5));
         }};
 
         ironOverflow = new OverflowSorter("iron-overflow"){{
@@ -522,7 +542,7 @@ public class NyfalisBlocks {
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             researchCost = with(rustyIron,50);
             consumePower(10f/60f);
-            consumeLiquid(Liquids.water, 0.02f).boost(); //TODO: Make it consume either steam or water
+            consumeLiquid(Liquids.water, 0.05f).boost(); //TODO: Make it consume either steam or water
             requirements(Category.production, with(rustyIron, 25));
         }};
 
@@ -1090,6 +1110,10 @@ public class NyfalisBlocks {
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             requirements(Category.effect, with(iron, 30, Items.lead, 40));
         }};
+
+
+        //TODO: Mister -> phase fluid = to give units a temp shied
+        //  -> Nanite Fluid = repair
 
         fortifiedContainer = new StorageBlock("fortified-container"){{
             coreMerge = false;

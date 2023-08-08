@@ -35,7 +35,8 @@ public class NyfalisUnits {
         venom, serpent, reaper, goliath,
 
         /*naval*/
-        porter,
+        porter, essex, lexington, excess, nimitz,
+        bay, blitz, crusader, torrent, vanguard,
 
         /*core units*/
         gnat,
@@ -112,6 +113,7 @@ public class NyfalisUnits {
                 layerOffset = Layer.flyingUnit -1f;
 
                 bullet = new ContinuousLaserBulletType(){{
+                    shake = 0f;
                     width = 2f;
                     length = 30;
                     lifetime = 32f;
@@ -119,6 +121,7 @@ public class NyfalisUnits {
                     frontLength = 17f;
                     damage = 15f / 12f;
                     homingPower = 0.06f;
+                    buildingDamageMultiplier = 1.1f;
                     incendChance = incendSpread = 0f;
                     pierce = true;
                     removeAfterPierce = false;
@@ -187,6 +190,7 @@ public class NyfalisUnits {
                 ignoreRotation = alwaysShooting=  true;
                 bullet = new LightningBulletType(){{
                     damage = 10;
+                    buildingDamageMultiplier = 1.1f;
                     lightningLength = lightningLengthRand = 8;
 
                     status = StatusEffects.none;
@@ -302,7 +306,7 @@ public class NyfalisUnits {
             accel = 0.08f;
             drag = 0.04f;
             lightRadius = 15f;
-            itemCapacity = 10;
+            itemCapacity = 0;
             lightOpacity = 50f;
             ammoDepleteAmount = 0.55f;
 
@@ -330,8 +334,9 @@ public class NyfalisUnits {
                     damage = 10f;
                     pierceCap = 1;
                     ammoMultiplier = 1.5f;
-                    status = StatusEffects.corroded;
                     statusDuration = 1.5f *60f;
+                    buildingDamageMultiplier = 0.01f;
+                    status = StatusEffects.corroded;
                     shootEffect = Fx.shootLiquid;
                     despawnEffect = hitEffect = Fx.steam;
                 }};

@@ -40,7 +40,6 @@ public class PropellerCoreBlock extends CoreBlock {
             thrusterFrame = i.apply(Mathf.clamp(fout*13f));
         }
 
-        //TODO spikier heat
         Draw.rect("circle-shadow", x, y, s, s);
 
         Draw.scl(scl);

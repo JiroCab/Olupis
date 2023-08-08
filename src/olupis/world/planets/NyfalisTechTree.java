@@ -132,29 +132,25 @@ public class NyfalisTechTree {
 
                 node(rustyIronConveyor, () ->{
                     node(ironRouter, () ->{
-                        node(ironDistributor, () -> {
-                            node(ironJunction, ()->{
-                                node(ironBridge, ()->{
+                        node(ironJunction, ()->{
+                            node(rustedBridge, () -> {
 
-                                });
                             });
                         });
                         node(ironConveyor, ()->{
                             node(cobaltConveyor, ()->{
 
                             });
-                        });
 
-                        node(ironUnloader, () ->{
-                            node(fortifiedContainer, () ->{
-                                node(fortifiedVault, () ->{
+                            node(ironOverflow, () ->{
+                                node(ironUnderflow, () -> {
+                                    node(ironDistributor, () -> {
 
+                                    });
                                 });
                             });
-                        });
 
-                        node(ironOverflow, () ->{
-                            node(ironUnderflow, () -> {
+                            node(ironBridge, ()->{
 
                             });
                         });
@@ -172,10 +168,19 @@ public class NyfalisTechTree {
                     });
                 });
 
+                node(ironUnloader, () ->{
+                    node(fortifiedContainer, () ->{
+                        node(fortifiedVault, () ->{
+
+                        });
+                    });
+                });
 
                 node(corroder, Seq.with(new Objectives.Research(ironRouter)), ()-> {
-                    node(dissolver, ()->{
+                    node(avenger, () -> {
+                        node(dissolver, ()->{
 
+                        });
                     });
                     node(shredder, ()->{
                         node(hive, ()->{

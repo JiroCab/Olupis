@@ -4,9 +4,12 @@ import arc.graphics.Color;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.content.*;
+import mindustry.content.Fx;
+import mindustry.content.Liquids;
+import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.LiquidBulletType;
+import mindustry.entities.bullet.MissileBulletType;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootSummon;
 import mindustry.gen.Sounds;
@@ -14,6 +17,7 @@ import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
+import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
 import olupis.world.blocks.ItemUnitTurret;
@@ -21,30 +25,29 @@ import olupis.world.entities.bullets.NoBoilLiquidBulletType;
 
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
+import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.mite;
-import static olupis.content.NyfalisBlocks.*;
 
 public class NyfalisTurrets {
 
     public static void LoadTurrets(){
         //region Turrets
         corroder = new LiquidTurret("corroder"){{ //architronito
-            requirements(Category.turret, with(rustyIron, 50, lead, 10));
             ammo(
-                    Liquids.water, new LiquidBulletType(Liquids.water){{
-                        status = StatusEffects.corroded;
-                        layer = Layer.bullet -2f;
+                Liquids.water, new LiquidBulletType(Liquids.water){{
+                    status = StatusEffects.corroded;
+                    layer = Layer.bullet -2f;
 
-                        speed = 5.5f;
-                        damage = 15;
-                        drag = 0.008f;
-                        lifetime = 19.5f;
-                        rangeChange = 15f;
-                        ammoMultiplier = 5f;
-                        statusDuration = 60f * 2;
-                    }},
-                    steam, new NoBoilLiquidBulletType(steam){{
+                    speed = 5.5f;
+                    damage = 15;
+                    drag = 0.008f;
+                    lifetime = 19.5f;
+                    rangeChange = 15f;
+                    ammoMultiplier = 5f;
+                    statusDuration = 60f * 2;
+                }},
+                steam, new NoBoilLiquidBulletType(steam){{
                         evaporatePuddles = pierce = true;
                         status = StatusEffects.corroded;
 
@@ -69,23 +72,23 @@ public class NyfalisTurrets {
                 shootY = reload = 10f;
 
                 parts.addAll(
-                        new RegionPart("-barrel"){{
-                            mirror = false;
-                            y = 1f;
-                            layerOffset = -0.1f;
-                            progress = PartProgress.recoil;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                        }},  new RegionPart("-front-wing"){{
-                            mirror = true;
-                            layerOffset = -0.1f;
-                            progress = PartProgress.warmup;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, 0, -12f));
-                        }}, new RegionPart("-back-wing"){{
-                            mirror = true;
-                            layerOffset = -0.1f;
-                            progress = PartProgress.smoothReload;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -1f, 12f));
-                        }}
+                    new RegionPart("-barrel"){{
+                        mirror = false;
+                        y = 1f;
+                        layerOffset = -0.1f;
+                        progress = PartProgress.recoil;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                    }},  new RegionPart("-front-wing"){{
+                        mirror = true;
+                        layerOffset = -0.1f;
+                        progress = PartProgress.warmup;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, 0, -12f));
+                    }}, new RegionPart("-back-wing"){{
+                        mirror = true;
+                        layerOffset = -0.1f;
+                        progress = PartProgress.smoothReload;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -1f, 12f));
+                    }}
                 );
             }};
             loopSound = Sounds.steam;
@@ -93,6 +96,42 @@ public class NyfalisTurrets {
             outlineColor = nyfalisBlockOutlineColour;
             researchCost = with(rustyIron, 100, lead, 100);
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
+            requirements(Category.turret, with(rustyIron, 50, lead, 10));
+        }};
+
+        avenger = new ItemTurret("avenger"){{
+            targetAir = true;
+            targetGround = false;
+            size = 3;
+            reload = 25f;
+            range = 250f;
+            minWarmup = 0.96f;
+            shootY = shootX= 0f;
+            shootWarmupSpeed = 0.11f;
+            warmupMaintainTime = 1f;
+
+            ammo(
+                lead, new MissileBulletType(4.2f, 32f){{
+                    width = 6f;
+                    height = 10.5f;
+                    shrinkX = 0;
+                    lifetime = 60f;
+                    homingPower = 0.4f;
+                    homingRange = 150f;
+                    backColor = trailColor = lead.color;
+                    collidesAir = true;
+                    collidesGround = false;
+                    hitEffect = NyfalisFxs.hollowPointHit;
+                    knockback = 0.5f;
+                    status = StatusEffects.slow;
+                    statusDuration = 25f;
+                }}
+            );
+            limitRange(1.5f);
+            shootSound = Sounds.missile;
+            shootEffect = Fx.shootSmallSmoke;
+            drawer = new DrawRegion("");
+            requirements(Category.turret, with(rustyIron, 10, lead, 50));
         }};
 
         dissolver = new LiquidTurret("dissolver"){{ //architonnerre
@@ -215,7 +254,7 @@ public class NyfalisTurrets {
         //TODO: Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 
-        //TODO: Avenger, Aegis AA SAMM Turrets
+        //TODO: Aegis AA SAMM Turrets
 
         //endregion
     }
