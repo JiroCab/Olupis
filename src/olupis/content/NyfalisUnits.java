@@ -54,79 +54,51 @@ public class NyfalisUnits {
         LoadAmmoType();
 
         //region Air Units
-        zoner = new NyfalisUnitType("zoner"){{
-            hitSize = 11f;
-            drag = 0.05f;
-            accel = 0.11f;
-            health = 220f;
-            speed = 3.55f;
-            engineSize = 1.5f;
-            rotateSpeed = 19f;
-            itemCapacity = 70;
-            engineOffset = 5.5f;
-
-            lowAltitude = flying = true;
-            constructor = UnitEntity::create;
-            weapons.add(new Weapon("olupis-zoner-weapon"){{
-                top = alternate = false;
-                x = -1.8f;
-                y = -1f;
-                inaccuracy = 3f;
-                reload = shootCone = 15f;
-                ejectEffect = Fx.casing1;
-
-                bullet = new BasicBulletType(2.5f, 5){{
-                    width = 7;
-                    height = 9f;
-                    lifetime = 60f;
-                    homingPower = 0.04f;
-                    shootEffect = Fx.none;
-                    smokeEffect = Fx.shootSmallSmoke;
-                }};
-            }});
-        }};
-
         //Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
         aero = new NyfalisUnitType("aero"){{
-            hitSize = 11f;
+            hitSize = 9f;
             health = 250f;
             speed = 3.6f;
-            engineSize = 4f;
+            engineSize = 3f;
             rotateSpeed = 30f;
             itemCapacity = 30;
-            engineOffset = 5.5f;
+            engineOffset = 7f;
             drag = accel = 0.08f;
+            strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
 
-            lowAltitude = false;
+            lowAltitude = true;
             flying = canCircleTarget = alwaysShootWhenMoving = true;
             aiController = AgressiveFlyingAi::new;
             constructor = UnitEntity::create;
             weapons.add(new Weapon(""){{
                 top = mirror = false;
-                continuous = alwaysContinuous =  parentizeEffects = true;
+                continuous = alwaysContinuous = parentizeEffects  = true;
+
                 shake = 0f;
-                y = 3f;
-                x = recoil = 0f;
+                shootY = 9.1f;
+                y = x = recoil = 0f;
                 reload = shootCone = 30f;
                 ejectEffect = Fx.none;
+                outlineRegion = null;
+                layerOffset = Layer.flyingUnit -1;
                 shootSound = Sounds.electricHum;
-                layerOffset = Layer.flyingUnit -1f;
 
                 bullet = new ContinuousLaserBulletType(){{
                     shake = 0f;
                     width = 2f;
-                    length = 30;
+                    length = 20f;
                     lifetime = 32f;
                     pierceCap = 2;
-                    frontLength = 17f;
-                    damage = 15f / 12f;
+                    lightStroke = 10;
+                    frontLength = 10f;
+                    damage = 18f / 5f * 60f;
                     homingPower = 0.06f;
                     buildingDamageMultiplier = 1.1f;
                     incendChance = incendSpread = 0f;
                     pierce = true;
                     removeAfterPierce = false;
                     smokeEffect = shootEffect = Fx.none;
-                    chargeEffect = Fx.lightningShoot;
+                    chargeEffect = hitEffect = Fx.hitLancer;
                     colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
                 }};
             }});
@@ -134,7 +106,7 @@ public class NyfalisUnits {
 
         //Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
         striker = new NyfalisUnitType("striker"){{
-            hitSize = 11f;
+            hitSize = 12f;
             drag = 0.05f;
             accel = 0.07f;
             health = 350f;
@@ -143,11 +115,12 @@ public class NyfalisUnits {
             engineSize = 4f;
             itemCapacity = 70;
             engineOffset = 13.5f;
+            strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
             rotateSpeed = baseRotateSpeed = 30f;
 
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
-            lowAltitude = flying = canCircleTarget = true;
+            flying = canCircleTarget = true;
             weapons.add(new Weapon(""){{
                 x = 0;
                 y = 1.5f;
@@ -155,7 +128,6 @@ public class NyfalisUnits {
                 reload = shootCone = 15f;
 
                 shootSound = Sounds.laser;
-                ejectEffect = Fx.sparkShoot;
                 top = alternate =  mirror = false;
                 alwaysShootWhenMoving = true;
                 bullet = new LightningBulletType(){{
@@ -164,7 +136,7 @@ public class NyfalisUnits {
                     pierceCap = 5;
                     lightningLength = lightningLengthRand = 12;
                     pierce = true;
-                    shootEffect = Fx.lightningShoot;
+                    shootEffect = Fx.hitLancer;
                     lightningColor = hitColor = Pal.regen;
                     lightningType = new BulletType(0.0001f, 0f){{
                         pierceCap = 5;
@@ -174,27 +146,29 @@ public class NyfalisUnits {
                         despawnEffect = Fx.none;
                         hittable = false;
                         status = StatusEffects.shocked;
-                        collidesTeam = pierce = true;
+                        pierce = true;
                     }};
                 }};
             }});
             weapons.add(new Weapon(){{
                 x = 0f;
                 reload = 30;
-                inaccuracy = 30f;
+                inaccuracy = 180f;
                 shootCone = 180f;
-                minShootVelocity = 5.2f;
+                minShootVelocity = 5f;
 
                 ejectEffect = Fx.none;
                 shootSound = Sounds.spark;
                 ignoreRotation = alwaysShooting=  true;
                 bullet = new LightningBulletType(){{
                     damage = 10;
+                    shoot.shots = 2;
+                    shoot.firstShotDelay = 0.2f;
                     buildingDamageMultiplier = 1.1f;
                     lightningLength = lightningLengthRand = 8;
 
                     status = StatusEffects.none;
-                    shootEffect = Fx.lightningShoot;
+                    shootEffect = Fx.hitLancer;
                     lightningColor = hitColor = Pal.regen;
                     parentizeEffects = autoTarget = autoFindTarget = true;
                     top = alternate =  mirror =  aiControllable = controllable = false;
@@ -204,12 +178,12 @@ public class NyfalisUnits {
                         despawnEffect = Fx.none;
                         status = StatusEffects.none;
                         hittable = false;
-                        collidesTeam = true;
                     }};
                 }};
             }});
         }};
 
+        //Todo: keep?
         firefly = new NyfalisUnitType("firefly"){{
             constructor = UnitTypes.mono.constructor;
             defaultCommand = UnitCommand.mineCommand;
@@ -229,8 +203,43 @@ public class NyfalisUnits {
             engineOffset = 5.7f;
         }};
 
-        //endregion
+        zoner = new NyfalisUnitType("zoner"){{
+            armor = 1f;
+            hitSize = 11f;
+            drag = 0.05f;
+            accel = 0.11f;
+            health = 200f;
+            speed = 3.55f;
+            engineSize = 1.6f;
+            rotateSpeed = 19f;
+            itemCapacity = 70;
+            engineOffset = 4.6f;
 
+            lowAltitude = flying = true;
+            constructor = UnitEntity::create;
+            weapons.add(new Weapon("olupis-zoner-weapon"){{
+                top = alternate = false;
+                x = -1.8f;
+                y = -1f;
+                inaccuracy = 3f;
+                reload = shootCone = 15f;
+                ejectEffect = Fx.casing1;
+
+                bullet = new BasicBulletType(2.5f, 5, "olupis-diamond-bullet"){{
+                    width = 4;
+                    height = 6f;
+                    lifetime = 60f;
+                    homingPower = 0.04f;
+                    shootEffect = Fx.none;
+                    smokeEffect = Fx.shootSmallSmoke;
+                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
+                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
+                    hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                }};
+            }});
+        }};
+
+        //endregion
         //region Ground Units
         venom = new SnekUnitType("venom"){{
             constructor = CrawlUnit::create;
@@ -280,6 +289,8 @@ public class NyfalisUnits {
             }});
         }};
 
+        //endregion
+        //region Naval Units
         porter = new NyfalisUnitType("porter"){{
             health = 850;
             armor = 6f;
@@ -292,10 +303,9 @@ public class NyfalisUnits {
 
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
-            abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 1, 0));
+            abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 0, 2.5f));
         }};
-        //endregion
-
+        //endregion Units
         //region Nyfalis Limited LifeTime Units
         mite = new AmmoLifeTimeUnitType("mite"){{
             armor = 10f;
@@ -359,7 +369,6 @@ public class NyfalisUnits {
             isEnemy = useUnitCap = ammoDepletesOverTime = false;
         }};
         //endregion
-
         //region Nyfalis Core Units
         gnat = new NyfalisUnitType("gnat"){{
             armor = 1f;

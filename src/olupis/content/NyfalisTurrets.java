@@ -111,7 +111,7 @@ public class NyfalisTurrets {
             warmupMaintainTime = 1f;
 
             ammo(
-                lead, new MissileBulletType(4.2f, 32f){{
+                lead, new MissileBulletType(4.6f, 32f){{
                     width = 6f;
                     height = 10.5f;
                     shrinkX = 0;
