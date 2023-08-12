@@ -29,6 +29,7 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.world.blocks.*;
+import olupis.world.entities.bullets.SpawnHelperBulletType;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -870,21 +871,52 @@ public class NyfalisBlocks {
             requirements(Category.units, with(iron, 200, lead, 100, silicon, 60, rustyIron, 200));
         }};
 
-        //TODO: arialConstruct -> offensive air units
+        // arialConstruct -> offensive air units
+        arialConstruct = new ItemUnitTurret("arial-construct"){{
+            size = 4;
+            shootY = 0f;
+            reload = 600f;
+            itemCapacity = 20;
+            shootSound = Sounds.respawn;
+
+            ammo(
+                rustyIron, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    spawnUnit = zoner;
+                }},
+                iron, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    spawnUnit = UnitTypes.atrax;
+
+                }},
+                graphite, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    spawnUnit = aero;
+                }}
+            );
+            alwaysShooting = true;
+            requiredItems = Seq.with(silicon, lead);
+            researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
+            requirements(Category.units, with(iron, 100, lead, 30, silicon, 30));
+        }};
+
         //TODO: groundConstruct -> offensive ground units
 
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
             delay = 5f;
 
-            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
         }};
 
         unitReplicatorSmall = new Replicator("unit-replicator-small"){{
             size = 4;
             delay = 4f;
 
-            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
         }};
 
         //endregion
@@ -1006,7 +1038,7 @@ public class NyfalisBlocks {
         rustyWallGigantic = new Wall("rusty-wall-gigantic"){{
             size = 4;
             health = 3600;
-            researchCost = with(rustyIron,4200);
+            researchCost = with(rustyIron,4200, iron, 10);
             requirements(Category.defense, BuildVisibility.editorOnly, with(rustyIron, 1500));
         }};
 
@@ -1088,7 +1120,7 @@ public class NyfalisBlocks {
             }};
             shootType = new BasicBulletType(5.2f, -5, "olupis-diamond-bullet"){{
                 collidesTeam = true;
-                collidesAir =  false;
+                collidesAir = absorbable = false;
                 width = 10f;
                 height = 16f;
                 lifetime = 30f;

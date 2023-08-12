@@ -16,6 +16,7 @@ import olupis.content.NyfalisUnits;
 
 import static mindustry.Vars.ui;
 
+/*Todo: Parity/extend with ItemUnitTurret*/
 public class PowerUnitTurret extends PowerTurret {
     /*Turret with fancy units as stats display*/
     public Seq<UnitType> displayUnits = Seq.with(NyfalisUnits.gnat);

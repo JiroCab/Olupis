@@ -2,14 +2,9 @@ package olupis.content;
 
 import arc.graphics.Color;
 import arc.struct.EnumSet;
-import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.content.Fx;
-import mindustry.content.Liquids;
-import mindustry.content.StatusEffects;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.LiquidBulletType;
-import mindustry.entities.bullet.MissileBulletType;
+import mindustry.content.*;
+import mindustry.entities.bullet.*;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootSummon;
 import mindustry.gen.Sounds;
@@ -125,6 +120,8 @@ public class NyfalisTurrets {
                     knockback = 0.5f;
                     status = StatusEffects.slow;
                     statusDuration = 25f;
+                    splashDamage = 10f;
+                    splashDamageRadius = 25f * 0.75f;
                 }}
             );
             limitRange(1.5f);
@@ -236,7 +233,6 @@ public class NyfalisTurrets {
             shootY = 0f;
             range = 650;
             reload = 600f;
-            displayUnits = Seq.with(mite);
             shootSound = Sounds.respawn;
 
             ammo(
@@ -246,6 +242,8 @@ public class NyfalisTurrets {
                         spawnUnit = mite;
                     }}
             );
+            commandable = false;
+            playerControllable = true;
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
             requirements(Category.turret, with(iron, 100, lead, 30, silicon, 30));
         }};

@@ -66,15 +66,14 @@ public class NyfalisUnits {
             drag = accel = 0.08f;
             strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
 
-            lowAltitude = true;
-            flying = canCircleTarget = alwaysShootWhenMoving = true;
+            lowAltitude = flying = canCircleTarget = alwaysShootWhenMoving = true;
             aiController = AgressiveFlyingAi::new;
             constructor = UnitEntity::create;
             weapons.add(new Weapon(""){{
                 top = mirror = false;
                 continuous = alwaysContinuous = parentizeEffects  = true;
-
                 shake = 0f;
+                range = 32f;
                 shootY = 9.1f;
                 y = x = recoil = 0f;
                 reload = shootCone = 30f;
@@ -91,7 +90,7 @@ public class NyfalisUnits {
                     pierceCap = 2;
                     lightStroke = 10;
                     frontLength = 10f;
-                    damage = 18f / 5f * 60f;
+                    damage = 10 / 12f;
                     homingPower = 0.06f;
                     buildingDamageMultiplier = 1.1f;
                     incendChance = incendSpread = 0f;
@@ -225,6 +224,7 @@ public class NyfalisUnits {
                 reload = shootCone = 15f;
                 ejectEffect = Fx.casing1;
 
+                showStatSprite = false;
                 bullet = new BasicBulletType(2.5f, 5, "olupis-diamond-bullet"){{
                     width = 4;
                     height = 6f;
@@ -391,9 +391,11 @@ public class NyfalisUnits {
             boostMultiplier = 0.75f;
             researchCostMultiplier = 0f;
             groundLayer = Layer.legUnit - 1f;
+            spawnStatusDuration =  Fx.heal.lifetime - 1f;
 
             legPhysicsLayer = false;
             canBoost = allowLegStep = hovering = true;
+            spawnStatus = StatusEffects.disarmed;
             constructor = LegsUnit::create;
             controller = u -> new NyfalisMiningAi();
             ammoType = new PowerAmmoType(1000);
