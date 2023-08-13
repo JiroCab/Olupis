@@ -9,20 +9,29 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Nullable;
+import arc.util.Scaling;
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.*;
-import mindustry.graphics.*;
+import mindustry.gen.Building;
+import mindustry.gen.Icon;
+import mindustry.gen.Iconc;
+import mindustry.gen.Sounds;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.UnitType;
-import mindustry.ui.*;
+import mindustry.ui.Bar;
+import mindustry.ui.Fonts;
+import mindustry.ui.Styles;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
@@ -59,8 +68,8 @@ public class ItemUnitTurret extends ItemTurret {
         super.setBars();
         addBar("bar.progress", (ItemUnitTurretBuild entity) -> new Bar("bar.progress", Pal.ammo,() -> entity.reloadCounter / reload));
 
-        addBar("units", (ItemUnitTurretBuild e) -> new Bar(() ->
-                e.peekAmmo() == null ||
+        /*TODO: Takes a bit to update*/
+        addBar("units", (ItemUnitTurretBuild e) -> e.peekAmmo()  != null && e.peekAmmo().spawnUnit.useUnitCap ? new Bar(() ->
                 e.peekAmmo().spawnUnit == null ? "[lightgray]" + Iconc.cancel :
                 Core.bundle.format("bar.unitcap",
                         !Objects.equals(Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name), "") ? Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name) : Iconc.units,
@@ -69,7 +78,8 @@ public class ItemUnitTurret extends ItemTurret {
                 ),
             () -> Pal.power,
             () -> e.peekAmmo() == null ? 0f : e.peekAmmo().spawnUnit == null ? 0f : (float)e.team.data().countType(e.peekAmmo().spawnUnit) / Units.getCap(e.team)
-        ));
+        ): null);
+
     }
 
     @Override
@@ -123,7 +133,7 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public boolean acceptItem(Building source, Item item){
             return ((ammoTypes.get(item) != null && totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo && !ammoTypes.get(item).spawnUnit.isBanned())
-                     || (requiredItems.contains(item)));
+                     || (requiredItems.contains(item) && items.get(item) < getMaximumAccepted(item)));
         }
 
         @Override
@@ -153,7 +163,6 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         protected void shoot(BulletType type){
-
             if((!type.spawnUnit.isBanned() && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap)){
                 /*don't create the unit if it's banned or at unit cap*/
                 consume();

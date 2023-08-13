@@ -236,11 +236,11 @@ public class NyfalisTurrets {
             shootSound = Sounds.respawn;
 
             ammo(
-                    silicon, new BasicBulletType(2.5f, 11){{
-                        shootEffect = Fx.shootBig;
-                        ammoMultiplier = 1f;
-                        spawnUnit = mite;
-                    }}
+                silicon, new BasicBulletType(2.5f, 11){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    spawnUnit = mite;
+                }}
             );
             commandable = false;
             playerControllable = true;

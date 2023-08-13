@@ -47,6 +47,9 @@ public class NyfalisTechTree {
                     node(striker, () -> {
 
                     });
+                    node(spirit, () ->{
+
+                    });
                 });
                 node(venom, () -> {
 
@@ -207,6 +210,9 @@ public class NyfalisTechTree {
                 });
 
                 node(construct, Seq.with(new Objectives.Research(ironRouter)), ()->{
+                    node(arialConstruct, () ->{
+
+                    });
                     node(unitReplicator, ()->{
                         node(unitReplicatorSmall, ()->{
 

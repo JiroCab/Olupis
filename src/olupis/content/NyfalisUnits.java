@@ -26,7 +26,7 @@ import static olupis.content.NyfalisItemsLiquid.*;
 public class NyfalisUnits {
 
     public static AmmoType lifeTimeDrill, lifeTimeWeapon;
-    public static UnitType
+    public static NyfalisUnitType
         /*Air units*/
         aero, striker, falcon, vortex, tempest,
         zoner, region, district, division, territory,
@@ -504,8 +504,10 @@ public class NyfalisUnits {
 
     public static void PostLoadUnits(){
         /*Blocks are null while loading units, so this exists for as a work around*/
-        mite.displayedBlocks = Seq.with(NyfalisBlocks.hive);
-        spirit.displayedBlocks = Seq.with(NyfalisBlocks.construct);
+        mite.displayFactory = Seq.with(NyfalisBlocks.hive);
+        spirit.displayFactory = Seq.with(NyfalisBlocks.construct);
+        aero.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
+        zoner.displayFactory = Seq.with(porter);
     }
 
 

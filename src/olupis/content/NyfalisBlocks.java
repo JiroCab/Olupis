@@ -81,7 +81,7 @@ public class NyfalisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
 
-        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver,
+        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, leadaa,
 
         construct, arialConstruct, groundConstruct, unitReplicator, unitReplicatorSmall,
 
@@ -455,8 +455,8 @@ public class NyfalisBlocks {
             size = 2;
             health = 200;
             buildCostMultiplier = 4f;
-            researchCost = with(rustyIron, 100, lead, 100);
-            requirements(Category.distribution, with(rustyIron, 3, lead, 3));
+            researchCost = with(rustyIron, 1000, lead, 1000, iron, 500);
+            requirements(Category.distribution, with(rustyIron, 3, lead, 3, iron, 1));
         }};
 
         ironJunction = new Junction("iron-junction"){{
@@ -578,7 +578,7 @@ public class NyfalisBlocks {
         garden = new AttributeCrafter("garden"){{
             hasLiquids = hasPower = hasItems = legacyReadWarmup = true;
             size = 3;
-            craftTime = 200;
+            craftTime = 185f;
             maxBoost = 2.5f;
 
             attribute = bio;
@@ -590,7 +590,7 @@ public class NyfalisBlocks {
                     new DrawDefault(),
                     new DrawRegion("-top")
             );
-            consumePower(80f / 60f);
+            consumePower(40f / 60f);
             consumeLiquid(Liquids.water, 18f / 60f);
             researchCost = with(iron, 2000, lead, 2500, rustyIron, 2500);
             outputItem = new ItemStack(condensedBiomatter, 1);
@@ -614,6 +614,7 @@ public class NyfalisBlocks {
             leaks = underBullets = true;
 
             liquidCapacity = 20f;
+            liquidPressure = 1.015f;
             researchCostMultiplier = 3;
             botColor = Color.valueOf("252731");
             requirements(Category.liquid, with(iron, 5, rustyIron, 5));
@@ -664,7 +665,7 @@ public class NyfalisBlocks {
         fortifiedCanister = new LiquidRouter("pipe-canister"){{
             solid = true;
             size = 2;
-            liquidCapacity = 800f;
+            liquidCapacity = 850f;
             liquidPressure = 0.95f;
             researchCost = with(lead, 1000, iron, 1000);
             requirements(Category.liquid, with(lead, 50, iron, 20));
@@ -828,7 +829,7 @@ public class NyfalisBlocks {
                     new DrawLiquidRegion(),
                     new DrawRegion("-top")
             );
-            consumePower(0.7f);
+            consumePower(30f /60f);
             consumeItem(condensedBiomatter, 1);
             outputLiquid = new LiquidStack(oil, 18f / 60f);
             requirements(Category.crafting, with(iron, 100, lead, 30));
@@ -868,7 +869,7 @@ public class NyfalisBlocks {
                 spawnUnit = spirit;
             }};
             researchCost = with(lead, 3000, silicon, 3000, iron, 3000, rustyIron, 3000);
-            requirements(Category.units, with(iron, 200, lead, 100, silicon, 60, rustyIron, 200));
+            requirements(Category.units, with(iron, 500, lead, 250, silicon, 50, rustyIron, 50));
         }};
 
         // arialConstruct -> offensive air units
@@ -880,27 +881,16 @@ public class NyfalisBlocks {
             shootSound = Sounds.respawn;
 
             ammo(
-                rustyIron, new SpawnHelperBulletType(){{
-                    shootEffect = Fx.shootBig;
-                    ammoMultiplier = 1f;
-                    spawnUnit = zoner;
-                }},
-                iron, new SpawnHelperBulletType(){{
-                    shootEffect = Fx.shootBig;
-                    ammoMultiplier = 1f;
-                    spawnUnit = UnitTypes.atrax;
-
-                }},
-                graphite, new SpawnHelperBulletType(){{
+                lead, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     spawnUnit = aero;
                 }}
             );
             alwaysShooting = true;
-            requiredItems = Seq.with(silicon, lead);
+            requiredItems = Seq.with(silicon);
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
-            requirements(Category.units, with(iron, 100, lead, 30, silicon, 30));
+            requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
 
         //TODO: groundConstruct -> offensive ground units
@@ -957,10 +947,11 @@ public class NyfalisBlocks {
 
         windMills = new WindMill("wind-mill"){{
             size = 3;
+            boosterMultiplier = 3.5f;/* rationed for press + 2 gardens*/
             powerProduction = 20f/60f;
             displayEfficiencyScale = 1.1f;
             attribute = Attribute.steam;
-            consumeLiquid(oil, 0.2f).boost();
+            consumeLiquid(oil, 10f / 60f).boost();
             researchCost = with(rustyIron, 75);
             requirements(Category.power, with(rustyIron, 30));
         }};
@@ -1150,9 +1141,9 @@ public class NyfalisBlocks {
         fortifiedContainer = new StorageBlock("fortified-container"){{
             coreMerge = false;
             size = 2;
-            health =  740;
+            health =  790;
             scaledHealth = 150;
-            itemCapacity = 1400;
+            itemCapacity = 150;
             researchCost = with(iron, 2000, rustyIron, 2000);
             requirements(Category.effect, with(rustyIron, 75, iron, 50));
         }};
@@ -1162,7 +1153,7 @@ public class NyfalisBlocks {
             size = 3;
             health =  1500;
             scaledHealth = 120;
-            itemCapacity = 2700;
+            itemCapacity = 950;
             researchCost = with(iron, 4000, rustyIron, 4000, silicon, 4000);
             requirements(Category.effect, with(rustyIron, 150, iron, 100, silicon, 100));
         }};

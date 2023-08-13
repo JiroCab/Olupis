@@ -70,7 +70,7 @@ public class NyfalisMain extends Mod{
         Events.on(ClientLoadEvent.class, e -> {
             NyfalisBlocks.NyfalisBlocksPlacementFix();
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
-            disclaimerDialog();
+            if(Core.settings.getBool("nyfalis-disclaimer"))disclaimerDialog();
 
             Vars.ui.planet.shown(() -> {
                 if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);

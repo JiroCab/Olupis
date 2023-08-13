@@ -6,9 +6,7 @@ import arc.struct.EnumSet;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.world.blocks.power.PowerGenerator;
-import mindustry.world.draw.DrawBlurSpin;
-import mindustry.world.draw.DrawDefault;
-import mindustry.world.draw.DrawMulti;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 
 public class WindMill extends PowerGenerator {
@@ -18,6 +16,7 @@ public class WindMill extends PowerGenerator {
     public final boolean displayEfficiency = true;
     public final Effect generateEffect = Fx.none;
     public final float effectChance = 0.05f;
+    public float boosterMultiplier = 1f;
 
     public WindMill(String name){
         super(name);
@@ -33,7 +32,7 @@ public class WindMill extends PowerGenerator {
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.tiles, attribute, floating, size * size * displayEfficiencyScale, !displayEfficiency);
+        stats.add(Stat.affinities, attribute, floating, size * size * displayEfficiencyScale, !displayEfficiency);
         stats.remove(generationType);
         stats.add(generationType, powerProduction * 60.0f, StatUnit.powerSecond);
     }
@@ -55,12 +54,16 @@ public class WindMill extends PowerGenerator {
         @Override
         public void updateTile(){
             productionEfficiency = sum + attribute.env() + 1f;
+            if(boosterMultiplier > 1f){
+                productionEfficiency *= Mathf.lerp(1f, boosterMultiplier, optionalEfficiency);
+            }
+
 
             if(productionEfficiency > 0.1f && Mathf.chanceDelta(effectChance)){
                 generateEffect.at(x + Mathf.range(3f), y + Mathf.range(3f));
             }
-
         }
+
         @Override
         public void onProximityAdded(){
             super.onProximityAdded();

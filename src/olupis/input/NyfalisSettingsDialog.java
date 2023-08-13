@@ -21,6 +21,7 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
             table.checkPref("nyfalis-auto-ban", true);
+            table.checkPref("nyfalis-disclaimer", true);
             table.checkPref("nyfalis-debug", false);
 
             table.row();
