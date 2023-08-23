@@ -3,14 +3,14 @@ package olupis.content;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.struct.Seq;
+import mindustry.content.Items;
 import mindustry.content.Planets;
 import mindustry.game.Rules;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.*;
 import mindustry.maps.planet.AsteroidGenerator;
-import mindustry.type.Planet;
-import mindustry.type.Sector;
+import mindustry.type.*;
 import mindustry.world.meta.Env;
 import olupis.world.planets.*;
 
@@ -21,14 +21,17 @@ public class NyfalisPlanets {
     private static final Seq<Sector> systemSector = new Seq<>();
 
     public static Cons<Rules> commonRules = r ->{
-        r.unitCrashDamageMultiplier = 0.25f;
         r.dropZoneRadius = 400f;
         r.enemyCoreBuildRadius = 650f;
-        r.waveTeam = Team.green;
-        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = false;
-        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.blockWhitelist = r.hideBannedBlocks = r.coreIncinerates = r.fog = true;
+        r.unitCrashDamageMultiplier = 0.25f;
+        r.loadout.clear().add(new ItemStack(NyfalisItemsLiquid.rustyIron, 100), new ItemStack(Items.lead, 100));
 
         r.bannedBlocks.clear();
+        r.waveTeam = Team.green;
+
+        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
+        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear =  r.hideBannedBlocks = r.coreIncinerates = r.fog = true;
+
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
         NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
     };
@@ -72,7 +75,7 @@ public class NyfalisPlanets {
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
             meshLoader = () -> new HexMesh(this, 7);
             cloudMeshLoader = () -> new MultiMesh(
-                new HexSkyMesh(this, 11, 0.7f, 0.13f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.9f, 0.38f),
+                    new HexSkyMesh(this, 11, 0.7f, 0.13f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.9f, 0.38f),
                 new HexSkyMesh(this, 1, 0.2f, 0.16f, 5, Pal.regen.cpy().lerp(Color.valueOf("D7F5DC"), 0.55f).a(0.55f), 2, 0.45f, 1f, 0.41f)
             );
         }};

@@ -1,13 +1,15 @@
-package olupis.input;
+package olupis.content;
 
 import arc.Core;
+import arc.assets.AssetDescriptor;
+import arc.assets.loaders.SoundLoader;
 import arc.audio.Music;
+import arc.audio.Sound;
 import arc.struct.Seq;
 import arc.util.Log;
 import mindustry.content.Planets;
 import mindustry.type.Planet;
 import mindustry.world.Block;
-import olupis.content.NyfalisBlocks;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,6 +18,7 @@ import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisSounds {
     //TODO: Make a jar build w/o music for players that don't want/internet is slow
+    // Or alternatively make it a independent mod
 
     public static Music
             space = new Music(),
@@ -25,8 +28,13 @@ public class NyfalisSounds {
             feu = new Music(),
             main_title = new Music(),
             sparkles_of_hope = new Music()
-
     ;
+    /*Not final, just wanted to see how custom sounds would work*/
+    public static Sound
+            as2ArmorBreak = new Sound(),
+            as2PlasmaShot = new Sound()
+    ;
+
     public Seq<Music>
             nyfalisAmbient = new Seq<>(),
             nyfalisBoss = new Seq<>(),
@@ -35,7 +43,7 @@ public class NyfalisSounds {
     public boolean nyfalisMusicSet = false;
     public static Seq<Music> previousAmbientMusic, previousBossMusic, previousDarkMusic;
 
-    public static void LoadMusic(){
+     public static void LoadMusic(){
         if(headless) return;
         Core.assets.load("music/reclaiming_the_wasteland.mp3", arc.audio.Music.class).loaded = a -> reclaiming_the_wasteland = a;
         Core.assets.load("music/dusk.mp3", arc.audio.Music.class).loaded = a -> dusk = a;
@@ -47,14 +55,19 @@ public class NyfalisSounds {
         Core.assets.load("sounds/space.ogg", Music.class).loaded = (a) -> space = a;
     }
 
-    //*least invasive approach, hopefully a mod that changes music still has the Seqs public*//
+    public static void  LoadSounds(){
+        as2PlasmaShot = loadSound("sounds/as2_plasma_shot.wav");
+        as2ArmorBreak = loadSound("sounds/as2_broke_armor.wav");
+    }
+
+    /*least invasive approach, hopefully a mod that changes music still has the Seqs public*/
     public void replaceSoundHandler(){
         if(shouldReplaceMusic()){
             if(nyfalisMusicSet) return;
 
             previousAmbientMusic = control.sound.ambientMusic.copy();
             previousDarkMusic = control.sound.darkMusic.copy();
-           previousBossMusic = control.sound.bossMusic.copy();
+            previousBossMusic = control.sound.bossMusic.copy();
 
             nyfalisAmbient.add(reclaiming_the_wasteland, blossom, feu, main_title);
             nyfalisDark.add(reclaiming_the_wasteland, dusk, sparkles_of_hope);
@@ -107,5 +120,13 @@ public class NyfalisSounds {
         return false;
     }
 
+    public static Sound loadSound(String path){
+        /*Stolen from: https://github.com/sk7725/BetaMindy/blob/erekir/src/betamindy/content/MindySounds.java*/
+        Sound sound = new Sound();
+        if(headless) return sound;
+        AssetDescriptor<?> a = Core.assets.load(path, Sound.class, new SoundLoader.SoundParameter(sound));
+        a.errored = Throwable::printStackTrace;
+        return sound;
+    }
 
 }

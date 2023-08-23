@@ -1,18 +1,22 @@
 package olupis.world.entities.units;
 
 import arc.Core;
+import arc.audio.Sound;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.util.Scaling;
 import mindustry.ai.types.LogicAI;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
+import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.meta.Env;
+import olupis.world.ai.NyfalisMiningAi;
 
 import static mindustry.Vars.*;
 
@@ -32,8 +36,13 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*Time before depleting ammo*/
     public float depleteAmmoOffset = 10f;
     /*Manually controlling and moving items depletes ammo*/
-    public boolean carryingMaxDepletes = true;
+    public boolean carryingMaxDepletes = true, maxCarryUsesPassive = false;
     float startTime;
+    /*Time out params */
+    public Sound timedOutSound = Sounds.explosion;
+    public Effect timedOutFx = Fx.steam;
+    public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f;
+
     //TODO: Range limit them, deplete ammo when N tiles away from X & Y
 
     public AmmoLifeTimeUnitType(String name){
@@ -98,6 +107,20 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
         }
 
+        if(unit.controller() instanceof NyfalisMiningAi ai && ai.targetItem != null){
+            table.row();
+            table.table(i -> {
+                TextureRegion ore = ai.mineType == 1 ? ai.ore.floor().fullIcon : ai.mineType == 2 ? ai.ore.block().fullIcon: ai.mineType == 3 ? ai.ore.overlay().fullIcon: Icon.ok.getRegion();
+                i.image(ore);
+                table.add(ai.targetItem.localizedName).wrap();
+            });
+
+            //if (ai.ore != null && (Core.settings.getBool("mouseposition") || Core.settings.getBool("position"))) {
+            if (ai.ore != null && (Core.settings.getBool("blockstatus"))) {
+                table.row();
+                table.add("[lightgray](" + Math.round(ai.ore.x) + ", " + Math.round(ai.ore.y) + ")").growX().wrap();
+            }
+        }
         table.row();
     }
 
@@ -105,13 +128,12 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     @Override
     public void update(Unit unit){
         if (unit.ammo <= minimumAmmoBeforeKill && killOnAmmoDepletes){
-            deathSFX(unit);
-            unit.remove();
+            timedOut(unit);
         }
 
         boolean shouldDeplete = (startTime+ depleteAmmoOffset) >= startTime;
         if(ammoDepletesOverTime && shouldDeplete){
-            unit.ammo = unit.ammo - ammoDepleteAmountPassive;
+            unit.ammo = unit.ammo - (maxCarryUsesPassive ? ammoDepleteAmountPassive : ammoDepleteAmount);
         }
 
         if(miningDepletesAmmo && unit.mining()){
@@ -123,9 +145,9 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         }
     }
 
-    public void deathSFX(Unit unit){
-        Fx.drillSteam.at(unit);
-        Fx.steam.at(unit);
-        Sounds.explosion.at(unit);
+    public void timedOut(Unit unit){
+        timedOutFx.at(unit);
+        timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
+        unit.remove();
     }
 }

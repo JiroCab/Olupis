@@ -20,6 +20,8 @@ public class NyfalisSettingsDialog {
         ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
+            table.checkPref("nyfalis-blue-icon", true);
+            table.checkPref("nyfalis-blue-name", true);
             table.checkPref("nyfalis-auto-ban", true);
             table.checkPref("nyfalis-disclaimer", true);
             table.checkPref("nyfalis-debug", false);

@@ -18,6 +18,8 @@ public class NyfalisMiningAi extends AIController {
     public boolean mining = true;
     public Item targetItem;
     public Tile ore;
+    /*1 = Floor, 2 = Wall, 3 = overlay*/
+    public int mineType = 0;
     public Seq<Item> dynamicMineItems = new Seq<>();
 
     public void updateMineItems(){
@@ -73,6 +75,10 @@ public class NyfalisMiningAi extends AIController {
             }else{
                 if(timer.get(timerTarget3, 60) && targetItem != null){
                     ore = indexer.findClosestOre(unit, targetItem);
+
+                    if(ore.floor().itemDrop == targetItem) mineType = 1;
+                    else if (ore.block().itemDrop== targetItem) mineType = 2;
+                    else if (ore.overlay().itemDrop == targetItem) mineType = 3;
                 }
 
                 if(ore != null){

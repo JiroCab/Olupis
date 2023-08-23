@@ -48,6 +48,7 @@ public class NyfalisItemsLiquid {
     }
 
     public static void LoadLiquids(){
+        //TODO keep oils?
         heavyOil = new Liquid("heavy-oil", Color.valueOf("1A1919")){{
             viscosity = 0.75f;
             flammability = 1.2f;
@@ -60,6 +61,7 @@ public class NyfalisItemsLiquid {
             barColor = Color.valueOf("6b675f");
             gasColor = Color.grays(0.4f);
         }};
+
         lightOil = new Liquid("light-oil", Color.valueOf("4B4A49")){{
             viscosity = 0.75f;
             flammability = 1.2f;

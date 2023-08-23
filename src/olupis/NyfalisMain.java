@@ -18,8 +18,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import olupis.content.*;
-import olupis.input.NyfalisSettingsDialog;
-import olupis.input.NyfalisSounds;
+import olupis.input.*;
 import olupis.world.planets.NyfalisTechTree;
 
 import java.util.Objects;
@@ -31,6 +30,7 @@ import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisMain extends Mod{
     public static NyfalisSounds soundHandler = new NyfalisSounds();
+    public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
 
     @Override
@@ -54,11 +54,12 @@ public class NyfalisMain extends Mod{
     }
 
     public NyfalisMain(){
+        NyfalisSounds.LoadSounds();
         Events.on(EventType.WorldLoadEvent.class, l ->{
-            if(shouldAutoBan()) {
+            if(shouldAutoBan()) Time.run(0.5f * Time.toSeconds, () ->{ /*Delayed since custom games, for some reason needs it*/
                 /*Hiding blocks w/o banning them mainly for custom games */
                 state.rules.hiddenBuildItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
-            }
+            });
             if(headless)return;
 
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
@@ -84,6 +85,9 @@ public class NyfalisMain extends Mod{
             /*For those people who don't like the name/icon or overwrites in general*/
             if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";
             if(Core.settings.getBool("nyfalis-green-name")) Team.green.name = "nyfalis-green";
+            /* uncomment when name/icon is final
+            if(Core.settings.getBool("nyfalis-blue-icon")) Team.green.name = "";
+            if(Core.settings.getBool("nyfalis-blue-name")) Team.green.name = "nyfalis-blue";*/
         });
     }
 
@@ -121,6 +125,7 @@ public class NyfalisMain extends Mod{
     @Override
     public void init() {
         nyfalisSettings = new NyfalisSettingsDialog();
+        logicDialog = new NyfalisLogicDialog();
     }
 
     public static void disclaimerDialog(){

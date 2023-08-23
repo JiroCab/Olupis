@@ -3,42 +3,32 @@ package olupis.world.blocks;
 import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Scaling;
-import arc.util.Time;
+import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.Building;
-import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
+import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.UnitType;
-import mindustry.ui.Bar;
-import mindustry.ui.Fonts;
-import mindustry.ui.Styles;
+import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
 
 import java.util.Objects;
 
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 
 /*The cross bread of a Turret and Unit factory, for the sake of being different*/
 public class ItemUnitTurret extends ItemTurret {
@@ -48,9 +38,11 @@ public class ItemUnitTurret extends ItemTurret {
     public int requiredItemsCost;
     /*Parameters when failing to make a unit*/
     public Sound failedMakeSound = Sounds.dullExplosion;
-    public float failedMakeSoundPitch = 0.8f;
+    public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 1f;
     public Effect failedMakeFx = NyfalisFxs.failedMake;
     public TextureRegion bottomRegion;
+    /*Hovering Shows the unit creation*/
+    public boolean hoverShowsSpawn = false;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
     /*Todo: ground units that arent non-legged die like daggers*/
@@ -59,6 +51,7 @@ public class ItemUnitTurret extends ItemTurret {
         super(name);
         commandable = true;
         playerControllable = false;
+        shootSound = Sounds.respawn;
         requiredItemsCost =Math.round(itemCapacity / 2f);
         fogRadius = -1;
         range = 0f;
@@ -185,7 +178,7 @@ public class ItemUnitTurret extends ItemTurret {
                 }, () -> barrelCounter++);
             }else {
                 failedMakeFx.create(x, y, rotation -90, Pal.plasticSmoke, null);
-                failedMakeSound.at(x, y, failedMakeSoundPitch);
+                failedMakeSound.at(x, y, failedMakeSoundPitch, getFailedMakeSoundVolume);
             }
             if(consumeAmmoOnce){
                 useAmmo();
@@ -205,18 +198,35 @@ public class ItemUnitTurret extends ItemTurret {
                 if(this.team.data().countType(unt) < this.team.data().unitCap){
                     Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rotation - 90f, reloadCounter /reload,  speedScl, time));
                 } else {
-                    Draw.alpha(reloadCounter /reload);
-                    Draw.rect(unt.fullIcon, x, y, rotation- 90f);
-                    Draw.reset();
-                    Draw.color(Pal.remove, Math.max(reloadCounter /reload, 0.3f));
-                    Draw.rect(Icon.warning.getRegion(), x, y);
-                    Draw.reset();
+                    Draw.draw(Layer.blockOver, ()->{
+                        Draw.alpha(reloadCounter /reload);
+                        Draw.rect(unt.fullIcon, x, y, rotation- 90f);
+
+                        Draw.color(Pal.accent);
+                        Draw.alpha((reloadCounter /reload) / 1.2f);
+                        Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
+                        Draw.reset();
+
+                        Draw.color(Pal.remove, Math.min(reloadCounter /reload, 0.5f));
+                        Draw.rect(Icon.warning.getRegion(), x, y);
+                        Draw.reset();
+                    });
                 }
             }
-
-
             Draw.z(Layer.blockOver + 0.1f);
             Draw.rect(region, x, y);
+        }
+
+        @Override
+        public void drawSelect(){
+            if(hoverShowsSpawn){
+                float squareX = x + Angles.trnsx(rotation - 90, shootX, shootY), squareY = y + Angles.trnsy(rotation - 90, shootX, shootY);
+                Lines.stroke(1f, team.color);
+                Draw.color(team.color, 0.8f);
+                Lines.square(squareX, squareY, 3.5f, Time.time * 0.5f);
+                Draw.reset();
+            }
+            super.drawSelect();
         }
 
         @Override
@@ -247,9 +257,14 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
-            if(revision >= 2){
+            if(revision >= 3){ /*necessary, to prevent map/save corruption */
                 commandPos = TypeIO.readVecNullable(read);
             }
+        }
+
+        @Override
+        public byte version(){
+            return 3;
         }
     }
 }

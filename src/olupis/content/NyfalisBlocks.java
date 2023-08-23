@@ -21,7 +21,7 @@ import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.MessageBlock;
+import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.BeamNode;
 import mindustry.world.blocks.production.*;
@@ -88,7 +88,7 @@ public class NyfalisBlocks {
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
 
-        fortifiedMessageBlock, mechanicalProcessor, mechanicalSwitch, mechanical
+        fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry
     ; //endregion
 
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
@@ -486,6 +486,7 @@ public class NyfalisBlocks {
 
             researchCost = with(lead, 300, rustyIron, 300);
             ((Conveyor)rustyIronConveyor).bridgeReplacement = this;
+            /*expensive, to put off bridge waving/stacking*/
             requirements(Category.distribution, with(rustyIron, 20, lead, 15));
         }};
 
@@ -878,22 +879,43 @@ public class NyfalisBlocks {
             shootY = 0f;
             reload = 600f;
             itemCapacity = 20;
-            shootSound = Sounds.respawn;
+            failedMakeSoundPitch = 0.7f;
 
             ammo(
                 lead, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
-                    ammoMultiplier = 1f;
+                    ammoMultiplier = 2f;
                     spawnUnit = aero;
                 }}
             );
+            failedMakeSound = NyfalisSounds.as2ArmorBreak;
             alwaysShooting = true;
             requiredItems = Seq.with(silicon);
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
 
-        //TODO: groundConstruct -> offensive ground units
+        // groundConstruct -> offensive ground units
+        groundConstruct = new ItemUnitTurret("ground-construct"){{
+            size = 4;
+            shootY = 2.5f * Vars.tilesize;
+            reload = 600f;
+            itemCapacity = 20;
+            failedMakeSoundPitch = 0.7f;
+
+            ammo(
+                graphite, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.smeltsmoke;
+                    ammoMultiplier = 2f;
+                    spawnUnit = venom;
+                }}
+            );
+            failedMakeSound = NyfalisSounds.as2ArmorBreak;
+            alwaysShooting = hoverShowsSpawn = true;
+            requiredItems = Seq.with(silicon);
+            researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
+            requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
+        }};
 
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
@@ -1076,7 +1098,7 @@ public class NyfalisBlocks {
 
         //endregion
         //region Effect
-        //TODO: Keep?
+        //TODO:Remove?
         mendFieldProjector = new DirectionalMendProjector ("mend-field-projector"){{
             size = 2;
             health = 80;
@@ -1182,16 +1204,17 @@ public class NyfalisBlocks {
             reload = 72f;
             health = 70000;
             itemCapacity = 4500;
+            shootX = shootY = 0f;
             range = 19.5f * Vars.tilesize;
 
-            unitType = gnat;
+            unitType = phorid;
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
             requirements(Category.effect, with(rustyIron, 4500, lead, 4500, iron, 3000, graphite, 3000));
             shootType = new SapBulletType(){{
                 damage = 10f;
                 width = 0.8f;
-                lifetime = 40f;
+                lifetime = 20f;
                 sapStrength = 0f;
                 length = 19.5f * Vars.tilesize;
                 status = StatusEffects.none;
@@ -1207,9 +1230,10 @@ public class NyfalisBlocks {
             reload = 55f;
             health = 140000;
             itemCapacity = 6000;
+            shootX = shootY = 0f;
             range = 22.5f * Vars.tilesize;
 
-            unitType = gnat;
+            unitType = phorid;
             limitRange(0);
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
@@ -1236,15 +1260,16 @@ public class NyfalisBlocks {
             reload = 35f;
             health = 280000;
             itemCapacity = 7500;
+            shootX = shootY = 0f;
             range = 32 * Vars.tilesize;
 
-            unitType = gnat;
+            unitType = phorid;
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
             targetGround = targetHealing = targetAir = true;
             requirements(Category.effect, with(rustyIron, 7500, lead, 7500, iron, 7500, silicon, 7500, graphite, 7500, quartz, 6000, cobalt, 6000));
             shootType = new RailBulletType(){{
-                length = 235f;
+                length = 255f;
                 damage = 48f;
                 pierceDamageFactor = 0.5f;
                 hitColor = iron.color;
@@ -1280,6 +1305,26 @@ public class NyfalisBlocks {
             researchCost = with(iron, 1000, graphite, 1000);
             requirements(Category.logic, with(Items.graphite, 10, iron, 5));
         }};
+
+        mechanicalProcessor = new NyfalisLogicBlock("mechanical-processor"){{
+            requirements(Category.logic, with(lead, 300, iron, 100, graphite, 60, silicon, 60));
+
+            instructionsPerTick = 25;
+            range = 10 * 22;
+            size = 2;
+        }};
+
+        mechanicalSwitch = new SwitchBlock("mechanical-switch"){{
+            size = 2;
+            requirements(Category.logic, with(Items.graphite, 5, iron, 10));
+        }};
+
+        mechanicalRegistry = new MemoryBlock("mechanical-registry"){{
+            size = 2;
+            requirements(Category.logic, with(Items.graphite, 20, iron, 20, silicon, 10));
+        }};
+
+
         //endregion
     }
 

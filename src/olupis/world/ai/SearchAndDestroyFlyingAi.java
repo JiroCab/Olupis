@@ -1,19 +1,24 @@
 package olupis.world.ai;
 
-import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.util.Time;
 import mindustry.ai.types.FlyingAI;
+import mindustry.entities.Predict;
 import mindustry.entities.Units;
 import mindustry.gen.Teamc;
+import mindustry.gen.Unit;
+import mindustry.type.Weapon;
 import mindustry.world.meta.BlockFlag;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
 
 /*FlyingAi but really aggressive */
 public class SearchAndDestroyFlyingAi extends FlyingAI {
     public float delay = 70f * 60f, idleAfter;
     /*avoids stuttering on trying to go to spawn after target is null*/
     public boolean suicideOnSuicideUnits = true, suicideOnTarget = false;
+    /*Compensate for target speed, for better chasing */
+    public boolean compensateTargetSpeed = true;
 
     @Override
     public void updateMovement(){
@@ -21,17 +26,18 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
 
         if(target != null && unit.hasWeapons()){
             idleAfter = Time.time + delay;
-            if(suicideOnSuicideUnits && suicideOnTarget ){
-                /*screw crawlers in particular*/
-                moveTo(target, 0);
-                unit.lookAt(target);
-                if(unit.within(target.x(), target.y(), unit.type.range))unit.isShooting = true;
-            } else if(unit.type.circleTarget){
+            float speed = target instanceof Unit tar ? unit().speed() + tar.speed() : unit.speed();
+            Vec2 tarVec = Predict.intercept(unit, target, speed);
+            /*screw crawlers in particular*/
+            float range =  (suicideOnSuicideUnits && suicideOnTarget) ? 0f : unit.range();
+
+            if(unit.type.circleTarget){
                 circleAttack(120f);
-            }else{
-                moveTo(target, unit.type.range * 0.6f);
-                unit.lookAt(target);
-            }
+            }else if (compensateTargetSpeed){
+                float moveSpd = target instanceof Unit tar ? unit.within(tarVec, range) ? Math.min(tar.speed(), unit.speed()): unit.speed() : unit.speed();
+                vec.set(tarVec).sub(unit).setLength(moveSpd);
+                unit.moveAt(vec);
+            } else  moveTo(target, range);
         }
 
         if(target == null){
@@ -44,14 +50,48 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
         }
     }
 
+    public void updateWeapons(){
+        if(compensateTargetSpeed){
+            if(target == null) target = findMainTarget(unit.x, unit.y, unit.range(), unit.type.targetAir, unit.type.targetGround);
+            noTargetTime += Time.delta;
+            if(invalid(target)) return;
+            else noTargetTime = 0f;
+
+            float speed = target instanceof Unit tar ? unit().speed() + tar.speed() : unit.speed();
+            Vec2 tarVec = Predict.intercept(unit, target, speed);
+            boolean inRange = unit.within(tarVec, unit.range());
+
+            /*I don't know which one worked so have all of them*/
+            unit.aimLook(tarVec); unit.lookAt(tarVec); unit.aim(tarVec);
+            unit.isShooting = inRange;
+            for(var mount : unit.mounts) {
+                Weapon weapon = mount.weapon;
+                Vec2 to = Predict.intercept(unit, tarVec, weapon.bullet.speed);
+
+                //let uncontrollable weapons do their own thing
+                if (!weapon.controllable || weapon.noAttack) continue;
+
+                if (!weapon.aiControllable) {
+                    mount.rotate = false;
+                    continue;
+                }
+
+                mount.aimX = to.x;
+                mount.aimY = to.y;
+                mount.shoot = inRange;
+            }
+
+        } else { super.updateWeapons();
+            if( target != null && unit.within(target, unit.range())){
+                unit.isShooting = true;
+                for(var mount : unit.mounts){
+                    if(!mount.weapon.controllable || mount.weapon.noAttack) continue;
+                    mount.shoot = true;
+         }}}
+    }
+
     @Override
     public Teamc findMainTarget(float x, float y, float range, boolean air, boolean ground){
-        var core = targetFlag(x, y, BlockFlag.core, true);
-
-        if(core != null && Mathf.within(x, y, core.getX(), core.getY(), range)){
-            return core;
-        }
-
         var search = Units.closestTarget(unit.team, x, y, Float.MAX_VALUE, u -> air, b -> ground) ;
         if(search != null){
             suicideOnTarget = Units.closestTarget(unit.team, x, y, Float.MAX_VALUE, u -> u.type().weapons.find(w->w.bullet.killShooter) != null, b -> ground) != null;
@@ -67,8 +107,6 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
                 if(result != null) return result;
             }
         }
-
-        return core;
+        return targetFlag(x, y, BlockFlag.core, true);
     }
-
 }

@@ -59,6 +59,11 @@ public class NyfalisTechTree {
 
                     });
                 });
+                node(phorid, () -> {
+                    node(embryo, () -> {
+
+                    });
+                });
             });
 
             node(mossyBoulder, ()-> {

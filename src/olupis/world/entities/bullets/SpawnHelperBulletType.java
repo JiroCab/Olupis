@@ -7,6 +7,7 @@ import mindustry.entities.bullet.BasicBulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.world.blocks.ControlBlock;
+import olupis.world.ai.AgressiveFlyingAi;
 import olupis.world.blocks.ItemUnitTurret;
 
 import static mindustry.Vars.net;
@@ -28,7 +29,16 @@ public class SpawnHelperBulletType extends BasicBulletType {
                     if (shooter instanceof Unit unit) ai.shooter = unit;
                     if (shooter instanceof ControlBlock control) ai.shooter = control.unit();
                 }
-                if(owner instanceof ItemUnitTurret.ItemUnitTurretBuild u && u.commandPos != null && spawned.isCommandable()) spawned.command().commandPosition(u.commandPos);
+
+                if(owner instanceof ItemUnitTurret.ItemUnitTurretBuild u && spawned.isCommandable()){
+                    if(u.commandPos != null) spawned.command().commandPosition(u.commandPos);
+                    else if(u.targetPos != null) spawned.command().commandPosition(u.targetPos);
+                }
+                if(spawned.controller() instanceof AgressiveFlyingAi ai) {
+                    if (shooter instanceof Unit unit) ai.parent = unit;
+                    if (shooter instanceof ControlBlock control) ai.parent = control.unit();
+                }
+
                 spawned.add();
             }
             //Since bullet init is never called, handle killing shooter here

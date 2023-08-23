@@ -17,6 +17,7 @@ import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
 import olupis.world.blocks.ItemUnitTurret;
 import olupis.world.entities.bullets.NoBoilLiquidBulletType;
+import olupis.world.entities.bullets.SpawnHelperBulletType;
 
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
@@ -61,6 +62,7 @@ public class NyfalisTurrets {
                 size = 2;
                 recoil = 1;
                 range = 90f;
+                fogRadius = 15;
                 health = 1500;
                 shootCone = 50f;
                 liquidCapacity = 5f;
@@ -236,7 +238,7 @@ public class NyfalisTurrets {
             shootSound = Sounds.respawn;
 
             ammo(
-                silicon, new BasicBulletType(2.5f, 11){{
+                silicon, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     spawnUnit = mite;
@@ -252,7 +254,7 @@ public class NyfalisTurrets {
         //TODO: Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 
-        //TODO: Aegis AA SAMM Turrets
+        //TODO: Aegis AA SAMM Turrets (later game)
 
         //endregion
     }
