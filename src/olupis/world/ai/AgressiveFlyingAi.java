@@ -1,7 +1,6 @@
 package olupis.world.ai;
 
 import arc.math.geom.Vec2;
-import arc.util.Log;
 import mindustry.ai.types.CommandAI;
 import mindustry.ai.types.FlyingAI;
 import mindustry.entities.Predict;
@@ -35,7 +34,6 @@ public class AgressiveFlyingAi extends FlyingAI {
 
         if(parent != null && !parent.dead()) {
             float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.speed()) : unit.speed() ;
-            Log.err(parent.speed() + " || " + unit.speed() + " = " + speed);
             circle(parent, parentCircle, speed);
         }else if(target != null && unit.hasWeapons()){
             if(unit.type.circleTarget){

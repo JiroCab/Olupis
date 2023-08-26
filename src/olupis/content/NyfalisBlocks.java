@@ -29,6 +29,7 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.world.blocks.*;
+import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 
 import static arc.graphics.g2d.Draw.color;
@@ -1131,7 +1132,7 @@ public class NyfalisBlocks {
                     }});
                 }
             }};
-            shootType = new BasicBulletType(5.2f, -5, "olupis-diamond-bullet"){{
+            shootType = new HealOnlyBulletType(5.2f, -5, "olupis-diamond-bullet"){{
                 collidesTeam = true;
                 collidesAir = absorbable = false;
                 width = 10f;

@@ -8,12 +8,13 @@ Last updated on 23/07/2023 (+8utc) by Jirocab/RushieWashie
     + Maps added: sanctuary, dorment-cell
     + Units added: aero, striker, venom, phorid, embryo
     + Blocks added: lumaWall, redSandBoulder, avenger, arialConstruct, groundConstruct, analogProcessor, mechanicalSwitch, mechanicalRegistry
+    + Taurus, Gnat & phorid's healing bullets no longer colided with enemy units
     ~ Various balance changes
     ~ Updated and made load disclaimer taggable
     ~ Bug fix: all cores except remnant can be chosen to be launched
     ~ Internal: Deprecated taurus using MendTurret, uses PowerTurret instead
 	~ Internal: Turrets moved to NyfalisTurrets.java
-    ~ Improve Planet rules, Custom unit ai, Tech tree and Core database
+    ~ Improve Planet rules, Custom unit Ai, Tech tree and Core database
     ~ Sprites Contributed by Remington Thomas: rustyIron
     ~ Given coreRelic, coreShrine, coreTemple a weapon
 
