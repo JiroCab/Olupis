@@ -573,7 +573,7 @@ public class NyfalisUnits {
                     }},
                 new Weapon(){{
                         x = y = 0;
-                        reload = 40*10;
+                        reload = 60f * 10f;
                         flipSprite = false;
                         shootStatus = StatusEffects.unmoving;
                         shootStatusDuration = Fx.heal.lifetime;
@@ -581,6 +581,7 @@ public class NyfalisUnits {
                         bullet = new SpawnHelperBulletType(){{
                             shootEffect = Fx.shootBig;
                             spawnUnit = embryo;
+                            //rangeOverride = mineRange;
                         }};
                     }}
             );
