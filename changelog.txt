@@ -1,6 +1,6 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 23/07/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 26/08/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-5 () =
 
@@ -8,7 +8,7 @@ Last updated on 23/07/2023 (+8utc) by Jirocab/RushieWashie
     + Maps added: sanctuary, dorment-cell
     + Units added: aero, striker, venom, phorid, embryo
     + Blocks added: lumaWall, redSandBoulder, avenger, arialConstruct, groundConstruct, analogProcessor, mechanicalSwitch, mechanicalRegistry
-    + Taurus, Gnat & phorid's healing bullets no longer colided with enemy units
+    + Taurus, Gnat & phorid's healing bullets no longer collides with enemy units
     ~ Various balance changes
     ~ Updated and made load disclaimer taggable
     ~ Bug fix: all cores except remnant can be chosen to be launched

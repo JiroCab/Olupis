@@ -13,7 +13,8 @@ public class HealOnlyBulletType extends BasicBulletType {
     public HealOnlyBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage);
         this.sprite = bulletSprite;
-        this.collidesAir = false;
+        this.collidesAir = this.hittable = false;
+        this.collidesTeam = true;
     }
 
     public HealOnlyBulletType(float speed, float damage){

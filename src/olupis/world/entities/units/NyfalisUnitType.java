@@ -37,6 +37,7 @@ public class NyfalisUnitType extends UnitType {
         outlineColor = Color.valueOf("371404");
         ammoType = new ItemAmmoType(NyfalisItemsLiquid.rustyIron);
         researchCostMultiplier = 6f;
+        generateIcons = true;
     }
 
     @Override

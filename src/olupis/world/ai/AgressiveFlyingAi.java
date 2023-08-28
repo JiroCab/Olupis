@@ -15,7 +15,7 @@ public class AgressiveFlyingAi extends FlyingAI {
     public boolean shouldCircle = false;
     public float circleDistance = 150f;
     public Unit parent;
-    public float parentCircle = 35f;
+    public float parentCircle = 35f, shootSlowDown = 0.5f;
 
     @Override
     public void updateUnit(){
@@ -33,7 +33,7 @@ public class AgressiveFlyingAi extends FlyingAI {
         unloadPayloads();
 
         if(parent != null && !parent.dead()) {
-            float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.speed()) : unit.speed() ;
+            float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.isShooting ? unit.speed() * shootSlowDown: unit.speed()) : unit.speed() ;
             circle(parent, parentCircle, speed);
         }else if(target != null && unit.hasWeapons()){
             if(unit.type.circleTarget){
@@ -50,7 +50,7 @@ public class AgressiveFlyingAi extends FlyingAI {
     public void updateWeapons(){
         if(parent != null && !parent.dead){
 
-            Vec2 aimVec = new Vec2(parent.aimX, parent.aimY);
+            Vec2 aimVec = Predict.intercept(vec , new Vec2(parent.aimX, parent.aimY), unit.type.weapons.first().bullet.speed);
             if(!parent.isShooting) aimVec = Predict.intercept(vec, unit, unit.speed());
             /*I don't know which one worked so have all of them*/
             unit.aimLook(aimVec); unit.lookAt(aimVec); unit.aim(aimVec);
@@ -58,16 +58,14 @@ public class AgressiveFlyingAi extends FlyingAI {
 
             for(var mount : unit.mounts) {
                 Weapon weapon = mount.weapon;
-                Vec2 to = Predict.intercept(unit, aimVec, weapon.bullet.speed);
-
                 //let uncontrollable weapons do their own thing
-                if (!weapon.controllable || weapon.noAttack) continue;
-
                 if (!weapon.aiControllable) {
                     mount.rotate = false;
                     continue;
                 }
+                if (weapon.noAttack) continue;
 
+                Vec2 to = Predict.intercept(vec, aimVec, weapon.bullet.speed);
                 mount.aimX = to.x;
                 mount.aimY = to.y;
                 mount.shoot = parent.isShooting;

@@ -250,22 +250,20 @@ public class NyfalisUnits {
         //region Ground Units
         venom = new SnekUnitType("venom"){{
             constructor = CrawlUnit::create;
-            health = 20000;
             armor = 12;
             hitSize = 9f;
-            legMoveSpace = 1.1f;
-            drownTimeMultiplier = 4f;
-            segments = 5;
-            omniMovement = drawBody = false;
-            crushDamage = 2f;
-            aiController = HugAI::new;
-            allowLegStep = true;
-
-            segmentScl = 8f;
-            segmentPhase = 10f;
-            crawlSlowdownFrac = 1f;
             speed = 2.5f;
-            rotateSpeed = 8f;
+            health = 250;
+            segments = 5;
+            crushDamage = 2f;
+            segmentPhase = 10f;
+            legMoveSpace = 1.1f;
+            crawlSlowdownFrac = 1f;
+            drownTimeMultiplier = 4f;
+            segmentScl = rotateSpeed = 8f;
+            allowLegStep = true;
+            omniMovement = drawBody = false;
+            aiController = HugAI::new;
 
             weapons.addAll(new SnekWeapon("olupis-missiles-mount-teamed"){{
                 x = 0f;
@@ -391,11 +389,11 @@ public class NyfalisUnits {
 
             weapons.add(new Weapon(){{
                 top = false;
-                x = y = shootX = 0f;
                 reload = 20f;
                 shootCone = 30f;
                 shootSound = Sounds.lasershoot;
-                bullet = new LaserBoltBulletType(5.2f, 13){{
+                x = y = shootX = inaccuracy = 0f;
+                bullet = new LaserBoltBulletType(6f, 10){{
                     lifetime = 30f;
                     healPercent = 5f;
                     collidesTeam = true;
@@ -452,44 +450,43 @@ public class NyfalisUnits {
             }});
 
             weapons.add(
-                    new Weapon() {{
-                        x = y = 0;
-                        reload = 60*10;
-                        shootStatus = StatusEffects.unmoving;
-                        shootStatusDuration = Fx.heal.lifetime;
-                        shoot.firstShotDelay = Fx.heal.lifetime-1;
-                        bullet = new BasicBulletType(0,-5) {{
-                            spin = 3.5f;
-                            drag = 0.9f;
-                            lifetime = 10*60;
-                            shrinkX = 25f/60f;
-                            shrinkY = 35f/60f;
-                            intervalBullets = 2;
-                            intervalSpread = 180;
-                            intervalRandomSpread = 90;
-                            height = width = bulletInterval = healAmount = 20;
+                new Weapon() {{
+                    reload = 60*10;
+                    x = y = shootX = shootY = 0;
+                    shootStatus = StatusEffects.unmoving;
+                    shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
+                    bullet = new BasicBulletType(0,0) {{
+                        spin = 3.5f;
+                        drag = 0.9f;
+                        lifetime = 10*60;
+                        shrinkX = 25f/60f;
+                        shrinkY = 35f/60f;
+                        intervalBullets = 2;
+                        intervalSpread = 180;
+                        intervalRandomSpread = 90;
+                        height = width = bulletInterval = healAmount = 20;
+
+                        collidesTeam = true;
+                        keepVelocity = false;
+                        hitEffect = despawnEffect = Fx.heal;
+                        backColor = frontColor = trailColor = lightColor = Pal.heal;
+
+                        intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
+                            lifetime = 60;
+                            trailLength = 10;
+                            trailWidth = 1.5f;
+                            healAmount = 20;
+                            bulletInterval = 10;
+                            homingPower = 0.09f;
 
                             collidesTeam = true;
                             keepVelocity = false;
                             hitEffect = despawnEffect = Fx.heal;
                             backColor = frontColor = trailColor = lightColor = Pal.heal;
-
-                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
-                                lifetime = 60;
-                                trailLength = 15;
-                                trailWidth = 1.5f;
-                                healAmount = 20;
-                                bulletInterval = 10;
-                                homingPower = 0.09f;
-
-                                collidesTeam = true;
-                                keepVelocity = false;
-                                hitEffect = despawnEffect = Fx.heal;
-                                backColor = frontColor = trailColor = lightColor = Pal.heal;
-                            }};
-
                         }};
-                    }}
+
+                    }};
+                }}
             );
         }};
 
@@ -505,10 +502,10 @@ public class NyfalisUnits {
             engineSize = -1;
             mineSpeed = 9.5f;
             buildSpeed = 0.7f;
-            itemCapacity = 70;
-            rotateSpeed = 5f;
+            itemCapacity = 80;
+            rotateSpeed = 6f;
             range = mineRange;
-            legMoveSpace = 1.2f; //Limits world tiles movement
+            legMoveSpace = 1.3f; //Limits world tiles movement
             shadowElevation = 0.1f;
             buildBeamOffset = 4.2f;
             boostMultiplier = 0.75f;
@@ -539,36 +536,34 @@ public class NyfalisUnits {
 
             weapons.addAll(
                     new Weapon() {{
-                        x = y = 0;
                         reload = 60*10;
+                        x = y = shootX = shootY = 0;
                         shootStatus = StatusEffects.unmoving;
-                        shootStatusDuration = Fx.heal.lifetime;
-                        shoot.firstShotDelay = Fx.heal.lifetime-1;
+                        shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
                         bullet = new BasicBulletType(0,-5) {{
-                            spin = 3.5f;
+                            spin = 3.7f;
                             drag = 0.9f;
                             lifetime = 10*60;
                             shrinkX = 25f/60f;
                             shrinkY = 35f/60f;
+                            bulletInterval = 25;
                             intervalBullets = 2;
                             intervalSpread = 180;
                             intervalRandomSpread = 90;
-                            height = width = bulletInterval = healAmount = 20;
+                            height = width = healAmount = 20;
 
-                            collidesTeam = true;
                             keepVelocity = false;
                             hitEffect = despawnEffect = Fx.heal;
                             backColor = frontColor = trailColor = lightColor = Pal.heal;
 
-                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
+                            intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet") {{
                                 lifetime = 60;
-                                trailLength = 15;
+                                trailLength = 11;
                                 trailWidth = 1.5f;
-                                healAmount = 20;
+                                healAmount = 30;
                                 bulletInterval = 10;
-                                homingPower = 0.09f;
+                                homingPower = 0.11f;
 
-                                collidesTeam = true;
                                 keepVelocity = false;
                                 hitEffect = despawnEffect = Fx.heal;
                                 backColor = frontColor = trailColor = lightColor = Pal.heal;
@@ -576,10 +571,9 @@ public class NyfalisUnits {
 
                         }};
                     }},
-                    new Weapon(){{
+                new Weapon(){{
                         x = y = 0;
-
-                        reload = 60*10;
+                        reload = 40*10;
                         flipSprite = false;
                         shootStatus = StatusEffects.unmoving;
                         shootStatusDuration = Fx.heal.lifetime;

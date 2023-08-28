@@ -909,6 +909,11 @@ public class NyfalisBlocks {
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = venom;
+                }},
+                iron, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.smeltsmoke;
+                    ammoMultiplier = 2f;
+                    spawnUnit = porter;
                 }}
             );
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
