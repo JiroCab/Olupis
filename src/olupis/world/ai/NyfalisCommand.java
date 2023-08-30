@@ -11,5 +11,5 @@ public class NyfalisCommand {
     }){{
         switchToMove = resetTarget = false;
         drawTarget = true;
-    }};
+    }}, healCommand = new UnitCommand("nyfalis-heal", "add", u -> new UnitHealerAi());
 }

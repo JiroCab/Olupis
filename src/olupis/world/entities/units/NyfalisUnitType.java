@@ -26,7 +26,7 @@ import olupis.world.entities.bullets.SpawnHelperBulletType;
 import static mindustry.Vars.ui;
 
 public class NyfalisUnitType extends UnitType {
-    public boolean canCircleTarget = false;
+    public boolean canCircleTarget = false, canHealUnits = false;
     /*Effects that a unit spawns with, gnat cheese fix*/
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
@@ -48,6 +48,12 @@ public class NyfalisUnitType extends UnitType {
             cmds.add(NyfalisCommand.circleCommand);
             commands = cmds.toArray();
         }
+        if(canHealUnits){
+            Seq<UnitCommand> cmds = Seq.with(commands);
+            cmds.add(NyfalisCommand.healCommand);
+            commands = cmds.toArray();
+        }
+
     }
 
     @Override

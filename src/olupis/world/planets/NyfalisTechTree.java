@@ -47,7 +47,10 @@ public class NyfalisTechTree {
                     node(striker, () -> {
 
                     });
-                    node(spirit, () ->{
+                });
+
+                node(spirit, () ->{
+                    node(phantom, () ->{
 
                     });
                 });
@@ -226,7 +229,13 @@ public class NyfalisTechTree {
                 });
 
                 node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{
-
+                    node(mechanicalProcessor, () -> {
+                        node(mechanicalSwitch, () -> {
+                            node(mechanicalSwitch, ()->{
+                                
+                            });
+                        });
+                    });
                 });
 
 

@@ -67,7 +67,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             bars.row();
 
             if(state.rules.unitAmmo || killOnAmmoDepletes ){
-                bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo  / ammoCapacity) - minimumAmmoBeforeKill));
+                bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo - minimumAmmoBeforeKill ) / (ammoCapacity - minimumAmmoBeforeKill) ));
                 bars.row();
             }
 

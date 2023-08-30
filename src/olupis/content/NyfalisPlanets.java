@@ -29,8 +29,8 @@ public class NyfalisPlanets {
         r.bannedBlocks.clear();
         r.waveTeam = Team.green;
 
-        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
-        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear =  r.hideBannedBlocks = r.coreIncinerates = r.fog = true;
+        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = false;
+        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear =  r.hideBannedBlocks = r.coreIncinerates = r.fog = r.blockWhitelist = true;
 
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
         NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));

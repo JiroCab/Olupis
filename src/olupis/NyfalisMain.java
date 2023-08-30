@@ -115,6 +115,7 @@ public class NyfalisMain extends Mod{
             t.visible(() -> Vars.ui.hudfrag.shown);
             t.bottom().left();
             t.button("Export w/ Nyfalis", Icon.file, Styles.squareTogglet, () -> {
+                state.rules.blockWhitelist = true;
                 NyfalisPlanets.nyfalis.applyRules(state.rules);
                 ui.paused.show();
             }).width(155f).height(50f).margin(12f).checked(false);

@@ -15,6 +15,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.AmmoType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.PowerAmmoType;
+import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
 import olupis.world.ai.*;
 import olupis.world.entities.bullets.*;
@@ -25,7 +26,7 @@ import static olupis.content.NyfalisItemsLiquid.*;
 
 public class NyfalisUnits {
 
-    public static AmmoType lifeTimeDrill, lifeTimeWeapon;
+    public static AmmoType lifeTimeDrill, lifeTimeWeapon, lifeTimeSupport;
     public static NyfalisUnitType
         /*Air units*/
         aero, striker, falcon, vortex, tempest,
@@ -312,7 +313,7 @@ public class NyfalisUnits {
             abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 0, 2.5f));
         }};
         //endregion Units
-        //region Nyfalis Limited LifeTime Units
+        //region Nyfalis Limited LifeTime / Support Units
         mite = new AmmoLifeTimeUnitType("mite"){{
             armor = 10f;
             hitSize = 9;
@@ -374,8 +375,34 @@ public class NyfalisUnits {
             timedOutFx = NyfalisFxs.failedMake;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            flying = miningDepletesAmmo = maxCarryUsesPassive = true;
+            flying = miningDepletesAmmo = maxCarryUsesPassive = canHeal = true;
             isEnemy = useUnitCap = ammoDepletesOverTime = carryingMaxDepletes =false;
+        }};
+
+        phantom = new AmmoLifeTimeUnitType("phantom"){{
+            speed = 2.5f;
+            ammoCapacity = 50;
+
+            weapons.add(new RepairBeamWeapon("repair-beam-weapon-center"){{
+                x =  y = shootX = 0;
+                shootY = 6f;
+                beamWidth = 0.3f;
+                repairSpeed = 0.3f;
+                shootCone = 20f;
+                fractionRepairSpeed = 0.03f;
+
+                targetBuildings = true;
+                useAmmo = true;
+                bullet = new BulletType(){{
+                    maxRange = 120f;
+                    healPercent = 1f;
+                }};
+            }});
+
+            constructor = UnitEntity::create;
+            defaultCommand = NyfalisCommand.healCommand;
+            isEnemy = useUnitCap = ammoDepletesOverTime = carryingMaxDepletes =false;
+            flying = miningDepletesAmmo = maxCarryUsesPassive = canHealUnits =  targetAir = targetGround = singleTarget = true;
         }};
 
         embryo = new AmmoLifeTimeUnitType("embryo"){{
@@ -436,7 +463,7 @@ public class NyfalisUnits {
             ammoType = new PowerAmmoType(1000);
             mineItems = Seq.with(rustyIron, lead, scrap);
             setEnginesMirror(
-                new UnitEngine(21 / 4f, 19 / 4f, 2.2f, 45f),
+                new UnitEngine(20.5f / 4f, 22 / 4f, 2.2f, 65f), //front
                 new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
             );
             parts.add(new HoverPart(){{
@@ -521,8 +548,8 @@ public class NyfalisUnits {
             ammoType = new PowerAmmoType(1000);
             mineItems = Seq.with(rustyIron, lead, scrap);
             setEnginesMirror(
-                    new UnitEngine(21 / 4f, 19 / 4f, 2.2f, 45f),
-                    new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
+                    new UnitEngine(23.5f / 4f, 15 / 4f, 2.3f, 45f), //front
+                    new UnitEngine(23 / 4f, -22 / 4f, 2.3f, 315f)
             );
             parts.add(new HoverPart(){{
                 mirror = false;
@@ -626,6 +653,26 @@ public class NyfalisUnits {
             @Override
             public Color barColor() {
                 return Pal.ammo;
+            }
+
+            @Override
+            public void resupply(Unit unit) {}
+        };
+
+        lifeTimeDrill = new AmmoType() {
+            @Override
+            public String icon() {
+                return Iconc.add + "";
+            }
+
+            @Override
+            public Color color() {
+                return Pal.ammo;
+            }
+
+            @Override
+            public Color barColor() {
+                return Color.green;
             }
 
             @Override

@@ -889,9 +889,9 @@ public class NyfalisBlocks {
                     spawnUnit = aero;
                 }}
             );
-            failedMakeSound = NyfalisSounds.as2ArmorBreak;
             alwaysShooting = true;
             requiredItems = Seq.with(silicon);
+            failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
@@ -916,9 +916,9 @@ public class NyfalisBlocks {
                     spawnUnit = porter;
                 }}
             );
-            failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            alwaysShooting = hoverShowsSpawn = true;
             requiredItems = Seq.with(silicon);
+            alwaysShooting = hoverShowsSpawn = true;
+            failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};

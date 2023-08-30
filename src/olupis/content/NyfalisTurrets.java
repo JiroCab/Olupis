@@ -179,7 +179,6 @@ public class NyfalisTurrets {
         }};
 
         shredder = new ItemTurret("shredder"){{
-            //TODO: rework, shotgun/tri shot, home/ricochets  on hit, BTD6 quincy style
             targetAir = false;
 
             size = 3;
@@ -201,20 +200,20 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
             ammo(
                     //TODO: Some how ignore Allied Non-Solids??? (ex: mines & conveyors)
-                    rustyIron, new RollBulletType(2.5f, 11){{
+                    rustyIron, new RollBulletType(2.5f, 13){{
                         frontColor = backColor = rustyIron.color;
                         status = StatusEffects.slow;
-                        width = 40f;
                         height = 9f;
+                        width = 40f;
                         lifetime = 60f;
                         knockback= 3f;
                         homingRange = 15f;
                         homingPower = 0.2f;
-                        statusDuration = 60f * 2f;
+                        statusDuration = 60f * 1.1f;
                         ammoMultiplier = pierceCap = 2;
-                        buildingDamageMultiplier = 0.45f;
+                        buildingDamageMultiplier = 0.4f;
                     }},
-                    iron, new RollBulletType(3f, 23){{
+                    iron, new RollBulletType(3f, 25){{
                         frontColor = backColor = iron.color;
                         status = StatusEffects.slow;
                         width = 40f;
@@ -225,8 +224,8 @@ public class NyfalisTurrets {
                         homingRange = 15f;
                         ammoMultiplier = 2;
                         homingPower = 0.02f;
-                        statusDuration = 60f * 3f;
-                        buildingDamageMultiplier = 0.45f;
+                        statusDuration = 60f * 2f;
+                        buildingDamageMultiplier = 0.4f;
                     }}
             );
         }};
