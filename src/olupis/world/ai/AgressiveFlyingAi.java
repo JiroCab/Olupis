@@ -5,8 +5,7 @@ import mindustry.ai.types.CommandAI;
 import mindustry.ai.types.FlyingAI;
 import mindustry.entities.Predict;
 import mindustry.entities.Units;
-import mindustry.gen.Teamc;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.type.Weapon;
 
 import static mindustry.Vars.state;
@@ -33,6 +32,7 @@ public class AgressiveFlyingAi extends FlyingAI {
         unloadPayloads();
 
         if(parent != null && !parent.dead()) {
+            /*Perhaps with more units, use the v5 formations instead*/
             float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.isShooting ? unit.speed() * shootSlowDown: unit.speed()) : unit.speed() ;
             circle(parent, parentCircle, speed);
         }else if(target != null && unit.hasWeapons()){

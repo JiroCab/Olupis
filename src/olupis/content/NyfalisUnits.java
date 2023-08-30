@@ -384,7 +384,7 @@ public class NyfalisUnits {
             controller = u -> new AgressiveFlyingAi();
 
             flying = alwaysShootWhenMoving = true;
-            playerControllable = false;
+            playerControllable = useUnitCap = false;
             speed = 3f;
 
             weapons.add(new Weapon(){{

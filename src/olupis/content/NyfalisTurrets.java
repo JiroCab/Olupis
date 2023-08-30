@@ -1,12 +1,12 @@
 package olupis.content;
 
-import arc.graphics.Color;
 import arc.struct.EnumSet;
 import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.entities.bullet.*;
+import mindustry.entities.bullet.LiquidBulletType;
+import mindustry.entities.bullet.MissileBulletType;
 import mindustry.entities.part.RegionPart;
-import mindustry.entities.pattern.ShootSummon;
+import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
@@ -16,8 +16,7 @@ import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
 import olupis.world.blocks.ItemUnitTurret;
-import olupis.world.entities.bullets.NoBoilLiquidBulletType;
-import olupis.world.entities.bullets.SpawnHelperBulletType;
+import olupis.world.entities.bullets.*;
 
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
@@ -190,42 +189,44 @@ public class NyfalisTurrets {
             range = 160;
             shootCone = 15f;
             rotateSpeed = 10f;
-            shootY = Vars.tilesize * size;
             ammoUseEffect = Fx.casing1;
             researchCostMultiplier = 0.05f;
+            shootY = (Vars.tilesize * size) -5f;
             outlineColor = nyfalisBlockOutlineColour;
 
             limitRange(1f);
             coolant = consumeCoolant(0.1f);
+            shoot = new ShootSpread(3, 15);
             researchCost = with(lead, 3000, iron, 3000, graphite, 3000);
-            shoot = new ShootSummon(0f, 0f, 0f, 0f);
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
             ammo(
                     //TODO: Some how ignore Allied Non-Solids??? (ex: mines & conveyors)
-                    rustyIron, new BasicBulletType(2.5f, 11){{
-                        collidesTeam = true;
-                        collideTerrain = collidesAir = false;
+                    rustyIron, new RollBulletType(2.5f, 11){{
+                        frontColor = backColor = rustyIron.color;
                         status = StatusEffects.slow;
-                        statusDuration = 60f * 2f;
                         width = 40f;
                         height = 9f;
                         lifetime = 60f;
-                        ammoMultiplier = pierceCap = 2;
                         knockback= 3f;
-                        frontColor = backColor = Color.valueOf("ea8878");
+                        homingRange = 15f;
+                        homingPower = 0.2f;
+                        statusDuration = 60f * 2f;
+                        ammoMultiplier = pierceCap = 2;
+                        buildingDamageMultiplier = 0.45f;
                     }},
-                    iron, new BasicBulletType(3f, 23){{
-                        collidesTeam = collideTerrain = true;
-                        collidesAir = false;
+                    iron, new RollBulletType(3f, 23){{
+                        frontColor = backColor = iron.color;
                         status = StatusEffects.slow;
-                        statusDuration = 60f * 3f;
                         width = 40f;
                         height = 11f;
                         lifetime = 50f;
-                        ammoMultiplier = 2;
                         pierceCap = 3;
                         knockback = 3f;
-                        frontColor = backColor = Color.valueOf("ea8878");
+                        homingRange = 15f;
+                        ammoMultiplier = 2;
+                        homingPower = 0.02f;
+                        statusDuration = 60f * 3f;
+                        buildingDamageMultiplier = 0.45f;
                     }}
             );
         }};
