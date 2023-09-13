@@ -11,9 +11,9 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 
-public class LeggedWaterUnit extends  NyfalisUnitType  {
+public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     private static final Vec2 legOffset = new Vec2();
-    public float groundSpeed =  0.5f, navalSpeed = 1f;
+    public float groundSpeed =  1f, navalSpeed = 0.8f;
     boolean showLegsOnLiquid = true, lockLegsOnLiquid = true;
 
     public LeggedWaterUnit(String name){
@@ -104,6 +104,7 @@ public class LeggedWaterUnit extends  NyfalisUnitType  {
             naval = false;
         }
         speed = onWater(unit) ? navalSpeed : groundSpeed;
+        super.update(unit);
     }
 
     public boolean onWater(Unit unit){

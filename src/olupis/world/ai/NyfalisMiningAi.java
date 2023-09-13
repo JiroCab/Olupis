@@ -1,8 +1,10 @@
 package olupis.world.ai;
 
+import arc.math.Mathf;
+import arc.math.geom.Position;
 import arc.struct.Seq;
+import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.ai.Pathfinder;
 import mindustry.content.Blocks;
 import mindustry.entities.units.AIController;
 import mindustry.gen.Building;
@@ -15,12 +17,14 @@ import static mindustry.Vars.indexer;
 
 /*Custom mining Ai that Respects the ammo lifetime gimmick*/
 public class NyfalisMiningAi extends AIController {
-    public boolean mining = true;
+    public boolean mining = true, dynamicItems = true;
     public Item targetItem;
     public Tile ore;
-    /*1 = Floor, 2 = Wall, 3 = overlay*/
+    /*0 = Cant mine, 1 = core, 2 = Floor, 3 = Wall, 1 = overlay, 4 = core*/
     public int mineType = 0;
     public Seq<Item> dynamicMineItems = new Seq<>();
+    private int lastPathId = 0;
+    private float lastMoveX, lastMoveY, moveX, moveY;
 
     public void updateMineItems(){
         Vars.content.items().each(i -> {
@@ -35,7 +39,7 @@ public class NyfalisMiningAi extends AIController {
 
         if(!(unit.canMine()) || core == null) return;
 
-        updateMineItems();
+        if(dynamicItems)updateMineItems();
 
         if(unit.type instanceof AmmoLifeTimeUnitType && unit.stack.amount > 0 && ((AmmoLifeTimeUnitType) unit.type).minimumAmmoBeforeKill * unit.mineTimer >= unit.ammo){
             unit.mineTile = null;
@@ -75,22 +79,21 @@ public class NyfalisMiningAi extends AIController {
             }else{
                 if(timer.get(timerTarget3, 60) && targetItem != null){
                     ore = indexer.findClosestOre(unit, targetItem);
+                    moveX = ore.x;
+                    moveY = ore.y;
+                    mineType = 0;
 
-                    if(ore.floor().itemDrop == targetItem) mineType = 1;
-                    else if (ore.block().itemDrop== targetItem) mineType = 2;
-                    else if (ore.overlay().itemDrop == targetItem) mineType = 3;
+                    if(ore.floor().itemDrop == targetItem) mineType = 2;
+                    else if (ore.block().itemDrop== targetItem) mineType = 3;
+                    else if (ore.overlay().itemDrop == targetItem) mineType = 4;
                 }
 
                 if(ore != null){
-
-                    //TODO: actually finish this, i have no clue anymore -RushieWashie
-                    if(!unit.type.flying && !unit.within(ore, unit.type.mineRange)){
-                        Tile pathfindTarget = Vars.pathfinder.getTargetTile(ore, Vars.pathfinder.getField(unit.team, unit.pathType(), Pathfinder.fieldCore));
-                        unit.movePref(vec.trns(unit.angleTo(pathfindTarget.worldx(), pathfindTarget.worldy()), unit.speed()));
-                    } moveTo(ore, unit.type.mineRange / 2f, 20f);
+                    move(ore);
 
                     if(ore.block() == Blocks.air && unit.within(ore, unit.type.mineRange)){
                         unit.mineTile = ore;
+                        unit.lookAt(ore);
                     }
 
                     if(ore.block() != Blocks.air){
@@ -115,12 +118,27 @@ public class NyfalisMiningAi extends AIController {
                 mining = true;
             }
 
-            if(!unit.type.flying){
-                if (!unit.within(core, unit.type.mineRange)){
-                    Tile pathfindTarget = Vars.pathfinder.getTargetTile(core.tile, Vars.pathfinder.getField(unit.team, unit.pathType(), Pathfinder.fieldCore));
-                    unit.movePref(vec.trns(unit.angleTo(pathfindTarget.worldx(), pathfindTarget.worldy()), unit.speed()));
-                }
-            } circle(core, unit.type.range / 1.8f);
+            mineType = 4;
+            move(core);
         }
     }
+
+
+    public void move(Position target){
+        if(unit.within(target, unit.type.mineRange / 2f)) return;
+
+        if (unit.type.flying) circle(target, unit.type.range / 1.8f);
+        else {
+            if(!Mathf.equal(target.getY(), lastMoveX, 0.1f) || !Mathf.equal(target.getY(), lastMoveY, 0.1f)){
+                lastPathId ++;
+                lastMoveX = target.getX();
+                lastMoveY = target.getY();
+            }
+            if (Vars.controlPath.getPathPosition(unit, lastPathId, Tmp.v2.set(target.getX(), target.getY()), Tmp.v1, null)) {
+                unit.lookAt(Tmp.v1);
+                moveTo(Tmp.v1, 1f, Tmp.v2.epsilonEquals(Tmp.v1, 4.1f) ? 30f : 0f, false, null);
+            } else unit.lookAt(unit.prefRotation());
+        }
+    }
+
 }

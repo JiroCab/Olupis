@@ -129,6 +129,7 @@ public class NyfalisTurrets {
             shootSound = Sounds.missile;
             shootEffect = Fx.shootSmallSmoke;
             drawer = new DrawRegion("");
+            researchCost = with(lead, 500, rustyIron, 200);
             requirements(Category.turret, with(rustyIron, 10, lead, 50));
         }};
 

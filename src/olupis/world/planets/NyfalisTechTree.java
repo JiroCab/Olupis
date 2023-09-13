@@ -232,7 +232,7 @@ public class NyfalisTechTree {
                     node(mechanicalProcessor, () -> {
                         node(mechanicalSwitch, () -> {
                             node(mechanicalSwitch, ()->{
-                                
+
                             });
                         });
                     });

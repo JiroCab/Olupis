@@ -8,29 +8,41 @@ import arc.struct.Seq;
 import arc.util.Scaling;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
+import mindustry.ai.types.CommandAI;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
-import mindustry.gen.*;
+import mindustry.gen.Icon;
+import mindustry.gen.TimedKillc;
+import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
-import mindustry.type.*;
+import mindustry.type.StatusEffect;
+import mindustry.type.UnitType;
+import mindustry.type.Weapon;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisItemsLiquid;
-import olupis.world.ai.NyfalisCommand;
+import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 
 import static mindustry.Vars.ui;
 
 public class NyfalisUnitType extends UnitType {
-    public boolean canCircleTarget = false, canHealUnits = false;
+    /*Custom RTS commands*/
+    public boolean canCircleTarget = false, canHealUnits = false, customMineAi = false, canGuardUnits  = false, canMend = false;
+    /*Makes (legged) units boost automatically regardless of Ai*/
+    public boolean alwaysBoostOnSolid = false;
+    /*Replace Move Command to a custom one*/
+    public boolean customMoveCommand = false;
+    /*Face targets when idle/not moving */
+    public boolean idleFaceTargets = false;
     /*Effects that a unit spawns with, gnat cheese fix*/
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
-    public Seq<UnlockableContent> displayFactory = new Seq();
+    public Seq<UnlockableContent> displayFactory = new Seq<>();
 
     public NyfalisUnitType(String name){
         super(name);
@@ -38,22 +50,24 @@ public class NyfalisUnitType extends UnitType {
         ammoType = new ItemAmmoType(NyfalisItemsLiquid.rustyIron);
         researchCostMultiplier = 6f;
         generateIcons = true;
+        if(customMoveCommand) defaultCommand = NyfalisUnitCommands.nyfalisMoveCommand;
     }
 
     @Override
     public void init(){
         super.init();
-        if(canCircleTarget){
-            Seq<UnitCommand> cmds = Seq.with(commands);
-            cmds.add(NyfalisCommand.circleCommand);
-            commands = cmds.toArray();
-        }
-        if(canHealUnits){
-            Seq<UnitCommand> cmds = Seq.with(commands);
-            cmds.add(NyfalisCommand.healCommand);
-            commands = cmds.toArray();
-        }
 
+        Seq<UnitCommand> cmds = Seq.with(commands);
+            if (customMoveCommand){
+                cmds.remove(UnitCommand.moveCommand);
+                cmds.add(NyfalisUnitCommands.nyfalisMoveCommand);
+            }
+            if(canCircleTarget) cmds.add(NyfalisUnitCommands.circleCommand);
+            if(canHealUnits) cmds.add(NyfalisUnitCommands.healCommand);
+            if(canMend) cmds.add(NyfalisUnitCommands.nyfalisMendCommand);
+            if (customMineAi) cmds.add(NyfalisUnitCommands.nyfalisMineCommand);
+            if (canGuardUnits) cmds.add(NyfalisUnitCommands.nyfalisGuardCommand);
+        commands = cmds.toArray();
     }
 
     @Override
@@ -104,7 +118,7 @@ public class NyfalisUnitType extends UnitType {
             stats.remove(Stat.weapons);
             stats.add(Stat.weapons, table -> {
                 for(Weapon w : weapons) {
-                    if(!w.hasStats(this) || !w.flipSprite) continue;
+                    if(!w.hasStats(this) || w.flipSprite) continue;
 
                     if (w.bullet instanceof SpawnHelperBulletType) {
                         UnitType spawn = w.bullet.spawnUnit;
@@ -156,7 +170,18 @@ public class NyfalisUnitType extends UnitType {
         if(unit instanceof TimedKillc u){
             u.lifetime(lifetime);
         }
-        unit.apply(spawnStatus, 200f);
+        unit.apply(spawnStatus, spawnStatusDuration);
         return unit;
     }
+
+    @Override
+    public void update(Unit unit){
+        super.update(unit);
+
+        if(alwaysBoostOnSolid && canBoost && (unit.controller() instanceof CommandAI c && c.command != UnitCommand.boostCommand)){
+            unit.updateBoosting(unit.onSolid());
+        }
+
+    }
+
 }

@@ -4,7 +4,7 @@ import arc.graphics.Color;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import mindustry.ai.UnitCommand;
-import mindustry.ai.types.HugAI;
+import mindustry.ai.types.DefenderAI;
 import mindustry.content.*;
 import mindustry.entities.abilities.UnitSpawnAbility;
 import mindustry.entities.bullet.*;
@@ -17,6 +17,7 @@ import mindustry.type.Weapon;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
+import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.units.*;
@@ -222,8 +223,10 @@ public class NyfalisUnits {
             itemCapacity = 70;
             engineOffset = 4.6f;
 
-            lowAltitude = flying = true;
+            lowAltitude = flying = canGuardUnits = true;
             constructor = UnitEntity::create;
+            aiController = DefenderAI::new;
+            defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
             weapons.add(new Weapon("olupis-zoner-weapon"){{
                 top = alternate = false;
                 x = -1.8f;
@@ -264,9 +267,8 @@ public class NyfalisUnits {
             segmentScl = rotateSpeed = 8f;
             allowLegStep = true;
             omniMovement = drawBody = false;
-            aiController = HugAI::new;
 
-            weapons.addAll(new SnekWeapon("olupis-missiles-mount-teamed"){{
+           weapons.addAll(new SnekWeapon("olupis-missiles-mount-teamed"){{
                 x = 0f;
                 y = 8f;
                 reload = 15f;
@@ -279,18 +281,22 @@ public class NyfalisUnits {
                     height = 9f;
                     lifetime = 60f;
                 }};
-            }}, new SnekWeapon("olupis-missiles-mount-teamed"){{
+                }}, new SnekWeapon("olupis-missiles-mount-teamed"){{
                 x = 0f;
                 y = -11f;
-                reload = 15f;
+                reload = 35f;
                 weaponSegmentParent = 1;
                 mirror = false;
                 rotate = true;
                 ejectEffect = Fx.casing1;
-                bullet = new BasicBulletType(2.5f, 9){{
+                bullet = new BasicBulletType(2.5f, 5f){{
                     width = 7f;
                     height = 9f;
-                    lifetime = 60f;
+                    lifetime = 100f;
+                    fragVelocityMin = 1f;
+
+                    fragBullets = 1;
+                    fragRandomSpread = 0f;
                 }};
             }});
         }};
@@ -312,6 +318,64 @@ public class NyfalisUnits {
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
             abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 0, 2.5f));
         }};
+
+        //Minigun turret mounted on the front, 10mm autocannon mounted on the back
+        bay = new NyfalisUnitType("bay"){{
+            armor = 3f;
+            accel = 0.4f;
+            speed = 1.1f;
+            drag = 0.14f;
+            hitSize = 11f;
+            health = 270;
+            range = 100f;
+            trailScl = 1.3f;
+            trailLength = 20;
+            waveTrailX = 5f;
+            rotateSpeed = 5f;
+
+            faceTarget = customMoveCommand = idleFaceTargets = true;
+            constructor = UnitWaterMove::create;
+            ammoType = new PowerAmmoType(900);
+            weapons.add(new Weapon("olupis-missiles-mount-teamed"){{
+                x = 0f;
+                y = -8;
+                reload = 26f;
+                rotate= true;
+                mirror = false;
+                ejectEffect = Fx.casing1;
+                bullet = new ArtilleryBulletType(2.5f, 14){{
+                    width = 7f;
+                    height = 9f;
+                    trailSize = 3f;
+                    lifetime = 60f;
+                    splashDamageRadius = 25f * 0.75f;
+                    splashDamage = 2f;
+                    collidesAir = false;
+                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.8f);
+                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.8f);
+                }};
+            }});
+            weapons.add(new Weapon(""){{
+                x = 0f;
+                y = 6.5f;
+                reload = 7;
+                shootCone = 30f;
+                rotateSpeed = 10f;
+                rotationLimit = 45f;
+                mirror = controllable = false;
+                autoTarget = rotate = true;
+                bullet = new BasicBulletType(2.5f, 10){{
+                    width = 5f;
+                    height = 6f;
+                    lifetime = 60f;
+                    collidesAir = false;
+                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
+                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
+                    hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                }};
+            }});
+        }};
+
         //endregion Units
         //region Nyfalis Limited LifeTime / Support Units
         mite = new AmmoLifeTimeUnitType("mite"){{
@@ -325,7 +389,8 @@ public class NyfalisUnits {
             lightRadius = 15f;
             itemCapacity = 0;
             lightOpacity = 50f;
-            ammoDepleteAmount = 0.55f;
+            ammoDepletionAmount = 0.55f;
+            penaltyMultiplier = 1f;
 
             flying = targetGround = targetAir = true;
             playerControllable  = logicControllable = useUnitCap = false;
@@ -366,7 +431,7 @@ public class NyfalisUnits {
             mineSpeed = 3.5f;
             itemCapacity = 30;
             ammoCapacity = 120;
-            ammoDepleteAmount = 0.15f;
+            ammoDepletionAmount = 0.15f;
             ammoDepleteAmountPassive = 0.1f;
             /*Sound is not important so lowe the volume a bit*/
 
@@ -375,8 +440,8 @@ public class NyfalisUnits {
             timedOutFx = NyfalisFxs.failedMake;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            flying = miningDepletesAmmo = maxCarryUsesPassive = canHeal = true;
-            isEnemy = useUnitCap = ammoDepletesOverTime = carryingMaxDepletes =false;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = true;
+            isEnemy = useUnitCap = ammoDepletesOverTime = depleteOnInteraction =false;
         }};
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{
@@ -391,8 +456,8 @@ public class NyfalisUnits {
                 shootCone = 20f;
                 fractionRepairSpeed = 0.03f;
 
-                targetBuildings = true;
-                useAmmo = true;
+                targetBuildings = useAmmo = true;
+                controllable = false;
                 bullet = new BulletType(){{
                     maxRange = 120f;
                     healPercent = 1f;
@@ -400,10 +465,33 @@ public class NyfalisUnits {
             }});
 
             constructor = UnitEntity::create;
-            defaultCommand = NyfalisCommand.healCommand;
-            isEnemy = useUnitCap = ammoDepletesOverTime = carryingMaxDepletes =false;
-            flying = miningDepletesAmmo = maxCarryUsesPassive = canHealUnits =  targetAir = targetGround = singleTarget = true;
+            defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
+            isEnemy = useUnitCap = ammoDepletesOverTime = depleteOnInteraction = false;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = true;
         }};
+
+        banshee = new LeggedWaterUnit("banshee"){{
+            speed = 0.5f;
+            hitSize = 8f;
+            legCount = 4;
+            health = 150;
+            mineTier = 3;
+            legLength = 9f;
+            mineSpeed = 4f;
+            legForwardScl = 0.6f;
+            legMoveSpace = 1.4f;
+            ammoCapacity = 300;
+
+            ammoType = lifeTimeDrill;
+            groundLayer = Layer.legUnit;
+            constructor = LegsUnit::create;
+            timedOutFx = NyfalisFxs.failedMake;
+            timedOutSound = Sounds.dullExplosion;
+            controller = u -> new NyfalisMiningAi();
+            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = true;
+            isEnemy = useUnitCap = ammoDepletesOverTime = depleteOnInteraction = false;
+        }};
+
 
         embryo = new AmmoLifeTimeUnitType("embryo"){{
             /*(trans) Egg if chan-version is made >;3c */
@@ -416,17 +504,18 @@ public class NyfalisUnits {
 
             weapons.add(new Weapon(){{
                 top = false;
-                reload = 20f;
+                reload = 25f;
                 shootCone = 30f;
                 shootSound = Sounds.lasershoot;
                 x = y = shootX = inaccuracy = 0f;
                 bullet = new LaserBoltBulletType(6f, 10){{
                     lifetime = 30f;
                     healPercent = 5f;
+                    homingPower = 0.03f;
+                    buildingDamageMultiplier = 0.1f;
                     collidesTeam = true;
                     backColor = Pal.heal;
                     frontColor = Color.white;
-                    buildingDamageMultiplier = 0.1f;
                 }};
             }});
         }};
@@ -453,14 +542,13 @@ public class NyfalisUnits {
             boostMultiplier = 0.75f;
             researchCostMultiplier = 0f;
             groundLayer = Layer.legUnit - 1f;
-            spawnStatusDuration =  Fx.heal.lifetime - 1f;
 
             legPhysicsLayer = false;
-            canBoost = allowLegStep = hovering = true;
-            spawnStatus = StatusEffects.disarmed;
+            canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi = true;
             constructor = LegsUnit::create;
-            controller = u -> new NyfalisMiningAi();
+            spawnStatus = StatusEffects.disarmed;
             ammoType = new PowerAmmoType(1000);
+            defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             mineItems = Seq.with(rustyIron, lead, scrap);
             setEnginesMirror(
                 new UnitEngine(20.5f / 4f, 22 / 4f, 2.2f, 65f), //front
@@ -538,15 +626,14 @@ public class NyfalisUnits {
             boostMultiplier = 0.75f;
             researchCostMultiplier = 0f;
             groundLayer = Layer.legUnit - 1f;
-            spawnStatusDuration =  Fx.heal.lifetime - 1f;
 
             legPhysicsLayer = false;
-            canBoost = allowLegStep = hovering = true;
+            canBoost = allowLegStep = hovering = alwaysBoostOnSolid = customMineAi = true;
             spawnStatus = StatusEffects.disarmed;
             constructor = LegsUnit::create;
-            //controller = u -> new NyfalisMiningAi();
             ammoType = new PowerAmmoType(1000);
             mineItems = Seq.with(rustyIron, lead, scrap);
+            defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             setEnginesMirror(
                     new UnitEngine(23.5f / 4f, 15 / 4f, 2.3f, 45f), //front
                     new UnitEngine(23 / 4f, -22 / 4f, 2.3f, 315f)
@@ -659,7 +746,7 @@ public class NyfalisUnits {
             public void resupply(Unit unit) {}
         };
 
-        lifeTimeDrill = new AmmoType() {
+        lifeTimeSupport = new AmmoType() {
             @Override
             public String icon() {
                 return Iconc.add + "";

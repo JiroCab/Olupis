@@ -84,7 +84,7 @@ public class NyfalisBlocks {
 
         garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, leadaa,
 
-        construct, arialConstruct, groundConstruct, unitReplicator, unitReplicatorSmall,
+        construct, arialConstruct, groundConstruct, navalConstruct, unitReplicator, unitReplicatorSmall,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
@@ -619,14 +619,14 @@ public class NyfalisBlocks {
             liquidPressure = 1.015f;
             researchCostMultiplier = 3;
             botColor = Color.valueOf("252731");
-            requirements(Category.liquid, with(iron, 5, rustyIron, 5));
+            requirements(Category.liquid, with(iron, 5, lead, 5));
         }};
 
         rustyPump = new Pump("rusty-pump"){{
             size = 1;
             pumpAmount = 0.05f;
             liquidCapacity = 10f;
-            requirements(Category.liquid, with(rustyIron, 5, lead, 5));
+            requirements(Category.liquid, with(rustyIron, 3, lead, 6));
         }};
 
         ironPump = new Pump("iron-pump"){{
@@ -782,8 +782,8 @@ public class NyfalisBlocks {
             outputItem = new ItemStack(iron, 1);
             consumeLiquid(Liquids.water, 12f / 60f);
             consumeItems(with(lead, 1, rustyIron,1));
-            researchCost = with(rustyIron, 400, lead, 400);
-            requirements(Category.crafting, with(rustyIron, 80, lead, 80));
+            researchCost = with(rustyIron, 400, lead, 700);
+            requirements(Category.crafting, with(rustyIron, 70, lead, 100));
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawLiquidTile(Liquids.cryofluid){{drawLiquidLight = true;}}, new DrawDefault());
         }};
 
@@ -796,9 +796,9 @@ public class NyfalisBlocks {
             craftEffect = Fx.pulverizeMedium;
 
             consumePower(30f/60f);
-            researchCost = with(rustyIron, 3500,  iron, 3000);
+            researchCost = with(lead, 3500,  iron, 3000, rustyIron, 3000);
             outputItem = new ItemStack(Items.graphite, 1);
-            requirements(Category.crafting, with(iron, 150, rustyIron, 300));
+            requirements(Category.crafting, with(iron, 150, lead, 300, rustyIron, 100));
             consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
         }};
 
@@ -850,7 +850,8 @@ public class NyfalisBlocks {
             consumePower(1.8f);
             consumeItem(Items.sand, 2);
             outputItem = new ItemStack(rustyIron, 2);
-            requirements(Category.crafting, with(rustyIron, 60));
+            researchCost = with(lead, 3000, rustyIron, 1500);
+            requirements(Category.crafting, with(rustyIron, 10, lead, 60));
         }};
 
         //endregion
@@ -923,6 +924,8 @@ public class NyfalisBlocks {
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
 
+        //TODO: navalConstruct = offensive naval units
+
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
             delay = 5f;
@@ -945,9 +948,9 @@ public class NyfalisBlocks {
             solid = false;
             baseExplosiveness = 0.5f;
             consumePower(1f/60f);
-            researchCost = with(rustyIron,20);
+            researchCost = with(rustyIron,20, lead, 20);
             consumePowerBuffered(1f);
-            requirements(Category.power, with(rustyIron, 2));
+            requirements(Category.power, with(rustyIron, 1, lead, 2));
         }};
 
         superConductors = new Wire("super-conductor"){{
@@ -995,8 +998,8 @@ public class NyfalisBlocks {
             attribute = hydro;
             generateEffect = Fx.steam;
             ambientSound = Sounds.hum;
-            researchCost = with(iron, 2000, rustyIron, 2000);
-            requirements(Category.power, with(iron, 30, rustyIron, 50));
+            researchCost = with(iron, 2000, rustyIron, 2000, lead, 3000);
+            requirements(Category.power, with(iron, 20, rustyIron, 20, lead, 50));
             drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
                 blurThresh = 0.01f;
             }});

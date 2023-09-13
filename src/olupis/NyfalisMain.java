@@ -18,7 +18,8 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import olupis.content.*;
-import olupis.input.*;
+import olupis.input.NyfalisLogicDialog;
+import olupis.input.NyfalisSettingsDialog;
 import olupis.world.planets.NyfalisTechTree;
 
 import java.util.Objects;

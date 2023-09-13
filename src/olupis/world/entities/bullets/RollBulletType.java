@@ -50,6 +50,7 @@ public class RollBulletType extends BasicBulletType {
     public void updateCollision(Bullet b, Teamc target, AtomicReference<Float> tarSize){
         /*If someone finds a better way to do this, please let us know -RushieWsahie*/
         boolean within = target != null && b.within(target.x(), target.y(), Math.max(tarSize.get(),  b.hitSize));
+        if(b.tileOn() == null) b.remove();
         if(b.tileOn().solid() && b.tileOn() != b.owner && !within) b.remove();
     }
 
