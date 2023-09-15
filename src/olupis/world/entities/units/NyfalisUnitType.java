@@ -43,10 +43,11 @@ public class NyfalisUnitType extends UnitType {
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
     public Seq<UnlockableContent> displayFactory = new Seq<>();
+    public Color unitOutLine = Color.valueOf("371404");
 
     public NyfalisUnitType(String name){
         super(name);
-        outlineColor = Color.valueOf("371404");
+        outlineColor = unitOutLine;
         ammoType = new ItemAmmoType(NyfalisItemsLiquid.rustyIron);
         researchCostMultiplier = 6f;
         generateIcons = true;
@@ -112,7 +113,6 @@ public class NyfalisUnitType extends UnitType {
                 }).growX().pad(5).row();
             }));
         }
-
 
         if(weapons.any()){
             stats.remove(Stat.weapons);

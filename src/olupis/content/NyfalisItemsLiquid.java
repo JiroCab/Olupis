@@ -9,7 +9,7 @@ import static mindustry.Vars.content;
 
 public class NyfalisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz;
+    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, crypRods;
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam;
 

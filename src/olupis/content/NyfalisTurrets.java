@@ -29,7 +29,11 @@ public class NyfalisTurrets {
     public static void LoadTurrets(){
         //region Turrets
         corroder = new LiquidTurret("corroder"){{ //architronito
+            inaccuracy = 8.5f;
+            rotateSpeed = 2.5f;
+
             ammo(
+
                 Liquids.water, new LiquidBulletType(Liquids.water){{
                     status = StatusEffects.corroded;
                     layer = Layer.bullet -2f;
@@ -49,7 +53,7 @@ public class NyfalisTurrets {
                         speed = 8f;
                         drag = 0.009f;
                         lifetime = 12f;
-                        damage = 18f;
+                        damage = 20f;
                         pierceCap = 1;
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 5;
@@ -208,7 +212,7 @@ public class NyfalisTurrets {
                         width = 40f;
                         lifetime = 60f;
                         knockback= 3f;
-                        homingRange = 15f;
+                        homingRange = 100;
                         homingPower = 0.2f;
                         statusDuration = 60f * 1.1f;
                         ammoMultiplier = pierceCap = 2;
@@ -222,9 +226,9 @@ public class NyfalisTurrets {
                         lifetime = 50f;
                         pierceCap = 3;
                         knockback = 3f;
-                        homingRange = 15f;
+                        homingRange = 100f;
                         ammoMultiplier = 2;
-                        homingPower = 0.02f;
+                        homingPower = 0.2f;
                         statusDuration = 60f * 2f;
                         buildingDamageMultiplier = 0.4f;
                     }}
