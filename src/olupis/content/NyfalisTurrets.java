@@ -33,10 +33,10 @@ public class NyfalisTurrets {
             rotateSpeed = 2.5f;
 
             ammo(
-
                 Liquids.water, new LiquidBulletType(Liquids.water){{
                     status = StatusEffects.corroded;
                     layer = Layer.bullet -2f;
+                    trailColor = hitColor;
 
                     speed = 5.5f;
                     damage = 15;
@@ -44,11 +44,14 @@ public class NyfalisTurrets {
                     lifetime = 19.5f;
                     rangeChange = 15f;
                     ammoMultiplier = 5f;
+                    trailInterval = trailParam = 1.5f;
+
                     statusDuration = 60f * 2;
                 }},
                 steam, new NoBoilLiquidBulletType(steam){{
                         evaporatePuddles = pierce = true;
                         status = StatusEffects.corroded;
+                        trailColor = hitColor;
 
                         speed = 8f;
                         drag = 0.009f;
@@ -57,6 +60,7 @@ public class NyfalisTurrets {
                         pierceCap = 1;
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 5;
+                        trailInterval = trailParam = 1.5f;
                     }}
             );
             drawer = new DrawTurret("iron-"){{
@@ -256,7 +260,7 @@ public class NyfalisTurrets {
         }};
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
-        //TODO: Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
+        //TODO: (rename) Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 
         //TODO: Aegis AA SAMM Turrets (later game)

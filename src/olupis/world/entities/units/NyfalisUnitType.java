@@ -37,7 +37,7 @@ public class NyfalisUnitType extends UnitType {
     public boolean alwaysBoostOnSolid = false;
     /*Replace Move Command to a custom one*/
     public boolean customMoveCommand = false;
-    /*Face targets when idle/not moving */
+    /*Face targets when idle/not moving, assumes `customMoveCommand` = true  */
     public boolean idleFaceTargets = false;
     /*Effects that a unit spawns with, gnat cheese fix*/
     public StatusEffect spawnStatus = StatusEffects.none;

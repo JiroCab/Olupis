@@ -37,7 +37,7 @@ public class AgressiveFlyingAi extends FlyingAI {
             float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.isShooting ? unit.speed() * shootSlowDown: unit.speed()) : unit.speed() ;
             circle(parent, parentCircle, speed);
         }else if(unit.type instanceof AmmoLifeTimeUnitType unt){
-            unit.ammo = unt.minimumAmmoBeforeKill * 0.5f;
+            unit.ammo = unt.deathThreshold * 0.5f;
         }else if(target != null && unit.hasWeapons()){
             if(unit.type.circleTarget){
                 circleAttack(circleDistance);

@@ -34,11 +34,14 @@ public class NyfalisTechTree {
                     });
                 });
                 node(spelta, () ->{
-                    node(NyfalisSectors.dormantCell, Seq.with(
-                            new Objectives.SectorComplete(NyfalisSectors.placeholder2)
-                    ), ()-> {
+                    node(NyfalisSectors.forestOfHope, Seq.with(
+                            new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
+                    ), () ->{
+                        node(NyfalisSectors.dormantCell,  ()-> {
 
+                        });
                     });
+
                 });
             });
 
@@ -51,7 +54,9 @@ public class NyfalisTechTree {
 
                 node(spirit, () ->{
                     node(phantom, () ->{
+                        node(banshee, () -> {
 
+                        });
                     });
                 });
                 node(venom, () -> {
@@ -60,6 +65,11 @@ public class NyfalisTechTree {
                 node(porter, () -> {
                     node(zoner, () -> {
 
+                    });
+                    node(bay, () -> {
+                        node(blitz, () -> {
+
+                        });
                     });
                 });
                 node(phorid, () -> {
@@ -218,8 +228,10 @@ public class NyfalisTechTree {
                 });
 
                 node(construct, Seq.with(new Objectives.Research(ironRouter)), ()->{
-                    node(arialConstruct, () ->{
+                    node(groundConstruct, () ->{
+                        node(arialConstruct, () ->{
 
+                        });
                     });
                     node(unitReplicator, ()->{
                         node(unitReplicatorSmall, ()->{
@@ -231,7 +243,7 @@ public class NyfalisTechTree {
                 node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{
                     node(mechanicalProcessor, () -> {
                         node(mechanicalSwitch, () -> {
-                            node(mechanicalSwitch, ()->{
+                            node(mechanicalRegistry, ()->{
 
                             });
                         });

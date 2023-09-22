@@ -15,6 +15,7 @@ import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.io.TypeIO;
@@ -23,6 +24,7 @@ import mindustry.type.Item;
 import mindustry.type.UnitType;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
 
@@ -52,10 +54,12 @@ public class ItemUnitTurret extends ItemTurret {
         commandable = true;
         playerControllable = false;
         shootSound = Sounds.respawn;
+        drawer = new DrawDefault();
         requiredItemsCost =Math.round(itemCapacity / 2f);
         fogRadius = -1;
         range = 0f;
     }
+
 
     public void setBars(){
         super.setBars();
@@ -80,6 +84,23 @@ public class ItemUnitTurret extends ItemTurret {
         bottomRegion = Core.atlas.find(name + "-bottom");
         super.load();
     }
+
+    @Override
+    public TextureRegion[] icons(){
+        if(!(drawer instanceof  DrawDefault))return drawer.finalIcons(this);
+        else {
+            //use team region in vanilla team blocks
+            TextureRegion r = variants > 0 ? Core.atlas.find(name + "1") : region;
+            return teamRegion.found() && minfo.mod == null ? new TextureRegion[]{bottomRegion, r, teamRegions[Team.sharded.id]} : new TextureRegion[]{bottomRegion, r};
+        }
+    }
+
+    @Override
+    public void getRegionsToOutline(Seq<TextureRegion> out){
+        if(!(drawer instanceof DrawDefault))drawer.getRegionsToOutline(this, out);
+        else {generatedIcons = null;}
+    }
+
 
     @Override
     public void setStats(){
@@ -148,15 +169,15 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public boolean hasAmmo(){
             for (Item req : requiredItems) {
-             if(items.get(req) >= requiredItemsCost) continue;
-             return false;
+                if(items.get(req) >= requiredItemsCost) continue;
+                return false;
             }
             return super.hasAmmo();
         }
 
         @Override
         protected void shoot(BulletType type){
-            if((!type.spawnUnit.isBanned() && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap)){
+                if((!type.spawnUnit.isBanned() && (type.spawnUnit.useUnitCap && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap) || !type.spawnUnit.useUnitCap)){
                 /*don't create the unit if it's banned or at unit cap*/
                 consume();
                 float
@@ -187,34 +208,33 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public void draw(){
-            if(drawer == null){
+            if(!(drawer instanceof  DrawDefault)){
                 super.draw();
-                return;
-            }
-            Draw.rect(bottomRegion, x, y);
+            }else{
+                Draw.rect(bottomRegion, x, y);
+                if(peekAmmo() != null && peekAmmo().spawnUnit != null){
+                    UnitType unt = peekAmmo().spawnUnit;
+                    if(this.team.data().unitCap >= this.team.data().countType(unt)){
+                        Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rotation - 90f, reloadCounter /reload,  speedScl, time));
+                    } else {
+                        Draw.draw(Layer.blockOver, ()->{
+                            Draw.alpha(reloadCounter /reload);
+                            Draw.rect(unt.fullIcon, x, y, rotation- 90f);
 
-            if(peekAmmo() != null && peekAmmo().spawnUnit != null){
-                UnitType unt = peekAmmo().spawnUnit;
-                if(this.team.data().countType(unt) < this.team.data().unitCap){
-                    Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rotation - 90f, reloadCounter /reload,  speedScl, time));
-                } else {
-                    Draw.draw(Layer.blockOver, ()->{
-                        Draw.alpha(reloadCounter /reload);
-                        Draw.rect(unt.fullIcon, x, y, rotation- 90f);
+                            Draw.color(Pal.accent);
+                            Draw.alpha((reloadCounter /reload) / 1.2f);
+                            Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
+                            Draw.reset();
 
-                        Draw.color(Pal.accent);
-                        Draw.alpha((reloadCounter /reload) / 1.2f);
-                        Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
-                        Draw.reset();
-
-                        Draw.color(Pal.remove, Math.min(reloadCounter /reload, 0.5f));
-                        Draw.rect(Icon.warning.getRegion(), x, y);
-                        Draw.reset();
-                    });
+                            Draw.color(Pal.remove, Math.min(reloadCounter /reload, 0.5f));
+                            Draw.rect(Icon.warning.getRegion(), x, y);
+                            Draw.reset();
+                        });
+                    }
                 }
+                Draw.z(Layer.blockOver + 0.1f);
+                Draw.rect(region, x, y);
             }
-            Draw.z(Layer.blockOver + 0.1f);
-            Draw.rect(region, x, y);
         }
 
         @Override

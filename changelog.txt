@@ -1,12 +1,11 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 26/08/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 22/09/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-5 () =
-
     + Added more music from the Terra Nil Soundtrack by Meydän
-    + Maps added: sanctuary, dorment-cell
-    + Units added: aero, striker, venom, phorid, embryo
+    + Maps added: sanctuary, dorment-cell, forest-of-hope
+    + Units added: aero, striker, venom, phorid, phantom, banshee, embryo, bay, blitz
     + Blocks added: lumaWall, redSandBoulder, avenger, arialConstruct, groundConstruct, analogProcessor, mechanicalSwitch, mechanicalRegistry
     + Taurus, Gnat & phorid's healing bullets no longer collides with enemy units
     ~ Various balance changes
@@ -14,6 +13,7 @@ Last updated on 26/08/2023 (+8utc) by Jirocab/RushieWashie
     ~ Bug fix: all cores except remnant can be chosen to be launched
     ~ Internal: Deprecated taurus using MendTurret, uses PowerTurret instead
 	~ Internal: Turrets moved to NyfalisTurrets.java
+	~ Internal: PowerUnitTurret extends ItemUnitTurret instead of PowerTurret
     ~ Improve Planet rules, Custom unit Ai, Tech tree and Core database
     ~ Sprites Contributed by Remington Thomas: rustyIron
     ~ Given coreRelic, coreShrine, coreTemple a weapon

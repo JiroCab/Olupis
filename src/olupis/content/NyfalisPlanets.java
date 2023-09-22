@@ -98,6 +98,7 @@ public class NyfalisPlanets {
         }};
 
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
+            //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
             alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
 
             startSector = 1;

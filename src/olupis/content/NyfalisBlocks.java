@@ -69,7 +69,7 @@ public class NyfalisBlocks {
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom,
 
         //Buildings, sorted by category
-        corroder, dissolver, shredder, hive, escalation, blitz, shatter, avenger, aegis,
+        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis,
 
         rustyDrill, steamDrill, hydroElectricDrill,
 
@@ -863,7 +863,6 @@ public class NyfalisBlocks {
             shootY = 0f;
             reload = 600f;
             shootSound = Sounds.respawn;
-            displayUnits = Seq.with(spirit);
 
             consumePower(6f);
             shootType = new BasicBulletType(2.5f, -1){{
@@ -871,8 +870,21 @@ public class NyfalisBlocks {
                 ammoMultiplier = 1f;
                 spawnUnit = spirit;
             }};
-            researchCost = with(lead, 3000, silicon, 3000, iron, 3000, rustyIron, 3000);
-            requirements(Category.units, with(iron, 500, lead, 250, silicon, 50, rustyIron, 50));
+            ammo(
+                    quartz, new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 0.5f;
+                        spawnUnit = banshee;
+                    }},
+                    graphite, new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 0.5f;
+                        reloadMultiplier = 0.8f;
+                        spawnUnit = phantom;
+                    }}
+            );
+            researchCost = with(lead, 3000, graphite, 3000, iron, 3000, rustyIron, 3000);
+            requirements(Category.units, with(iron, 350, lead, 500, graphite, 150, rustyIron, 250));
         }};
 
         // arialConstruct -> offensive air units

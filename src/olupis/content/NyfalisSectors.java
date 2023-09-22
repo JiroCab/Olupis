@@ -12,7 +12,7 @@ public class NyfalisSectors {
             /*Nyfalis*/
             placeholder1, placeholder2,
             /*Spelta*/
-             dormantCell
+             dormantCell, forestOfHope
         ;
 
     public static void LoadSectors(){
@@ -43,6 +43,10 @@ public class NyfalisSectors {
         dormantCell = new SectorPreset("dorment-cell", spelta, 1){{
             /*Yes this map's lore may or may not be a reference to command and conquer*/
             difficulty = 4;
+        }};
+
+        forestOfHope = new SectorPreset("forest-of-hope", spelta,  4){{
+            difficulty = 2;
         }};
 
     }

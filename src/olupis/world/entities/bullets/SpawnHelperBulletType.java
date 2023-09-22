@@ -32,7 +32,8 @@ public class SpawnHelperBulletType extends BasicBulletType {
 
                 if(owner instanceof ItemUnitTurret.ItemUnitTurretBuild u && spawned.isCommandable()){
                     if(u.commandPos != null) spawned.command().commandPosition(u.commandPos);
-                    else if(u.targetPos != null) spawned.command().commandPosition(u.targetPos);
+                    /* 0,0 on create for some reason*/
+                    else if(u.targetPos != null && u.targetPos.x != 0 && u.targetPos.y != 0) spawned.command().commandPosition(u.targetPos);
                 }
                 if(spawned.controller() instanceof AgressiveFlyingAi ai) {
                     if (shooter instanceof Unit unit) ai.parent = unit;

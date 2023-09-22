@@ -28,24 +28,25 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     public  boolean killOnAmmoDepletion = true;
     /*Amount to deplete per tick*/
     public float ammoDepletionAmount = 0.2f;
-    public float ammoDepleteAmountPassive = ammoDepletionAmount;
+    public float passiveAmmoDepletion = ammoDepletionAmount;
     /*Ammo amount that will trigger death*/
-    public float minimumAmmoBeforeKill = 0.1f;
+    public float deathThreshold = 0.1f;
     /*mining depletes ammo*/
     public boolean miningDepletesAmmo = false;
     /*Time before depleting ammo*/
     public float ammoDepletionOffset = 10f;
+    float startTime;
     /*Being player controlled depletes ammo*/
     public boolean depleteOnInteraction = true, depleteOnInteractionUsesPassive = false;
-    /*Deplete Ammo when over unit cap, Assumes ammoDepletesOverTime = false */
+    /*Deplete Ammo when over unit cap, Assumes ammoDepletesOverTime = true */
     public boolean overCapacityPenalty = false;
-    float startTime;
     /*Anti-spam to hard, aka setting a diminishing return for the sake of frames */
     public float penaltyMultiplier = 2f;
     /*Time out params */
     public Sound timedOutSound = Sounds.explosion;
     public Effect timedOutFx = Fx.steam;
     public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f;
+
 
     //TODO: Range limit them, deplete ammo when N tiles away from X & Y
 
@@ -71,7 +72,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             bars.row();
 
             if(state.rules.unitAmmo || killOnAmmoDepletion){
-                bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo - minimumAmmoBeforeKill ) / (ammoCapacity - minimumAmmoBeforeKill) ));
+                bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo - deathThreshold ) / (ammoCapacity - deathThreshold) ));
                 bars.row();
             }
 
@@ -113,10 +114,16 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
 
         if(unit.controller() instanceof NyfalisMiningAi ai && ai.targetItem != null){
             table.row();
-            table.table(i -> {
-                TextureRegion ore = ai.mineType == 1 ? ai.ore.floor().fullIcon : ai.mineType == 2 ? ai.ore.block().fullIcon: ai.mineType == 3 ? ai.ore.overlay().fullIcon: Icon.ok.getRegion();
-                i.image(ore);
-                table.add(ai.targetItem.localizedName).wrap();
+            table.table().left().growX().update(i -> {
+                TextureRegion icon = unit.closestCore().block.fullIcon;
+                if(ai.mineType >= 2){
+                    if(ai.mineType == 2) icon = ai.ore.floor().fullIcon;
+                    else if(ai.mineType == 3) icon = ai.ore.block().fullIcon;
+                    else if(ai.mineType == 4) icon = ai.ore.overlay().fullIcon;
+                }
+                i.left().clear();
+                i.image(icon).size(iconSmall).scaling(Scaling.bounded).left();
+                i.add(ai.mineType != 1 ? ai.targetItem.localizedName: unit.closestCore().block.localizedName).wrap().left();
             });
 
             //if (ai.ore != null && (Core.settings.getBool("mouseposition") || Core.settings.getBool("position"))) {
@@ -131,21 +138,23 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
 
     @Override
     public void update(Unit unit){
-        if (unit.ammo <= minimumAmmoBeforeKill && killOnAmmoDepletion){
+        if (unit.ammo <= deathThreshold && killOnAmmoDepletion){
             timedOut(unit);
         }
 
-        boolean shouldDeplete = (startTime+ ammoDepletionOffset) >= startTime;
+        boolean multiplier =(unit.count() > unit.cap() && unit.type.useUnitCap || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable);
+
+        boolean shouldDeplete = (startTime+ ammoDepletionOffset) >= startTime || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable;
         if(ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap()))){
-            unit.ammo  -= ((depleteOnInteractionUsesPassive ? ammoDepleteAmountPassive : ammoDepletionAmount) * (unit.count() > unit.cap() ? penaltyMultiplier : 1f));
+            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier ? penaltyMultiplier : 1f));
         }
 
         if(miningDepletesAmmo && unit.mining()){
-            unit.ammo = unit.ammo - (ammoDepletionAmount * (unit.count() > unit.cap() ? penaltyMultiplier : 1f));
+            unit.ammo = unit.ammo - (ammoDepletionAmount * (multiplier ? penaltyMultiplier : 1f));
         }
 
-        if(unit.isPlayer() && depleteOnInteraction && unit.ammo >= minimumAmmoBeforeKill +0.05f ){
-            unit.ammo = unit.ammo - (ammoDepletionAmount * (unit.count() > unit.cap() ? penaltyMultiplier : 1f));
+        if(unit.isPlayer() && depleteOnInteraction && unit.ammo >= deathThreshold +0.05f ){
+            unit.ammo = unit.ammo - (ammoDepletionAmount * (multiplier ? penaltyMultiplier : 1f));
         }
 
         super.update(unit);

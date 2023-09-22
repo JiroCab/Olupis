@@ -17,18 +17,19 @@ import static mindustry.Vars.indexer;
 
 /*Custom mining Ai that Respects the ammo lifetime gimmick*/
 public class NyfalisMiningAi extends AIController {
-    public boolean mining = true, dynamicItems = true;
+    public boolean mining = true, dynamicItems = true, inoperable = false;
     public Item targetItem;
-    public Tile ore;
-    /*0 = Cant mine, 1 = core, 2 = Floor, 3 = Wall, 1 = overlay, 4 = core*/
+    public Tile ore, lastOre;
+    /*0 = Cant mine, 1 = core, 2 = Floor, 3 = Wall, 4 = overlay*/
     public int mineType = 0;
-    public Seq<Item> dynamicMineItems = new Seq<>();
+    public Seq<Item> dynamicMineItems = new Seq<>(), dynamicBlackList = new Seq<>();
     private int lastPathId = 0;
-    private float lastMoveX, lastMoveY, moveX, moveY;
+    private float lastMoveX, lastMoveY;
 
     public void updateMineItems(){
+        dynamicMineItems.clear();
         Vars.content.items().each(i -> {
-            if(unit.type.mineTier >= i.hardness) dynamicMineItems.add(i);
+            if(unit.type.mineTier >= i.hardness && !dynamicBlackList.contains(i)) dynamicMineItems.addUnique(i);
         });
         dynamicMineItems.sort(i -> i.hardness);
     }
@@ -41,19 +42,20 @@ public class NyfalisMiningAi extends AIController {
 
         if(dynamicItems)updateMineItems();
 
-        if(unit.type instanceof AmmoLifeTimeUnitType && unit.stack.amount > 0 && ((AmmoLifeTimeUnitType) unit.type).minimumAmmoBeforeKill * unit.mineTimer >= unit.ammo){
-            unit.mineTile = null;
+        if(unit.type instanceof AmmoLifeTimeUnitType && unit.stack.amount > 0 && ((AmmoLifeTimeUnitType) unit.type).deathThreshold * unit.mineTimer >= unit.ammo){
+            unit.mineTile = ore = null;
             if(unit.within(core, unit.type.range)){
                 if(core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
                     Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
                 }
 
+                mineType = 0;
                 unit.clearItem();
-                unit.ammo = ((AmmoLifeTimeUnitType) unit.type).minimumAmmoBeforeKill / 2;
+                unit.ammo = ((AmmoLifeTimeUnitType) unit.type).deathThreshold / 2;
                 mining = false;
             }
 
-            circle(core, unit.type.range / 1.8f);
+            move(core, true);
             return;
         }
 
@@ -77,19 +79,21 @@ public class NyfalisMiningAi extends AIController {
             if(unit.stack.amount >= unit.type.itemCapacity || (targetItem != null && !unit.acceptsItem(targetItem))){
                 mining = false;
             }else{
-                if(timer.get(timerTarget3, 60) && targetItem != null){
-                    ore = indexer.findClosestOre(unit, targetItem);
-                    moveX = ore.x;
-                    moveY = ore.y;
-                    mineType = 0;
+                if(timer.get(timerTarget3, 60)){
+                        lastOre =ore = indexer.findClosestOre(unit, targetItem);
+                        mineType = 0;
 
-                    if(ore.floor().itemDrop == targetItem) mineType = 2;
-                    else if (ore.block().itemDrop== targetItem) mineType = 3;
-                    else if (ore.overlay().itemDrop == targetItem) mineType = 4;
+                        if(ore.floor().itemDrop == targetItem) mineType = 2;
+                        else if (ore.block().itemDrop== targetItem) mineType = 3;
+                        else if (ore.overlay().itemDrop == targetItem) mineType = 4;
                 }
 
                 if(ore != null){
-                    move(ore);
+                    if(unit.isPathImpassable(ore.x, ore.y)){
+                        dynamicBlackList.add(targetItem);
+                    }
+
+                    move(ore, false);
 
                     if(ore.block() == Blocks.air && unit.within(ore, unit.type.mineRange)){
                         unit.mineTile = ore;
@@ -118,18 +122,18 @@ public class NyfalisMiningAi extends AIController {
                 mining = true;
             }
 
-            mineType = 4;
-            move(core);
+            mineType = 1;
+            move(core, true);
         }
     }
 
 
-    public void move(Position target){
+    public void move(Position target, boolean nullDepletion){
         if(unit.within(target, unit.type.mineRange / 2f)) return;
 
         if (unit.type.flying) circle(target, unit.type.range / 1.8f);
         else {
-            if(!Mathf.equal(target.getY(), lastMoveX, 0.1f) || !Mathf.equal(target.getY(), lastMoveY, 0.1f)){
+            if(!Mathf.equal(target.getX(), lastMoveX, 0.1f) || !Mathf.equal(target.getY(), lastMoveY, 0.1f)){
                 lastPathId ++;
                 lastMoveX = target.getX();
                 lastMoveY = target.getY();
@@ -137,7 +141,10 @@ public class NyfalisMiningAi extends AIController {
             if (Vars.controlPath.getPathPosition(unit, lastPathId, Tmp.v2.set(target.getX(), target.getY()), Tmp.v1, null)) {
                 unit.lookAt(Tmp.v1);
                 moveTo(Tmp.v1, 1f, Tmp.v2.epsilonEquals(Tmp.v1, 4.1f) ? 30f : 0f, false, null);
-            } else unit.lookAt(unit.prefRotation());
+            } else {
+                if(nullDepletion) inoperable = true;
+                unit.lookAt(unit.prefRotation());
+            }
         }
     }
 
