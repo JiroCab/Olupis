@@ -65,7 +65,8 @@ public class NyfalisMiningAi extends AIController {
 
         if(mining){
             if(timer.get(timerTarget2, 60 * 4) || targetItem == null){
-                targetItem = dynamicMineItems.min(i -> indexer.hasOre(i) && unit.canMine(i), i -> core.items.get(i));
+                if(dynamicItems) targetItem = dynamicMineItems.min(i -> indexer.hasOre(i) && unit.canMine(i), i -> core.items.get(i));
+                else targetItem = unit.type.mineItems.min(i -> indexer.hasOre(i) && unit.canMine(i)  && !dynamicBlackList.contains(targetItem), i -> core.items.get(i));
             }
 
             //core full of the target item, do nothing
@@ -89,11 +90,8 @@ public class NyfalisMiningAi extends AIController {
                 }
 
                 if(ore != null){
-                    if(unit.isPathImpassable(ore.x, ore.y)){
-                        dynamicBlackList.add(targetItem);
-                    }
 
-                    move(ore, false);
+                    move(ore, false, true);
 
                     if(ore.block() == Blocks.air && unit.within(ore, unit.type.mineRange)){
                         unit.mineTile = ore;
@@ -129,6 +127,9 @@ public class NyfalisMiningAi extends AIController {
 
 
     public void move(Position target, boolean nullDepletion){
+        move(target, nullDepletion, false);
+    }
+    public void move(Position target, boolean nullDepletion, boolean notCore){
         if(unit.within(target, unit.type.mineRange / 2f)) return;
 
         if (unit.type.flying) circle(target, unit.type.range / 1.8f);
@@ -142,6 +143,8 @@ public class NyfalisMiningAi extends AIController {
                 unit.lookAt(Tmp.v1);
                 moveTo(Tmp.v1, 1f, Tmp.v2.epsilonEquals(Tmp.v1, 4.1f) ? 30f : 0f, false, null);
             } else {
+                /*Prevents getting stuck on an ore that unit can't reach*/
+                if(notCore && targetItem != null && !unit.moving() && timer.get(timerTarget4, 25)) dynamicBlackList.add(targetItem);
                 if(nullDepletion) inoperable = true;
                 unit.lookAt(unit.prefRotation());
             }

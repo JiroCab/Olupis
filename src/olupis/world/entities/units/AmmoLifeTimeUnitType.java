@@ -15,6 +15,7 @@ import mindustry.entities.abilities.Ability;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
+import mindustry.world.Tile;
 import mindustry.world.meta.Env;
 import olupis.world.ai.NyfalisMiningAi;
 
@@ -112,11 +113,11 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
         }
 
-        if(unit.controller() instanceof NyfalisMiningAi ai && ai.targetItem != null){
+        if(unit.controller() instanceof NyfalisMiningAi ai && ai.targetItem != null && ai.ore != null && unit.closestCore() != null){
             table.row();
             table.table().left().growX().update(i -> {
                 TextureRegion icon = unit.closestCore().block.fullIcon;
-                if(ai.mineType >= 2){
+                if(ai.mineType >= 2 && ai.ore != null){
                     if(ai.mineType == 2) icon = ai.ore.floor().fullIcon;
                     else if(ai.mineType == 3) icon = ai.ore.block().fullIcon;
                     else if(ai.mineType == 4) icon = ai.ore.overlay().fullIcon;
@@ -126,10 +127,14 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
                 i.add(ai.mineType != 1 ? ai.targetItem.localizedName: unit.closestCore().block.localizedName).wrap().left();
             });
 
-            //if (ai.ore != null && (Core.settings.getBool("mouseposition") || Core.settings.getBool("position"))) {
-            if (ai.ore != null && (Core.settings.getBool("blockstatus"))) {
+            if (ai.ore != null && unit.closestCore() != null && (Core.settings.getBool("mouseposition") || Core.settings.getBool("position"))) {
                 table.row();
-                table.add("[lightgray](" + Math.round(ai.ore.x) + ", " + Math.round(ai.ore.y) + ")").growX().wrap();
+                table.table().update(i -> {
+                    i.left().clear();
+                    if(ai.ore == null || unit.closestCore() == null) return;
+                    Tile tar = ai.mineType == 1 ? unit.closestCore().tile : ai.ore;
+                    i.add("[lightgray](" + Math.round(tar.x) + ", " + Math.round(tar.y) + ") [" + Math.round(unit.dst(tar)) + "]");
+                }).growX().wrap();
             }
         }
         table.row();

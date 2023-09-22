@@ -305,6 +305,8 @@ public class NyfalisUnits {
             }});
         }};
 
+        /*TODO: crab tree, bulky and close range, legged naval*/
+
         //endregion
         //region Naval Units
         porter = new NyfalisUnitType("porter"){{
