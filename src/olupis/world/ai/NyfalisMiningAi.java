@@ -80,7 +80,7 @@ public class NyfalisMiningAi extends AIController {
             if(unit.stack.amount >= unit.type.itemCapacity || (targetItem != null && !unit.acceptsItem(targetItem))){
                 mining = false;
             }else{
-                if(timer.get(timerTarget3, 60)){
+                if(timer.get(timerTarget3, 60) && targetItem != null){
                         lastOre =ore = indexer.findClosestOre(unit, targetItem);
                         mineType = 0;
 

@@ -990,7 +990,7 @@ public class NyfalisBlocks {
 
         windMills = new WindMill("wind-mill"){{
             size = 3;
-            boosterMultiplier = 3.5f;/* rationed for press + 2 gardens*/
+            boosterMultiplier = 3.7f;/* rationed for press + 2 gardens*/
             powerProduction = 20f/60f;
             displayEfficiencyScale = 1.1f;
             attribute = Attribute.steam;

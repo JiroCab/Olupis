@@ -284,7 +284,7 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public byte version(){
-            return 3;
+            return 4;
         }
     }
 }
