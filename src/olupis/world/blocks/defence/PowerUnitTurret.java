@@ -1,17 +1,24 @@
 package olupis.world.blocks.defence;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.util.Nullable;
+import arc.util.Scaling;
 import arc.util.io.Reads;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
+import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
+import mindustry.ui.Styles;
+import mindustry.world.meta.Stat;
 
 import java.util.Objects;
+
+import static mindustry.Vars.ui;
 
 public class PowerUnitTurret extends ItemUnitTurret {
     /*Weapon to use when there's no modifier item*/
@@ -36,7 +43,51 @@ public class PowerUnitTurret extends ItemUnitTurret {
             ),() -> Pal.accent,
             () -> e.peekAmmo() == null ? 0f : e.peekAmmo().spawnUnit == null ? 0f : (float) e.team.data().countType(e.peekAmmo().spawnUnit) / Units.getCap(e.team));
         });
+    }
 
+    @Override
+    public void setStats(){
+        super.setStats();
+
+        stats.remove(Stat.output);
+        stats.add(Stat.output, table -> {
+            table.row();
+            table.table(Styles.grayPanel, b -> {
+                UnitType displayUnit = shootType.spawnUnit;
+                if (!displayUnit.isBanned())
+                    b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                else
+                    b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                b.table(info -> {
+                    info.add(displayUnit.localizedName).left().row();
+                    if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                });
+                b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+            }).growX().pad(5).row();
+
+            this.ammoTypes.each((item, bul) -> {
+                UnitType displayUnit = bul.spawnUnit;
+                if (displayUnit == null) return;
+                table.row();
+                table.table(Styles.grayPanel, b -> {
+                    if (!displayUnit.isBanned())
+                        b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                    else
+                        b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                    b.table(info -> {
+                        if (item != null) info.table(title -> {
+                            title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                            title.add(item.localizedName).left().top();
+                        }).left().row();
+                        info.add(displayUnit.localizedName).left().row();
+                        if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                    });
+                    b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                }).growX().pad(5).row();
+            });
+        });
     }
 
     public class PowerUnitTurretBuild extends ItemUnitTurretBuild {

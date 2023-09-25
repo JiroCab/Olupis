@@ -306,7 +306,6 @@ public class NyfalisUnits {
             researchCostMultiplier = 0f;
 
             rotateMoveFirst = true;
-            displayFactory = Seq.with(zoner);
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
             abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 0, 2.5f));
@@ -521,8 +520,8 @@ public class NyfalisUnits {
             mineSpeed = 3.5f;
             itemCapacity = 30;
             ammoCapacity = 120;
-            ammoDepletionAmount = 0.15f;
             passiveAmmoDepletion = 0.1f;
+            ammoDepletionAmount = 0.15f;
             /*Sound is not important so lower the volume a bit*/
 
             ammoType = lifeTimeDrill;
@@ -856,7 +855,13 @@ public class NyfalisUnits {
         /*Blocks are null while loading units, so this exists for as a work around*/
         mite.displayFactory = Seq.with(NyfalisBlocks.hive);
         spirit.displayFactory = Seq.with(NyfalisBlocks.construct);
+        phantom.displayFactory = Seq.with(NyfalisBlocks.construct);
+        banshee.displayFactory = Seq.with(NyfalisBlocks.construct);
         aero.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
+        venom.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+
+        porter.displayFactory = Seq.with(zoner, NyfalisBlocks.groundConstruct);
+
         zoner.displayFactory = Seq.with(porter);
         embryo.displayFactory = Seq.with(phorid);
     }
