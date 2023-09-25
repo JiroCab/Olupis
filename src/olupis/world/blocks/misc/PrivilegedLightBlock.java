@@ -1,4 +1,4 @@
-package olupis.world.blocks;
+package olupis.world.blocks.misc;
 
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;

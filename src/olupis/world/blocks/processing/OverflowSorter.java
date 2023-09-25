@@ -1,4 +1,4 @@
-package olupis.world.blocks;
+package olupis.world.blocks.processing;
 
 import arc.math.Mathf;
 import mindustry.gen.Building;

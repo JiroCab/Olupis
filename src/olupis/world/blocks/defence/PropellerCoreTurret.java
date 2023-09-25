@@ -1,4 +1,4 @@
-package olupis.world.blocks;
+package olupis.world.blocks.defence;
 
 import arc.audio.Sound;
 import arc.func.Boolf;

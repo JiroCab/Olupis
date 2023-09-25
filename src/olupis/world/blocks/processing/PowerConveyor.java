@@ -1,4 +1,4 @@
-package olupis.world.blocks;
+package olupis.world.blocks.processing;
 
 import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.meta.*;

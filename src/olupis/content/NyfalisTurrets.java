@@ -15,7 +15,7 @@ import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
-import olupis.world.blocks.ItemUnitTurret;
+import olupis.world.blocks.defence.ItemUnitTurret;
 import olupis.world.entities.bullets.*;
 
 import static mindustry.content.Items.*;

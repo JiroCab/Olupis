@@ -1,4 +1,4 @@
-package olupis.world.blocks;
+package olupis.world.blocks.defence;
 
 import arc.Core;
 import arc.util.Nullable;

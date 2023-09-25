@@ -1,4 +1,4 @@
-package olupis.world.blocks;
+package olupis.world.blocks.power;
 
 import arc.Core;
 import arc.math.Mathf;

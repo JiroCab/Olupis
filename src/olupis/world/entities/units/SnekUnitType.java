@@ -19,6 +19,7 @@ public class SnekUnitType extends NyfalisUnitType{
     /*Affects how the Status cell is renders, replaces the two `for` statements*/
     public int cellSegmentParent = segments -1, cellSegmentParentRot = segments + 4;
     public Seq <Integer> segmentsWithCells = new Seq<>();
+    public boolean customShadow = true;
 
     public SnekUnitType(String name){
         super(name);
@@ -28,6 +29,7 @@ public class SnekUnitType extends NyfalisUnitType{
     public void load(){
         super.load();
         for(int i = 0; i < segments; i++) if (Core.atlas.find(name + "-cell-" + i).found()) segmentsWithCells.add(i);
+        if(customShadow) softShadowRegion = Core.atlas.find("olupis-shadow-long");
     }
 
     @Override

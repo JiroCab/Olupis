@@ -28,7 +28,18 @@ import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import olupis.world.blocks.*;
+import olupis.world.blocks.defence.ItemUnitTurret;
+import olupis.world.blocks.defence.PowerUnitTurret;
+import olupis.world.blocks.defence.PropellerCoreBlock;
+import olupis.world.blocks.defence.PropellerCoreTurret;
+import olupis.world.blocks.misc.*;
+import olupis.world.blocks.processing.BoostableBurstDrill;
+import olupis.world.blocks.processing.BurstPump;
+import olupis.world.blocks.processing.OverflowSorter;
+import olupis.world.blocks.processing.PowerConveyor;
+import olupis.world.blocks.power.ThermalGeneratorNoLight;
+import olupis.world.blocks.power.WindMill;
+import olupis.world.blocks.power.Wire;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 
@@ -1119,19 +1130,7 @@ public class NyfalisBlocks {
 
         //endregion
         //region Effect
-        //TODO:Remove?
-        mendFieldProjector = new DirectionalMendProjector ("mend-field-projector"){{
-            size = 2;
-            health = 80;
-            range = 40f;
-            reload = 200f;
-            phaseRangeBoost = 20f;
-            phaseBoost = healPercent = 4f;
-
-            consumePower(0.3f);
-            consumeItem(Items.silicon).boost();
-            requirements(Category.effect, with(Items.lead, 30, iron, 25));
-        }};
+        mendFieldProjector = new DirectionalMendProjector("mend-field-projector");
 
         taurus = new PowerTurret("taurus"){{
             size = 3;

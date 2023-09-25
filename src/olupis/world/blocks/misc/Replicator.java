@@ -1,4 +1,4 @@
-package olupis.world.blocks;
+package olupis.world.blocks.misc;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;

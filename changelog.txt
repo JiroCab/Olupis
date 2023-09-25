@@ -1,6 +1,6 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 22/09/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
 
 = Beta 1-5 () =
     + Added more music from the Terra Nil Soundtrack by Meydän
@@ -17,6 +17,8 @@ Last updated on 22/09/2023 (+8utc) by Jirocab/RushieWashie
     ~ Improve Planet rules, Custom unit Ai, Tech tree and Core database
     ~ Sprites Contributed by Remington Thomas: rustyIron
     ~ Given coreRelic, coreShrine, coreTemple a weapon
+    -  Blocks removed: mendFieldProjector
+    -  Deprecated DirectionalMendProjector and made into legacy
 
 = Beta 1-4 (e898d42) = https://github.com/JiroCab/Olupis/tree/e898d42d0b490a209939e90e4b9c7ae1a641b884
     ~ !! Rebranded to `Nyfalis`
