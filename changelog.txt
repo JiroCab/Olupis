@@ -1,8 +1,29 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 23/07/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
 
-= Beta 1-4 () =
+= Beta 1-5 () =
+    + Added more music from the Terra Nil Soundtrack by Meydän
+    + Maps added: sanctuary, dorment-cell, forest-of-hope
+    + Units added: aero, striker, venom, phorid, phantom, banshee, embryo, bay, blitz
+    + Blocks added: lumaWall, redSandBoulder, rustedBridge, avenger, arialConstruct, groundConstruct, analogProcessor, mechanicalSwitch, mechanicalRegistry
+    + Taurus, Gnat & phorid's healing bullets no longer collides with enemy units
+    ~ Various balance changes
+    ~ Shredder Rework: shoots three ricochets type bullets
+    ~ Updated and made load disclaimer taggable
+    ~ Bug fix: all cores except remnant can be chosen to be launched
+    ~ Internal: Deprecated taurus using MendTurret, uses PowerTurret instead
+	~ Internal: Turrets moved out of NyfalisBlocks.java and into NyfalisTurrets.java
+	~ Internal: PowerUnitTurret extends ItemUnitTurret instead of PowerTurret
+	~ Internal: Vaguely sorted classes of block types
+	~ Internal: toxopid updated (3.0.0 -> 3.2.0)
+    ~ Improve Planet rules, Custom unit Ai, Tech tree, Core database and Fx
+    ~ Sprites Contributed by Remington Thomas: rustyIron, venom, bay, blitz, crusader
+    ~ Given coreRelic, coreShrine, coreTemple a weapon
+    --  Blocks removed: mendFieldProjector
+    --  Deprecated DirectionalMendProjector and made into legacyBlock
+
+= Beta 1-4 (e898d42) = https://github.com/JiroCab/Olupis/tree/e898d42d0b490a209939e90e4b9c7ae1a641b884
     ~ !! Rebranded to `Nyfalis`
     ~ Mod browser Visible, w/ in game Wip disclaimer
 

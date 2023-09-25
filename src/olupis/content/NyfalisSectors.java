@@ -6,13 +6,29 @@ import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisSectors {
 
-    public  static SectorPreset placeholder1, placeholder2, placeholderArthin1, placeholderSpelta1;
+    public  static SectorPreset
+            /*Arthin*/
+            sanctuary,
+            /*Nyfalis*/
+            placeholder1, placeholder2,
+            /*Spelta*/
+             dormantCell, forestOfHope
+        ;
 
     public static void LoadSectors(){
-        //region sectors
+        //region Seredris
+        sanctuary = new SectorPreset("sanctuary", arthin, 2){{
+             alwaysUnlocked = overrideLaunchDefaults = true;
+            addStartingItems = false;
 
+            captureWave = 15;
+            difficulty = 1;
+        }};
+
+        //endregion
+        //region Nyfalis
         placeholder1 = new SectorPreset("placeholder1",  nyfalis, 1){{
-            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
+            addStartingItems = overrideLaunchDefaults = true;
 
             captureWave = 15;
             difficulty = 2;
@@ -22,24 +38,16 @@ public class NyfalisSectors {
             captureWave = 20;
             difficulty = 3;
         }};
-
-
-        placeholderArthin1 = new SectorPreset("placeholderArthin1",  arthin, 0){{
-            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
-
-            captureWave = 15;
-            difficulty = 2;
-        }};
-
-        placeholderSpelta1 = new SectorPreset("placeholderSpelta1",  spelta, 0){{
-            addStartingItems = alwaysUnlocked = overrideLaunchDefaults = true;
-
-            captureWave = 15;
-            difficulty = 2;
-        }};
-
-
         //endregion
-    }
+        //region Vorgin
+        dormantCell = new SectorPreset("dorment-cell", spelta, 1){{
+            /*Yes this map's lore may or may not be a reference to command and conquer*/
+            difficulty = 4;
+        }};
 
+        forestOfHope = new SectorPreset("forest-of-hope", spelta,  4){{
+            difficulty = 2;
+        }};
+
+    }
 }

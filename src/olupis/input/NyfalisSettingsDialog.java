@@ -20,7 +20,11 @@ public class NyfalisSettingsDialog {
         ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
+            /* uncomment when name/icon is final
+               table.checkPref("nyfalis-blue-icon", true);
+               table.checkPref("nyfalis-blue-name", true); */
             table.checkPref("nyfalis-auto-ban", true);
+            table.checkPref("nyfalis-disclaimer", true);
             table.checkPref("nyfalis-debug", false);
 
             table.row();
@@ -46,7 +50,7 @@ public class NyfalisSettingsDialog {
             subTable.checkPref("nyfalis-space-sfx",true);
             subTable.checkPref("nyfalis-music",true);
             subTable.checkPref("nyfalis-music-only",false);
-            subTable.checkPref("nyfalis-music-add",false);
+            subTable.checkPref("nyfalis-music-add",true, c -> NyfalisMain.soundHandler.nyfalisMusicSet = false);
             subTable.checkPref("nyfalis-music-custom-game",true);
             t.add(subTable);
         }, () ->shown[0]).growX().center().row();

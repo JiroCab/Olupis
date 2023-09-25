@@ -3,52 +3,47 @@ package olupis.content;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.struct.Seq;
-import mindustry.Vars;
+import mindustry.content.Items;
 import mindustry.content.Planets;
 import mindustry.game.Rules;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.*;
 import mindustry.maps.planet.AsteroidGenerator;
-import mindustry.type.Planet;
-import mindustry.type.Sector;
+import mindustry.type.*;
 import mindustry.world.meta.Env;
 import olupis.world.planets.*;
+
+import static mindustry.Vars.content;
 
 public class NyfalisPlanets {
     public static Planet nyfalis, arthin, spelta, system;
     private static final Seq<Sector> systemSector = new Seq<>();
 
     public static Cons<Rules> commonRules = r ->{
-        r.waveTeam = Team.green;
-        r.placeRangeCheck = false;
-        r.showSpawns = true;
-        r.unitPayloadUpdate = true;
-        r.enemyCoreBuildRadius = 650f;
-        r.coreDestroyClear = true;
         r.dropZoneRadius = 400f;
-        r.disableOutsideArea = false;
-        r.blockWhitelist = true;
+        r.enemyCoreBuildRadius = 650f;
+        r.unitCrashDamageMultiplier = 0.25f;
+        r.loadout.clear().add(new ItemStack(NyfalisItemsLiquid.rustyIron, 100), new ItemStack(Items.lead, 100));
+
         r.bannedBlocks.clear();
-        r.hideBannedBlocks = true;
+        r.waveTeam = Team.green;
+
+        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = false;
+        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear =  r.hideBannedBlocks = r.coreIncinerates = r.fog = r.blockWhitelist = true;
+
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
-        //NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
+        NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
     };
 
     public  static void LoadPlanets(){
-        /*.forEach() Crashes mobile*/
-        for (Planet p : Vars.content.planets()) {
-            if (p.name.contains("olupis-")) continue;
-            p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
-        }
-
         /*I Exist so Tech Tree's Item pool is shared among the 3 planets*/
         system = new Planet("system", Planets.sun, 0.4f){{
             sectors.set(systemSector);
             generator = new AsteroidGenerator();
             meshLoader = () -> new HexMesh(this, 3);
             accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = false;
-            hideDetails = true;
+            hideDetails = alwaysUnlocked = true;
             camRadius = 0.68f * 3;
             minZoom = 0.7f;
             clipRadius = 2f;
@@ -57,63 +52,69 @@ public class NyfalisPlanets {
         }};
 
         nyfalis = new Planet("olupis", Planets.sun, 1, 3){{
+            allowSectorInvasion = allowLaunchLoadout = false;
+            allowWaves = enemyCoreSpawnReplace = allowLaunchSchematics = prebuildBase = allowWaveSimulation = alwaysUnlocked = hasAtmosphere = true;
+
+            startSector = 1;
+            sectorSeed = 2;
+            totalRadius = 2.7f;
+            launchCapacityMultiplier = 0.4f;
+            atmosphereRadIn = 0.01f;
+            atmosphereRadOut = 0.05f;
+
+            systemSector.add(sectors);
+            ruleSetter = commonRules;
+            system.position = this.position;
+            defaultCore = NyfalisBlocks.coreRemnant;
             generator = new NyfalisPlanetGenerator();
+            defaultEnv = Env.terrestrial | Env.oxygen;
+            iconColor = NyfalisBlocks.redSand.mapColor;
+            atmosphereColor = Color.valueOf("87CEEB");
+            landCloudColor = new Color().set(Color.valueOf("C7E7F1").cpy().lerp(Color.valueOf("D7F5DC"), 0.55f));
+            unlockedOnLand.addAll(NyfalisBlocks.coreRemnant, NyfalisItemsLiquid.rustyIron);
+            hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
             meshLoader = () -> new HexMesh(this, 7);
             cloudMeshLoader = () -> new MultiMesh(
-                    new HexSkyMesh(this, 11, 0.15f, 0.13f, 5, new Color().set(Color.valueOf("cee9f2")).mul(0.9f).a(0.75f), 2, 0.45f, 0.9f, 0.38f),
-                    new HexSkyMesh(this, 1, 0.6f, 0.16f, 5, Color.white.cpy().lerp(Color.valueOf("cee9f2"), 0.55f).a(0.75f), 2, 0.45f, 1f, 0.41f)
+                    new HexSkyMesh(this, 11, 0.7f, 0.13f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.9f, 0.38f),
+                new HexSkyMesh(this, 1, 0.2f, 0.16f, 5, Pal.regen.cpy().lerp(Color.valueOf("D7F5DC"), 0.55f).a(0.55f), 2, 0.45f, 1f, 0.41f)
             );
-            defaultCore = NyfalisBlocks.coreRemnant;
-            unlockedOnLand.addAll(NyfalisBlocks.coreRemnant, NyfalisItemsLiquid.rustyIron);
-            defaultEnv = Env.terrestrial | Env.oxygen;
-            launchCapacityMultiplier = 0.4f;
-            sectorSeed = 2;
-            allowWaves = enemyCoreSpawnReplace = allowLaunchLoadout = prebuildBase = alwaysUnlocked = allowWaveSimulation = true;
-            allowSectorInvasion = allowLaunchSchematics = false;
-            ruleSetter = commonRules;
-            atmosphereColor = Color.valueOf("87CEEB");
-            atmosphereRadIn = 0.02f;
-            atmosphereRadOut = 0.22f;
-            startSector = 1;
-            landCloudColor = Pal.engine.cpy().a(0.5f);
-            hiddenItems.addAll(Vars.content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
-            totalRadius = 2.7f;
-            systemSector.add(sectors);
-            system.position = this.position;
         }};
 
         //1st moon
         arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.9f, 2){{
-            generator = new ArthinPlanetGenerator();
-            meshLoader = () -> new HexMesh(this, 5);
-            defaultCore = NyfalisBlocks.coreRemnant;
-            alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = true;
-            accessible = false;
-            defaultEnv = nyfalis.defaultEnv;
-            iconColor = Color.valueOf("61615B");
-            icon = "effect";
-            hiddenItems.addAll(Vars.content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
-            enemyBuildSpeedMultiplier = 0.4f;
+            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion= allowLaunchLoadout = updateLighting = true;
 
+            startSector = 2;
+            enemyBuildSpeedMultiplier = 0.4f;
+            icon = "effect";
             ruleSetter = commonRules;
             systemSector.add(sectors);
+            defaultCore = NyfalisBlocks.coreRemnant;
+            generator = new ArthinPlanetGenerator();
+            defaultEnv = Env.terrestrial | Env.oxygen;
+            iconColor = NyfalisItemsLiquid.condensedBiomatter.color;
+            meshLoader = () -> new HexMesh(this, 5);
+            hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
 
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
-            generator = new SpeltaPlanetGenerator();
-            meshLoader = () -> new HexMesh(this, 5);
-            defaultCore = NyfalisBlocks.coreRemnant;
-            alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = true;
-            accessible = false;
-            defaultEnv = nyfalis.defaultEnv;
-            iconColor = Color.valueOf("61615B");
-            icon = "effect";
-            hiddenItems.addAll(Vars.content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
-            enemyBuildSpeedMultiplier = 0.4f;
+            //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
+            alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
 
+            startSector = 1;
+            enemyBuildSpeedMultiplier = 0.4f;
+            icon = "effect";
             ruleSetter = commonRules;
             systemSector.add(sectors);
+            generator = new SpeltaPlanetGenerator();
+            defaultCore = NyfalisBlocks.coreRemnant;
+            iconColor = NyfalisBlocks.pinkTree.mapColor;
+            defaultEnv = Env.terrestrial | Env.oxygen;
+            meshLoader = () -> new HexMesh(this, 5);
+            hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
+
+        //TODO: rework the planets generators
     }
 
     public  static void PostLoadPlanet(){

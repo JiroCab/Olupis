@@ -10,22 +10,86 @@ import static mindustry.content.TechTree.*;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisPlanets.*;
+import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisTechTree {
 
     public static void load(){
-        /*TODO: Redo most of the item costs*/
         nyfalis.techTree = nodeRoot("olupis", coreRemnant, () -> {
+            node(system, () -> {
+                node(arthin, () ->{
+                    node(NyfalisSectors.sanctuary, () -> {
 
-            node(NyfalisSectors.placeholder1, () -> {
-                node(NyfalisSectors.placeholder2, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.placeholder1)
-                ), () ->{
+                    });
+                });
+                node(nyfalis, () ->{
+                    node(NyfalisSectors.placeholder1, Seq.with(
+                            new Objectives.SectorComplete(NyfalisSectors.sanctuary)
+                    ), () -> {
+                        node(NyfalisSectors.placeholder2, Seq.with(
+                                new Objectives.SectorComplete(NyfalisSectors.placeholder1)
+                        ), () ->{
+
+                        });
+                    });
+                });
+                node(spelta, () ->{
+                    node(NyfalisSectors.forestOfHope, Seq.with(
+                            new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
+                    ), () ->{
+                        node(NyfalisSectors.dormantCell,  ()-> {
+
+                        });
+                    });
 
                 });
             });
 
+            node(gnat, ()->{
+                node(aero, () -> {
+                    node(striker, () -> {
+
+                    });
+                });
+
+                node(spirit, () ->{
+                    node(phantom, () ->{
+                        node(banshee, () -> {
+
+                        });
+                    });
+                });
+                node(venom, () -> {
+
+                });
+                node(porter, () -> {
+                    node(zoner, () -> {
+
+                    });
+                    node(bay, () -> {
+                        node(blitz, () -> {
+
+                        });
+                    });
+                });
+                node(phorid, () -> {
+                    node(embryo, () -> {
+
+                    });
+                });
+            });
+
             node(mossyBoulder, ()-> {
+
+                node(coreVestige, () ->{
+                    node(coreRelic, () -> {
+                        node(coreShrine, () -> {
+                            node(coreTemple, () -> {
+
+                            });
+                        });
+                    });
+                });
 
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
@@ -77,6 +141,9 @@ public class NyfalisTechTree {
                                 node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
 
                                 });
+                                node(broiler, Seq.with(new Objectives.Research(graphite)),()->{
+
+                                });
                             });
                             node(ironPump, () -> {
                                 node(displacementPump, () -> {
@@ -91,29 +158,25 @@ public class NyfalisTechTree {
 
                 node(rustyIronConveyor, () ->{
                     node(ironRouter, () ->{
-                        node(ironDistributor, () -> {
-                            node(ironJunction, ()->{
-                                node(ironBridge, ()->{
+                        node(ironJunction, ()->{
+                            node(rustedBridge, () -> {
 
-                                });
                             });
                         });
                         node(ironConveyor, ()->{
                             node(cobaltConveyor, ()->{
 
                             });
-                        });
 
-                        node(ironUnloader, () ->{
-                            node(fortifiedContainer, () ->{
-                                node(fortifiedVault, () ->{
+                            node(ironOverflow, () ->{
+                                node(ironUnderflow, () -> {
+                                    node(ironDistributor, () -> {
 
+                                    });
                                 });
                             });
-                        });
 
-                        node(ironOverflow, () ->{
-                            node(ironUnderflow, () -> {
+                            node(ironBridge, ()->{
 
                             });
                         });
@@ -125,16 +188,25 @@ public class NyfalisTechTree {
 
                             });
                         });
-                        node(ironSieve, () ->{
+                        node(ironSieve, Seq.with(new Objectives.Research(rustElectrolyzer), new Objectives.Produce(sand)),() ->{
 
                         });
                     });
                 });
 
+                node(ironUnloader, () ->{
+                    node(fortifiedContainer, () ->{
+                        node(fortifiedVault, () ->{
+
+                        });
+                    });
+                });
 
                 node(corroder, Seq.with(new Objectives.Research(ironRouter)), ()-> {
-                    node(dissolver, ()->{
+                    node(avenger, () -> {
+                        node(dissolver, ()->{
 
+                        });
                     });
                     node(shredder, ()->{
                         node(hive, ()->{
@@ -156,6 +228,11 @@ public class NyfalisTechTree {
                 });
 
                 node(construct, Seq.with(new Objectives.Research(ironRouter)), ()->{
+                    node(groundConstruct, () ->{
+                        node(arialConstruct, () ->{
+
+                        });
+                    });
                     node(unitReplicator, ()->{
                         node(unitReplicatorSmall, ()->{
 
@@ -164,7 +241,13 @@ public class NyfalisTechTree {
                 });
 
                 node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{
+                    node(mechanicalProcessor, () -> {
+                        node(mechanicalSwitch, () -> {
+                            node(mechanicalRegistry, ()->{
 
+                            });
+                        });
+                    });
                 });
 
 
@@ -199,6 +282,7 @@ public class NyfalisTechTree {
                 });
 
             });
+
         });
         arthin.techTree = nyfalis.techTree;
         spelta.techTree = nyfalis.techTree;

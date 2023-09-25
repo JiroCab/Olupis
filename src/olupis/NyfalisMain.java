@@ -18,18 +18,20 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
 import olupis.content.*;
+import olupis.input.NyfalisLogicDialog;
 import olupis.input.NyfalisSettingsDialog;
-import olupis.input.NyfalisSounds;
 import olupis.world.planets.NyfalisTechTree;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static mindustry.Vars.*;
+import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisMain extends Mod{
-    public NyfalisSounds soundHandler = new NyfalisSounds();
+    public static NyfalisSounds soundHandler = new NyfalisSounds();
+    public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
 
     @Override
@@ -46,22 +48,18 @@ public class NyfalisMain extends Mod{
 
         NyfalisPlanets.PostLoadPlanet();
         NyfalisTechTree.load();
-        NyfalisBlocks.AddAttributes();
+        NyfalisAttribute.AddAttributes();
         NyfalisUnits.PostLoadUnits();
 
         Log.info("OwO, Nyfalis (Olupis) content Loaded! Hope you enjoy nya~");
     }
 
     public NyfalisMain(){
+        NyfalisSounds.LoadSounds();
         Events.on(EventType.WorldLoadEvent.class, l ->{
-            /*Delayed so custom games are affected*/
-            Time.run(1 * Time.toSeconds, () ->{
-                if(shouldAutoBan()) {
-                    Log.debug("Nyfalis has banned its blocks!");
-                    if (!state.rules.blockWhitelist) {
-                        state.rules.bannedBlocks.addAll(NyfalisBlocks.nyfalisBuildBlockSet);
-                    } else state.rules.bannedBlocks.removeAll(NyfalisBlocks.nyfalisBuildBlockSet.toSeq());
-                }
+            if(shouldAutoBan()) Time.run(0.5f * Time.toSeconds, () ->{ /*Delayed since custom games, for some reason needs it*/
+                /*Hiding blocks w/o banning them mainly for custom games */
+                state.rules.hiddenBuildItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
             });
             if(headless)return;
 
@@ -74,15 +72,23 @@ public class NyfalisMain extends Mod{
         Events.on(ClientLoadEvent.class, e -> {
             NyfalisBlocks.NyfalisBlocksPlacementFix();
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
-            disclaimerDialog();
+            if(Core.settings.getBool("nyfalis-disclaimer"))disclaimerDialog();
 
             Vars.ui.planet.shown(() -> {
                 if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);
             });
 
+            arthin.uiIcon = bush.fullIcon;
+            nyfalis.uiIcon = redSandBoulder.fullIcon;
+            spelta.uiIcon = pinkTree.fullIcon;
+            system.uiIcon = Icon.planet.getRegion();
+
             /*For those people who don't like the name/icon or overwrites in general*/
             if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";
             if(Core.settings.getBool("nyfalis-green-name")) Team.green.name = "nyfalis-green";
+            /* uncomment when name/icon is final
+            if(Core.settings.getBool("nyfalis-blue-icon")) Team.green.name = "";
+            if(Core.settings.getBool("nyfalis-blue-name")) Team.green.name = "nyfalis-blue";*/
         });
     }
 
@@ -110,6 +116,7 @@ public class NyfalisMain extends Mod{
             t.visible(() -> Vars.ui.hudfrag.shown);
             t.bottom().left();
             t.button("Export w/ Nyfalis", Icon.file, Styles.squareTogglet, () -> {
+                state.rules.blockWhitelist = true;
                 NyfalisPlanets.nyfalis.applyRules(state.rules);
                 ui.paused.show();
             }).width(155f).height(50f).margin(12f).checked(false);
@@ -120,6 +127,7 @@ public class NyfalisMain extends Mod{
     @Override
     public void init() {
         nyfalisSettings = new NyfalisSettingsDialog();
+        logicDialog = new NyfalisLogicDialog();
     }
 
     public static void disclaimerDialog(){

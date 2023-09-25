@@ -2,7 +2,6 @@
 displayName: "Nyfalis (Olupis)"
 
 #the internal name of your mod
-#TODO: Use nyfalis as the internal name
 name: "olupis"
 
 #your name
@@ -12,12 +11,12 @@ author: "RushieWashie, Remington Thomas, Ethanol10, Siede, WMF Industries"
 main: "olupis.NyfalisMain"
 
 #the mod description as seen in the mod dialog
-description: "(\u26A0Work in progress\u26A0) Yet another planet mod"
+description: "(\u26A0Work in progress\u26A0) Yet another planet mod "
 
-subtitle: "Yet another planet mod, v1.4"
+subtitle: "Yet another planet mod, v1.5"
 
 #the mod version
-version: 1.4
+version: 1.5
 
 #the minimum game build required to run this mod
 minGameVersion: 136

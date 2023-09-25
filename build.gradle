@@ -1,29 +1,34 @@
 plugins {
     id 'java'
-    id("fr.xpdustry.toxopid") version "3.0.0"
+    id("fr.xpdustry.toxopid") version "3.2.0"
 }
 
 version '1.0'
 
-targetCompatibility = 8
-sourceCompatibility = JavaVersion.VERSION_16
+java{
+    targetCompatibility = 8
+    sourceCompatibility = JavaVersion.VERSION_17
+}
 
 sourceSets.main.java.srcDirs = ["src"]
 
 repositories{
     mavenCentral()
-    maven{ url 'https://www.jitpack.io' }
+    maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
+    maven { url 'https://jitpack.io' }
 }
 
 ext{
     //the build number that this mod is made for
+    mindustryVersion = 'v146'
+    jabelVersion = "93fde537c7"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
 
 import fr.xpdustry.toxopid.spec.ModPlatform
 toxopid {
-    compileVersion.set("$rootProject.mindusty_ver")
-    runtimeVersion.set("$rootProject.mindusty_ver")
+    compileVersion.set("$mindustryVersion")
+    runtimeVersion.set("$mindustryVersion")
     platforms.add(ModPlatform.DESKTOP)
 }
 
@@ -35,10 +40,10 @@ allprojects{
 }
 
 dependencies{
-    compileOnly "com.github.Anuken.Arc:arc-core:$rootProject.mindusty_ver"
-    compileOnly "com.github.Anuken.MindustryJitpack:core:$rootProject.mindusty_ver"
+    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
 
-    annotationProcessor "com.github.Anuken:jabel:$rootProject.jabel_ver"
+    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
 
 
@@ -46,7 +51,7 @@ dependencies{
 configurations.all{
     resolutionStrategy.eachDependency { details ->
         if(details.requested.group == 'com.github.Anuken.Arc'){
-            details.useVersion "$rootProject.mindusty_ver"
+            details.useVersion "$mindustryVersion"
         }
     }
 }
