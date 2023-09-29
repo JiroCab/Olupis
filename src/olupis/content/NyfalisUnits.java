@@ -506,7 +506,7 @@ public class NyfalisUnits {
                     pierceCap = 1;
                     ammoMultiplier = 1.5f;
                     statusDuration = 1.5f *60f;
-                    buildingDamageMultiplier = 0.01f;
+                    buildingDamageMultiplier = 0f;
                     status = StatusEffects.corroded;
                     shootEffect = Fx.shootLiquid;
                     despawnEffect = hitEffect = Fx.steam;
@@ -585,7 +585,7 @@ public class NyfalisUnits {
         embryo = new AmmoLifeTimeUnitType("embryo"){{
             /*(trans) Egg if chan-version is made >;3c */
             constructor = UnitEntity::create;
-            controller = u -> new AgressiveFlyingAi();
+            controller = u -> new AgressiveFlyingAi(true);
 
             flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
@@ -657,7 +657,7 @@ public class NyfalisUnits {
                     x = y = shootX = shootY = 0;
                     shootStatus = StatusEffects.unmoving;
                     shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
-                    bullet = new BasicBulletType(0,0) {{
+                    bullet = new HealOnlyBulletType(0,0) {{
                         spin = 3.5f;
                         drag = 0.9f;
                         lifetime = 10*60;
@@ -686,6 +686,26 @@ public class NyfalisUnits {
                             hitEffect = despawnEffect = Fx.heal;
                             backColor = frontColor = trailColor = lightColor = Pal.heal;
                         }};
+                    }};
+                }},
+                new Weapon(){{
+                    reload = 24f;
+                    x = shootY = 0f;
+                    shootCone = 180f;
+                    shootOnDeath = true;
+                    mirror = controllable = aiControllable = false;
+                    ejectEffect = Fx.none;
+                    shootSound = Sounds.explosion;
+                    bullet = new BulletType() {{
+                        collides = hittable = collidesTiles = false;
+                        instantDisappear = killShooter = collidesAir = true;
+                        hitSound = Sounds.explosion;
+                        hitEffect = Fx.pulverize;
+
+                        splashDamage = 90f;
+                        rangeOverride = 30f;
+                        splashDamageRadius = 55f;
+                        buildingDamageMultiplier = speed = 0f;
                     }};
                 }}
             );
@@ -739,7 +759,7 @@ public class NyfalisUnits {
                     x = y = shootX = shootY = 0;
                     shootStatus = StatusEffects.unmoving;
                     shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
-                    bullet = new BasicBulletType(0,-5) {{
+                    bullet = new HealOnlyBulletType(0,-5) {{
                         spin = 3.7f;
                         drag = 0.9f;
                         lifetime = 10*60;
@@ -769,7 +789,7 @@ public class NyfalisUnits {
 
                     }};
                 }},
-            new Weapon(){{
+                new Weapon(){{
                     x = y = 0;
                     reload = 60f * 10f;
                     flipSprite = false;
@@ -781,14 +801,41 @@ public class NyfalisUnits {
                         spawnUnit = embryo;
                         //rangeOverride = mineRange;
                     }};
+                }},
+                new Weapon(){{
+                    reload = 24f;
+                    x = shootY = 0f;
+                    shootCone = 180f;
+                    shootOnDeath = true;
+                    mirror = controllable = aiControllable = false;
+                    ejectEffect = Fx.none;
+                    shootSound = Sounds.explosion;
+                    bullet = new BulletType() {{
+                        collidesTiles = false;
+                        collides = false;
+                        hitSound = Sounds.explosion;
+
+                        rangeOverride = 30f;
+                        hitEffect = Fx.pulverize;
+                        speed = 0f;
+                        splashDamageRadius = 55f;
+                        instantDisappear = true;
+                        splashDamage = 90f;
+                        killShooter = true;
+                        hittable = false;
+                        collidesAir = true;
+                    }};
                 }}
             );
         }};
+
+        //added a death weapon
         //endregion
     }
 
     /*Common custom ammo types for the lifetime units*/
     public static void LoadAmmoType(){
+        //Make them last long
 
         lifeTimeDrill = new AmmoType() {
             @Override

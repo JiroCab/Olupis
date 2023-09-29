@@ -43,7 +43,7 @@ public class NyfalisTurrets {
                     drag = 0.008f;
                     lifetime = 19.5f;
                     rangeChange = 15f;
-                    ammoMultiplier = 5f;
+                    ammoMultiplier = 3f;
                     trailInterval = trailParam = 1.5f;
 
                     statusDuration = 60f * 2;

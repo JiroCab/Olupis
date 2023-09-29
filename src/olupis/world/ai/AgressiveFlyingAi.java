@@ -12,7 +12,7 @@ import olupis.world.entities.units.AmmoLifeTimeUnitType;
 import static mindustry.Vars.state;
 
 public class AgressiveFlyingAi extends FlyingAI {
-    public boolean shouldCircle = false;
+    public boolean shouldCircle = false, hasParent = false;
     public float circleDistance = 150f;
     public Unit parent;
     public float parentCircle = 35f, shootSlowDown = 0.5f;
@@ -28,11 +28,18 @@ public class AgressiveFlyingAi extends FlyingAI {
         } else super.updateUnit();
     }
 
+    public AgressiveFlyingAi(boolean hasParent){
+        this.hasParent = hasParent;
+    }
+    public AgressiveFlyingAi(){
+        this.hasParent = false;
+    }
+
     @Override
     public void updateMovement(){
         unloadPayloads();
 
-         if(parent != null && !parent.dead()) {
+         if(parent != null && !parent.dead() && hasParent && unit.isAdded()) {
             /*Perhaps with more units, use the v5 formations instead*/
             float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.isShooting ? unit.speed() * shootSlowDown: unit.speed()) : unit.speed() ;
             circle(parent, parentCircle, speed);

@@ -3,14 +3,14 @@ package olupis.content;
 import arc.func.Cons;
 import arc.graphics.Color;
 import arc.struct.Seq;
-import mindustry.content.Items;
 import mindustry.content.Planets;
 import mindustry.game.Rules;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.*;
 import mindustry.maps.planet.AsteroidGenerator;
-import mindustry.type.*;
+import mindustry.type.Planet;
+import mindustry.type.Sector;
 import mindustry.world.meta.Env;
 import olupis.world.planets.*;
 
@@ -21,10 +21,7 @@ public class NyfalisPlanets {
     private static final Seq<Sector> systemSector = new Seq<>();
 
     public static Cons<Rules> commonRules = r ->{
-        r.dropZoneRadius = 400f;
-        r.enemyCoreBuildRadius = 650f;
         r.unitCrashDamageMultiplier = 0.25f;
-        r.loadout.clear().add(new ItemStack(NyfalisItemsLiquid.rustyIron, 100), new ItemStack(Items.lead, 100));
 
         r.bannedBlocks.clear();
         r.waveTeam = Team.green;
@@ -32,6 +29,7 @@ public class NyfalisPlanets {
         r.placeRangeCheck = r.disableOutsideArea = r.staticFog = false;
         r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear =  r.hideBannedBlocks = r.coreIncinerates = r.fog = r.blockWhitelist = true;
 
+        //TODO: fix changing planets will add them but remove, move to sector presents maybe
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
         NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
     };
@@ -39,28 +37,29 @@ public class NyfalisPlanets {
     public  static void LoadPlanets(){
         /*I Exist so Tech Tree's Item pool is shared among the 3 planets*/
         system = new Planet("system", Planets.sun, 0.4f){{
+            accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = false;
+            hideDetails = alwaysUnlocked = true;
+
+            clipRadius = 2f;
+            minZoom = 0.7f;
+            camRadius = 0.68f * 3;
+            defaultEnv = Env.space;
+            icon = "rename";
+
             sectors.set(systemSector);
             generator = new AsteroidGenerator();
             meshLoader = () -> new HexMesh(this, 3);
-            accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = false;
-            hideDetails = alwaysUnlocked = true;
-            camRadius = 0.68f * 3;
-            minZoom = 0.7f;
-            clipRadius = 2f;
-            defaultEnv = Env.space;
-            icon = "rename";
         }};
 
         nyfalis = new Planet("olupis", Planets.sun, 1, 3){{
             allowSectorInvasion = allowLaunchLoadout = false;
             allowWaves = enemyCoreSpawnReplace = allowLaunchSchematics = prebuildBase = allowWaveSimulation = alwaysUnlocked = hasAtmosphere = true;
 
-            startSector = 1;
-            sectorSeed = 2;
             totalRadius = 2.7f;
-            launchCapacityMultiplier = 0.4f;
             atmosphereRadIn = 0.01f;
             atmosphereRadOut = 0.05f;
+            startSector = sectorSeed = 2;
+            launchCapacityMultiplier = 0.4f;
 
             systemSector.add(sectors);
             ruleSetter = commonRules;

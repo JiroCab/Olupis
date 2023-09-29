@@ -47,7 +47,6 @@ public class ItemUnitTurret extends ItemTurret {
     public boolean hoverShowsSpawn = false;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
-    /*Todo: ground units that arent non-legged die like daggers*/
 
     public ItemUnitTurret(String name){
         super(name);
@@ -177,7 +176,8 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         protected void shoot(BulletType type){
-                if((!type.spawnUnit.isBanned() && (type.spawnUnit.useUnitCap && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap) || !type.spawnUnit.useUnitCap)){
+            boolean spawn = (!type.spawnUnit.isBanned() && (state.rules.waveTeam == this.team || (type.spawnUnit.useUnitCap && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap) || !type.spawnUnit.useUnitCap));
+            if(spawn){
                 /*don't create the unit if it's banned or at unit cap*/
                 consume();
                 float
@@ -214,7 +214,7 @@ public class ItemUnitTurret extends ItemTurret {
                 Draw.rect(bottomRegion, x, y);
                 if(peekAmmo() != null && peekAmmo().spawnUnit != null){
                     UnitType unt = peekAmmo().spawnUnit;
-                    if(this.team.data().unitCap >= this.team.data().countType(unt)){
+                    if(this.team.data().unitCap >= this.team.data().countType(unt) || state.rules.waveTeam == this.team){
                         Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rotation - 90f, reloadCounter /reload,  speedScl, time));
                     } else {
                         Draw.draw(Layer.blockOver, ()->{
