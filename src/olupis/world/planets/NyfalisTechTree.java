@@ -22,10 +22,10 @@ public class NyfalisTechTree {
 
                     });
                 });
-                node(nyfalis, () ->{
-                    node(NyfalisSectors.vakinyaDesert, Seq.with(
-                            new Objectives.SectorComplete(NyfalisSectors.sanctuary)
-                    ), () -> {
+                node(nyfalis, Seq.with(
+                        new Objectives.SectorComplete(NyfalisSectors.sanctuary)
+                ),() ->{
+                    node(NyfalisSectors.vakinyaDesert, () -> {
                         node(NyfalisSectors.placeholder2, Seq.with(
                                 new Objectives.SectorComplete(NyfalisSectors.vakinyaDesert)
                         ), () ->{
@@ -33,10 +33,10 @@ public class NyfalisTechTree {
                         });
                     });
                 });
-                node(spelta, () ->{
-                    node(NyfalisSectors.forestOfHope, Seq.with(
-                            new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
-                    ), () ->{
+                node(spelta, Seq.with(
+                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
+                ), () ->{
+                    node(NyfalisSectors.forestOfHope,  () ->{
                         node(NyfalisSectors.dormantCell,  ()-> {
 
                         });
@@ -47,7 +47,7 @@ public class NyfalisTechTree {
 
             node(gnat, ()->{
                 node(aero, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(arialConstruct)
+                    new  Objectives.Research(arialConstruct)
                 ), () -> {
                     node(striker, () -> {
 
@@ -55,7 +55,7 @@ public class NyfalisTechTree {
                 });
 
                 node(spirit, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(construct)
+                    new  Objectives.Research(construct)
                 ), () ->{
                     node(phantom, () ->{
                         node(banshee, () -> {
@@ -64,12 +64,12 @@ public class NyfalisTechTree {
                     });
                 });
                 node(venom, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
+                        new  Objectives.Research(groundConstruct)
                 ), () -> {
 
                 });
                 node(porter, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
+                        new  Objectives.Research(groundConstruct)
                 ), () -> {
                     node(zoner, () -> {
 
@@ -131,7 +131,7 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(leadPipe, Seq.with(new Objectives.Research(wire)), () -> {
+                node(leadPipe, Seq.with(new Objectives.Research(windMills)), () -> {
                     node(rustyPump, () ->{
                         node(pipeRouter, ()->{
                             node(fortifiedCanister, ()->{

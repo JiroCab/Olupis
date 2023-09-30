@@ -53,7 +53,7 @@ public class NyfalisPlanets {
 
         nyfalis = new Planet("olupis", Planets.sun, 1, 3){{
             allowSectorInvasion = allowLaunchLoadout = false;
-            allowWaves = enemyCoreSpawnReplace = allowLaunchSchematics = prebuildBase = allowWaveSimulation = alwaysUnlocked = hasAtmosphere = true;
+            allowWaves = enemyCoreSpawnReplace = allowLaunchSchematics = prebuildBase = allowWaveSimulation = hasAtmosphere = true;
 
             totalRadius = 2.7f;
             atmosphereRadIn = 0.01f;
@@ -98,7 +98,7 @@ public class NyfalisPlanets {
 
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
-            alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
+            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
 
             startSector = 1;
             enemyBuildSpeedMultiplier = 0.4f;

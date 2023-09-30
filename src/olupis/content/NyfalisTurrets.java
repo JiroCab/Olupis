@@ -2,7 +2,9 @@ package olupis.content;
 
 import arc.struct.EnumSet;
 import mindustry.Vars;
-import mindustry.content.*;
+import mindustry.content.Fx;
+import mindustry.content.Liquids;
+import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.LiquidBulletType;
 import mindustry.entities.bullet.MissileBulletType;
 import mindustry.entities.part.RegionPart;
@@ -16,7 +18,9 @@ import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
 import olupis.world.blocks.defence.ItemUnitTurret;
-import olupis.world.entities.bullets.*;
+import olupis.world.entities.bullets.NoBoilLiquidBulletType;
+import olupis.world.entities.bullets.RollBulletType;
+import olupis.world.entities.bullets.SpawnHelperBulletType;
 
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
@@ -30,7 +34,7 @@ public class NyfalisTurrets {
         //region Turrets
         corroder = new LiquidTurret("corroder"){{ //architronito
             inaccuracy = 8.5f;
-            rotateSpeed = 2.5f;
+            rotateSpeed = 3f;
 
             ammo(
                 Liquids.water, new LiquidBulletType(Liquids.water){{
@@ -144,40 +148,61 @@ public class NyfalisTurrets {
         dissolver = new LiquidTurret("dissolver"){{ //architonnerre
             targetAir = true;
 
-            recoil = 0.2f;
-            reload = 5f;
-            range = 130f;
-            shootCone = 50f;
-            health = 2500;
             size = 3;
+            reload = 5f;
+            recoil = 0.2f;
+            range = 130f;
+            health = 1700;
+            inaccuracy = 6f;
+            shootCone = 50f;
 
             ammo(
-                    Liquids.water, new LiquidBulletType(Liquids.water){{
-                        size = 3;
-                        speed = 5.8f;
-                        damage = 24;
-                        drag = 0.0009f;
-                        lifetime = 28.5f;
-                        rangeChange = 40f;
-                        ammoMultiplier = 4f;
-                        statusDuration = 60f * 2;
-                        hitSize = puddleSize = 7f;
+                Liquids.water, new LiquidBulletType(Liquids.water){{
+                    size = 3;
+                    speed = 5.8f;
+                    damage = 24;
+                    drag = 0.0009f;
+                    lifetime = 28.5f;
+                    rangeChange = 40f;
+                    ammoMultiplier = 4f;
+                    statusDuration = 60f * 2;
+                    layer = Layer.bullet -2f;
+                    hitSize = puddleSize = 7f;
+                    trailInterval = trailParam = 1.5f;
 
-                        status = StatusEffects.corroded;
-                        layer = Layer.bullet -2f;
-                    }},
-                    steam, new NoBoilLiquidBulletType(steam){{
-                        collidesAir = pierce = evaporatePuddles = true;
+                    trailColor = hitColor;
+                    status = StatusEffects.corroded;
+                }},
+                steam, new NoBoilLiquidBulletType(steam){{
+                    collidesAir = pierce = evaporatePuddles = true;
+                    trailColor = hitColor;
 
-                        hitSize = 7f;
-                        speed = 8.8f;
-                        damage = 22f;
-                        drag = 0.0009f;
-                        lifetime = 14.5f;
-                        ammoMultiplier = 3f;
-                        statusDuration = 60f * 4;
-                        status = StatusEffects.corroded;
-                    }}
+                    hitSize = 7f;
+                    speed = 8.8f;
+                    damage = 22f;
+                    drag = 0.0009f;
+                    lifetime = 14.5f;
+                    ammoMultiplier = 3f;
+                    statusDuration = 60f * 4;
+                    status = StatusEffects.corroded;
+                    trailInterval = trailParam = 1.5f;
+                }},
+                Liquids.slag, new LiquidBulletType(Liquids.slag){{
+                    size = 3;
+                    speed = 5.8f;
+                    damage = 12;
+                    drag = 0.0009f;
+                    lifetime = 28.5f;
+                    rangeChange = 20f;
+                    ammoMultiplier = 4f;
+                    statusDuration = 60f * 2;
+                    layer = Layer.bullet -2f;
+                    hitSize = puddleSize = 7f;
+                    trailInterval = trailParam = 1.5f;
+
+                    trailColor = hitColor;
+                    status = StatusEffects.melting;
+                }}
             );
             loopSound = Sounds.steam;
             consumePower(1.5f);

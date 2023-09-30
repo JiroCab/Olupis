@@ -401,8 +401,12 @@ public class NyfalisBlocks {
 
         //endregion
         //region Trees
-        nyfalisTree = new TreeBlock("olupis-tree");
-        mossTree = new TreeBlock("moss-tree");
+        nyfalisTree = new TreeBlock("olupis-tree"){{
+            variants = 3;
+        }};
+        mossTree = new TreeBlock("moss-tree"){{
+            variants = 3;
+        }};
         pinkTree = new TreeBlock("pink-tree");
         yellowTree = new TreeBlock("yellow-tree");
         yellowTreeBlooming = new TreeBlock("yellow-tree-blooming");
@@ -1024,7 +1028,7 @@ public class NyfalisBlocks {
 
             size = 3;
             effectChance = 0.011f;
-            powerProduction = 17f/60f;
+            powerProduction = 20f/60f;
             ambientSoundVolume = 0.06f;
 
             attribute = hydro;

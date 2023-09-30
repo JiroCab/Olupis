@@ -13,7 +13,7 @@ import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
-import mindustry.type.Planet;
+import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
@@ -61,6 +61,7 @@ public class NyfalisMain extends Mod{
                 /*Hiding blocks w/o banning them mainly for custom games */
                 state.rules.hiddenBuildItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
             });
+            unlockPlanets();
             if(headless)return;
 
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
@@ -69,6 +70,9 @@ public class NyfalisMain extends Mod{
         });
 
         if(headless)return;
+        Events.on(EventType.UnlockEvent.class, event -> unlockPlanets());
+        Events.on(EventType.SectorCaptureEvent.class, event -> unlockPlanets());
+
         Events.on(ClientLoadEvent.class, e -> {
             NyfalisBlocks.NyfalisBlocksPlacementFix();
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
@@ -128,6 +132,7 @@ public class NyfalisMain extends Mod{
     public void init() {
         nyfalisSettings = new NyfalisSettingsDialog();
         logicDialog = new NyfalisLogicDialog();
+        unlockPlanets();
     }
 
     public static void disclaimerDialog(){
@@ -158,6 +163,28 @@ public class NyfalisMain extends Mod{
         dialog.cont.button("@back", Icon.left, dialog::hide).padTop(-1f).size(220f, 55f).bottom();
         dialog.closeOnBack();
         dialog.show();
+    }
+
+    public void unlockPlanets(){
+        if(nyfalis.unlocked() && spelta.unlocked()) return;
+        if(nyfalis.unlocked()){
+            for (Sector s : nyfalis.sectors) {
+                if (s.unlocked() || (s.preset != null && s.preset.unlocked())) {
+                    nyfalis.quietUnlock();
+                    nyfalis.alwaysUnlocked = true;
+                    break;
+                }
+            }
+        }
+        if(spelta.unlocked()){
+            for (Sector s : spelta.sectors) {
+                if (s.unlocked() || (s.preset != null && s.preset.unlocked())) {
+                    nyfalis.quietUnlock();
+                    nyfalis.alwaysUnlocked = true;
+                    break;
+                }
+            }
+        }
     }
 
 }
