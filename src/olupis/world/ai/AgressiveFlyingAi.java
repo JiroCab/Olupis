@@ -28,22 +28,22 @@ public class AgressiveFlyingAi extends FlyingAI {
         } else super.updateUnit();
     }
 
-    public AgressiveFlyingAi(boolean hasParent){
-        this.hasParent = hasParent;
+    public AgressiveFlyingAi(boolean hunt){
+        if (hunt)fallback = new SearchAndDestroyFlyingAi();
     }
     public AgressiveFlyingAi(){
-        this.hasParent = false;
+
     }
 
     @Override
     public void updateMovement(){
         unloadPayloads();
 
-         if(parent != null && !parent.dead() && hasParent && unit.isAdded()) {
+         if(hasParent && parent != null && !parent.dead() && unit.isAdded()) {
             /*Perhaps with more units, use the v5 formations instead*/
             float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.isShooting ? unit.speed() * shootSlowDown: unit.speed()) : unit.speed() ;
             circle(parent, parentCircle, speed);
-        }else if(unit.type instanceof AmmoLifeTimeUnitType unt){
+        }else if(unit.type instanceof AmmoLifeTimeUnitType unt && hasParent){
             unit.ammo = unt.deathThreshold * 0.5f;
         }else if(target != null && unit.hasWeapons()){
             if(unit.type.circleTarget){
@@ -88,5 +88,10 @@ public class AgressiveFlyingAi extends FlyingAI {
                 unit.isShooting = check != null;
             }
         }
+    }
+
+    @Override
+    public boolean useFallback(){ /*allowed to be used in waves*/
+        return parent == null && (unit.team.isAI() || unit.team == state.rules.waveTeam);
     }
 }

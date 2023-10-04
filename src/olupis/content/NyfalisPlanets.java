@@ -51,7 +51,7 @@ public class NyfalisPlanets {
             meshLoader = () -> new HexMesh(this, 3);
         }};
 
-        nyfalis = new Planet("olupis", Planets.sun, 1, 3){{
+        nyfalis = new Planet("olupis", Planets.sun, 1.1f, 3){{
             allowSectorInvasion = allowLaunchLoadout = false;
             allowWaves = enemyCoreSpawnReplace = allowLaunchSchematics = prebuildBase = allowWaveSimulation = hasAtmosphere = true;
 
@@ -80,7 +80,7 @@ public class NyfalisPlanets {
         }};
 
         //1st moon
-        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.9f, 2){{
+        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.8f, 1){{
             accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion= allowLaunchLoadout = updateLighting = true;
 
             startSector = 2;
@@ -96,7 +96,7 @@ public class NyfalisPlanets {
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
 
-        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
+        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.8f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
             clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
 

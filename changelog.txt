@@ -3,13 +3,21 @@ https://github.com/JiroCab/Olupis
 Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
 
 = Version 1-6 () =
-    ~ Blocks added:
-    ~ Maps added: vakinyaDesert
+    + Made planets be hidden until a sector is unlocked for it
+    + Blocks added: glowBloom, luminiteBoulder
+    + Maps added: vakinyaDesert
     ~ Maps updated: forestOfHope, sanctuary, dormantCell
     ~ Added in-map credits for the maps above
+    ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer
+    ~ improved shadows of various props
     ~ Pipes has been reworked, made better for longer distance in exchange for lower capacity
+    ~ Conveyor & Bridges speed increased, from half of serpulo counterparts to about 70-75%~
     ~ Bug Fix: Constructs not spawning units on maps without cores despite being on the wave team
+    ~ Bug Fix: Embryo Timing out if it has a parent (for waves)
     ~ Gnats & Phorid now deal damage on death
+    ~ Improved Shredder's bullet's detection
+    ~ Improved Tech tree, new player experience, buildSpeed
+    ~ Moved hydroMill to post-cobalt
     ~ Expanded Credits
 
 = Version 1-5 (9128c69) = https://github.com/JiroCab/Olupis/tree/9128c69cd59afeb49ec9c0d403352f2efbc41f38

@@ -4,6 +4,7 @@ import arc.math.Angles;
 import arc.util.Time;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Teamc;
 import mindustry.graphics.Layer;
@@ -50,8 +51,14 @@ public class RollBulletType extends BasicBulletType {
     public void updateCollision(Bullet b, Teamc target, AtomicReference<Float> tarSize){
         /*If someone finds a better way to do this, please let us know -RushieWsahie*/
         boolean within = target != null && b.within(target.x(), target.y(), Math.max(tarSize.get(),  b.hitSize));
-        if(b.tileOn() == null) b.remove();
-        if(b.tileOn().solid() && b.tileOn() != b.owner && !within) b.remove();
+        if(b.tileOn() != null && !within) {
+            if (b.tileOn().solid() && b.tileOn() != b.owner) b.remove();
+            else if (b.tileOn().build != null && !b.tileOn().build.block.solid && b.tileOn().team() != b.team && b.tileOn().team() != Team.derelict && b.hasCollided(b.tileOn().build.id)){
+                /*hits the block twice, can't be bothered to fix it, so it's a nerf for BvB*/
+                hitTile(b, b.tileOn().build, b.x(), b.y,  b.tileOn().build.health, true);
+                b.collided.add(b.tileOn().build.id);
+            }
+        }
     }
 
     public Teamc findTarget(Bullet b, AtomicReference<Float> tarSize){

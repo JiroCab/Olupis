@@ -1,28 +1,44 @@
-package olupis.world.ai;
+ package olupis.world.ai;
 
-import arc.math.geom.Vec2;
-import arc.util.Time;
-import mindustry.ai.types.FlyingAI;
-import mindustry.entities.Predict;
-import mindustry.entities.Units;
-import mindustry.gen.Teamc;
-import mindustry.gen.Unit;
-import mindustry.type.Weapon;
-import mindustry.world.meta.BlockFlag;
+ import arc.math.Mathf;
+ import arc.math.geom.Vec2;
+ import arc.util.Time;
+ import mindustry.ai.types.FlyingAI;
+ import mindustry.entities.Predict;
+ import mindustry.entities.Units;
+ import mindustry.gen.Teamc;
+ import mindustry.gen.Unit;
+ import mindustry.type.Weapon;
+ import mindustry.world.meta.BlockFlag;
 
-import static mindustry.Vars.state;
+ import static mindustry.Vars.state;
 
 /*FlyingAi but really aggressive */
 public class SearchAndDestroyFlyingAi extends FlyingAI {
-    public float delay = 70f * 60f, idleAfter;
     /*avoids stuttering on trying to go to spawn after target is null*/
-    public boolean suicideOnSuicideUnits = true, suicideOnTarget = false;
+    public float delay = 70f * 60f, idleAfter;
+    /*screw crawlers in particular*/
+    public boolean suicideOnSuicideUnits = false, suicideOnTarget = false;
     /*Compensate for target speed, for better chasing */
     public boolean compensateTargetSpeed = true;
+
+    public SearchAndDestroyFlyingAi(boolean suicideOnSuicideUnits){
+        this.suicideOnTarget = suicideOnSuicideUnits;
+    }
+    public SearchAndDestroyFlyingAi(){}
 
     @Override
     public void updateMovement(){
         unloadPayloads();
+
+        if(target == null){
+            if( Time.time >= idleAfter) {
+                if (unit.closestEnemyCore() != null) moveTo(unit.closestEnemyCore(), unit.range());
+                else if (getClosestSpawner() != null) moveTo(getClosestSpawner(), state.rules.dropZoneRadius + (unit.range() * 0.5f));
+                else moveTo(unit.closestCore(), unit.range());
+            }
+            else findMainTarget(unit.x, unit.y, unit.range(), unit.type().targetAir, unit.type().targetGround);
+        }
 
         if(target != null && unit.hasWeapons()){
             idleAfter = Time.time + delay;
@@ -34,19 +50,10 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
             if(unit.type.circleTarget){
                 circleAttack(120f);
             }else if (compensateTargetSpeed){
-                float moveSpd = target instanceof Unit tar ? unit.within(tarVec, range) ? Math.min(tar.speed(), unit.speed()): unit.speed() : unit.speed();
+                float moveSpd = target instanceof Unit tar ? unit.within(tarVec, range) ?tar.moving() ?Math.min(tar.speed(), unit.speed()): Mathf.lerp(unit.speed(), 0, 1f) : unit.speed() : unit.speed();
                 vec.set(tarVec).sub(unit).setLength(moveSpd);
-                unit.moveAt(vec);
+                if(suicideOnSuicideUnits || !unit.within(target, unit.range() * 0.95f)) unit.moveAt(vec);
             } else  moveTo(target, range);
-        }
-
-        if(target == null){
-            if( Time.time >= idleAfter) {
-                if (unit.closestEnemyCore() != null) moveTo(unit.closestEnemyCore(), unit.range());
-                else if (getClosestSpawner() != null) moveTo(getClosestSpawner(), state.rules.dropZoneRadius + (unit.range() * 0.5f));
-                else moveTo(unit.closestCore(), unit.range());
-            }
-            else findMainTarget(unit.x, unit.y, unit.range(), unit.type().targetAir, unit.type().targetGround);
         }
     }
 

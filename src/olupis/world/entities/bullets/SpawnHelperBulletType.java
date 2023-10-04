@@ -13,6 +13,7 @@ import olupis.world.blocks.defence.ItemUnitTurret;
 import static mindustry.Vars.*;
 
 public class SpawnHelperBulletType extends BasicBulletType {
+    public boolean hasParent = false;
 
     @Override
     public @Nullable Bullet create(@Nullable Entityc owner, @Nullable Entityc shooter, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data, @Nullable Mover mover, float aimX, float aimY) {
@@ -35,7 +36,8 @@ public class SpawnHelperBulletType extends BasicBulletType {
                     /* 0,0 on create for some reason*/
                     else if(u.targetPos != null && u.targetPos.x != 0 && u.targetPos.y != 0) spawned.command().commandPosition(u.targetPos);
                 }
-                if(spawned.controller() instanceof AgressiveFlyingAi ai && ai.hasParent) {
+                if(spawned.controller() instanceof AgressiveFlyingAi ai && hasParent) {
+                    ai.hasParent = true;
                     if (shooter instanceof Unit unit) ai.parent = unit;
                     if (shooter instanceof ControlBlock control) ai.parent = control.unit();
                 }

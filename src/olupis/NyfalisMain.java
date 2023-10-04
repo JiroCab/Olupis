@@ -7,6 +7,7 @@ import arc.scene.Group;
 import arc.scene.ui.Label;
 import arc.util.*;
 import mindustry.Vars;
+import mindustry.content.Items;
 import mindustry.content.Planets;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
@@ -60,6 +61,7 @@ public class NyfalisMain extends Mod{
             if(shouldAutoBan()) Time.run(0.5f * Time.toSeconds, () ->{ /*Delayed since custom games, for some reason needs it*/
                 /*Hiding blocks w/o banning them mainly for custom games */
                 state.rules.hiddenBuildItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
+                state.rules.hiddenBuildItems.addAll(Items.titanium);
             });
             unlockPlanets();
             if(headless)return;

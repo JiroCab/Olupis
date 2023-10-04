@@ -268,8 +268,8 @@ public class NyfalisUnits {
             segmentRotSpeed = 5f;
             crawlSlowdownFrac = 1f;
             drownTimeMultiplier = 4f;
-            allowLegStep = true;
             omniMovement = drawBody = false;
+            allowLegStep = true;
 
            weapons.addAll(new SnekWeapon(""){{
                 x = 0f;
@@ -484,8 +484,8 @@ public class NyfalisUnits {
             flying = targetGround = targetAir = true;
             playerControllable  = logicControllable = useUnitCap = false;
             constructor = UnitEntity::create;
-            controller = u -> new SearchAndDestroyFlyingAi();
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
+            controller = u -> new SearchAndDestroyFlyingAi(true);
             weapons.add(new Weapon(){{
                 y = x = 0f;
                 reload = 10f;
@@ -590,6 +590,7 @@ public class NyfalisUnits {
             flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
             speed = 3f;
+            ammoCapacity = 100;
 
             weapons.add(new Weapon(){{
                 top = false;
@@ -601,7 +602,7 @@ public class NyfalisUnits {
                     lifetime = 30f;
                     healPercent = 5f;
                     homingPower = 0.03f;
-                    buildingDamageMultiplier = 0.1f;
+                    buildingDamageMultiplier = 0.01f;
                     collidesTeam = true;
                     backColor = Pal.heal;
                     frontColor = Color.white;
@@ -797,6 +798,7 @@ public class NyfalisUnits {
                     shootStatusDuration = Fx.heal.lifetime;
                     shoot.firstShotDelay = Fx.heal.lifetime-1;
                     bullet = new SpawnHelperBulletType(){{
+                        hasParent = true;
                         shootEffect = Fx.shootBig;
                         spawnUnit = embryo;
                         //rangeOverride = mineRange;

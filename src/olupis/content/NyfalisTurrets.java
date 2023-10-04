@@ -233,34 +233,33 @@ public class NyfalisTurrets {
             researchCost = with(lead, 3000, iron, 3000, graphite, 3000);
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
             ammo(
-                    //TODO: Some how ignore Allied Non-Solids??? (ex: mines & conveyors)
-                    rustyIron, new RollBulletType(2.5f, 13){{
-                        frontColor = backColor = rustyIron.color;
-                        status = StatusEffects.slow;
-                        height = 9f;
-                        width = 40f;
-                        lifetime = 60f;
-                        knockback= 3f;
-                        homingRange = 100;
-                        homingPower = 0.2f;
-                        statusDuration = 60f * 1.1f;
-                        ammoMultiplier = pierceCap = 2;
-                        buildingDamageMultiplier = 0.4f;
-                    }},
-                    iron, new RollBulletType(3f, 25){{
-                        frontColor = backColor = iron.color;
-                        status = StatusEffects.slow;
-                        width = 40f;
-                        height = 11f;
-                        lifetime = 50f;
-                        pierceCap = 3;
-                        knockback = 3f;
-                        homingRange = 100f;
-                        ammoMultiplier = 2;
-                        homingPower = 0.2f;
-                        statusDuration = 60f * 2f;
-                        buildingDamageMultiplier = 0.4f;
-                    }}
+                rustyIron, new RollBulletType(2.5f, 13){{
+                    frontColor = backColor = rustyIron.color;
+                    status = StatusEffects.slow;
+                    height = 9f;
+                    width = 40f;
+                    lifetime = 60f;
+                    knockback= 3f;
+                    homingRange = 100;
+                    homingPower = 0.2f;
+                    statusDuration = 60f * 1.1f;
+                    ammoMultiplier = pierceCap = 2;
+                    buildingDamageMultiplier = 0.4f;
+                }},
+                iron, new RollBulletType(3f, 25){{
+                    frontColor = backColor = iron.color;
+                    status = StatusEffects.slow;
+                    width = 40f;
+                    height = 11f;
+                    lifetime = 50f;
+                    pierceCap = 3;
+                    knockback = 3f;
+                    homingRange = 100f;
+                    ammoMultiplier = 2;
+                    homingPower = 0.2f;
+                    statusDuration = 60f * 2f;
+                    buildingDamageMultiplier = 0.4f;
+                }}
             );
         }};
 
