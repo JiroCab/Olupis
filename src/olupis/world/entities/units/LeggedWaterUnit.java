@@ -10,104 +10,116 @@ import mindustry.gen.Legsc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
+import olupis.world.ai.NyfalisPathfind;
 
 public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     private static final Vec2 legOffset = new Vec2();
-    public float groundSpeed =  1f, navalSpeed = 0.8f;
-    boolean showLegsOnLiquid = true, lockLegsOnLiquid = true;
+    public float groundSpeed =  1f, navalSpeed = groundSpeed;
+    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true;
 
     public LeggedWaterUnit(String name){
         super(name);
         speed = groundSpeed;
-        canDrown = true;
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        pathCost = NyfalisPathfind.costLeggedNaval;
     }
 
     @Override
     public <T extends Unit & Legsc> void drawLegs(T unit){
-      if(!onWater(unit) || showLegsOnLiquid){
-          applyColor(unit);
-          Tmp.c3.set(Draw.getMixColor());
+        if(!showLegsOnDeepLiquid && onDeepWater(unit)) return;
+        if(!showLegsOnLiquid && onWater(unit)) return;
 
-          Leg[] legs = unit.legs();
+        applyColor(unit);
+        Tmp.c3.set(Draw.getMixColor());
 
-          float ssize = footRegion.width * footRegion.scl() * 1.5f;
-          float rotation = unit.baseRotation();
-          float invDrown = 1f - unit.drownTime;
+        Leg[] legs = unit.legs();
 
-          if(footRegion.found()){
-              for(Leg leg : legs){
-                  Drawf.shadow(leg.base.x, leg.base.y, ssize, invDrown);
-              }
-          }
+        float ssize = footRegion.width * footRegion.scl() * 1.5f;
+        float rotation = unit.baseRotation();
+        float invDrown = 1f - unit.drownTime;
 
-          //legs are drawn front first
-          for(int j = legs.length - 1; j >= 0; j--){
-              int i = (j % 2 == 0 ? j/2 : legs.length - 1 - j/2);
-              Leg leg = legs[i];
-              boolean flip = i >= legs.length/2f;
-              int flips = Mathf.sign(flip);
+        if(footRegion.found()){
+            for(Leg leg : legs){
+                Drawf.shadow(leg.base.x, leg.base.y, ssize, invDrown);
+            }
+        }
 
-              Vec2 position = unit.legOffset(legOffset, i).add(unit);
+        //legs are drawn front first
+        for(int j = legs.length - 1; j >= 0; j--){
+            int i = (j % 2 == 0 ? j/2 : legs.length - 1 - j/2);
+            Leg leg = legs[i];
+            boolean flip = i >= legs.length/2f;
+            int flips = Mathf.sign(flip);
 
-              Tmp.v1.set(leg.base).sub(leg.joint).inv().setLength(legExtension);
+            Vec2 position = unit.legOffset(legOffset, i).add(unit);
 
-              if(footRegion.found() && leg.moving && shadowElevation > 0){
-                  float scl = shadowElevation * invDrown;
-                  float elev = Mathf.slope(1f - leg.stage) * scl;
-                  Draw.color(Pal.shadow);
-                  Draw.rect(footRegion, leg.base.x + shadowTX * elev, leg.base.y + shadowTY * elev, position.angleTo(leg.base));
-                  Draw.color();
-              }
+            Tmp.v1.set(leg.base).sub(leg.joint).inv().setLength(legExtension);
 
-              Draw.mixcol(Tmp.c3, Tmp.c3.a);
+            if(footRegion.found() && leg.moving && shadowElevation > 0){
+                float scl = shadowElevation * invDrown;
+                float elev = Mathf.slope(1f - leg.stage) * scl;
+                Draw.color(Pal.shadow);
+                Draw.rect(footRegion, leg.base.x + shadowTX * elev, leg.base.y + shadowTY * elev, position.angleTo(leg.base));
+                Draw.color();
+            }
 
-              if(footRegion.found()){
-                  Draw.rect(footRegion, leg.base.x, leg.base.y, position.angleTo(leg.base));
-              }
+            Draw.mixcol(Tmp.c3, Tmp.c3.a);
 
-              Lines.stroke(legRegion.height * legRegion.scl() * flips);
-              Lines.line(legRegion, position.x, position.y, leg.joint.x, leg.joint.y, false);
+            if(footRegion.found()){
+                Draw.rect(footRegion, leg.base.x, leg.base.y, position.angleTo(leg.base));
+            }
 
-              Lines.stroke(legBaseRegion.height * legRegion.scl() * flips);
-              Lines.line(legBaseRegion, leg.joint.x + Tmp.v1.x, leg.joint.y + Tmp.v1.y, leg.base.x, leg.base.y, false);
+            Lines.stroke(legRegion.height * legRegion.scl() * flips);
+            Lines.line(legRegion, position.x, position.y, leg.joint.x, leg.joint.y, false);
 
-              if(jointRegion.found()){
-                  Draw.rect(jointRegion, leg.joint.x, leg.joint.y);
-              }
-          }
+            Lines.stroke(legBaseRegion.height * legRegion.scl() * flips);
+            Lines.line(legBaseRegion, leg.joint.x + Tmp.v1.x, leg.joint.y + Tmp.v1.y, leg.base.x, leg.base.y, false);
 
-          //base joints are drawn after everything else
-          if(baseJointRegion.found()){
-              for(int j = legs.length - 1; j >= 0; j--){
-                  //TODO does the index / draw order really matter?
-                  Vec2 position = unit.legOffset(legOffset, (j % 2 == 0 ? j/2 : legs.length - 1 - j/2)).add(unit);
-                  Draw.rect(baseJointRegion, position.x, position.y, rotation);
-              }
-          }
+            if(jointRegion.found()){
+                Draw.rect(jointRegion, leg.joint.x, leg.joint.y);
+            }
+        }
 
-          if(baseRegion.found()){
-              Draw.rect(baseRegion, unit.x, unit.y, rotation - 90);
-          }
+        //base joints are drawn after everything else
+        if(baseJointRegion.found()){
+            for(int j = legs.length - 1; j >= 0; j--){
+                //TODO does the index / draw order really matter?
+                Vec2 position = unit.legOffset(legOffset, (j % 2 == 0 ? j/2 : legs.length - 1 - j/2)).add(unit);
+                Draw.rect(baseJointRegion, position.x, position.y, rotation);
+            }
+        }
 
-          Draw.reset();
-      };
+        if(baseRegion.found()){
+            Draw.rect(baseRegion, unit.x, unit.y, rotation - 90);
+        }
+
+        Draw.reset();
     }
+
     @Override
     public void update(Unit unit){
         if (onWater(unit)){
             speed = navalSpeed;
             omniMovement = false;
-            naval = true;
         }else {
             speed = groundSpeed;
             omniMovement = true;
-            naval = false;
         }
         speed = onWater(unit) ? navalSpeed : groundSpeed;
+        /*Workaround so they don't drown */
+        unit.drownTime = 0f;
         super.update(unit);
     }
 
     public boolean onWater(Unit unit){
         return unit.floorOn().isLiquid;
+    }
+
+    public boolean onDeepWater(Unit unit){
+        return unit.floorOn().isLiquid && unit.floorOn().drownTime > 0;
     }
 }

@@ -7,14 +7,14 @@ import arc.scene.Group;
 import arc.scene.ui.Label;
 import arc.util.*;
 import mindustry.Vars;
-import mindustry.content.Items;
 import mindustry.content.Planets;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
-import mindustry.type.*;
+import mindustry.type.Planet;
+import mindustry.type.Sector;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Block;
@@ -43,13 +43,14 @@ public class NyfalisMain extends Mod{
         NyfalisBlocks.LoadWorldTiles();
         NyfalisBlocks.LoadBlocks();
         NyfalisSchematic.LoadSchematics();
+        NyfalisAttributeWeather.loadWeather();
         NyfalisPlanets.LoadPlanets();
         NyfalisSectors.LoadSectors();
         NyfalisSounds.LoadMusic();
 
         NyfalisPlanets.PostLoadPlanet();
         NyfalisTechTree.load();
-        NyfalisAttribute.AddAttributes();
+        NyfalisAttributeWeather.AddAttributes();
         NyfalisUnits.PostLoadUnits();
 
         Log.info("OwO, Nyfalis (Olupis) content Loaded! Hope you enjoy nya~");
@@ -61,7 +62,6 @@ public class NyfalisMain extends Mod{
             if(shouldAutoBan()) Time.run(0.5f * Time.toSeconds, () ->{ /*Delayed since custom games, for some reason needs it*/
                 /*Hiding blocks w/o banning them mainly for custom games */
                 state.rules.hiddenBuildItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
-                state.rules.hiddenBuildItems.addAll(Items.titanium);
             });
             unlockPlanets();
             if(headless)return;

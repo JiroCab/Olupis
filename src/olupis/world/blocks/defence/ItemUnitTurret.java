@@ -45,6 +45,10 @@ public class ItemUnitTurret extends ItemTurret {
     public TextureRegion bottomRegion;
     /*Hovering Shows the unit creation*/
     public boolean hoverShowsSpawn = false;
+    /*Aim at the rally point*/
+    public boolean rallyAim = false;
+    /*Aim for closest liquid*/
+    public boolean liquidAim = false;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
 
@@ -158,7 +162,7 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public void updateTile(){
-            if(commandPos != null) targetPos = commandPos;
+
             speedScl = Mathf.lerpDelta(speedScl, 1f, 0.05f);
             time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
 
@@ -253,7 +257,17 @@ public class ItemUnitTurret extends ItemTurret {
         public Vec2 getCommandPosition(){return commandPos;}
 
         @Override
-        protected void findTarget(){if(commandPos == null)  super.findTarget();}
+        protected void findTarget(){
+            if(rallyAim){
+                if(commandPos != null) targetPos = commandPos;
+                return;
+            }
+            if(liquidAim){
+                target = indexer.findTile(team, x, y, range, t-> !t.checkSolid() && t.floor().isLiquid, false);
+            }
+
+            super.findTarget();
+        }
 
         @Override
         public void onCommand(Vec2 tar){commandPos = tar;}
@@ -261,6 +275,7 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         /*Work around for rally point without fully rewriting updateTile*/
         public boolean logicControlled(){return logicControlTime > 0 || commandPos != null;}
+
 
         @Override
         public Object senseObject(LAccess sensor){

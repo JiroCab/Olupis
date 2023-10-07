@@ -535,7 +535,7 @@ public class NyfalisUnits {
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{
             speed = 2.5f;
-            ammoCapacity = 60;
+            ammoCapacity = 160;
 
             weapons.add(new RepairBeamWeapon("repair-beam-weapon-center"){{
                 shootY = 6f;
@@ -561,15 +561,15 @@ public class NyfalisUnits {
 
         banshee = new LeggedWaterUnit("banshee"){{
             hitSize = 8f;
-            speed = 0.5f;
+
             legCount = 4;
             health = 150;
             mineTier = 3;
             legLength = 9f;
             mineSpeed = 4f;
-            legForwardScl = 0.6f;
             legMoveSpace = 1.4f;
             ammoCapacity = 300;
+            navalSpeed = 1.1f;
 
             ammoType = lifeTimeDrill;
             groundLayer = Layer.legUnit;
@@ -577,8 +577,8 @@ public class NyfalisUnits {
             timedOutFx = NyfalisFxs.failedMake;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = true;
-            isEnemy = useUnitCap = ammoDepletesOverTime = depleteOnInteraction = false;
+            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = naval =  true;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = showLegsOnDeepLiquid = false;
         }};
 
 
