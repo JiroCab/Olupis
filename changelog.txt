@@ -10,6 +10,8 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
     ~ Maps updated: forestOfHope, sanctuary, dormantCell
     ~ Added in-map credits for the maps above
     ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor
+    ~ Sprites Contributed by kapzduke: pipeJuntion, pipeRouter, ironPipe, leadPipe, WindMill, Corroder [https://github.com/kapzduke]
+    ~ Maps Contributed MrApple: vakinyaDesert, muddyRivers
     ~ improved shadows of various props
     ~ Finalized shredder & dissolver
     ~ Pipes has been reworked, made better for longer distance in exchange for lower capacity
@@ -33,10 +35,10 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
     ~ Updated and made load disclaimer taggable
     ~ Bug fix: all cores except remnant can be chosen to be launched
     ~ Internal: Deprecated taurus using MendTurret, uses PowerTurret instead
-	~ Internal: Turrets moved out of NyfalisBlocks.java and into NyfalisTurrets.java
-	~ Internal: PowerUnitTurret extends ItemUnitTurret instead of PowerTurret
-	~ Internal: Vaguely sorted classes of block types
-	~ Internal: toxopid updated (3.0.0 -> 3.2.0)
+    ~ Internal: Turrets moved out of NyfalisBlocks.java and into NyfalisTurrets.java
+    ~ Internal: PowerUnitTurret extends ItemUnitTurret instead of PowerTurret
+    ~ Internal: Vaguely sorted classes of block types
+    ~ Internal: toxopid updated (3.0.0 -> 3.2.0)
     ~ Improve Planet rules, Custom unit Ai, Tech tree, Core database and Fx
     ~ Sprites Contributed by Remington Thomas: rustyIron, venom, bay, blitz, crusader
     ~ Given coreRelic, coreShrine, coreTemple a weapon
@@ -76,18 +78,18 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
 = Version 1-3 (01b8973) = https://github.com/JiroCab/Olupis/tree/01b8973727ccff584c453dd5cbe52a7e3a999117
     + Added Placeholder1 for the two planets
     + Olupis Tech tree now takes a items from all 3 planet's sectors
-	+ Added Raw Files of certain sprites (.aseprite & .ase Contributed by NightmarishWolf)
+    + Added Raw Files of certain sprites (.aseprite & .ase Contributed by NightmarishWolf)
     + Added Mod options to turn off invasive features
-	+ Added an option for Green team to have the corroded icon
-	+ Added Code play music via overriding the game music Seq (wip)
+    + Added an option for Green team to have the corroded icon
+    + Added Code play music via overriding the game music Seq (wip)
     + World tiles added - pinkGrass, pinkGrassWater, pinkShrubs, pinkTree
     + Units added - zoner
     + Blocks added - shredder, fortifiedTank, fortifiedCanister, mendFieldProjector, taurus, rustyPump, iron junction,  rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic
-	~ Units Sprites updated - gnat
+    ~ Units Sprites updated - gnat
     ~ Sprites Updated - iron, corroder, rustyIronConveyor, ironConveyor, cobaltConveyor, pipeBridge, pipeRouter, coreRemnant, windmill, garden, coreRemnant, ironWall, ironWallLarge, rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic
     ~ Fixed certain blocks not having / improper Ui Icons
-	~ Fixed windMills generating light
-	~ Fixed steam being used as coolant by Serpulo turrets
+    ~ Fixed windMills generating light
+    ~ Fixed steam being used as coolant by Serpulo turrets
     ~ Updated README.md
     ~ Updated Olupis TechTree
     ~ Updated bundle.properties
@@ -96,7 +98,7 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
     ~ Made some of Serpulo's items included in Olupis planets' items, will be whitelisting Olupis blocks instead & ban-hide other blocks
     ~ updated debug button export map for changes above
     ~ Packages changed 'com.jirocab.planets' to 'olupis' (Name was not final when orginal packages made and changing it now while it's early)
-	~ Bumped required Mindustry Version in build.gradle [v140.4 -> v141]
+    ~ Bumped required Mindustry Version in build.gradle [v140.4 -> v141]
     -- Removed rustyPipe Variants (No easy way to add variants)
 
 

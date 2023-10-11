@@ -12,9 +12,9 @@ public class NyfalisSectors {
 
     public  static SectorPreset
         /*Arthin*/
-        sanctuary,
+        sanctuary, vakinyaDesert, muddyRivers, mossyRavine,
         /*Nyfalis*/
-        vakinyaDesert, placeholder2,
+        placeholder2,
         /*Spelta*/
          dormantCell, forestOfHope
     ;
@@ -30,15 +30,24 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, false);
         }};
 
-        //endregion
-        //region Nyfalis
-        vakinyaDesert = new SectorPreset("vakinya-desert", nyfalis, 2){{
+        vakinyaDesert = new SectorPreset("vakinya-desert", arthin, 10){{
             addStartingItems = overrideLaunchDefaults = true;
 
             captureWave = 17;
             rules = commonRules(captureWave, 22.32f);
             difficulty = 2;
         }};
+
+        muddyRivers = new SectorPreset("muddy-rivers", arthin, 21){{
+            addStartingItems = overrideLaunchDefaults = true;
+
+            captureWave = 38;
+            rules = commonRules(captureWave, 22.32f);
+            difficulty = 2;
+        }};
+
+        //endregion
+        //region Nyfalis
 
         placeholder2 = new SectorPreset("placeholder2", nyfalis, 69){{
             captureWave = 20;

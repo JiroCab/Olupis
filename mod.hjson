@@ -6,7 +6,7 @@ displayName: "Nyfalis (Olupis)"
 name: "olupis"
 
 #your name
-author: "Programming:\nRushieWashie, Siede, WMF Industries \n---------------------\nSprites:\nRushieWashie, Remington Thomas, Ethanol10\n---------------------\nMaps:\nRushieWashie, MrApple, Remington Thomas "
+author: "Programming:\nRushieWashie, Siede, WMF Industries \n---------------------\nSprites:\nRushieWashie, Remington Thomas, Ethanol10, kapzduke\n---------------------\nMaps:\nRushieWashie, MrApple, Remington Thomas "
 
 #the fully qualified main class of the mod
 main: "olupis.NyfalisMain"

@@ -1,7 +1,6 @@
 package olupis.input;
 
 import mindustry.ai.UnitCommand;
-import mindustry.ai.types.DefenderAI;
 import olupis.world.ai.*;
 
 public class NyfalisUnitCommands {
@@ -22,7 +21,7 @@ public class NyfalisUnitCommands {
             drawTarget = true;
         }}, healCommand = new UnitCommand("nyfalis-heal", "units", u -> new UnitHealerAi()),
         nyfalisMineCommand = new UnitCommand("mine", "production", u -> new NyfalisMiningAi()),
-        nyfalisGuardCommand = new UnitCommand ("nyfalis-guard", "units", u -> new DefenderAI()),
+        nyfalisGuardCommand = new UnitCommand ("nyfalis-guard", "units", u ->  new ArmDefenderAi()),
         nyfalisMendCommand = new UnitCommand ("nyfalis-mend", "add", u -> {
             //No other better word for this
             var ai = new UnitHealerAi();

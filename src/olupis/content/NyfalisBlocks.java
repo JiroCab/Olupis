@@ -21,6 +21,8 @@ import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
+import mindustry.world.blocks.payloads.PayloadConveyor;
+import mindustry.world.blocks.payloads.PayloadRouter;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.BeamNode;
 import mindustry.world.blocks.production.*;
@@ -87,7 +89,7 @@ public class NyfalisBlocks {
 
         garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver,
 
-        construct, arialConstruct, groundConstruct, navalConstruct, unitReplicator, unitReplicatorSmall,
+        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
@@ -171,19 +173,19 @@ public class NyfalisBlocks {
             attributes.set(Attribute.water, 0.25f);
         }};
 
-        mossierStone = new Floor("mossier-stone"){{
+        mossyStone = new Floor("mossy-stone"){{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        mossyStone = new Floor("mossy-stone"){{
+        /*TODO: diff gray-greens for each stage*/
+        mossierStone = new Floor("mossier-stone"){{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
         mossiestStone = new Floor("mossiest-stone"){{
             attributes.set(bio, 0.1f);
-            mapColor = mossierStone.mapColor;
             attributes.set(Attribute.water, 0.1f);
         }};
 
@@ -950,11 +952,6 @@ public class NyfalisBlocks {
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = venom;
-                }},
-                iron, new SpawnHelperBulletType(){{
-                    shootEffect = Fx.smeltsmoke;
-                    ammoMultiplier = 2f;
-                    spawnUnit = porter;
                 }}
             );
             requiredItems = Seq.with(silicon);
@@ -976,7 +973,7 @@ public class NyfalisBlocks {
                 graphite, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
-                    spawnUnit = venom;
+                    spawnUnit = bay;
                 }},
                 iron, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
@@ -990,6 +987,22 @@ public class NyfalisBlocks {
             researchCost = with(rustyIron, 1000, silicon, 600,  iron, 600);
             requirements(Category.units, with(iron, 100, rustyIron, 100, silicon, 50));
         }};
+
+        fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
+            requirements(Category.units, with(Items.graphite, 10    , iron, 10));
+            canOverdrive = false;
+            payloadLimit = 4f;
+            size =4;
+        }};
+
+        fortifiePayloadRouter = new PayloadRouter("fortified-payload-router"){{
+            requirements(Category.units, with(Items.graphite, 15, iron, 10));
+            canOverdrive = false;
+            payloadLimit = 4f;
+            size = 4;
+        }};
+
+        //TODO: payloadLifter -> payload into a air unit to drop off at configured location, air unit can be killed
 
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;

@@ -114,6 +114,7 @@ public class NyfalisPlanets {
         }};
 
         //TODO: rework the planets generators
+        //TODO: Caves, capture 1, get 2 sectors!
     }
 
     public  static void PostLoadPlanet(){

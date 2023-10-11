@@ -1,7 +1,6 @@
 package olupis.world.entities.units;
 
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Tmp;
@@ -15,7 +14,7 @@ import olupis.world.ai.NyfalisPathfind;
 public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     private static final Vec2 legOffset = new Vec2();
     public float groundSpeed =  1f, navalSpeed = groundSpeed;
-    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true;
+    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true, floaterOnHiddenLegs = false;
 
     public LeggedWaterUnit(String name){
         super(name);
@@ -30,8 +29,14 @@ public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
 
     @Override
     public <T extends Unit & Legsc> void drawLegs(T unit){
-        if(!showLegsOnDeepLiquid && onDeepWater(unit)) return;
-        if(!showLegsOnLiquid && onWater(unit)) return;
+        if(!showLegsOnDeepLiquid && onDeepWater(unit)){
+            drawFloaters(unit);
+            return;
+        }
+        if(!showLegsOnLiquid && onWater(unit)){
+            drawFloaters(unit);
+            return;
+        }
 
         applyColor(unit);
         Tmp.c3.set(Draw.getMixColor());
@@ -97,6 +102,13 @@ public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
             Draw.rect(baseRegion, unit.x, unit.y, rotation - 90);
         }
 
+        Draw.reset();
+    }
+
+    public <T extends Unit & Legsc> void drawFloaters(T unit){
+        if(!floaterOnHiddenLegs) return;
+        applyColor(unit);
+        Draw.rect(treadRegion, unit.x, unit.y, unit.rotation - 90);
         Draw.reset();
     }
 

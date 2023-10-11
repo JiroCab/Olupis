@@ -58,7 +58,7 @@ public class AgressiveFlyingAi extends FlyingAI {
     }
 
     public void updateWeapons(){
-        if(parent != null && !parent.dead){
+        if(parent != null && !parent.dead && hasParent){
 
             Vec2 aimVec = Predict.intercept(vec , new Vec2(parent.aimX, parent.aimY), unit.type.weapons.first().bullet.speed);
             if(!parent.isShooting) aimVec = Predict.intercept(vec, unit, unit.speed());

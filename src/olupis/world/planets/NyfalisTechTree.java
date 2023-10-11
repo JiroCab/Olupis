@@ -19,18 +19,21 @@ public class NyfalisTechTree {
             node(system, () -> {
                 node(arthin, () ->{
                     node(NyfalisSectors.sanctuary, () -> {
+                        node(NyfalisSectors.vakinyaDesert, () -> {
+                            node(NyfalisSectors.muddyRivers, Seq.with(
+                                    new Objectives.Research(steamDrill), new Objectives.Research(ironSieve)
+                            ),() ->{
 
+                            });
+                        });
                     });
                 });
                 node(nyfalis, Seq.with(
                         new Objectives.SectorComplete(NyfalisSectors.sanctuary)
                 ),() ->{
-                    node(NyfalisSectors.vakinyaDesert, () -> {
-                        node(NyfalisSectors.placeholder2, Seq.with(
-                                new Objectives.SectorComplete(NyfalisSectors.vakinyaDesert)
-                        ), () ->{
-
-                        });
+                    node(NyfalisSectors.placeholder2, Seq.with(
+                            new Objectives.SectorComplete(NyfalisSectors.vakinyaDesert)
+                    ), () ->{
                     });
                 });
                 node(spelta, Seq.with(

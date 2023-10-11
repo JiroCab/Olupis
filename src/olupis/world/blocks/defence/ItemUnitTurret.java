@@ -51,6 +51,7 @@ public class ItemUnitTurret extends ItemTurret {
     public boolean liquidAim = false;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
+    /*TODO: mode to use payload or deploy units*/
 
     public ItemUnitTurret(String name){
         super(name);

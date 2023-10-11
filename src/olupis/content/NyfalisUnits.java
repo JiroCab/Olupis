@@ -4,7 +4,6 @@ import arc.graphics.Color;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import mindustry.ai.UnitCommand;
-import mindustry.ai.types.DefenderAI;
 import mindustry.content.*;
 import mindustry.entities.abilities.UnitSpawnAbility;
 import mindustry.entities.bullet.*;
@@ -225,7 +224,7 @@ public class NyfalisUnits {
             engineOffset = 4.6f;
 
             constructor = UnitEntity::create;
-            aiController = DefenderAI::new;
+            aiController = ArmDefenderAi::new;
             lowAltitude = flying = canGuardUnits = true;
             defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
             weapons.add(new Weapon("olupis-zoner-weapon"){{
@@ -577,7 +576,7 @@ public class NyfalisUnits {
             timedOutFx = NyfalisFxs.failedMake;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = naval =  true;
+            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = naval = floaterOnHiddenLegs = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = showLegsOnDeepLiquid = false;
         }};
 

@@ -6,6 +6,7 @@ import mindustry.content.StatusEffects;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.type.Weather;
+import mindustry.type.weather.ParticleWeather;
 import mindustry.type.weather.RainWeather;
 import mindustry.world.meta.Attribute;
 
@@ -17,7 +18,7 @@ public class NyfalisAttributeWeather {
     public static final Attribute bio = Attribute.add("bio");
     /*Used by hydroMill yield*/
     public static final Attribute hydro = Attribute.add("hydro");
-    public static Weather acidRain;
+    public static Weather acidRain, mossMist;
 
     public static void AddAttributes(){
         ice.attributes.set(bio, 0.01f);
@@ -65,6 +66,36 @@ public class NyfalisAttributeWeather {
             soundVol = 0.3f;
             splashTimeScale = 25f;
         }};
+
+        mossMist = new DamgingParticleWeather("mossmist"){{
+            attrs.set(bio, +0.2f);
+            attrs.set(Attribute.light, -0.35f);
+
+            noisePath = "clouds";
+            status = StatusEffects.none;
+            color = noiseColor =  Color.valueOf("50766A");
+
+            drawNoise = true;
+            useWindVector = false;
+
+            soundVol = 0.2f;
+            damageUnits = 0f;
+            damageBlock = 2.5f;
+            damageDelay = 2f * Time.toMinutes;
+
+            noiseLayers = 3;
+            noiseLayerSclM = 0.6f;
+            noiseLayerSpeedM = 2f;
+            noiseLayerAlphaM = 0.7f;
+            opacityMultiplier = 0.35f;
+
+            sizeMax = 4f;
+            sizeMin = 1.4f;
+            minAlpha = 0.5f;
+            maxAlpha = 1f;
+            density = 10000f;
+            baseSpeed = 0.03f;
+        }};
     }
 
     public static class AcidRainWeather extends RainWeather{
@@ -80,12 +111,39 @@ public class NyfalisAttributeWeather {
             if(coolDown) return;
             coolDown = true;
             Time.run(damageDelay, () ->{
-                Groups.build.each(b ->{
+                if(damageBlock > 0)Groups.build.each(b ->{
                     if(b.team == Team.derelict) return;
                     b.damage(damageBlock);
                 });
                 /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
-                Groups.unit.each(u -> u.damage(damageUnits));
+                if(damageUnits > 0)Groups.unit.each(u -> u.damage(damageUnits));
+                coolDown = false;
+            });
+        }
+    }
+
+    public static class  DamgingParticleWeather extends ParticleWeather{
+        public float damageDelay = 1.5f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f;
+        boolean coolDown = false;
+
+        public DamgingParticleWeather(String name){
+            super(name);
+        }
+
+
+        @Override
+        public void update(WeatherState state){
+            super.update(state);
+
+            if(coolDown) return;
+            coolDown = true;
+            Time.run(damageDelay, () ->{
+                if(damageBlock > 0)Groups.build.each(b ->{
+                    if(b.team == Team.derelict) return;
+                    b.damage(damageBlock);
+                });
+                /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
+                if(damageUnits > 0)Groups.unit.each(u -> u.damage(damageUnits));
                 coolDown = false;
             });
         }
