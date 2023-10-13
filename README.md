@@ -12,12 +12,18 @@ you can figure out the rest, you got this, you're a smart cookie
 
 [Discord server](https://discord.gg/S8wuZAF4ZZ) to talk and complain about the mod.
 
+# Contributing
+With the way the repository is structured, please refer to the [Experimental branch](https://github.com/JiroCab/Olupis/tree/experimental) on basing changes to avoid conflict.
+And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/Olupis/blob/experimental/changelog.txt) in case of any similar changes are made
+
 ## Credits:
-* [RushieWashie](https://github.com/JiroCab) - Programming, Sprites
-* [Remington Thomas](https://github.com/NightmarishWolf) - Sprites, Ideas, Organization
+* [RushieWashie](https://github.com/JiroCab) - Code, Sprites, Maps
+* [Remington Thomas](https://github.com/NightmarishWolf) - Sprites, Ideas, Organization, Maps
 * [Ethanol10](https://github.com/SuperEthanol10) - Sprites
 * [Siede](https://github.com/siede2010) - Programing, Sprites
-* [WMF Industries](https://github.com/WMF-Industries) - Programming
+* [WMF Industries](https://github.com/WMF-Industries) - Code
+* MrApple - Maps
+* [Kapzduke](https://github.com/kapzduke) - Code
 
 ### Music Credits
 * Blossom, Dusk, Feu, Main Title, Reclaiming the Wasteland, Sparkles of Hope - [Terra Nil Soundtrack by Meydän](https://store.steampowered.com/app/2321920/Terra_Nil_Soundtrack/) 

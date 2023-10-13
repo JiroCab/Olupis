@@ -8,7 +8,7 @@ public class NyfalisSchematic {
     public static Schematic basicRemnant, basicVestige, basicRelic, basicShrine, basicTemple;
 
     public static void LoadSchematics(){
-        basicRemnant = Schematics.readBase64("bXNjaAF4nC3LMQ6AIAwF0A8YF908B5dxNQ4VOzSBQije38T49gcPHzApFcZ6kUnauSjpwHKzpS5tSFUAc6aLs8Efp8NW89PEYqqdY/8D4PAJL9xwFh4=");
+        basicRemnant = Schematics.readBase64("bXNjaAF4nGNgYmBiZmDJS8xNZWDxq0ysY+BOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQzs8pLcgs1k3OL0rVLUrNzUvMKwGqYWSAAADyAxLi");
         basicVestige = Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZWAPSy0uyUxPZeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQzs8pLcgs1k3OL0rVLYNqYGBgBCEgAQBHxhQc");
         basicRelic = Schematics.readBase64("bXNjaAF4nGNgYWBhZmDJS8xNZWANSs3JTGbgTkktTi7KLCjJzM9jYGBgy0lMSs0pZmCKjmVkEMzPKS3ILNZNzi9K1S0CK2dgYAQhIAEA1/0SSg==");
         basicShrine = Schematics.readBase64("bXNjaAF4nCXKMQqAIBiA0U9Ll7bu4Wkao8HshwRT0bp/Qbz1YTADY/aXYJezxSxMh/TQYr1jyYBNfpfU0eummEt6auwulCau/x8U6A8vEaQTRA==");

@@ -11,9 +11,7 @@ import mindustry.gen.Icon;
 import mindustry.gen.Iconc;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import mindustry.ui.Bar;
-import mindustry.ui.Fonts;
-import mindustry.ui.Styles;
+import mindustry.ui.*;
 import mindustry.world.meta.Stat;
 
 import java.util.Objects;
@@ -33,7 +31,6 @@ public class PowerUnitTurret extends ItemUnitTurret {
         super.setBars();
         removeBar("units");
 
-        /*TODO: Takes a bit to update*/
         addBar("units", (PowerUnitTurretBuild e) ->{
             UnitType unit = e.peekAmmo() == shootType ? shootType.spawnUnit : e.peekAmmo().spawnUnit;
             return new Bar(() -> Core.bundle.format("bar.unitcap",

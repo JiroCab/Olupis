@@ -34,10 +34,10 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
     Block[][] arr =
             {
-                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossStone, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone },
-                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, Blocks.grass},
-                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, NyfalisBlocks.mossierStone},
-                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, Blocks.stone},
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossStone, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, Blocks.dirt },
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, Blocks.grass},
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, NyfalisBlocks.mossierStone},
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, Blocks.stone},
                     {Blocks.water, Blocks.sandWater, Blocks.sandWater, NyfalisBlocks.mossierStone, Blocks.stone, NyfalisBlocks.mossyStone, NyfalisBlocks.mossierStone},
                     {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.dirt, NyfalisBlocks.mossyStone, Blocks.dirt, Blocks.stone, Blocks.grass },
                     { Blocks.sandWater, Blocks.sandWater, Blocks.dirt, Blocks.dirt, Blocks.stone, Blocks.grass, Blocks.grass},

@@ -4,6 +4,7 @@ import arc.Core;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
 import mindustry.content.Fx;
+import mindustry.content.Liquids;
 import mindustry.entities.Effect;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.draw.*;
@@ -24,9 +25,12 @@ public class WindMill extends PowerGenerator {
         envEnabled ^= Env.space;
         group = BlockGroup.power;
 
-        drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.5f * 9f){{
-            blurThresh =  0.01f;
-        }});
+        drawer = new DrawMulti(
+            new DrawRegion("-bottom"),
+            new DrawLiquidTile(Liquids.oil, 2f){{alpha = 0.8f;}},
+            new DrawDefault(),
+            new DrawBlurSpin("-rotator", 0.6f * 9f){{blurThresh =  0.01f;}}
+        );
     }
 
     @Override

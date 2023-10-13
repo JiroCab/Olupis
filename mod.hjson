@@ -1,19 +1,20 @@
 #the mod name as displayed in-game
 displayName: "Nyfalis (Olupis)"
+# TODO: fix identity crisis
 
 #the internal name of your mod
 name: "olupis"
 
 #your name
-author: "RushieWashie, Remington Thomas, Ethanol10, Siede, WMF Industries"
+author: "Programming:\nRushieWashie, Siede, WMF Industries \n---------------------\nSprites:\nRushieWashie, Remington Thomas, Ethanol10, kapzduke\n---------------------\nMaps:\nRushieWashie, MrApple, Remington Thomas "
 
 #the fully qualified main class of the mod
 main: "olupis.NyfalisMain"
 
 #the mod description as seen in the mod dialog
-description: "(\u26A0Work in progress\u26A0) Yet another planet mod "
+description: "(\u26A0Work in progress\u26A0) Yet another planet mod \n with a hint of traces of pain"
 
-subtitle: "Yet another planet mod, v1.5"
+subtitle: "Yet another planet mod, v1.6"
 
 #the mod version
 version: 1.5

@@ -19,24 +19,27 @@ public class NyfalisTechTree {
             node(system, () -> {
                 node(arthin, () ->{
                     node(NyfalisSectors.sanctuary, () -> {
+                        node(NyfalisSectors.vakinyaDesert, () -> {
+                            node(NyfalisSectors.muddyRivers, Seq.with(
+                                    new Objectives.Research(steamDrill), new Objectives.Research(ironSieve)
+                            ),() ->{
 
-                    });
-                });
-                node(nyfalis, () ->{
-                    node(NyfalisSectors.placeholder1, Seq.with(
-                            new Objectives.SectorComplete(NyfalisSectors.sanctuary)
-                    ), () -> {
-                        node(NyfalisSectors.placeholder2, Seq.with(
-                                new Objectives.SectorComplete(NyfalisSectors.placeholder1)
-                        ), () ->{
-
+                            });
                         });
                     });
                 });
-                node(spelta, () ->{
-                    node(NyfalisSectors.forestOfHope, Seq.with(
-                            new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
+                node(nyfalis, Seq.with(
+                        new Objectives.SectorComplete(NyfalisSectors.sanctuary)
+                ),() ->{
+                    node(NyfalisSectors.placeholder2, Seq.with(
+                            new Objectives.SectorComplete(NyfalisSectors.vakinyaDesert)
                     ), () ->{
+                    });
+                });
+                node(spelta, Seq.with(
+                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
+                ), () ->{
+                    node(NyfalisSectors.forestOfHope,  () ->{
                         node(NyfalisSectors.dormantCell,  ()-> {
 
                         });
@@ -46,23 +49,31 @@ public class NyfalisTechTree {
             });
 
             node(gnat, ()->{
-                node(aero, () -> {
+                node(aero, Seq.with(
+                    new  Objectives.Research(arialConstruct)
+                ), () -> {
                     node(striker, () -> {
 
                     });
                 });
 
-                node(spirit, () ->{
+                node(spirit, Seq.with(
+                    new  Objectives.Research(construct)
+                ), () ->{
                     node(phantom, () ->{
                         node(banshee, () -> {
 
                         });
                     });
                 });
-                node(venom, () -> {
+                node(venom, Seq.with(
+                        new  Objectives.Research(groundConstruct)
+                ), () -> {
 
                 });
-                node(porter, () -> {
+                node(porter, Seq.with(
+                        new  Objectives.Research(groundConstruct)
+                ), () -> {
                     node(zoner, () -> {
 
                     });
@@ -72,7 +83,9 @@ public class NyfalisTechTree {
                         });
                     });
                 });
-                node(phorid, () -> {
+                node(phorid, Seq.with(
+                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(coreRelic)
+                ), () -> {
                     node(embryo, () -> {
 
                     });
@@ -93,7 +106,7 @@ public class NyfalisTechTree {
 
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
-                        node(rustElectrolyzer, Seq.with(new Objectives.Research(steam)), () -> {
+                        node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder)), () -> {
                             node(garden,()->{
                                 node(bioMatterPress, () ->{
 
@@ -121,7 +134,7 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(leadPipe, Seq.with(new Objectives.Research(rustyDrill)), () -> {
+                node(leadPipe, Seq.with(new Objectives.Research(windMills)), () -> {
                     node(rustyPump, () ->{
                         node(pipeRouter, ()->{
                             node(fortifiedCanister, ()->{
@@ -202,7 +215,7 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(corroder, Seq.with(new Objectives.Research(ironRouter)), ()-> {
+                node(corroder, Seq.with(new Objectives.Research(rustyPump)), ()-> {
                     node(avenger, () -> {
                         node(dissolver, ()->{
 

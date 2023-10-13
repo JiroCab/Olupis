@@ -2,7 +2,29 @@
 https://github.com/JiroCab/Olupis
 Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
 
-= Beta 1-5 () =
+= Version 1-6 () =
+    + Made planets be hidden until a sector is unlocked for it
+    + Weather added: acidRain
+    + Blocks added: glowBloom, luminiteBoulder, obliterator, navalConstruct
+    + Maps added: vakinyaDesert
+    ~ Maps updated: forestOfHope, sanctuary, dormantCell
+    ~ Added in-map credits for the maps above
+    ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor
+    ~ Sprites Contributed by kapzduke: pipeJuntion, pipeRouter, ironPipe, leadPipe, WindMill, Corroder [https://github.com/kapzduke]
+    ~ Maps Contributed MrApple: vakinyaDesert, muddyRivers
+    ~ improved shadows of various props
+    ~ Finalized shredder & dissolver
+    ~ Pipes has been reworked, made better for longer distance in exchange for lower capacity
+    ~ Conveyor & Bridges speed increased, from half of serpulo counterparts to about 70-75%~
+    ~ Gnats & Phorid now deal damage on death
+    ~ Moved hydroMill to post-cobalt
+    ~ Improved Shredder's bullet's detection
+    ~ Improved Tech tree, new player experience, buildSpeed
+    ~ Bug Fix: Constructs not spawning units on maps without cores despite being on the wave team
+    ~ Bug Fix: Embryo Timing out if it has no a parent (for waves)
+    ~ Internal: Expanded Credits
+
+= Version 1-5 (9128c69) = https://github.com/JiroCab/Olupis/tree/9128c69cd59afeb49ec9c0d403352f2efbc41f38
     + Added more music from the Terra Nil Soundtrack by Meydän
     + Maps added: sanctuary, dorment-cell, forest-of-hope
     + Units added: aero, striker, venom, phorid, phantom, banshee, embryo, bay, blitz
@@ -13,17 +35,17 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
     ~ Updated and made load disclaimer taggable
     ~ Bug fix: all cores except remnant can be chosen to be launched
     ~ Internal: Deprecated taurus using MendTurret, uses PowerTurret instead
-	~ Internal: Turrets moved out of NyfalisBlocks.java and into NyfalisTurrets.java
-	~ Internal: PowerUnitTurret extends ItemUnitTurret instead of PowerTurret
-	~ Internal: Vaguely sorted classes of block types
-	~ Internal: toxopid updated (3.0.0 -> 3.2.0)
+    ~ Internal: Turrets moved out of NyfalisBlocks.java and into NyfalisTurrets.java
+    ~ Internal: PowerUnitTurret extends ItemUnitTurret instead of PowerTurret
+    ~ Internal: Vaguely sorted classes of block types
+    ~ Internal: toxopid updated (3.0.0 -> 3.2.0)
     ~ Improve Planet rules, Custom unit Ai, Tech tree, Core database and Fx
     ~ Sprites Contributed by Remington Thomas: rustyIron, venom, bay, blitz, crusader
     ~ Given coreRelic, coreShrine, coreTemple a weapon
     --  Blocks removed: mendFieldProjector
     --  Deprecated DirectionalMendProjector and made into legacyBlock
 
-= Beta 1-4 (e898d42) = https://github.com/JiroCab/Olupis/tree/e898d42d0b490a209939e90e4b9c7ae1a641b884
+= Version 1-4 (e898d42) = https://github.com/JiroCab/Olupis/tree/e898d42d0b490a209939e90e4b9c7ae1a641b884
     ~ !! Rebranded to `Nyfalis`
     ~ Mod browser Visible, w/ in game Wip disclaimer
 
@@ -53,21 +75,21 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
     -- removed `pinkTree`duplicate that was a floor named "pink-mossy-water
     -- Internal: removed `NoIconFix()`and used proper `-full` & similar (WMF Industry)
 
-= Beta 1-3 (01b8973) = https://github.com/JiroCab/Olupis/tree/01b8973727ccff584c453dd5cbe52a7e3a999117
+= Version 1-3 (01b8973) = https://github.com/JiroCab/Olupis/tree/01b8973727ccff584c453dd5cbe52a7e3a999117
     + Added Placeholder1 for the two planets
     + Olupis Tech tree now takes a items from all 3 planet's sectors
-	+ Added Raw Files of certain sprites (.aseprite & .ase Contributed by NightmarishWolf)
+    + Added Raw Files of certain sprites (.aseprite & .ase Contributed by NightmarishWolf)
     + Added Mod options to turn off invasive features
-	+ Added an option for Green team to have the corroded icon
-	+ Added Code play music via overriding the game music Seq (wip)
+    + Added an option for Green team to have the corroded icon
+    + Added Code play music via overriding the game music Seq (wip)
     + World tiles added - pinkGrass, pinkGrassWater, pinkShrubs, pinkTree
     + Units added - zoner
     + Blocks added - shredder, fortifiedTank, fortifiedCanister, mendFieldProjector, taurus, rustyPump, iron junction,  rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic
-	~ Units Sprites updated - gnat
+    ~ Units Sprites updated - gnat
     ~ Sprites Updated - iron, corroder, rustyIronConveyor, ironConveyor, cobaltConveyor, pipeBridge, pipeRouter, coreRemnant, windmill, garden, coreRemnant, ironWall, ironWallLarge, rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic
     ~ Fixed certain blocks not having / improper Ui Icons
-	~ Fixed windMills generating light
-	~ Fixed steam being used as coolant by Serpulo turrets
+    ~ Fixed windMills generating light
+    ~ Fixed steam being used as coolant by Serpulo turrets
     ~ Updated README.md
     ~ Updated Olupis TechTree
     ~ Updated bundle.properties
@@ -76,11 +98,11 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
     ~ Made some of Serpulo's items included in Olupis planets' items, will be whitelisting Olupis blocks instead & ban-hide other blocks
     ~ updated debug button export map for changes above
     ~ Packages changed 'com.jirocab.planets' to 'olupis' (Name was not final when orginal packages made and changing it now while it's early)
-	~ Bumped required Mindustry Version in build.gradle [v140.4 -> v141]
+    ~ Bumped required Mindustry Version in build.gradle [v140.4 -> v141]
     -- Removed rustyPipe Variants (No easy way to add variants)
 
 
-= Beta 1-2 (867d438) == https://github.com/JiroCab/Olupis/tree/867d438c8352ab358ad6c0cf5062fce78c26652c
+= Version 1-2 (867d438) == https://github.com/JiroCab/Olupis/tree/867d438c8352ab358ad6c0cf5062fce78c26652c
 	+ Debug button to set a map's planet/block set to be olupis, disabled by default [settings > sound > olupis-debug]
 	+ "Space" sound can be turned off [settings > sound > olupis-space]
 	+ units added - gnat, mite, firefly, porter
@@ -104,7 +126,7 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
 	-- Internal blocks removed - treeStump, bigBoulder
 
  
-= Beta 1-1a/1-1 (4e9861a) == https://github.com/JiroCab/Olupis/commit/4e9861a9fa6cd088c677e1f7b3f44afa10a85c3b
+= Version 1-1a/1-1 (4e9861a) == https://github.com/JiroCab/Olupis/commit/4e9861a9fa6cd088c677e1f7b3f44afa10a85c3b
 	+ Blocks Sets - garden, bioMatterPress, unitReplicator, unitReplicatorSmall, rustElectrolyzer, steamBoilder, steamHood, hydrochloricGraphitePress, ironSieve, rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, rustyPipe, ironPipe, pipeRouter, wire, wireBridge, superConductors, windMills, hydroMill, steamDrill, hydroElectricDrill, displacementPump, massDisplacementPump, ironPump, oilSeparator, architonnerre, architronito, rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, fortifiedMessageBlock
 	+ World tiles - redSand, redDune, redSandWater, greenShrubsIrregular,  mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStone, frozenGrass, yellowGrass, yellowTree, yellowBush, yellowShrubs, yellowShrubsIrregular,  mossyStone, mossierStone, mossiestStone, mossStoneWall, oreIron, oreIronWall, oreCobalt, OreCobaltWall, olupisTree, bush, mossyBoulder, mossTree , treeStump,
 	+ Items - condensedBiomatter, rustyIron, iron, cobalt
