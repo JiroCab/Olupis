@@ -20,10 +20,10 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 * [RushieWashie](https://github.com/JiroCab) - Code, Sprites, Maps
 * [Remington Thomas](https://github.com/NightmarishWolf) - Sprites, Ideas, Organization, Maps
 * [Ethanol10](https://github.com/SuperEthanol10) - Sprites
-* [Siede](https://github.com/siede2010) - Programing, Sprites
+* [Siede](https://github.com/siede2010) - Code, Sprites
 * [WMF Industries](https://github.com/WMF-Industries) - Code
 * MrApple - Maps
-* [Kapzduke](https://github.com/kapzduke) - Code
+* [Kapzduke](https://github.com/kapzduke) - Sprites
 
 ### Music Credits
 * Blossom, Dusk, Feu, Main Title, Reclaiming the Wasteland, Sparkles of Hope - [Terra Nil Soundtrack by Meydän](https://store.steampowered.com/app/2321920/Terra_Nil_Soundtrack/) 

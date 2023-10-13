@@ -4,13 +4,13 @@ Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
 
 = Version 1-6 () =
     + Made planets be hidden until a sector is unlocked for it
-    + Weather added: acidRain
+    + Weather added: acidRain, mossMist
     + Blocks added: glowBloom, luminiteBoulder, obliterator, navalConstruct
     + Maps added: vakinyaDesert
     ~ Maps updated: forestOfHope, sanctuary, dormantCell
     ~ Added in-map credits for the maps above
-    ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor
-    ~ Sprites Contributed by kapzduke: pipeJuntion, pipeRouter, ironPipe, leadPipe, WindMill, Corroder [https://github.com/kapzduke]
+    ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor, ironBridge
+    ~ Sprites Contributed by kapzduke: pipeJuntion, pipeRouter, ironPipe, leadPipe, WindMill, Corroder, rustyDrill, displacementPump, ironPump, rustyPump, rustElectrolyzer, iron (item), rustyIron (item) [https://github.com/kapzduke]
     ~ Maps Contributed MrApple: vakinyaDesert, muddyRivers
     ~ improved shadows of various props
     ~ Finalized shredder & dissolver

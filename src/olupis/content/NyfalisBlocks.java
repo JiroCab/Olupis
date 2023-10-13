@@ -545,7 +545,7 @@ public class NyfalisBlocks {
             requirements(Category.distribution, with(iron, 2, lead, 5));
         }};
 
-        ironUnloader = new DirectionalUnloader("iron-unloader"){{
+        ironUnloader = new DirectionalUnloaderRotatable("iron-unloader"){{
             solid = false;
             allowCoreUnload = true;
 

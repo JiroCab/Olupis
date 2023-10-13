@@ -69,12 +69,12 @@ public class NyfalisTurrets {
 
                 size = 2;
                 recoil = 1;
+                shootY = 7f;
                 range = 90f;
-                fogRadius = 15;
                 health = 1500;
+                fogRadius = 15;
                 shootCone = 50f;
-                liquidCapacity = 5f;
-                shootY = reload = 5f;
+                liquidCapacity = reload = 5f;
 
                 parts.addAll(
                     new RegionPart("-barrel"){{
@@ -315,6 +315,7 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 50, lead, 50, quartz, 25));
         }};
 
+        //TODO: (rename) Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         obliterator = new ItemTurret("obliterator"){{
             requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
             ammo(
@@ -325,6 +326,26 @@ public class NyfalisTurrets {
                         collidesTiles = false;
                         splashDamageRadius = 25f * 0.75f;
                         splashDamage = 33f;
+                        fragBullets = 2;
+                        fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                            width = 5f;
+                            height = 12f;
+                            shrinkY = 1f;
+                            lifetime = 20f;
+                            despawnEffect = Fx.none;
+                            frontColor = quartz.color;
+                            backColor = Pal.gray;
+                            fragBullets = 2;
+                            fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                                width = 5f;
+                                height = 12f;
+                                shrinkY = 1f;
+                                lifetime = 20f;
+                                despawnEffect = Fx.none;
+                                frontColor = quartz.color;
+                                backColor = Pal.gray;
+                            }};
+                        }};
                     }},
                     Items.silicon, new ArtilleryBulletType(3f, 20){{
                         knockback = 0.8f;
@@ -337,6 +358,26 @@ public class NyfalisTurrets {
                         ammoMultiplier = 3f;
                         homingPower = 0.08f;
                         homingRange = 50f;
+                        fragBullets = 2;
+                        fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                            width = 5f;
+                            height = 12f;
+                            shrinkY = 1f;
+                            lifetime = 20f;
+                            despawnEffect = Fx.none;
+                            frontColor = quartz.color;
+                            backColor = Pal.gray;
+                            fragBullets = 2;
+                            fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                                width = 5f;
+                                height = 12f;
+                                shrinkY = 1f;
+                                lifetime = 20f;
+                                despawnEffect = Fx.none;
+                                frontColor = quartz.color;
+                                backColor = Pal.gray;
+                            }};
+                        }};
                     }}
             );
             targetAir = false;
@@ -350,10 +391,10 @@ public class NyfalisTurrets {
             shootSound = Sounds.bang;
             coolant = consumeCoolant(0.1f);
             limitRange(0f);
+            drawer = new DrawTurret("iron-");
         }};
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
-        //TODO: (rename) Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 
         //TODO: Aegis AA SAMM Turrets (later game)
