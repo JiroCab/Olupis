@@ -40,7 +40,7 @@ public class NyfalisTurrets {
                     trailColor = hitColor;
 
                     speed = 5.5f;
-                    damage = 15;
+                    damage = 7.5f;
                     drag = 0.008f;
                     lifetime = 19.5f;
                     rangeChange = 15f;
@@ -57,7 +57,7 @@ public class NyfalisTurrets {
                         speed = 8f;
                         drag = 0.009f;
                         lifetime = 12f;
-                        damage = 20f;
+                        damage = 10f;
                         pierceCap = 1;
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 5;
@@ -74,22 +74,23 @@ public class NyfalisTurrets {
                 health = 1500;
                 shootCone = 50f;
                 liquidCapacity = 5f;
-                shootY = reload = 10f;
+                shootY = reload = 5f;
 
                 parts.addAll(
                     new RegionPart("-barrel"){{
                         mirror = false;
-                        y = 1f;
-                        layerOffset = -0.1f;
+                        under = true;
                         progress = PartProgress.recoil;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
                     }},  new RegionPart("-front-wing"){{
                         mirror = true;
+                        under = true;
                         layerOffset = -0.1f;
                         progress = PartProgress.warmup;
                         moves.add(new PartMove(PartProgress.recoil, 0f, 0, -12f));
                     }}, new RegionPart("-back-wing"){{
                         mirror = true;
+                        under = true;
                         layerOffset = -0.1f;
                         progress = PartProgress.smoothReload;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -1f, 12f));
