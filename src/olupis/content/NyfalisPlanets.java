@@ -53,7 +53,7 @@ public class NyfalisPlanets {
 
         nyfalis = new Planet("olupis", Planets.sun, 1.1f, 3){{
             allowSectorInvasion = allowLaunchLoadout = false;
-            allowWaves = enemyCoreSpawnReplace = allowLaunchSchematics = prebuildBase = allowWaveSimulation = hasAtmosphere = true;
+            allowWaves = enemyCoreSpawnReplace  = prebuildBase = allowWaveSimulation = hasAtmosphere = true;
 
             totalRadius = 2.7f;
             atmosphereRadIn = 0.01f;
@@ -81,7 +81,7 @@ public class NyfalisPlanets {
 
         //1st moon
         arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.8f, 1){{
-            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion= allowLaunchLoadout = updateLighting = true;
+            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = true;
 
             startSector = 2;
             enemyBuildSpeedMultiplier = 0.4f;

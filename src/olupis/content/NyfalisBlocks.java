@@ -19,6 +19,7 @@ import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.legacy.LegacyBlock;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.PayloadConveyor;
@@ -207,11 +208,13 @@ public class NyfalisBlocks {
         }};
 
         stoneVent = new SteamVent("stone-vent"){{
+            effectColor = Color.white;
             parent = blendGroup = stone;
             attributes.set(Attribute.steam, 1f);
         }};
 
         basaltVent = new SteamVent("basalt-vent"){{
+            effectColor = Color.white;
             parent = blendGroup = basalt;
             attributes.set(Attribute.steam, 1f);
         }};
@@ -429,7 +432,7 @@ public class NyfalisBlocks {
             health = 45;
             speed = 0.025f;
             displayedSpeed = 3.8f;
-            buildCostMultiplier = 2f;
+            buildCostMultiplier = 1.5f;
             researchCost = with(rustyIron, 25);
             requirements(Category.distribution, with(rustyIron, 1));
         }};
@@ -442,7 +445,7 @@ public class NyfalisBlocks {
             itemCapacity = 1;
             displayedSpeed = 4.8f;
             poweredSpeed = 0.05f;
-            buildCostMultiplier = 2f;
+            buildCostMultiplier = 0.45f;
             unpoweredSpeed = 0.025f;
             displayedSpeedPowered = 7f;
 
@@ -470,7 +473,7 @@ public class NyfalisBlocks {
         }};
 
         ironRouter = new Router("iron-router"){{
-            buildCostMultiplier = 4f;
+            buildCostMultiplier = 1.5f;
 
             researchCost = with(rustyIron, 40, lead, 40);
             requirements(Category.distribution, with(rustyIron, 3, lead, 1));
@@ -479,7 +482,7 @@ public class NyfalisBlocks {
         ironDistributor = new Router("iron-distributor"){{
             size = 2;
             health = 200;
-            buildCostMultiplier = 4f;
+            buildCostMultiplier = 2f;
             researchCost = with(rustyIron, 500, lead, 500, iron, 10);
             requirements(Category.distribution, with(rustyIron, 3, lead, 3, iron, 1));
         }};
@@ -501,13 +504,13 @@ public class NyfalisBlocks {
             /*Same throughput as a rusty conv, slightly slower but insignificant*/
             fadeIn = moveArrows = false;
 
-            range = 3;
             armor = 1f;
             health = 50;
             speed = 47.55f;
-            arrowSpacing = 6f;
             itemCapacity =5;
-            bufferCapacity = 3;
+            arrowSpacing = 6f;
+            buildCostMultiplier = 0.3f;
+            range = bufferCapacity = 3;
 
             researchCost = with(lead, 300, rustyIron, 300);
             ((Conveyor)rustyIronConveyor).bridgeReplacement = this;
@@ -526,6 +529,7 @@ public class NyfalisBlocks {
             arrowSpacing = 6f;
             itemCapacity = 10;
             bufferCapacity = 8;
+            buildCostMultiplier = 0.4f;
 
             researchCost = with(iron, 100, rustyIron, 500, lead, 500);
             ((PowerConveyor)ironConveyor).bridgeReplacement = this;
@@ -533,14 +537,16 @@ public class NyfalisBlocks {
         }};
 
         ironOverflow = new OverflowSorter("iron-overflow"){{
-            buildCostMultiplier = 3f;
+            hideDetails = false;
+            buildCostMultiplier = 0.5f;
             researchCost = with(lead, 550, iron, 50);
             requirements(Category.distribution, with(iron, 2, lead, 5));
         }};
 
         ironUnderflow = new OverflowSorter("iron-underflow"){{
             invert = true;
-            buildCostMultiplier = 3f;
+            hideDetails = false;
+            buildCostMultiplier = 0.5f;
             researchCost = with(lead, 550, iron, 50);
             requirements(Category.distribution, with(iron, 2, lead, 5));
         }};
@@ -573,7 +579,6 @@ public class NyfalisBlocks {
             requirements(Category.production, with(rustyIron, 25));
         }};
 
-
         steamDrill = new Drill("steam-drill"){{
             hasPower = true;
             tier = 2;
@@ -591,7 +596,7 @@ public class NyfalisBlocks {
         hydroElectricDrill = new Drill("hydro-electric-drill"){{
             tier = 3;
             size = 4;
-            drillTime = 600;
+            drillTime = 500;
 
             envEnabled ^= Env.space;
             consumeLiquid(steam, 0.05f);
@@ -606,6 +611,7 @@ public class NyfalisBlocks {
             size = 3;
             craftTime = 185f;
             maxBoost = 2.5f;
+            buildCostMultiplier = 0.6f;
 
             attribute = bio;
             craftEffect = Fx.none;
@@ -627,16 +633,18 @@ public class NyfalisBlocks {
         //region liquid
         rustyPump = new Pump("rusty-pump"){{
             size = 1;
-            pumpAmount = 0.05f;
             liquidCapacity = 10f;
+            pumpAmount = 0.06f;
+            buildCostMultiplier = 1.5f;
             researchCost = with(lead, 100, rustyIron, 100);
             requirements(Category.liquid, with(rustyIron, 3, lead, 6));
         }};
 
         ironPump = new Pump("iron-pump"){{
             size = 2;
-            pumpAmount = 0.1f;
             liquidCapacity = 20f;
+            pumpAmount = 0.35f;
+            buildCostMultiplier = 2f;
             researchCost = with(lead, 500, iron, 100);
             requirements(Category.liquid, with(iron, 10, lead, 10));
         }};
@@ -668,7 +676,7 @@ public class NyfalisBlocks {
             //try no lost, but slow/low capcity
             health = 60;
             liquidCapacity = 2f;
-            liquidPressure = 1.1f;
+            liquidPressure = 1.05f;
             researchCostMultiplier = 0.5f;
             botColor = Color.valueOf("37323C");
             requirements(Category.liquid, with(lead, 1, rustyIron, 1));
@@ -678,7 +686,7 @@ public class NyfalisBlocks {
             leaks = underBullets = true;
 
             liquidCapacity = 6f;
-            liquidPressure = 1.3f;
+            liquidPressure = 1.25f;
             researchCostMultiplier = 3;
             botColor = Color.valueOf("252731");
             requirements(Category.liquid, with(iron, 5, lead, 5));
@@ -686,8 +694,8 @@ public class NyfalisBlocks {
 
         pipeRouter = new LiquidRouter("pipe-router"){{
             solid = underBullets = true;
-            liquidCapacity = 20f;
-            liquidPressure = 0.85f; /* Nerfed so you can't bypass lead pipe being terrible */
+            liquidCapacity = 15f;
+            liquidPressure = 0.90f; /* Nerfed so you can't bypass lead pipe being terrible */
             researchCost = with(lead,100, rustyIron, 100);
             requirements(Category.liquid, with(lead, 5, rustyIron, 5));
         }};
@@ -724,25 +732,15 @@ public class NyfalisBlocks {
             fadeIn = moveArrows = hasPower = false;
             range = 6;
             arrowSpacing = 6f;
+            buildCostMultiplier = 0.5f;
             ((Conduit)ironPipe).bridgeReplacement = this;
             ((Conduit)leadPipe).bridgeReplacement = this;
             researchCost = with(iron, 700, lead, 700);
             requirements(Category.liquid, with(iron, 10, lead, 20));
         }};
 
-        oilSeparator = new GenericCrafter("oil-separator"){{
-            rotate = invertFlip = true;
-            size = 4;
-            craftTime = 15f;
-            regionRotated1 = 3;
-            liquidCapacity = 60f;
-            liquidOutputDirections = new int[]{1,3};
-
-            outputLiquids = LiquidStack.with(lightOil, 4/20, heavyOil,  7/60);
-            consumePower(1.2f);
-            consumeLiquid(oil, 40/60f);
-            researchCostMultiplier = 1.3f;
-            requirements(Category.liquid, with(iron, 50));
+        oilSeparator = new LegacyBlock("oil-separator"){{
+        //TODO: test
         }};
 
         steamBoiler = new AttributeCrafter("steam-boiler"){{
@@ -805,13 +803,14 @@ public class NyfalisBlocks {
             craftTime = 120;
             liquidCapacity = 24f;
             envEnabled = Env.any;
+            buildCostMultiplier = 0.4f;
 
             lightLiquid = Liquids.cryofluid;
             consumePower(1f);
             craftEffect = Fx.pulverizeMedium;
-            outputItem = new ItemStack(iron, 1);
-            consumeLiquid(Liquids.water, 12f / 60f);
-            consumeItems(with(lead, 1, rustyIron,1));
+            outputItem = new ItemStack(iron, 2);
+            consumeLiquid(Liquids.water, 24f / 60f);
+            consumeItems(with(lead, 2, rustyIron,2));
             researchCost = with(rustyIron, 400, lead, 700);
             requirements(Category.crafting, with(rustyIron, 70, lead, 100));
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawLiquidTile(Liquids.cryofluid){{drawLiquidLight = true;}}, new DrawDefault());
@@ -823,6 +822,7 @@ public class NyfalisBlocks {
             size = 3;
             craftTime = 30f;
             itemCapacity = 20;
+            buildCostMultiplier = 0.5f;
             craftEffect = Fx.pulverizeMedium;
 
             consumePower(30f/60f);
@@ -880,7 +880,7 @@ public class NyfalisBlocks {
             consumePower(1.8f);
             consumeItem(Items.sand, 2);
             outputItem = new ItemStack(rustyIron, 2);
-            researchCost = with(lead, 3000, rustyIron, 1500);
+            researchCost = with(lead, 1500, rustyIron, 1500);
             requirements(Category.crafting, with(rustyIron, 10, lead, 60));
         }};
 
@@ -984,8 +984,8 @@ public class NyfalisBlocks {
             requiredItems = Seq.with(silicon);
             alwaysShooting = hoverShowsSpawn = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            researchCost = with(rustyIron, 1000, silicon, 600,  iron, 600);
-            requirements(Category.units, with(iron, 100, rustyIron, 100, silicon, 50));
+            researchCost = with(lead, 1000, silicon, 600,  iron, 600);
+            requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
 
         fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
@@ -1047,6 +1047,7 @@ public class NyfalisBlocks {
             pulseMag = 0f;
             laserWidth = 0.4f;
             baseExplosiveness = 0.6f;
+            buildCostMultiplier = 0.6f;
             consumePower(10f/ 60f);
             laserColor2 = Color.valueOf("65717E");
             laserColor1 = Color.valueOf("ACB5BA");

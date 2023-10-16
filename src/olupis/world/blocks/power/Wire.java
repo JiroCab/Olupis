@@ -21,12 +21,11 @@ public class Wire extends Battery {
     public Wire(String name){
         super(name);
         consumesPower = outputsPower = drawDisabled = allowDiagonal = solid = false;
-        underBullets = replaceable = true;
+        underBullets = replaceable = conveyorPlacement = true;
         priority = TargetPriority.transport;
         group = BlockGroup.power;
 
         ambientSound = Sounds.spark;
-        conveyorPlacement = true;
     }
 
     @Override

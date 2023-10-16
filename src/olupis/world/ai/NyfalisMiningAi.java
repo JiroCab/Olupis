@@ -49,7 +49,7 @@ public class NyfalisMiningAi extends AIController {
                     Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
                 }
 
-                mineType = 0;
+                mineType = 1;
                 unit.clearItem();
                 unit.ammo = ((AmmoLifeTimeUnitType) unit.type).deathThreshold / 2;
                 mining = false;
@@ -84,6 +84,7 @@ public class NyfalisMiningAi extends AIController {
                         lastOre =ore = indexer.findClosestOre(unit, targetItem);
                         mineType = 0;
 
+                        if(ore == null) return;
                         if(ore.floor().itemDrop == targetItem) mineType = 2;
                         else if (ore.block().itemDrop== targetItem) mineType = 3;
                         else if (ore.overlay().itemDrop == targetItem) mineType = 4;

@@ -12,7 +12,7 @@ public class NyfalisSectors {
 
     public  static SectorPreset
         /*Arthin*/
-        sanctuary, vakinyaDesert, muddyRivers, mossyRavine,
+        sanctuary, vakinyaDesert, muddyRivers, mossyRavine, gardeniorTemple,
         /*Nyfalis*/
         placeholder2,
         /*Spelta*/
@@ -30,20 +30,38 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, false);
         }};
 
-        vakinyaDesert = new SectorPreset("vakinya-desert", arthin, 10){{
-            addStartingItems = overrideLaunchDefaults = true;
+        mossyRavine = new SectorPreset("mossy-ravine", arthin, 31){{
+            addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
-            captureWave = 17;
-            rules = commonRules(captureWave, 22.32f);
+            captureWave = 33;
             difficulty = 2;
+            rules = commonRules(captureWave, false);
         }};
 
         muddyRivers = new SectorPreset("muddy-rivers", arthin, 21){{
-            addStartingItems = overrideLaunchDefaults = true;
+            addStartingItems = true;
+            allowLaunchLoadout = allowLaunchSchematics = false;
 
             captureWave = 38;
-            rules = commonRules(captureWave, 22.32f);
+            rules = commonRules(captureWave, false);
             difficulty = 2;
+        }};
+
+        vakinyaDesert = new SectorPreset("vakinya-desert", arthin, 10){{
+            addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
+
+            captureWave = 17;
+            difficulty = 2;
+            rules = commonRules(captureWave, 22.32f);
+        }};
+
+        gardeniorTemple = new SectorPreset("gardenior-temple", arthin, 7){{
+            addStartingItems = true;
+            allowLaunchLoadout = allowLaunchSchematics = false;
+            rules = commonRules(captureWave, false);
+
+            difficulty = 3;
+            captureWave = 26;
         }};
 
         //endregion
@@ -54,6 +72,7 @@ public class NyfalisSectors {
             difficulty = 3;
             rules = commonRules(captureWave);
         }};
+
         //endregion
         //region Vorgin
         dormantCell = new SectorPreset("dorment-cell", spelta, 1){{

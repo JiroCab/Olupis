@@ -19,9 +19,16 @@ public class NyfalisTechTree {
             node(system, () -> {
                 node(arthin, () ->{
                     node(NyfalisSectors.sanctuary, () -> {
-                        node(NyfalisSectors.vakinyaDesert, () -> {
+                        node(NyfalisSectors.mossyRavine, () -> {
+                            node(NyfalisSectors.vakinyaDesert, Seq.with(
+                                new Objectives.Produce(iron)
+                            ),() ->{
+                                node(NyfalisSectors.gardeniorTemple, () -> {
+
+                                });
+                            });
                             node(NyfalisSectors.muddyRivers, Seq.with(
-                                    new Objectives.Research(steamDrill), new Objectives.Research(ironSieve)
+                                new Objectives.Produce(iron), new Objectives.Research(steamDrill), new Objectives.Research(ironSieve)
                             ),() ->{
 
                             });
@@ -72,7 +79,7 @@ public class NyfalisTechTree {
 
                 });
                 node(porter, Seq.with(
-                        new  Objectives.Research(groundConstruct)
+                        new  Objectives.Research(navalConstruct)
                 ), () -> {
                     node(zoner, () -> {
 
@@ -243,11 +250,18 @@ public class NyfalisTechTree {
                 node(construct, Seq.with(new Objectives.Research(ironRouter)), ()->{
                     node(groundConstruct, () ->{
                         node(arialConstruct, () ->{
+                            node(navalConstruct, () ->{
 
+                            });
                         });
                     });
                     node(unitReplicator, ()->{
                         node(unitReplicatorSmall, ()->{
+
+                        });
+                    });
+                    node(fortifiePayloadConveyor, () -> {
+                        node(fortifiePayloadConveyor, () -> {
 
                         });
                     });

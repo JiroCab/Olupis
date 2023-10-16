@@ -78,7 +78,8 @@ public class Replicator extends PayloadBlock {
 
     @Override
     public TextureRegion[] icons(){
-        return new TextureRegion[]{region, outRegion, topRegion};
+        if(topRegion.found()) return new TextureRegion[]{region, outRegion, topRegion};
+        return new TextureRegion[]{region, outRegion};
     }
 
     @Override
@@ -86,7 +87,7 @@ public class Replicator extends PayloadBlock {
         if (!accessible())return;
         Draw.rect(region, plan.drawx(), plan.drawy());
         Draw.rect(outRegion, plan.drawx(), plan.drawy(), plan.rotation * 90);
-        Draw.rect(topRegion, plan.drawx(), plan.drawy());
+        if(topRegion.found())Draw.rect(topRegion, plan.drawx(), plan.drawy());
     }
 
     public boolean canProduce(UnitType t){
@@ -180,7 +181,7 @@ public class Replicator extends PayloadBlock {
                 Draw.draw(Layer.blockOver, () -> Drawf.construct(this, spawnableUnits.get(selectedUnit), rotdeg() - 90f, progress / delay, speedScl, time ));
             }
 
-            Draw.rect(topRegion, x, y);
+            if(topRegion.found())Draw.rect(topRegion, x, y);
 
             Draw.scl(scl);
             drawPayload();

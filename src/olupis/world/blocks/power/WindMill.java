@@ -6,6 +6,7 @@ import arc.struct.EnumSet;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
 import mindustry.entities.Effect;
+import mindustry.world.Block;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
@@ -51,6 +52,11 @@ public class WindMill extends PowerGenerator {
         if (Core.settings.getBool("nyfalis-debug")) drawPlaceText(Core.bundle.formatFloat("bar.efficiency", ((attribute.env() + sumAttribute(attribute, x, y)) * powerProduction + powerProduction ) , 1),  x , y - 2, valid);
     }
 
+    @Override
+    public boolean canReplace(Block other){
+        if(other instanceof  Wire) return true;
+        return super.canReplace(other);
+    }
 
     public  class windMillBuild extends GeneratorBuild{
         public float sum;

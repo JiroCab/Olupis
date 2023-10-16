@@ -8,7 +8,7 @@ import mindustry.entities.Effect;
 import mindustry.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.*;
+import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 
 public class NyfalisFxs{

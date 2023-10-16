@@ -41,7 +41,8 @@ public class BurstPump extends Pump {
 
     @Override
     public TextureRegion[] icons(){
-        return new TextureRegion[]{region, topRegion};
+        if(topRegion.found()) return new TextureRegion[]{region, topRegion};
+        else return new TextureRegion[]{region};
     }
 
     @Override
