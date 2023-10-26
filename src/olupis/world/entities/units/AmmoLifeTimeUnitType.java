@@ -3,10 +3,12 @@ package olupis.world.entities.units;
 import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
-import arc.util.Scaling;
+import arc.util.*;
 import mindustry.ai.types.LogicAI;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
@@ -44,6 +46,8 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*Anti-spam to hard, aka setting a diminishing return for the sake of frames */
     public float penaltyMultiplier = 2f;
     /*Time out params */
+    public boolean drawAmmo = false;
+    public TextureRegion ammoRegion;
     public Sound timedOutSound = Sounds.explosion;
     public Effect timedOutFx = Fx.steam;
     public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f;
@@ -140,6 +144,32 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         table.row();
     }
 
+    @Override
+    public void draw(Unit unit){
+        super.draw(unit);
+
+        drawAmmo(unit);
+        Draw.reset();
+    }
+
+    @Override
+    public void load() {
+        if(drawAmmo)ammoRegion = Core.atlas.find(name + "-ammo", name);
+        super.load();
+    }
+
+    public void drawAmmo(Unit unit){
+        applyColor(unit);
+
+        Draw.color(ammoColor(unit));
+        Draw.rect(ammoRegion, unit.x, unit.y, unit.rotation - 90);
+        Draw.reset();
+    }
+
+    public Color ammoColor(Unit unit){
+        float f = Mathf.clamp(unit.ammof());
+        return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, Math.max(f * 2.5f, 1f), 1f - f));
+    }
 
     @Override
     public void update(Unit unit){

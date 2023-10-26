@@ -15,7 +15,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
-import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
@@ -536,16 +535,17 @@ public class NyfalisUnits {
             speed = 2.5f;
             ammoCapacity = 160;
 
-            weapons.add(new RepairBeamWeapon("repair-beam-weapon-center"){{
+            weapons.add(new LimitedRepairBeamWeapon("olupis-heal-weapon-center"){{
                 shootY = 6f;
+                engineSize = -1;
                 shootCone = 20f;
                 beamWidth = 0.3f;
                 repairSpeed = 0.3f;
-                x =  y = shootX = 0;
+                x = shootX = y = 0;
                 fractionRepairSpeed = 0.03f;
 
                 targetBuildings = useAmmo = true;
-                controllable = false;
+                controllable = top =  false;
                 bullet = new BulletType(){{
                     maxRange = 120f;
                     healPercent = 1f;
@@ -554,8 +554,9 @@ public class NyfalisUnits {
 
             constructor = UnitEntity::create;
             defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
+            setEnginesMirror(new UnitEngine(8 / 4f, -16 / 4f, 1.4f, 295));
             isEnemy = useUnitCap = ammoDepletesOverTime = depleteOnInteraction = false;
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = true;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = drawAmmo = true;
         }};
 
         banshee = new LeggedWaterUnit("banshee"){{
@@ -566,6 +567,7 @@ public class NyfalisUnits {
             mineTier = 3;
             legLength = 9f;
             mineSpeed = 4f;
+            legForwardScl = 0.6f;
             legMoveSpace = 1.4f;
             ammoCapacity = 300;
             navalSpeed = 1.1f;
@@ -576,8 +578,8 @@ public class NyfalisUnits {
             timedOutFx = NyfalisFxs.failedMake;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = naval = floaterOnHiddenLegs = true;
-            isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = showLegsOnDeepLiquid = false;
+            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = naval = lockLegsOnLiquid= drawAmmo = true;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = false;
         }};
 
 
