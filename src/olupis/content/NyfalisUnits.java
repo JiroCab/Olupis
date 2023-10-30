@@ -46,7 +46,9 @@ public class NyfalisUnits {
         embryo, larva, pupa,
 
         /*Misc/pending purpose units*/
-        firefly;
+        firefly,
+        lootbug
+    ;
 
 
     public static AmmoLifeTimeUnitType

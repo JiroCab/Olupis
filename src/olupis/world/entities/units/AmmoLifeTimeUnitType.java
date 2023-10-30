@@ -148,7 +148,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     public void draw(Unit unit){
         super.draw(unit);
 
-        drawAmmo(unit);
+        if(drawAmmo && ammoRegion.found())drawAmmo(unit);
         Draw.reset();
     }
 
