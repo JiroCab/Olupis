@@ -145,6 +145,7 @@ public class NyfalisTurrets {
         }};
 
         shredder = new ItemTurret("shredder"){{
+            //TODO: check for clear path to unit
             targetAir = false;
 
             size = 3;
@@ -241,7 +242,7 @@ public class NyfalisTurrets {
                     spawnUnit = mite;
                 }}
             );
-            commandable = false;
+            commandable = configurable = false;
             playerControllable = true;
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
             requirements(Category.turret, with(iron, 100, lead, 30, silicon, 30));

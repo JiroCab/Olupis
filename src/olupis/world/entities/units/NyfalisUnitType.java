@@ -40,6 +40,7 @@ public class NyfalisUnitType extends UnitType {
     public float spawnStatusDuration = 60f * 5f;
     public Seq<UnlockableContent> displayFactory = new Seq<>();
     public Color unitOutLine = Color.valueOf("371404");
+    public int tier = 1;
 
     public NyfalisUnitType(String name){
         super(name);

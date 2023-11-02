@@ -6,7 +6,10 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
+import arc.scene.style.Drawable;
+import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
@@ -23,10 +26,13 @@ import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.UnitType;
 import mindustry.ui.*;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
+import olupis.world.entities.units.NyfalisUnitType;
 
 import java.util.Objects;
 
@@ -44,18 +50,20 @@ public class ItemUnitTurret extends ItemTurret {
     public Effect failedMakeFx = NyfalisFxs.failedMake;
     public TextureRegion bottomRegion;
     /*Hovering Shows the unit creation*/
-    public boolean hoverShowsSpawn = false;
+    public boolean hoverShowsSpawn = false, payloadExitShow = true;
     /*Aim at the rally point*/
     public boolean rallyAim = false;
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
+
+    public float payloadSpeed = 0.7f;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
     /*TODO: mode to use payload or deploy units*/
 
     public ItemUnitTurret(String name){
         super(name);
-        commandable = true;
+        commandable = configurable = true;
         playerControllable = false;
         shootSound = Sounds.respawn;
         drawer = new DrawDefault();
@@ -130,6 +138,7 @@ public class ItemUnitTurret extends ItemTurret {
                         title.add(item.localizedName).left().top();
                     }).left().row();
                     info.add(displayUnit.localizedName).left().row();
+                    if(displayUnit instanceof NyfalisUnitType nyf && nyf.tier != -1) info.add("Tier: " + nyf.tier).left().row();
                     if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
                 });
                 b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
@@ -144,9 +153,12 @@ public class ItemUnitTurret extends ItemTurret {
         super.init();
     }
 
-    public class ItemUnitTurretBuild extends ItemTurretBuild{
+    public class ItemUnitTurretBuild<T extends Payload> extends ItemTurretBuild{
         public @Nullable Vec2 commandPos;
         public float time, speedScl;
+        public int direction = -1;
+        public @Nullable T payload;
+        public Vec2 payVector = new Vec2();
 
         @Override
         public boolean acceptItem(Building source, Item item){
@@ -181,7 +193,46 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         protected void shoot(BulletType type){
-            boolean spawn = (!type.spawnUnit.isBanned() && (state.rules.waveTeam == this.team || (type.spawnUnit.useUnitCap && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap) || !type.spawnUnit.useUnitCap));
+            boolean creatable = !type.spawnUnit.isBanned() && (type.spawnUnit.unlockedNowHost() && state.isCampaign() || !state.isCampaign());
+            if(direction != -1){
+                if(type.spawnUnit != null) return;
+
+                int trns = this.block.size / 2 + 1;
+                Building front = this.nearby(Geometry.d4(direction).x * trns, Geometry.d4(direction).y * trns);
+                boolean canDump = front == null || !front.tile().solid();
+                boolean canMove = front != null && (front.block.outputsPayload || front.block.acceptsPayload);
+
+                Vec2 dest = Tmp.v1.trns(direction * 90, size * tilesize/2f);
+                payVector.approach(dest,payloadSpeed  * delta());
+
+                if(canDump && !canMove){
+                    shootRegular(type, creatable);
+                }
+
+                if(payVector.within(dest, 0.001f)){
+                    payVector.clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+
+                    if(canMove){
+                        if(movePayloadAlt(payload)){
+                            payload = null;
+                        }
+                    }else if(canDump){
+                        dumpPayload(payload);
+                    }
+                }
+
+            } else{
+                shootRegular(type, creatable);
+            }
+
+            if(consumeAmmoOnce){
+                useAmmo();
+            }
+
+        }
+
+        protected void shootRegular(BulletType type, boolean creatable){
+            boolean spawn =creatable && (state.rules.waveTeam == this.team || (type.spawnUnit.useUnitCap && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap) || !type.spawnUnit.useUnitCap);
             if(spawn){
                 /*don't create the unit if it's banned or at unit cap*/
                 consume();
@@ -206,8 +257,16 @@ public class ItemUnitTurret extends ItemTurret {
                 failedMakeFx.create(x, y, rotation -90, Pal.plasticSmoke, null);
                 failedMakeSound.at(x, y, failedMakeSoundPitch, getFailedMakeSoundVolume);
             }
-            if(consumeAmmoOnce){
-                useAmmo();
+        }
+
+        public boolean movePayloadAlt(Payload todump) {
+            int trns = this.block.size / 2 + 1;
+            Tile next = this.tile.nearby(Geometry.d4(direction).x * trns, Geometry.d4(direction).y * trns);
+            if (next != null && next.build != null && next.build.team == this.team && next.build.acceptPayload(this, todump)) {
+                next.build.handlePayload(this, todump);
+                return true;
+            } else {
+                return false;
             }
         }
 
@@ -244,13 +303,21 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public void drawSelect(){
-            if(hoverShowsSpawn){
-                float squareX = x + Angles.trnsx(rotation - 90, shootX, shootY), squareY = y + Angles.trnsy(rotation - 90, shootX, shootY);
-                Lines.stroke(1f, team.color);
-                Draw.color(team.color, 0.8f);
-                Lines.square(squareX, squareY, 3.5f, Time.time * 0.5f);
-                Draw.reset();
+            /*instead of dealing/trying to make the block itself rotate, we have this*/
+            Lines.stroke(1f, team.color);
+            Draw.color(team.color, 0.8f);
+
+            float rot = direction == -1 ? rotation - 90 : direction * 90,
+                    squareX = x + Angles.trnsx(rot , shootX, shootY), squareY = y + Angles.trnsy(rot, shootX, shootY);
+            if(hoverShowsSpawn && direction == -1){
+                Lines.square(squareX, squareY + 0.5f, 3.5f, Time.time * 0.5f);
+            } else if(payloadExitShow && direction != -1){
+                TextureRegion regionArrow = Core.atlas.find("place-arrow");
+
+                Draw.rect(regionArrow, squareX, squareY -1f, (float) regionArrow.width / size, (float) regionArrow.height / size,direction * 90);
             }
+            Draw.reset();
+
             super.drawSelect();
         }
 
@@ -277,10 +344,30 @@ public class ItemUnitTurret extends ItemTurret {
         /*Work around for rally point without fully rewriting updateTile*/
         public boolean logicControlled(){return logicControlTime > 0 || commandPos != null;}
 
+        @Override
+        public void buildConfiguration(Table table){
+            table.background(Styles.black6);
+
+            buildIcon(table, -1, Icon.export);
+            buildIcon(table, 0, Icon.up);
+            buildIcon(table, 1, Icon.left);
+            buildIcon(table, 2, Icon.down);
+            buildIcon(table, 3, Icon.right);
+
+        }
+
+        void buildIcon(Table table, int conf, Drawable icon){
+            table.button(icon, Styles.clearNoneTogglei, 40f, () -> {
+                direction = conf;
+                configure(conf);
+                deselect();
+            }).checked(direction == conf);
+        }
 
         @Override
         public Object senseObject(LAccess sensor){
             if(sensor == LAccess.config) return null;
+            if(sensor == LAccess.rotation) return direction == -1 ? rotation : direction * 90f;
             return super.senseObject(sensor);
         }
 
@@ -288,6 +375,8 @@ public class ItemUnitTurret extends ItemTurret {
         public void write(Writes write){
             super.write(write);
             TypeIO.writeVecNullable(write, commandPos);
+            write.i(direction);
+            Payload.write(payload, write);
         }
 
         @Override
@@ -296,11 +385,15 @@ public class ItemUnitTurret extends ItemTurret {
             if(revision >= 3){ /*necessary, to prevent map/save corruption */
                 commandPos = TypeIO.readVecNullable(read);
             }
+            if(revision >=5 ){
+                direction = read.i();
+                payload = Payload.read(read);
+            } else  direction = -1;
         }
 
         @Override
         public byte version(){
-            return 4;
+            return 5;
         }
     }
 }

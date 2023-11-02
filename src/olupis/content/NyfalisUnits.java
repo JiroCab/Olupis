@@ -113,6 +113,7 @@ public class NyfalisUnits {
 
         //Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
         striker = new NyfalisUnitType("striker"){{
+            tier = 2;
             armor = 3f;
             hitSize = 13f;
             drag = 0.05f;
@@ -369,6 +370,7 @@ public class NyfalisUnits {
         }};
 
         blitz = new NyfalisUnitType("blitz"){{
+            tier = 2;
             armor = 5f;
             accel = 0.6f;
             drag = 0.14f;
@@ -462,12 +464,14 @@ public class NyfalisUnits {
         }};
 
         crusader = new NyfalisUnitType("crusader"){{
+            tier = 3;
             constructor = bay.constructor;
         }};
 
         //endregion Units
         //region Nyfalis Limited LifeTime / Support Units
         mite = new AmmoLifeTimeUnitType("mite"){{
+            /*Rework: only no ammo deplete over time if with X of parent, once out, high  deplete amount*/
             hitSize = 9;
             range = 45f;
             armor = 10f;

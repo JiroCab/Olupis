@@ -914,7 +914,7 @@ public class NyfalisBlocks {
                     }}
             );
             researchCost = with(lead, 3000, graphite, 3000, iron, 3000, rustyIron, 3000);
-            requirements(Category.units, with(iron, 350, lead, 500, graphite, 150, rustyIron, 250));
+            requirements(Category.units, with(iron, 150, lead, 200, graphite, 50, rustyIron, 250));
         }};
 
         // arialConstruct -> offensive air units
