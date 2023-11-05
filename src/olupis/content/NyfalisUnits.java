@@ -35,6 +35,10 @@ public class NyfalisUnits {
         /*segmented units*/
         venom, serpent, reaper, goliath,
 
+        /*Ground units*/
+        supella, blattela, luridiblatta , blattella , parcoblatta, //smallest cockroaches
+        roach,
+
         /*naval*/
         porter, essex, lexington, excess, nimitz,
         bay, blitz, crusader, torrent, vanguard,
@@ -272,7 +276,7 @@ public class NyfalisUnits {
             omniMovement = drawBody = false;
             allowLegStep = true;
 
-           weapons.addAll(new SnekWeapon(""){{
+           weapons.addAll(new SnekWeapon("olupis-dark-pew"){{
                 x = 0f;
                 y = -11f;
                 reload = 35f;
@@ -280,16 +284,64 @@ public class NyfalisUnits {
                 mirror = false;
                 rotate = true;
                 ejectEffect = Fx.casing1;
-                shoot = new ShootAlternate(3f);
                 bullet = new BasicBulletType(2.5f, 10f){{
                     width = 7f;
                     height = 9f;
+                    shrinkX = 25f /60;
+                    shrinkY = 35f /60;
+                    lifetime = 50f;
                     fragBullets = 1;
-                    lifetime = 100f;
                     fragVelocityMin = 1f;
                     fragRandomSpread = 0f;
                 }};
             }});
+        }};
+
+        supella = new NyfalisUnitType("supella"){{
+            constructor = MechUnit::create;
+
+            canBoost = true;
+            boostMultiplier = 0.8f;
+
+            health = 210;
+            armor = 1;
+            hitSize = 8;
+            speed = 0.55f;
+            rotateSpeed = 1.72f;
+            weapons.add(
+                new Weapon("large-weapon"){{
+                    reload = 15f;
+                    x = 4f;
+                    y = 2f;
+                    top = false;
+                    ejectEffect = Fx.casing1;
+                    bullet = new BasicBulletType(2.5f, 9){{
+                        width = 7f;
+                        height = 9f;
+                        lifetime = 60f;
+                    }};
+                }},
+                new NyfalisWeapon("olupis-dark-pew", true, true){{
+                    x = 0;
+                    y = 4f;
+                    reload = 30;
+                    shake = 0.4f;
+                    layerOffset = -0.001f;
+                    rotationLimit = shootCone = 45f;
+                    autoTarget = rotate = true;
+                    mirror = controllable = false;
+                    bullet = new BasicBulletType(3f, 8){{
+                        width = 5f;
+                        height = 6f;
+                        lifetime = 60f;
+                        collidesAir = false;
+                        frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
+                        backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
+                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                    }};
+                }}
+            );
+
         }};
 
         /*TODO: crab tree, bulky and close range, legged naval*/
@@ -355,8 +407,8 @@ public class NyfalisUnits {
                 shootCone = 30f;
                 rotateSpeed = 10f;
                 rotationLimit = 45f;
-                mirror = controllable = false;
                 autoTarget = rotate = true;
+                mirror = controllable = false;
                 bullet = new BasicBulletType(2.5f, 10){{
                     width = 5f;
                     height = 6f;

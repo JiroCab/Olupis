@@ -90,7 +90,7 @@ public class NyfalisBlocks {
 
         garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver,
 
-        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall,
+        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer,
         mendFieldProjector, taurus,
@@ -626,7 +626,7 @@ public class NyfalisBlocks {
             consumeLiquid(Liquids.water, 18f / 60f);
             researchCost = with(iron, 2000, lead, 2500, rustyIron, 2500);
             outputItem = new ItemStack(condensedBiomatter, 1);
-            requirements(Category.production, ItemStack.with(iron, 150, lead, 60, rustyIron, 30));
+            requirements(Category.production, ItemStack.with(iron, 40, lead, 80, rustyIron, 80));
         }};
 
         //endregion
@@ -828,7 +828,7 @@ public class NyfalisBlocks {
             consumePower(30f/60f);
             researchCost = with(lead, 3500,  iron, 3000, rustyIron, 3000);
             outputItem = new ItemStack(Items.graphite, 1);
-            requirements(Category.crafting, with(iron, 150, lead, 300, rustyIron, 100));
+            requirements(Category.crafting, with(iron, 50, lead, 350, rustyIron, 400));
             consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
         }};
 
@@ -841,7 +841,7 @@ public class NyfalisBlocks {
             consumePower(30f/60f);
             outputItem = new ItemStack(silicon, 1);
             consumeItems(with(quartz, 2, graphite, 1));
-            requirements(Category.crafting, with(lead, 100, graphite, 60, iron, 30));
+            requirements(Category.crafting, with(lead, 120, rustyIron, 150, graphite, 30, iron, 30));
         }};
 
         bioMatterPress = new GenericCrafter("biomatter-press"){{
@@ -894,27 +894,27 @@ public class NyfalisBlocks {
             reload = 600f;
             shootSound = Sounds.respawn;
 
-            consumePower(6f);
+            consumePower(80f / 60f);
             shootType = new BasicBulletType(2.5f, -1){{
                 shootEffect = Fx.unitLand;
                 ammoMultiplier = 1f;
                 spawnUnit = spirit;
             }};
             ammo(
-                    quartz, new SpawnHelperBulletType(){{
+                quartz, new SpawnHelperBulletType(){{
                         shootEffect = Fx.shootBig;
                         ammoMultiplier = 0.5f;
                         spawnUnit = banshee;
                     }},
-                    graphite, new SpawnHelperBulletType(){{
+                graphite, new SpawnHelperBulletType(){{
                         shootEffect = Fx.shootBig;
                         ammoMultiplier = 0.5f;
                         reloadMultiplier = 0.8f;
                         spawnUnit = phantom;
                     }}
             );
-            researchCost = with(lead, 3000, graphite, 3000, iron, 3000, rustyIron, 3000);
-            requirements(Category.units, with(iron, 150, lead, 200, graphite, 50, rustyIron, 250));
+            researchCost = with(lead, 1000, graphite, 500, iron, 500, rustyIron, 1000);
+            requirements(Category.units, with(iron, 50, lead, 200, graphite, 50, rustyIron, 250));
         }};
 
         // arialConstruct -> offensive air units
@@ -987,6 +987,12 @@ public class NyfalisBlocks {
             researchCost = with(lead, 1000, silicon, 600,  iron, 600);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
+
+        //Unit Tree: t1 = construct
+        // T2 = construct + Articulator
+        // t3 = t1 + constructor
+        // t4 = t2 + t3 constructor
+        // t5 = t1-t4 at assembler
 
         fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
             requirements(Category.units, with(Items.graphite, 10    , iron, 10));

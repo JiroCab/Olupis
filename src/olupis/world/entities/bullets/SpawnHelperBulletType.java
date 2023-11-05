@@ -1,9 +1,11 @@
 package olupis.world.entities.bullets;
 
+import arc.Events;
 import arc.util.Nullable;
 import mindustry.ai.types.MissileAI;
 import mindustry.entities.Mover;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.world.blocks.ControlBlock;
@@ -35,6 +37,11 @@ public class SpawnHelperBulletType extends BasicBulletType {
                     if(u.commandPos != null) spawned.command().commandPosition(u.commandPos);
                     /* 0,0 on create for some reason*/
                     else if(u.targetPos != null && u.targetPos.x != 0 && u.targetPos.y != 0) spawned.command().commandPosition(u.targetPos);
+
+                    if(u.command != null){
+                        spawned.command().command(u.command);
+                    }
+                    Events.fire(new EventType.UnitCreateEvent(spawned, u));
                 }
                 if(spawned.controller() instanceof AgressiveFlyingAi ai && hasParent) {
                     ai.hasParent = true;

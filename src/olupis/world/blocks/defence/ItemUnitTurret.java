@@ -1,6 +1,7 @@
 package olupis.world.blocks.defence;
 
 import arc.Core;
+import arc.Events;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
@@ -9,15 +10,19 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.scene.style.Drawable;
+import arc.scene.ui.ButtonGroup;
+import arc.scene.ui.ImageButton;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.ai.UnitCommand;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
+import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -26,9 +31,9 @@ import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.UnitType;
 import mindustry.ui.*;
-import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.payloads.Payload;
+import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
@@ -52,24 +57,25 @@ public class ItemUnitTurret extends ItemTurret {
     /*Hovering Shows the unit creation*/
     public boolean hoverShowsSpawn = false, payloadExitShow = true;
     /*Aim at the rally point*/
-    public boolean rallyAim = false;
+    public boolean rallyAim = true;
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
 
     public float payloadSpeed = 0.7f;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
-    /*TODO: mode to use payload or deploy units*/
 
     public ItemUnitTurret(String name){
         super(name);
-        commandable = configurable = true;
+        commandable = configurable = outputsPayload = clearOnDoubleTap = true;
         playerControllable = false;
         shootSound = Sounds.respawn;
         drawer = new DrawDefault();
         requiredItemsCost =Math.round(itemCapacity / 2f);
         fogRadius = -1;
         range = 0f;
+        config(UnitCommand.class, (ItemUnitTurretBuild build, UnitCommand command) -> build.command = command);
+        configClear((ItemUnitTurretBuild build) -> build.command = null);
     }
 
 
@@ -153,12 +159,13 @@ public class ItemUnitTurret extends ItemTurret {
         super.init();
     }
 
-    public class ItemUnitTurretBuild<T extends Payload> extends ItemTurretBuild{
+    public class ItemUnitTurretBuild<T extends UnitPayload> extends ItemTurretBuild{
         public @Nullable Vec2 commandPos;
         public float time, speedScl;
         public int direction = -1;
-        public @Nullable T payload;
+        public @Nullable UnitPayload payload;
         public Vec2 payVector = new Vec2();
+        public @Nullable UnitCommand command;
 
         @Override
         public boolean acceptItem(Building source, Item item){
@@ -179,11 +186,13 @@ public class ItemUnitTurret extends ItemTurret {
             speedScl = Mathf.lerpDelta(speedScl, 1f, 0.05f);
             time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
 
+            moveOutPayload();
             super.updateTile();
         }
 
         @Override
         public boolean hasAmmo(){
+            if(payload != null) return false;
             for (Item req : requiredItems) {
                 if(items.get(req) >= requiredItemsCost) continue;
                 return false;
@@ -195,40 +204,29 @@ public class ItemUnitTurret extends ItemTurret {
         protected void shoot(BulletType type){
             boolean creatable = !type.spawnUnit.isBanned() && (type.spawnUnit.unlockedNowHost() && state.isCampaign() || !state.isCampaign());
             if(direction != -1){
-                if(type.spawnUnit != null) return;
-
-                int trns = this.block.size / 2 + 1;
-                Building front = this.nearby(Geometry.d4(direction).x * trns, Geometry.d4(direction).y * trns);
-                boolean canDump = front == null || !front.tile().solid();
-                boolean canMove = front != null && (front.block.outputsPayload || front.block.acceptsPayload);
-
-                Vec2 dest = Tmp.v1.trns(direction * 90, size * tilesize/2f);
-                payVector.approach(dest,payloadSpeed  * delta());
-
-                if(canDump && !canMove){
-                    shootRegular(type, creatable);
-                }
-
-                if(payVector.within(dest, 0.001f)){
-                    payVector.clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
-
-                    if(canMove){
-                        if(movePayloadAlt(payload)){
-                            payload = null;
-                        }
-                    }else if(canDump){
-                        dumpPayload(payload);
+                if(type.spawnUnit == null) return;
+                if(payload == null) {
+                    payload = new UnitPayload(type.spawnUnit.create(team));
+                    Unit p = (payload).unit;
+                    if (commandPos != null && unit.isCommandable()) {
+                        unit.command().commandPosition(commandPos);
                     }
+                    if (unit.isCommandable() && command != null) {
+                        unit.command().command(command);
+                    }
+                    Events.fire(new EventType.UnitCreateEvent(p, this));
+                    payVector.setZero();
+                    consume();
                 }
+                moveOutPayload();
+
 
             } else{
+                if(payload != null) payload = null;
                 shootRegular(type, creatable);
             }
 
-            if(consumeAmmoOnce){
-                useAmmo();
-            }
-
+            if(consumeAmmoOnce) useAmmo();
         }
 
         protected void shootRegular(BulletType type, boolean creatable){
@@ -236,13 +234,13 @@ public class ItemUnitTurret extends ItemTurret {
             if(spawn){
                 /*don't create the unit if it's banned or at unit cap*/
                 consume();
-                float
-                        bulletX = x + Angles.trnsx(rotation - 90, shootX, shootY),
-                        bulletY = y + Angles.trnsy(rotation - 90, shootX, shootY);
+                float rot = direction == -1 ? rotation - 90 : (direction -1) * 90,
+                        bulletX = x + Angles.trnsx(rot, shootX, shootY),
+                        bulletY = y + Angles.trnsy(rot, shootX, shootY);
 
                 if (shoot.firstShotDelay > 0) {
                     chargeSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
-                    type.chargeEffect.at(bulletX, bulletY, rotation);
+                    type.chargeEffect.at(bulletX, bulletY, rot);
                 }
 
                 shoot.shoot(barrelCounter, (xOffset, yOffset, angle, delay, mover) -> {
@@ -259,44 +257,91 @@ public class ItemUnitTurret extends ItemTurret {
             }
         }
 
-        public boolean movePayloadAlt(Payload todump) {
+        public void moveOutPayload(){
+            if(payload == null) return;
+
+            updatePayload();
+
+            Vec2 dest = Tmp.v1.trns((direction + 1) * 90, size * tilesize / 2f);
+            payVector.approach(dest, payloadSpeed * delta());
+
             int trns = this.block.size / 2 + 1;
-            Tile next = this.tile.nearby(Geometry.d4(direction).x * trns, Geometry.d4(direction).y * trns);
-            if (next != null && next.build != null && next.build.team == this.team && next.build.acceptPayload(this, todump)) {
-                next.build.handlePayload(this, todump);
-                return true;
-            } else {
-                return false;
+            Building front = this.nearby(Geometry.d4((direction + 1)).x * trns, Geometry.d4((direction + 1)).y * trns);
+            boolean canDump = front == null || !front.tile().solid(),
+                        canMove = front != null && (front.block.outputsPayload || front.block.acceptsPayload);
+
+            if(canDump && !canMove) pushOutput(payload, 1f - (payVector.dst(dest) / (size * tilesize / 2f)));
+
+            if(payVector.within(dest, 0.001f)){
+                payVector.clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+
+                if(canMove){
+                    if(movePayload(payload)){
+                        payload = null;
+                    }
+                }else if(canDump) dumpPayload();
             }
+        }
+
+        public void pushOutput(Payload payload, float progress){
+            float thresh = 0.55f;
+            if(progress >= thresh){
+                boolean legStep = payload instanceof UnitPayload u && u.unit.type.allowLegStep;
+                float size = payload.size(), radius = size/2f, x = payload.x(), y = payload.y(), scl = Mathf.clamp(((progress - thresh) / (1f - thresh)) * 1.1f);
+
+                Groups.unit.intersect(x - size/2f, y - size/2f, size, size, u -> {
+                    float dst = u.dst(payload);
+                    float rs = radius + u.hitSize/2f;
+                    if(u.isGrounded() && u.type.allowLegStep == legStep && dst < rs)
+                        u.vel.add(Tmp.v1.set(u.x - x, u.y - y).setLength(Math.min(rs - dst, 1f)).scl(scl));
+                });
+            }
+        }
+
+        public void dumpPayload(){
+            //translate payload forward slightly
+            float tx = Angles.trnsx(payload.rotation(), 0.1f), ty = Angles.trnsy(payload.rotation(), 0.1f);
+            payload.set(payload.x() + tx, payload.y() + ty, payload.rotation());
+
+            if(payload.dump()) payload = null;
+            else payload.set(payload.x() - tx, payload.y() - ty, payload.rotation());
+        }
+
+        public void updatePayload(){
+            if(payload != null) payload.set(x + payVector.x, y + payVector.y, (direction + 1) * 90);
         }
 
         @Override
         public void draw(){
-            if(!(drawer instanceof  DrawDefault)){
+            if(!(drawer instanceof DrawDefault)){
                 super.draw();
             }else{
+                float rot = direction == -1 ? rotation -90: direction * 90;
                 Draw.rect(bottomRegion, x, y);
-                if(peekAmmo() != null && peekAmmo().spawnUnit != null){
+                if (peekAmmo() != null && peekAmmo().spawnUnit != null) {
                     UnitType unt = peekAmmo().spawnUnit;
-                    if(this.team.data().unitCap >= this.team.data().countType(unt) || state.rules.waveTeam == this.team){
-                        Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rotation - 90f, reloadCounter /reload,  speedScl, time));
+                    if (this.team.data().unitCap >= this.team.data().countType(unt) || state.rules.waveTeam == this.team) {
+                        Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rot, reloadCounter / reload, speedScl, time));
                     } else {
-                        Draw.draw(Layer.blockOver, ()->{
-                            Draw.alpha(reloadCounter /reload);
-                            Draw.rect(unt.fullIcon, x, y, rotation- 90f);
+                        Draw.draw(Layer.blockOver, () -> {
+                            Draw.alpha(reloadCounter / reload);
+                            Draw.rect(unt.fullIcon, x, y, rot);
 
                             Draw.color(Pal.accent);
-                            Draw.alpha((reloadCounter /reload) / 1.2f);
+                            Draw.alpha((reloadCounter / reload) / 1.2f);
                             Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
                             Draw.reset();
 
-                            Draw.color(Pal.remove, Math.min(reloadCounter /reload, 0.5f));
+                            Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.5f));
                             Draw.rect(Icon.warning.getRegion(), x, y);
                             Draw.reset();
                         });
                     }
                 }
                 Draw.z(Layer.blockOver + 0.1f);
+                if(payload != null){
+                    payload.draw();
+                }
                 Draw.rect(region, x, y);
             }
         }
@@ -354,6 +399,42 @@ public class ItemUnitTurret extends ItemTurret {
             buildIcon(table, 2, Icon.down);
             buildIcon(table, 3, Icon.right);
 
+
+            var group = new ButtonGroup<ImageButton>();
+            group.setMinCheckCount(0);
+            int i = 0, columns = 6;
+            if(peekAmmo() != null && peekAmmo().spawnUnit != null && peekAmmo().spawnUnit.commands.length >1 ){
+                var unit = peekAmmo().spawnUnit;
+                var list = unit.commands;
+                table.row();
+                for(var item : list){
+                    ImageButton button = table.button(item.getIcon(), Styles.clearNoneTogglei, 40f, () -> {
+                        command = item;
+                        configure(item);
+                        deselect();
+                    }).tooltip(item.localized()).group(group).get();
+
+                    button.update(() -> button.setChecked(command == item || (command == null && unit.defaultCommand == item)));
+
+                    if(++i % columns == 0){
+                        table.row();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean onConfigureBuildTapped(Building other){
+            if(block.clearOnDoubleTap){
+                if(self() == other){
+                    deselect();
+                    direction = -1;
+                    Call.tileConfig(Vars.player, this, -1);
+                    return false;
+                }
+                return true;
+            }
+            return self() != other;
         }
 
         void buildIcon(Table table, int conf, Drawable icon){
@@ -396,4 +477,5 @@ public class ItemUnitTurret extends ItemTurret {
             return 5;
         }
     }
+
 }
