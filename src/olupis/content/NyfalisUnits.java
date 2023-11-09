@@ -36,8 +36,7 @@ public class NyfalisUnits {
         venom, serpent, reaper, goliath,
 
         /*Ground units*/
-        supella, blattela, luridiblatta , blattella , parcoblatta, //smallest cockroaches
-        roach,
+        supella, germanica , luridiblatta , vaga , parcoblatta, //smallest cockroaches
 
         /*naval*/
         porter, essex, lexington, excess, nimitz,
@@ -300,13 +299,13 @@ public class NyfalisUnits {
         supella = new NyfalisUnitType("supella"){{
             constructor = MechUnit::create;
 
-            canBoost = true;
+            canBoost = lowAltitude = true;
             boostMultiplier = 0.8f;
 
-            health = 210;
             armor = 1;
             hitSize = 8;
-            speed = 0.55f;
+            health = 140;
+            speed = 0.65f;
             rotateSpeed = 1.72f;
             weapons.add(
                 new Weapon("large-weapon"){{
@@ -318,7 +317,7 @@ public class NyfalisUnits {
                     bullet = new BasicBulletType(2.5f, 9){{
                         width = 7f;
                         height = 9f;
-                        lifetime = 60f;
+                        lifetime = 57f;
                     }};
                 }},
                 new NyfalisWeapon("olupis-dark-pew", true, true){{
@@ -326,14 +325,15 @@ public class NyfalisUnits {
                     y = 4f;
                     reload = 30;
                     shake = 0.4f;
+                    shootCone = 25f;
+                    rotationLimit = 65f;
                     layerOffset = -0.001f;
-                    rotationLimit = shootCone = 45f;
                     autoTarget = rotate = true;
                     mirror = controllable = false;
                     bullet = new BasicBulletType(3f, 8){{
                         width = 5f;
                         height = 6f;
-                        lifetime = 60f;
+                        lifetime = 47.5f;
                         collidesAir = false;
                         frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
                         backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);

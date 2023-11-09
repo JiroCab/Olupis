@@ -643,7 +643,7 @@ public class NyfalisBlocks {
         ironPump = new Pump("iron-pump"){{
             size = 2;
             liquidCapacity = 20f;
-            pumpAmount = 0.35f;
+            pumpAmount = 0.28f;
             buildCostMultiplier = 2f;
             researchCost = with(lead, 500, iron, 100);
             requirements(Category.liquid, with(iron, 10, lead, 10));
@@ -651,7 +651,7 @@ public class NyfalisBlocks {
 
         displacementPump = new BurstPump("displacement-pump"){{
             size = 3;
-            pumpAmount = 120f;
+            pumpAmount = 130f;
             leakAmount = 0.02f;
             liquidCapacity = 150f;
             consumePower(0.3f);
@@ -662,8 +662,7 @@ public class NyfalisBlocks {
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{
             size = 4;
             leakAmount = 0.1f;
-            pumpAmount = 180f;
-            liquidCapacity = 200f;
+            pumpAmount = liquidCapacity = 200f;
             consumePower(0.6f);
             researchCost = with(iron, 500, lead, 1000, graphite, 250, silicon, 250);
             requirements(Category.liquid, with(iron, 60, graphite, 60, lead,150, silicon, 60));
@@ -913,8 +912,8 @@ public class NyfalisBlocks {
                         spawnUnit = phantom;
                     }}
             );
-            researchCost = with(lead, 1000, graphite, 500, iron, 500, rustyIron, 1000);
-            requirements(Category.units, with(iron, 50, lead, 200, graphite, 50, rustyIron, 250));
+            researchCost = with(lead, 1000, copper, 500, iron, 500, rustyIron, 1000);
+            requirements(Category.units, with(iron, 50, lead, 200, copper, 50, rustyIron, 250));
         }};
 
         // arialConstruct -> offensive air units
@@ -933,10 +932,10 @@ public class NyfalisBlocks {
                 }}
             );
             alwaysShooting = true;
-            requiredItems = Seq.with(silicon);
+            requiredItems = with(copper, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(lead, 100, silicon, 600,  iron, 600);
-            requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
+            requirements(Category.units, with(iron, 100, lead, 100, copper, 100));
         }};
 
         // groundConstruct -> offensive ground units
@@ -954,20 +953,20 @@ public class NyfalisBlocks {
                     spawnUnit = venom;
                 }}
             );
-            requiredItems = Seq.with(silicon);
+            requiredItems = with(copper, 10);
             alwaysShooting = hoverShowsSpawn = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(rustyIron, 1000, silicon, 600,  iron, 600);
-            requirements(Category.units, with(iron, 100, rustyIron, 100, silicon, 50));
+            requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
         }};
 
         //navalConstruct -> offensive naval units
         navalConstruct = new ItemUnitTurret("naval-construct"){{
             size = 4;
-            shootY = 2.5f * Vars.tilesize;
             reload = 600f;
             itemCapacity = 20;
             failedMakeSoundPitch = 0.7f;
+            shootY = 2.5f * Vars.tilesize;
 
             ammo(
                 graphite, new SpawnHelperBulletType(){{
@@ -981,9 +980,10 @@ public class NyfalisBlocks {
                     spawnUnit = porter;
                 }}
             );
-            requiredItems = Seq.with(silicon);
-            alwaysShooting = hoverShowsSpawn = true;
+            consumePower(80f / 60f);
+            requiredItems = with(copper, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
+            alwaysShooting = hoverShowsSpawn = hasPower = true;
             researchCost = with(lead, 1000, silicon, 600,  iron, 600);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};

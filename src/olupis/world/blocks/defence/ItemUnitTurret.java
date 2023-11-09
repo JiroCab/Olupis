@@ -19,6 +19,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
+import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
@@ -28,9 +29,9 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
-import mindustry.type.Item;
-import mindustry.type.UnitType;
+import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.UnitPayload;
@@ -39,6 +40,7 @@ import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
 import olupis.world.entities.units.NyfalisUnitType;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import static mindustry.Vars.*;
@@ -46,9 +48,9 @@ import static mindustry.Vars.*;
 /*The cross bread of a Turret and Unit factory, for the sake of being different*/
 public class ItemUnitTurret extends ItemTurret {
     /*common required items for all unit types*/
-    public Seq<Item> requiredItems = new Seq<>();
+    public ItemStack[] requiredAlternate = ItemStack.with(Items.copper, 20, Items.silicon, 15);
+    public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20, Items.silicon, 15);
     /*Minimum Items needed*/
-    public int requiredItemsCost;
     /*Parameters when failing to make a unit*/
     public Sound failedMakeSound = Sounds.dullExplosion;
     public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 1f;
@@ -62,6 +64,7 @@ public class ItemUnitTurret extends ItemTurret {
     public boolean liquidAim = false;
 
     public float payloadSpeed = 0.7f;
+    public Block alternate;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
 
@@ -71,7 +74,6 @@ public class ItemUnitTurret extends ItemTurret {
         playerControllable = false;
         shootSound = Sounds.respawn;
         drawer = new DrawDefault();
-        requiredItemsCost =Math.round(itemCapacity / 2f);
         fogRadius = -1;
         range = 0f;
         config(UnitCommand.class, (ItemUnitTurretBuild build, UnitCommand command) -> build.command = command);
@@ -154,7 +156,8 @@ public class ItemUnitTurret extends ItemTurret {
 
     @Override
     public void init(){
-        if(requiredItems.size >= 1) for (Item i : requiredItems) consumeItem(i, requiredItemsCost);
+        if(requiredItems.length >= 1) for (ItemStack i : requiredItems) consumeItem(i.item, i.amount);
+
         /*Todo: Hover icon for the unit (UnitFactory)*/
         super.init();
     }
@@ -170,12 +173,12 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public boolean acceptItem(Building source, Item item){
             return ((ammoTypes.get(item) != null && totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo && !ammoTypes.get(item).spawnUnit.isBanned())
-                     || (requiredItems.contains(item) && items.get(item) < getMaximumAccepted(item)));
+                     || (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)));
         }
 
         @Override
         public void handleItem(Building source, Item item){
-            if(requiredItems.contains(item) && items.get(item) < getMaximumAccepted(item)){
+            if(Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)){
                 items.add(item, 1);
             }else super.handleItem(source, item);
         }
@@ -193,8 +196,8 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public boolean hasAmmo(){
             if(payload != null) return false;
-            for (Item req : requiredItems) {
-                if(items.get(req) >= requiredItemsCost) continue;
+            for (ItemStack req : requiredItems) {
+                if(items.get(req.item) >= req.amount) continue;
                 return false;
             }
             return super.hasAmmo();
