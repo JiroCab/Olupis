@@ -46,6 +46,7 @@ public class NyfalisTurrets {
                     rangeChange = 15f;
                     ammoMultiplier = 3f;
                     trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.5f;
 
                     statusDuration = 60f * 2;
                 }},
@@ -62,6 +63,7 @@ public class NyfalisTurrets {
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 5;
                         trailInterval = trailParam = 1.5f;
+                        buildingDamageMultiplier = 0.5f;
                     }}
             );
             drawer = new DrawTurret("iron-"){{
@@ -272,6 +274,7 @@ public class NyfalisTurrets {
                         layer = Layer.bullet -2f;
                         hitSize = puddleSize = 7f;
                         trailInterval = trailParam = 1.5f;
+                        buildingDamageMultiplier = 0.4f;
 
                         trailColor = hitColor;
                         status = StatusEffects.corroded;
@@ -289,6 +292,7 @@ public class NyfalisTurrets {
                         statusDuration = 60f * 4;
                         status = StatusEffects.corroded;
                         trailInterval = trailParam = 1.5f;
+                        buildingDamageMultiplier = 0.4f;
                     }},
                     Liquids.slag, new LiquidBulletType(Liquids.slag){{
                         size = 3;
@@ -302,6 +306,7 @@ public class NyfalisTurrets {
                         layer = Layer.bullet -2f;
                         hitSize = puddleSize = 7f;
                         trailInterval = trailParam = 1.5f;
+                        buildingDamageMultiplier = 0.4f;
 
                         trailColor = hitColor;
                         status = StatusEffects.melting;

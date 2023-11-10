@@ -26,11 +26,12 @@ public class NyfalisTechTree {
                                 node(NyfalisSectors.gardeniorTemple, () -> {
 
                                 });
-                            });
-                            node(NyfalisSectors.muddyRivers, Seq.with(
-                                new Objectives.Produce(iron), new Objectives.Research(steamDrill), new Objectives.Research(ironSieve)
-                            ),() ->{
 
+                                node(NyfalisSectors.muddyRivers, Seq.with(
+                                        new Objectives.Produce(iron), new Objectives.Research(steamDrill), new Objectives.Research(ironSieve)
+                                ),() ->{
+
+                                });
                             });
                         });
                     });
@@ -76,7 +77,9 @@ public class NyfalisTechTree {
                 node(venom, Seq.with(
                         new  Objectives.Research(groundConstruct)
                 ), () -> {
+                    node(supella, () -> {
 
+                    });
                 });
                 node(porter, Seq.with(
                         new  Objectives.Research(navalConstruct)

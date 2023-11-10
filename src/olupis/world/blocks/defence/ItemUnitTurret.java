@@ -38,7 +38,6 @@ import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
-import olupis.world.entities.units.NyfalisUnitType;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -146,7 +145,6 @@ public class ItemUnitTurret extends ItemTurret {
                         title.add(item.localizedName).left().top();
                     }).left().row();
                     info.add(displayUnit.localizedName).left().row();
-                    if(displayUnit instanceof NyfalisUnitType nyf && nyf.tier != -1) info.add("Tier: " + nyf.tier).left().row();
                     if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
                 });
                 b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);

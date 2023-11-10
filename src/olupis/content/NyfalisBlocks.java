@@ -558,6 +558,7 @@ public class NyfalisBlocks {
             speed = 4f;
             health = 120;
             regionRotated1 = 1;
+            buildCostMultiplier = 0.3f;
             researchCost = with(lead, 500, graphite, 100, iron, 100);
             requirements(Category.distribution, with(iron, 20, graphite, 20, lead, 35));
         }};
@@ -643,7 +644,7 @@ public class NyfalisBlocks {
         ironPump = new Pump("iron-pump"){{
             size = 2;
             liquidCapacity = 20f;
-            pumpAmount = 0.28f;
+            pumpAmount = 0.18f;
             buildCostMultiplier = 2f;
             researchCost = with(lead, 500, iron, 100);
             requirements(Category.liquid, with(iron, 10, lead, 10));
@@ -913,7 +914,7 @@ public class NyfalisBlocks {
                     }}
             );
             researchCost = with(lead, 1000, copper, 500, iron, 500, rustyIron, 1000);
-            requirements(Category.units, with(iron, 50, lead, 200, copper, 50, rustyIron, 250));
+            requirements(Category.units, with(iron, 50, lead, 250, copper, 50, rustyIron, 150));
         }};
 
         // arialConstruct -> offensive air units
@@ -947,6 +948,11 @@ public class NyfalisBlocks {
             failedMakeSoundPitch = 0.7f;
 
             ammo(
+                lead, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.smeltsmoke;
+                    ammoMultiplier = 2f;
+                    spawnUnit = supella;
+                }},
                 graphite, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
@@ -1030,6 +1036,8 @@ public class NyfalisBlocks {
         wire = new Wire("wire"){{
             floating = placeableLiquid = consumesPower = outputsPower = true;
             solid = false;
+            armor = 1f;
+            health = 55;
             baseExplosiveness = 0.5f;
             //TODO: if possible 1 capacity & power usage, this only does usage
             consume(new ConsumePower(1/60f, 1f, false));
@@ -1040,6 +1048,7 @@ public class NyfalisBlocks {
         superConductors = new Wire("super-conductor"){{
             floating = true;
             solid = false;
+            armor = 5;
             health = 150;
             baseExplosiveness = 0.7f;
             researchCost = with(iron, 500, cobalt, 100);
@@ -1049,6 +1058,7 @@ public class NyfalisBlocks {
         wireBridge = new BeamNode("wire-bridge"){{
             consumesPower = outputsPower = floating = true;
             range = 5;
+            armor = 3;
             health = 100;
             pulseMag = 0f;
             laserWidth = 0.4f;
@@ -1253,8 +1263,8 @@ public class NyfalisBlocks {
             coreMerge = false;
             size = 2;
             health =  790;
-            scaledHealth = 150;
-            itemCapacity = 150;
+            buildCostMultiplier = 0.7f;
+            scaledHealth = itemCapacity = 150;
             researchCost = with(iron, 250, rustyIron, 550);
             requirements(Category.effect, with(rustyIron, 75, iron, 50));
         }};

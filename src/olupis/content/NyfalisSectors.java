@@ -58,10 +58,10 @@ public class NyfalisSectors {
         gardeniorTemple = new SectorPreset("gardenior-temple", arthin, 7){{
             addStartingItems = true;
             allowLaunchLoadout = allowLaunchSchematics = false;
-            rules = commonRules(captureWave, false);
 
             difficulty = 3;
             captureWave = 26;
+            rules = commonRules(captureWave, false);
         }};
 
         //endregion

@@ -116,7 +116,6 @@ public class NyfalisUnits {
 
         //Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
         striker = new NyfalisUnitType("striker"){{
-            tier = 2;
             armor = 3f;
             hitSize = 13f;
             drag = 0.05f;
@@ -308,12 +307,19 @@ public class NyfalisUnits {
             speed = 0.65f;
             rotateSpeed = 1.72f;
             weapons.add(
-                new Weapon("large-weapon"){{
-                    reload = 15f;
+                new Weapon(""){{
                     x = 4f;
                     y = 2f;
+                    reload = 15f;
                     top = false;
                     ejectEffect = Fx.casing1;
+                    parts.addAll(
+                      new RegionPart("large-weapon"){{
+                          var p = PartProgress.warmup.add(-1f);
+                          heatProgress = progress =p.mul(-1);
+                          moveRot = 40f;
+                      }}
+                    );
                     bullet = new BasicBulletType(2.5f, 9){{
                         width = 7f;
                         height = 9f;
@@ -422,7 +428,6 @@ public class NyfalisUnits {
         }};
 
         blitz = new NyfalisUnitType("blitz"){{
-            tier = 2;
             armor = 5f;
             accel = 0.6f;
             drag = 0.14f;
@@ -516,7 +521,6 @@ public class NyfalisUnits {
         }};
 
         crusader = new NyfalisUnitType("crusader"){{
-            tier = 3;
             constructor = bay.constructor;
         }};
 
@@ -643,14 +647,13 @@ public class NyfalisUnits {
 
         embryo = new AmmoLifeTimeUnitType("embryo"){{
             /*(trans) Egg if chan-version is made >;3c */
-            constructor = UnitEntity::create;
-            controller = u -> new AgressiveFlyingAi(true);
-
-            flying = alwaysShootWhenMoving = true;
-            playerControllable = useUnitCap = false;
             speed = 3f;
             ammoCapacity = 100;
 
+            flying = alwaysShootWhenMoving = true;
+            playerControllable = useUnitCap = false;
+            constructor = UnitEntity::create;
+            controller = u -> new AgressiveFlyingAi(true);
             weapons.add(new Weapon(){{
                 top = false;
                 reload = 25f;
@@ -967,6 +970,7 @@ public class NyfalisUnits {
         banshee.displayFactory = Seq.with(NyfalisBlocks.construct);
         aero.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
         venom.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+        supella.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
 
         porter.displayFactory = Seq.with(zoner, NyfalisBlocks.groundConstruct);
 

@@ -11,14 +11,15 @@ import arc.scene.ui.layout.Table;
 import arc.util.*;
 import mindustry.ai.types.LogicAI;
 import mindustry.content.Blocks;
-import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Env;
+import olupis.content.NyfalisFxs;
 import olupis.world.ai.NyfalisMiningAi;
 
 import static mindustry.Vars.*;
@@ -37,7 +38,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*mining depletes ammo*/
     public boolean miningDepletesAmmo = false;
     /*Time before depleting ammo*/
-    public float ammoDepletionOffset = 10f;
+    public float ammoDepletionOffset = 0f;
     float startTime;
     /*Being player controlled depletes ammo*/
     public boolean depleteOnInteraction = true, depleteOnInteractionUsesPassive = false;
@@ -49,7 +50,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     public boolean drawAmmo = false;
     public TextureRegion ammoRegion;
     public Sound timedOutSound = Sounds.explosion;
-    public Effect timedOutFx = Fx.steam;
+    public Effect timedOutFx = NyfalisFxs.unitBreakdown;
     public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f;
 
 
@@ -179,7 +180,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
 
         boolean multiplier =(unit.count() > unit.cap() && unit.type.useUnitCap || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable);
 
-        boolean shouldDeplete = (startTime+ ammoDepletionOffset) >= startTime || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable;
+        boolean shouldDeplete = (startTime+ ammoDepletionOffset) <= Time.time || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable;
         if(ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap()))){
             unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier ? penaltyMultiplier : 1f));
         }
@@ -195,8 +196,24 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         super.update(unit);
     }
 
+    @Override
+    public Unit create(Team team){
+        Unit unit = constructor.get();
+        unit.team = team;
+        unit.setType(this);
+        unit.ammo = ammoCapacity; //fill up on ammo upon creation
+        unit.elevation = flying ? 1f : 0;
+        unit.heal();
+        if(unit instanceof TimedKillc u){
+            u.lifetime(lifetime);
+        }
+        startTime = Time.time;
+        unit.apply(spawnStatus, spawnStatusDuration);
+        return unit;
+    }
+
     public void timedOut(Unit unit){
-        timedOutFx.at(unit);
+        timedOutFx.at(unit.x, unit.y, 0, unit);
         timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
         unit.remove();
     }

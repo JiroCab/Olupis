@@ -1,10 +1,11 @@
 package olupis.content;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.*;
+import arc.math.Interp;
 import arc.math.Mathf;
 import mindustry.entities.Effect;
+import mindustry.gen.Unit;
 import mindustry.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
@@ -54,7 +55,23 @@ public class NyfalisFxs{
                1f, 2f, e.rotation + e.fin() * 50f * e.rotation
            ));
             Drawf.light(e.x, e.y, 20f, Pal.lightOrange, 0.6f * e.fout());
-        }).layer(Layer.bullet)
+        }).layer(Layer.bullet),
+
+        unitBreakdown = new Effect(100f, e -> {
+            if(!(e.data instanceof Unit select) || select.type == null) return;
+
+            float scl = e.fout(Interp.pow2Out);
+            float p = Draw.scl;
+            Draw.scl *= scl;
+
+            mixcol(Pal.darkMetal, 1f);
+            rect(select.type.fullIcon, select.x, select.y, select.rotation - 90f);
+            Lines.stroke(e.fslope());
+            Lines.square(select.x, select.y, e.fout() * select.hitSize * 1.5f, 45);
+            reset();
+
+            Draw.scl = p;
+        })
     ;
 
 }
