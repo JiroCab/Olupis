@@ -590,7 +590,7 @@ public class NyfalisUnits {
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = true;
-            isEnemy = useUnitCap = ammoDepletesOverTime = depleteOnInteraction =false;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction =false;
         }};
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{
@@ -617,7 +617,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
             setEnginesMirror(new UnitEngine(8 / 4f, -16 / 4f, 1.4f, 295));
-            isEnemy = useUnitCap = ammoDepletesOverTime = depleteOnInteraction = false;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = false;
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = drawAmmo = true;
         }};
 

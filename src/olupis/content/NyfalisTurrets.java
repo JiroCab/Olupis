@@ -40,7 +40,7 @@ public class NyfalisTurrets {
                     trailColor = hitColor;
 
                     speed = 5.5f;
-                    damage = 7.5f;
+                    damage = 7.8f;
                     drag = 0.008f;
                     lifetime = 19.5f;
                     rangeChange = 15f;
@@ -58,7 +58,7 @@ public class NyfalisTurrets {
                         speed = 8f;
                         drag = 0.009f;
                         lifetime = 12f;
-                        damage = 10f;
+                        damage = 10.3f;
                         pierceCap = 1;
                         ammoMultiplier = 3f;
                         statusDuration = 60f * 5;
@@ -104,7 +104,7 @@ public class NyfalisTurrets {
             outlineColor = nyfalisBlockOutlineColour;
             researchCost = with(rustyIron, 100, lead, 100);
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
-            requirements(Category.turret, with(rustyIron, 50, lead, 10));
+            requirements(Category.turret, with(rustyIron, 40, lead, 20));
 
         }};
 
@@ -142,8 +142,8 @@ public class NyfalisTurrets {
             shootSound = Sounds.missile;
             shootEffect = Fx.shootSmallSmoke;
             drawer = new DrawRegion("");
-            researchCost = with(lead, 500, rustyIron, 200);
-            requirements(Category.turret, with(rustyIron, 10, lead, 50));
+            researchCost = with(lead, 100, rustyIron, 100);
+            requirements(Category.turret, with(rustyIron, 20, lead, 40));
         }};
 
         shredder = new ItemTurret("shredder"){{

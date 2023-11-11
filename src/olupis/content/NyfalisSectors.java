@@ -31,28 +31,30 @@ public class NyfalisSectors {
         }};
 
         mossyRavine = new SectorPreset("mossy-ravine", arthin, 31){{
-            addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
+            addStartingItems = allowLaunchLoadout = false;
+            allowLaunchSchematics = true;
 
-            captureWave = 33;
             difficulty = 2;
+            captureWave = 33;
             rules = commonRules(captureWave, false);
         }};
 
         muddyRivers = new SectorPreset("muddy-rivers", arthin, 21){{
-            addStartingItems = true;
-            allowLaunchLoadout = allowLaunchSchematics = false;
+            addStartingItems = allowLaunchSchematics = true;
+            allowLaunchLoadout = false;
 
             captureWave = 38;
-            rules = commonRules(captureWave, false);
             difficulty = 2;
+            rules = commonRules(captureWave, false);
         }};
 
         vakinyaDesert = new SectorPreset("vakinya-desert", arthin, 10){{
-            addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
+            addStartingItems = allowLaunchLoadout  = false;
+            allowLaunchSchematics = true;
 
-            captureWave = 17;
+            captureWave = 16;
             difficulty = 2;
-            rules = commonRules(captureWave, 22.32f);
+            rules = commonRules(captureWave);
         }};
 
         gardeniorTemple = new SectorPreset("gardenior-temple", arthin, 7){{

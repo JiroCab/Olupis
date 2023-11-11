@@ -194,47 +194,58 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public boolean hasAmmo(){
             if(payload != null) return false;
+            if(!hasReqItems()) return false;
+            return super.hasAmmo();
+        }
+
+        public boolean hasReqItems(){
             for (ItemStack req : requiredItems) {
                 if(items.get(req.item) >= req.amount) continue;
                 return false;
             }
-            return super.hasAmmo();
+            return true;
+        }
+
+        public boolean shootCreatable (BulletType type){
+            return !type.spawnUnit.isBanned() && (type.spawnUnit.unlockedNowHost() && state.isCampaign() || !state.isCampaign());
         }
 
         @Override
         protected void shoot(BulletType type){
-            boolean creatable = !type.spawnUnit.isBanned() && (type.spawnUnit.unlockedNowHost() && state.isCampaign() || !state.isCampaign());
+            boolean creatable = shootCreatable(type);
             if(direction != -1){
-                if(type.spawnUnit == null) return;
-                if(payload == null) {
-                    payload = new UnitPayload(type.spawnUnit.create(team));
-                    Unit p = (payload).unit;
-                    if (commandPos != null && unit.isCommandable()) {
-                        unit.command().commandPosition(commandPos);
-                    }
-                    if (unit.isCommandable() && command != null) {
-                        unit.command().command(command);
-                    }
-                    Events.fire(new EventType.UnitCreateEvent(p, this));
-                    payVector.setZero();
-                    consume();
-                }
-                moveOutPayload();
-
-
+                shootPayload(type, true);
             } else{
                 if(payload != null) payload = null;
-                shootRegular(type, creatable);
+                shootRegular(type, creatable, true);
             }
 
             if(consumeAmmoOnce) useAmmo();
         }
 
-        protected void shootRegular(BulletType type, boolean creatable){
+        protected void shootPayload(BulletType type, boolean consume){
+            if(type.spawnUnit == null) return;
+            if(payload == null) {
+                payload = new UnitPayload(type.spawnUnit.create(team));
+                Unit p = (payload).unit;
+                if (commandPos != null && unit.isCommandable()) {
+                    unit.command().commandPosition(commandPos);
+                }
+                if (unit.isCommandable() && command != null) {
+                    unit.command().command(command);
+                }
+                Events.fire(new EventType.UnitCreateEvent(p, this));
+                payVector.setZero();
+                if(consume) consume();
+            }
+            moveOutPayload();
+        }
+
+        protected void shootRegular(BulletType type, boolean creatable, boolean consume){
             boolean spawn =creatable && (state.rules.waveTeam == this.team || (type.spawnUnit.useUnitCap && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap) || !type.spawnUnit.useUnitCap);
             if(spawn){
                 /*don't create the unit if it's banned or at unit cap*/
-                consume();
+                if(consume)consume();
                 float rot = direction == -1 ? rotation - 90 : (direction -1) * 90,
                         bulletX = x + Angles.trnsx(rot, shootX, shootY),
                         bulletY = y + Angles.trnsy(rot, shootX, shootY);

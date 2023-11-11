@@ -16,7 +16,7 @@ import mindustry.world.meta.Stat;
 
 import java.util.Objects;
 
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 
 public class PowerUnitTurret extends ItemUnitTurret {
     /*Weapon to use when there's no modifier item*/
@@ -32,7 +32,7 @@ public class PowerUnitTurret extends ItemUnitTurret {
         removeBar("units");
 
         addBar("units", (PowerUnitTurretBuild e) ->{
-            UnitType unit = e.peekAmmo() == shootType ? shootType.spawnUnit : e.peekAmmo().spawnUnit;
+            UnitType unit = e.peekAmmo() == null ? shootType.spawnUnit : e.peekAmmo().spawnUnit;
             return new Bar(() -> Core.bundle.format("bar.unitcap",
                 !Objects.equals(Fonts.getUnicodeStr(unit.localizedName), "") ? Fonts.getUnicodeStr(unit.localizedName) : Iconc.units,
                 e.team.data().countType(unit),
@@ -103,15 +103,31 @@ public class PowerUnitTurret extends ItemUnitTurret {
 
         @Override
         public boolean hasAmmo(){
+            if(payload != null) return false;
+
+            //skip first entry if it has less than the required amount of ammo
             if(ammo.size >= 2 && ammo.peek().amount < ammoPerShot && ammo.get(ammo.size - 2).amount >= ammoPerShot){
                 ammo.swap(ammo.size - 1, ammo.size - 2);
             }
-            return true;
+
+            return power.status >= 1f && (state.rules.waveTeam == this.team || (shootType.spawnUnit.useUnitCap && this.team.data().countType(shootType.spawnUnit) < this.team.data().unitCap) || !shootType.spawnUnit.useUnitCap);
+        }
+
+        @Override
+        protected void shoot(BulletType type){
+            boolean creatable = shootCreatable(type);
+            if(direction != -1){
+                shootPayload(type, type != shootType);
+            } else{
+                if(payload != null) payload = null;
+                shootRegular(type, creatable, type != shootType);
+            }
+
+            if(consumeAmmoOnce) useAmmo();
         }
 
         @Override
         public @Nullable BulletType peekAmmo(){
-            //Crash on place
             if (ammo.size > 0){
                 return ammo.peek().amount > ammoPerShot ? shootType : ammo.peek().type();
             } else  return shootType;
