@@ -11,13 +11,14 @@ Last updated on 13/11/2023 (+8utc) by Jirocab/RushieWashie
     + Units added: supella
     ~ Maps updated: forestOfHope, sanctuary, dormantCell
     ~ Added in-map credits for the maps above
-    ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor, ironBridge, phantom
+    ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor, ironBridge, phantom, rustedBridge
     ~ Sprites Contributed by kapzduke: pipeJuntion, pipeRouter, ironPipe, leadPipe, WindMill, Corroder, rustyDrill, displacementPump, ironPump, rustyPump, rustElectrolyzer, iron (item), rustyIron (item) [https://github.com/kapzduke]
     ~ Maps Contributed MrApple: vakinyaDesert, muddyRivers
     ~ improved shadows of various props, mossyRavine, gardeniorTemple
     ~ buffed shredder & dissolver
     ~ Pipes has been reworked, made better for longer distance in exchange for lower capacity
     ~ Conveyor & Bridges speed increased, from half of serpulo counterparts to about 70-75%~
+    ~ Crusader now have a wip weapon, f
     ~ Gnats & Phorid now have crawler like weapons along side healing turret
     ~ Moved hydroMill to post-cobalt
     ~ Units and unit production now costs copper instead of silicon for t1

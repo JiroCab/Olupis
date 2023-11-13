@@ -645,7 +645,7 @@ public class NyfalisBlocks {
         ironPump = new Pump("iron-pump"){{
             size = 2;
             liquidCapacity = 20f;
-            pumpAmount = 0.18f;
+            pumpAmount = 0.085f;
             buildCostMultiplier = 2f;
             researchCost = with(lead, 500, iron, 100);
             requirements(Category.liquid, with(iron, 10, lead, 10));

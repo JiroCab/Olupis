@@ -10,6 +10,7 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
+import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -523,7 +524,65 @@ public class NyfalisUnits {
         }};
 
         crusader = new NyfalisUnitType("crusader"){{
+            armor = 7f;
+            health = 870f;
             constructor = bay.constructor;
+            weapons.add(new Weapon("olupis-tri-mount"){{
+                x = 0;
+                y = -5f;
+                recoils = 3;
+                recoil = 0.5f;
+                reload = 13f;
+                rotateSpeed = 1f;
+                mirror = false;
+                rotate= top = true;
+                shoot = new ShootAlternate(2.2f);
+                for(int i = 0; i < 3; i ++){ int f = i;
+                    parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : i == 1 ? "m" : "r")){{
+                        x = (f == 0) ? 3.8f : (f == 1) ? 0f : -3.8f;
+                        y = 5.25f;
+                        shootY = 6f;
+                        recoilIndex = f;
+                        outlineLayerOffset = 0f;
+                        outlineColor = unitOutLine;
+                        outline = drawRegion = under = true;
+                        progress = PartProgress.recoil;
+                        moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
+                    }}); }
+
+                bullet = new ArtilleryBulletType(3f, 14){{
+                    width = 7f;
+                    height = 9f;
+                    trailSize = 3f;
+                    lifetime = 65f;
+                    splashDamage = 2f;
+                    splashDamageRadius = 25f * 0.75f;
+                    collidesAir = false;
+                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.9f);
+                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.9f);
+                    hitEffect = despawnEffect = Fx.hitBulletSmall;
+                }};
+            }},
+            new Weapon("olupis-dark-pew"){{
+                x = 0;
+                y = -5f;
+                reload = 35f;
+                mirror = false;
+                rotate = true;
+                layerOffset = 0.01f;
+                ejectEffect = Fx.casing1;
+                shoot = new ShootSpread(6, 2f);
+                bullet = new BasicBulletType(2.5f, 10f){{
+                    width = 7f;
+                    height = 9f;
+                    shrinkX = 25f /60;
+                    shrinkY = 35f /60;
+                    lifetime = 40f;
+                    fragBullets = 1;
+                    fragVelocityMin = 1f;
+                    fragRandomSpread = 0f;
+                }};
+            }});
         }};
 
         //endregion Units

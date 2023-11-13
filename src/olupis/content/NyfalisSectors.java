@@ -54,7 +54,7 @@ public class NyfalisSectors {
 
             captureWave = 16;
             difficulty = 2;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 500, Items.lead, 500, NyfalisItemsLiquid.iron, 100));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000, NyfalisItemsLiquid.iron, 200));
         }};
 
         gardeniorTemple = new SectorPreset("gardenior-temple", arthin, 7){{

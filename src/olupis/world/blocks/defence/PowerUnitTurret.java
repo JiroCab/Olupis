@@ -162,7 +162,7 @@ public class PowerUnitTurret extends ItemUnitTurret {
         //Hack to make it reload when only powered & required items
          @Override
         protected float baseReloadSpeed(){
-            return power.status >= 1f  && ammo.size >= 1 && ammo.peek().type() != shootType && !hasReqItems() ? 1f : efficiency;
+             return power.status >= 1f ? 1f : efficiency;
         }
     }
 }
