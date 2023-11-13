@@ -7,9 +7,9 @@ import arc.util.Scaling;
 import arc.util.io.Reads;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
-import mindustry.gen.Icon;
-import mindustry.gen.Iconc;
+import mindustry.gen.*;
 import mindustry.graphics.Pal;
+import mindustry.type.Item;
 import mindustry.type.UnitType;
 import mindustry.ui.*;
 import mindustry.world.meta.Stat;
@@ -88,10 +88,22 @@ public class PowerUnitTurret extends ItemUnitTurret {
     }
 
     public class PowerUnitTurretBuild extends ItemUnitTurretBuild {
+        //TODO: WTF WHY DOES IT NOT PROPERLY NOT HANDLE GETTING AMMO
+
+        @Override
+        public boolean acceptItem(Building source, Item item) {
+            return super.acceptItem(source, item);
+        }
+
+        @Override
+        public void handleItem(Building source, Item item){
+            super.handleItem(source, item);
+        }
+
         @Override
         public void read(Reads read, byte revision){
 
-            if(revision > 1){ /*Back when this used to extend powerTurret, prevents reading of item entry*/
+            if(revision > 1){ //Back when this used to extend powerTurret, prevents reading of item entry
                 super.read(read, revision);
             }
 
@@ -104,6 +116,7 @@ public class PowerUnitTurret extends ItemUnitTurret {
         @Override
         public boolean hasAmmo(){
             if(payload != null) return false;
+            if(ammo.size >= 1 && ammo.peek().type() != shootType && !hasReqItems()) return false;
 
             //skip first entry if it has less than the required amount of ammo
             if(ammo.size >= 2 && ammo.peek().amount < ammoPerShot && ammo.get(ammo.size - 2).amount >= ammoPerShot){
@@ -146,10 +159,10 @@ public class PowerUnitTurret extends ItemUnitTurret {
             return entry.type();
         }
 
-        //Hack to make it reload when only powered
+        //Hack to make it reload when only powered & required items
          @Override
         protected float baseReloadSpeed(){
-            return power.status >= 1f ? 1f : efficiency;
+            return power.status >= 1f  && ammo.size >= 1 && ammo.peek().type() != shootType && !hasReqItems() ? 1f : efficiency;
         }
     }
 }

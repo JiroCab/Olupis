@@ -1,26 +1,30 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 25/09/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 13/11/2023 (+8utc) by Jirocab/RushieWashie
 
 = Version 1-6 () =
     + Support/Ammo limited units have ammo visual indicators
     + Made planets be hidden until a sector is unlocked for it
     + Weather added: acidRain, mossMist
     + Blocks added: glowBloom, luminiteBoulder, obliterator, navalConstruct
-    + Maps added: vakinyaDesert
+    + Maps added: vakinyaDesert, mossyRavine, gardeniorTemple
+    + Units added: supella
     ~ Maps updated: forestOfHope, sanctuary, dormantCell
     ~ Added in-map credits for the maps above
     ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor, ironBridge, phantom
     ~ Sprites Contributed by kapzduke: pipeJuntion, pipeRouter, ironPipe, leadPipe, WindMill, Corroder, rustyDrill, displacementPump, ironPump, rustyPump, rustElectrolyzer, iron (item), rustyIron (item) [https://github.com/kapzduke]
     ~ Maps Contributed MrApple: vakinyaDesert, muddyRivers
-    ~ improved shadows of various props
-    ~ Finalized shredder & dissolver
+    ~ improved shadows of various props, mossyRavine, gardeniorTemple
+    ~ buffed shredder & dissolver
     ~ Pipes has been reworked, made better for longer distance in exchange for lower capacity
     ~ Conveyor & Bridges speed increased, from half of serpulo counterparts to about 70-75%~
-    ~ Gnats & Phorid now deal damage on death
+    ~ Gnats & Phorid now have crawler like weapons along side healing turret
     ~ Moved hydroMill to post-cobalt
+    ~ Units and unit production now costs copper instead of silicon for t1
+    ~ constructs can now output to payload
     ~ Improved Shredder's bullet's detection
     ~ Improved Tech tree, new player experience, buildSpeed
+    ~ Bug Fix: Unable to reach other sector due to a bug with mindustry not selecting the proper launch core (allowed launch schematic)
     ~ Bug Fix: Constructs not spawning units on maps without cores despite being on the wave team
     ~ Bug Fix: Embryo Timing out if it has no a parent (for waves)
     ~ Internal: Expanded Credits

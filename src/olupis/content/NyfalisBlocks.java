@@ -495,7 +495,6 @@ public class NyfalisBlocks {
             buildCostMultiplier = 0.5f;
 
             researchCost = with(rustyIron, 20, lead, 20);
-            researchCost = with(rustyIron, 400, lead, 400);
             ((Conveyor)rustyIronConveyor).junctionReplacement = this;
             ((PowerConveyor)ironConveyor).junctionReplacement = this;
             requirements(Category.distribution, with(lead, 20, rustyIron, 30));
@@ -726,6 +725,7 @@ public class NyfalisBlocks {
             ((Conduit)ironPipe).junctionReplacement = this;
             ((Conduit)leadPipe).junctionReplacement = this;
             researchCost = with(lead,200, rustyIron,200);
+            buildCostMultiplier = 0.5f;
 
             /*expensive, since you can cheese the terribleness of pipes with this*/
             requirements(Category.liquid, with(rustyIron, 50, lead, 50));
@@ -866,10 +866,11 @@ public class NyfalisBlocks {
                     new DrawLiquidRegion(),
                     new DrawRegion("-top")
             );
-            consumePower(30f /60f);
+            consumePower(35f /60f);
             consumeItem(condensedBiomatter, 1);
-            outputLiquid = new LiquidStack(oil, 18f / 60f);
-            requirements(Category.crafting, with(iron, 100, lead, 30));
+            researchCost = with(iron, 250, lead, 500);
+            outputLiquid = new LiquidStack(oil, 20f / 60f);
+            requirements(Category.crafting, with(iron, 50, lead, 50));
         }};
 
         ironSieve  = new GenericCrafter("iron-sieve"){{

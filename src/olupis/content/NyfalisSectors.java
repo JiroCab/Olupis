@@ -27,7 +27,7 @@ public class NyfalisSectors {
 
             captureWave = 15;
             difficulty = 1;
-            rules = commonRules(captureWave, false);
+            rules = commonRules(captureWave);
         }};
 
         mossyRavine = new SectorPreset("mossy-ravine", arthin, 31){{
@@ -36,7 +36,7 @@ public class NyfalisSectors {
 
             difficulty = 2;
             captureWave = 33;
-            rules = commonRules(captureWave, false);
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
         }};
 
         muddyRivers = new SectorPreset("muddy-rivers", arthin, 21){{
@@ -45,7 +45,7 @@ public class NyfalisSectors {
 
             captureWave = 38;
             difficulty = 2;
-            rules = commonRules(captureWave, false);
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 500, Items.lead, 500));
         }};
 
         vakinyaDesert = new SectorPreset("vakinya-desert", arthin, 10){{
@@ -54,7 +54,7 @@ public class NyfalisSectors {
 
             captureWave = 16;
             difficulty = 2;
-            rules = commonRules(captureWave);
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 500, Items.lead, 500, NyfalisItemsLiquid.iron, 100));
         }};
 
         gardeniorTemple = new SectorPreset("gardenior-temple", arthin, 7){{
@@ -63,7 +63,7 @@ public class NyfalisSectors {
 
             difficulty = 3;
             captureWave = 26;
-            rules = commonRules(captureWave, false);
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
         }};
 
         //endregion
@@ -90,37 +90,37 @@ public class NyfalisSectors {
     }
 
     //moved it here, so players switching planets rule isn't affected & per map dropZonesRadius are possible
-    public static void defaultRules(Rules r, boolean startItems, float dzRadius){
+    public static void defaultRules(Rules r, float dzRadius, ItemStack[] startItems){
         if(dzRadius <= 0)r.dropZoneRadius = 400f;
         else r.dropZoneRadius = dzRadius;
         r.enemyCoreBuildRadius = 650f;
 
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
         NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
-        if(startItems)r.loadout.clear().add(new ItemStack(NyfalisItemsLiquid.rustyIron, 100), new ItemStack(Items.lead, 100));
+        if(startItems.length >= 1)r.loadout.set(startItems);
     }
 
     public static void defaultRules(Rules r){
-        defaultRules(r, true,-1f);
+        defaultRules(r, -1, ItemStack.with(NyfalisItemsLiquid.rustyIron, 100, Items.lead, 100));
     }
     public static void defaultRules(Rules r, float dzRadius){
-        defaultRules(r, true, dzRadius);
+        defaultRules(r, dzRadius);
     }
 
-    public static Cons<Rules> commonRules(int captureWave, boolean startItems, float dzRadius){ return r ->{
+    public static Cons<Rules> commonRules(int captureWave, float dzRadius, ItemStack[] startItems){ return r ->{
         r.winWave = captureWave;
-        defaultRules(r, startItems, dzRadius);
+        defaultRules(r, dzRadius, startItems);
     };}
 
-    public static Cons<Rules> commonRules(int captureWave, boolean startItems){
-        return commonRules(captureWave, startItems, -1f);
+    public static Cons<Rules> commonRules(int captureWave, ItemStack[] startItems){
+        return commonRules(captureWave, -1f, startItems);
     }
 
     public static Cons<Rules> commonRules(int captureWave){
-        return commonRules(captureWave, true, -1f);
+        return commonRules(captureWave, -1f);
     }
     public static Cons<Rules> commonRules(int captureWave, float dzRadius){
-        return commonRules(captureWave, true, dzRadius);
+        return commonRules(captureWave,  dzRadius, ItemStack.with(NyfalisItemsLiquid.rustyIron, 100, Items.lead, 100));
     }
 
 }

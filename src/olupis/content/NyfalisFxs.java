@@ -71,6 +71,12 @@ public class NyfalisFxs{
             reset();
 
             Draw.scl = p;
+        }),
+
+        unitDischarge = new Effect(11, e -> {
+            color(NyfalisItemsLiquid.rustyIron.color, 0.7f);
+            stroke(e.fout() * 2f);
+            Lines.circle(e.x, e.y, 2f + e.finpow() * 7f);
         })
     ;
 

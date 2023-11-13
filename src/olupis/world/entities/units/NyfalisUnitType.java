@@ -325,16 +325,16 @@ public class NyfalisUnitType extends UnitType {
             }
 
             //shoot if applicable
-            if(mount.shoot && //must be shooting
-            can && //must be able to shoot
+            if((mount.shoot || partailControl && unit.isShooting && !controllable) && //must be shooting
+                    can && //must be able to shoot
                     !(bullet.killShooter &&mount.totalShots >0)&& //if the bullet kills the shooter, you should only ever be able to shoot once
                     (!useAmmo ||unit.ammo >0||!state.rules.unitAmmo ||unit.team.rules().infiniteAmmo)&& //check ammo
                     (!alternate ||wasFlipped ==flipSprite)&&
-            mount.warmup >=minWarmup && //must be warmed up
+                    mount.warmup >=minWarmup && //must be warmed up
                     unit.vel.len()>=minShootVelocity && //check velocity requirements
                     (mount.reload <=0.0001f||(alwaysContinuous &&mount.bullet ==null))&& //reload has to be 0, or it has to be an always-continuous weapon
                     (alwaysShooting ||Angles.within(rotate ?mount.rotation :unit.rotation +baseRotation,mount.targetRotation,shootCone)) //has to be within the cone
-                    )
+            )
 
             {
                 shoot(unit, mount, bulletX, bulletY, shootAngle);

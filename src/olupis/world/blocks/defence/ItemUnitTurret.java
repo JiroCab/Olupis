@@ -174,11 +174,14 @@ public class ItemUnitTurret extends ItemTurret {
                      || (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)));
         }
 
+
         @Override
         public void handleItem(Building source, Item item){
-            if(Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)){
+            if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item)) {
+                super.handleItem(source, item);
+            } else if(items.get(item) < getMaximumAccepted(item)) {
                 items.add(item, 1);
-            }else super.handleItem(source, item);
+            }
         }
 
         @Override
@@ -462,6 +465,11 @@ public class ItemUnitTurret extends ItemTurret {
             if(sensor == LAccess.config) return null;
             if(sensor == LAccess.rotation) return direction == -1 ? rotation : direction * 90f;
             return super.senseObject(sensor);
+        }
+
+        @Override
+        protected float baseReloadSpeed(){
+            return !hasReqItems() ? 1f : efficiency;
         }
 
         @Override

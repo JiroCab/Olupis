@@ -305,6 +305,7 @@ public class NyfalisUnits {
             hitSize = 8;
             health = 140;
             speed = 0.65f;
+            engineSize = -1;
             rotateSpeed = 1.72f;
             weapons.add(
                 new Weapon(""){{
@@ -314,7 +315,7 @@ public class NyfalisUnits {
                     top = false;
                     ejectEffect = Fx.casing1;
                     parts.addAll(
-                      new RegionPart("large-weapon"){{
+                      new RegionPart("olupis-supella-arm"){{
                           var p = PartProgress.warmup.add(-1f);
                           heatProgress = progress =p.mul(-1);
                           moveRot = 40f;
@@ -328,11 +329,11 @@ public class NyfalisUnits {
                 }},
                 new NyfalisWeapon("olupis-dark-pew", true, true){{
                     x = 0;
-                    y = 4f;
+                    y = 3.5f;
                     reload = 30;
                     shake = 0.4f;
-                    shootCone = 25f;
-                    rotationLimit = 65f;
+                    shootCone = 55f;
+                    rotationLimit = 90f;
                     layerOffset = -0.001f;
                     autoTarget = rotate = true;
                     mirror = controllable = false;
@@ -347,6 +348,7 @@ public class NyfalisUnits {
                     }};
                 }}
             );
+            setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
 
         }};
 
@@ -576,13 +578,13 @@ public class NyfalisUnits {
 
         spirit = new AmmoLifeTimeUnitType("spirit"){{
             range = 30f;
+            speed = 1.3f;
             mineTier = 1;
             mineSpeed = 3.5f;
-            itemCapacity = 30;
+            itemCapacity = 20;
             ammoCapacity = 120;
             passiveAmmoDepletion = 0.1f;
             ammoDepletionAmount = 0.15f;
-            /*Sound is not important so lower the volume a bit*/
 
             ammoType = lifeTimeDrill;
             constructor = UnitEntity::create;
@@ -595,7 +597,7 @@ public class NyfalisUnits {
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{
             speed = 2.5f;
-            ammoCapacity = 160;
+            ammoCapacity = 320;
 
             weapons.add(new LimitedRepairBeamWeapon("olupis-heal-weapon-center"){{
                 shootY = 6f;
@@ -688,7 +690,7 @@ public class NyfalisUnits {
             itemCapacity = 70;
             rotateSpeed = 4.5f;
             range = mineRange;
-            legMoveSpace = 1.1f; //Limits world tiles movement
+            legMoveSpace = 1.2f; //Limits world tiles movement
             boostMultiplier = 0.75f;
             buildBeamOffset = 4.2f;
             shadowElevation = 0.1f;
@@ -720,55 +722,47 @@ public class NyfalisUnits {
                     x = y = shootX = shootY = 0;
                     shootStatus = StatusEffects.unmoving;
                     shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
-                    bullet = new HealOnlyBulletType(0,0) {{
-                        spin = 3.5f;
-                        drag = 0.9f;
-                        lifetime = 10*60;
-                        shrinkX = 25f/60f;
-                        shrinkY = 35f/60f;
-                        intervalBullets = 2;
-                        intervalSpread = 180;
-                        intervalRandomSpread = 90;
-                        height = width = bulletInterval = healAmount = 20;
+                    /*3 bullets deep, just so everything shoot as, as being separate weapons causes early/late shooting*/
+                    bullet = new BulletType() {{
+                        collides = hittable = collidesTiles = false;
+                        instantDisappear = collidesAir = true;
+                        hitSound = Sounds.explosion;
+                        hitEffect = Fx.pulverize;
 
-                        collidesTeam = true;
-                        keepVelocity = false;
-                        hitEffect = despawnEffect = Fx.heal;
-                        backColor = frontColor = trailColor = lightColor = Pal.heal;
-
-                        intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
-                            lifetime = 60;
-                            trailLength = 10;
-                            trailWidth = 1.5f;
-                            healAmount = 20;
-                            bulletInterval = 10;
-                            homingPower = 0.09f;
+                        splashDamage = 65f;
+                        rangeOverride = 30f;
+                        splashDamageRadius = 55f;
+                        buildingDamageMultiplier = speed = 0f;
+                        intervalBullet = new HealOnlyBulletType(0,0) {{
+                            spin = 3.5f;
+                            drag = 0.9f;
+                            lifetime = 10*60;
+                            shrinkX = 25f/60f;
+                            shrinkY = 35f/60f;
+                            intervalBullets = 2;
+                            intervalSpread = 180;
+                            intervalRandomSpread = 90;
+                            height = width = bulletInterval = healAmount = 20;
 
                             collidesTeam = true;
                             keepVelocity = false;
                             hitEffect = despawnEffect = Fx.heal;
                             backColor = frontColor = trailColor = lightColor = Pal.heal;
-                        }};
-                    }};
-                }},
-                new Weapon(){{
-                    reload = 24f;
-                    x = shootY = 0f;
-                    shootCone = 180f;
-                    shootOnDeath = true;
-                    mirror = controllable = aiControllable = false;
-                    ejectEffect = Fx.none;
-                    shootSound = Sounds.explosion;
-                    bullet = new BulletType() {{
-                        collides = hittable = collidesTiles = false;
-                        instantDisappear = killShooter = collidesAir = true;
-                        hitSound = Sounds.explosion;
-                        hitEffect = Fx.pulverize;
 
-                        splashDamage = 90f;
-                        rangeOverride = 30f;
-                        splashDamageRadius = 55f;
-                        buildingDamageMultiplier = speed = 0f;
+                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
+                                lifetime = 60;
+                                trailLength = 10;
+                                trailWidth = 1.5f;
+                                healAmount = 20;
+                                bulletInterval = 10;
+                                homingPower = 0.09f;
+
+                                collidesTeam = true;
+                                keepVelocity = false;
+                                hitEffect = despawnEffect = Fx.heal;
+                                backColor = frontColor = trailColor = lightColor = Pal.heal;
+                            }};
+                        }};
                     }};
                 }}
             );
@@ -822,72 +816,61 @@ public class NyfalisUnits {
                     x = y = shootX = shootY = 0;
                     shootStatus = StatusEffects.unmoving;
                     shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
-                    bullet = new HealOnlyBulletType(0,-5) {{
-                        spin = 3.7f;
-                        drag = 0.9f;
-                        lifetime = 10*60;
-                        shrinkX = 25f/60f;
-                        shrinkY = 35f/60f;
-                        bulletInterval = 25;
-                        intervalBullets = 2;
-                        intervalSpread = 180;
-                        intervalRandomSpread = 90;
-                        height = width = healAmount = 20;
-
-                        keepVelocity = false;
-                        hitEffect = despawnEffect = Fx.heal;
-                        backColor = frontColor = trailColor = lightColor = Pal.heal;
-                        intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet") {{
-                            lifetime = 60;
-                            trailLength = 11;
-                            trailWidth = 1.5f;
-                            healAmount = 30;
-                            bulletInterval = 10;
-                            homingPower = 0.11f;
-
-                            keepVelocity = false;
-                            hitEffect = despawnEffect = Fx.heal;
-                            backColor = frontColor = trailColor = lightColor = Pal.heal;
-                        }};
-
-                    }};
-                }},
-                new Weapon(){{
-                    x = y = 0;
-                    reload = 60f * 10f;
-                    flipSprite = false;
-                    shootStatus = StatusEffects.unmoving;
-                    shootStatusDuration = Fx.heal.lifetime;
-                    shoot.firstShotDelay = Fx.heal.lifetime-1;
                     bullet = new SpawnHelperBulletType(){{
                         hasParent = true;
                         shootEffect = Fx.shootBig;
                         spawnUnit = embryo;
                         //rangeOverride = mineRange;
+                        intervalBullet = new HealOnlyBulletType(0,-5) {{
+                            spin = 3.7f;
+                            drag = 0.9f;
+                            lifetime = 10*60;
+                            shrinkX = 25f/60f;
+                            shrinkY = 35f/60f;
+                            bulletInterval = 25;
+                            intervalBullets = 2;
+                            intervalSpread = 180;
+                            intervalRandomSpread = 90;
+                            height = width = healAmount = 20;
+
+                            keepVelocity = false;
+                            hitEffect = despawnEffect = Fx.heal;
+                            backColor = frontColor = trailColor = lightColor = Pal.heal;
+                            intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet") {{
+                                lifetime = 60;
+                                trailLength = 11;
+                                trailWidth = 1.5f;
+                                healAmount = 30;
+                                bulletInterval = 10;
+                                homingPower = 0.11f;
+
+                                keepVelocity = false;
+                                hitEffect = despawnEffect = Fx.heal;
+                                backColor = frontColor = trailColor = lightColor = Pal.heal;
+                            }};
+
+                        }};
                     }};
                 }},
                 new Weapon(){{
-                    reload = 24f;
+                    reload = 60*10;
                     x = shootY = 0f;
                     shootCone = 180f;
+                    shoot.firstShotDelay = Fx.heal.lifetime-1;
                     shootOnDeath = true;
-                    mirror = controllable = aiControllable = false;
+                    mirror  = false;
                     ejectEffect = Fx.none;
-                    shootSound = Sounds.explosion;
+                    shootSound = Sounds.none;
                     bullet = new BulletType() {{
-                        collidesTiles = false;
-                        collides = false;
+                        instantDisappear = collidesAir = true;
+                        collidesTiles = collides = hittable = false;
+                        hitEffect = Fx.pulverize;
                         hitSound = Sounds.explosion;
 
-                        rangeOverride = 30f;
-                        hitEffect = Fx.pulverize;
                         speed = 0f;
+                        rangeOverride = 30f;
+                        splashDamage = 70f;
                         splashDamageRadius = 55f;
-                        instantDisappear = true;
-                        splashDamage = 90f;
-                        killShooter = true;
-                        hittable = false;
-                        collidesAir = true;
                     }};
                 }}
             );
