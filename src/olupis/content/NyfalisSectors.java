@@ -22,8 +22,8 @@ public class NyfalisSectors {
     public static void LoadSectors(){
         //region Seredris
         sanctuary = new SectorPreset("sanctuary", arthin, 2){{
-            alwaysUnlocked = overrideLaunchDefaults = true;
-            addStartingItems = false;
+            alwaysUnlocked = overrideLaunchDefaults =  true;
+            addStartingItems = allowLaunchSchematics = false;
 
             captureWave = 15;
             difficulty = 1;
@@ -31,8 +31,8 @@ public class NyfalisSectors {
         }};
 
         mossyRavine = new SectorPreset("mossy-ravine", arthin, 31){{
-            addStartingItems = allowLaunchLoadout = false;
-            allowLaunchSchematics = true;
+            overrideLaunchDefaults =  true;
+            addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
             difficulty = 2;
             captureWave = 33;
@@ -40,8 +40,8 @@ public class NyfalisSectors {
         }};
 
         muddyRivers = new SectorPreset("muddy-rivers", arthin, 21){{
-            addStartingItems = allowLaunchSchematics = true;
-            allowLaunchLoadout = false;
+            addStartingItems  = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics = false;
 
             captureWave = 38;
             difficulty = 2;
@@ -49,8 +49,8 @@ public class NyfalisSectors {
         }};
 
         vakinyaDesert = new SectorPreset("vakinya-desert", arthin, 10){{
-            addStartingItems = allowLaunchLoadout  = false;
-            allowLaunchSchematics = true;
+            overrideLaunchDefaults =  true;
+            addStartingItems = allowLaunchLoadout = allowLaunchSchematics  = false;
 
             captureWave = 16;
             difficulty = 2;
@@ -58,8 +58,8 @@ public class NyfalisSectors {
         }};
 
         gardeniorTemple = new SectorPreset("gardenior-temple", arthin, 7){{
-            addStartingItems = true;
-            allowLaunchLoadout = allowLaunchSchematics = false;
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 3;
             captureWave = 26;

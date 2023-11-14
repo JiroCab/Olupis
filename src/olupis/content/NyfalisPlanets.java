@@ -81,7 +81,7 @@ public class NyfalisPlanets {
 
         //1st moon
         arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.8f, 1){{
-            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = true;
+            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics =  true;
 
             startSector = 2;
             enemyBuildSpeedMultiplier = 0.4f;

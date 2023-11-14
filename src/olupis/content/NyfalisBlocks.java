@@ -489,15 +489,15 @@ public class NyfalisBlocks {
 
         ironJunction = new Junction("iron-junction"){{
             speed = 26;
-            capacity = 6;
-            health = 50;
             armor = 1f;
+            health = 50;
+            capacity = 6;
             buildCostMultiplier = 0.5f;
 
             researchCost = with(rustyIron, 20, lead, 20);
             ((Conveyor)rustyIronConveyor).junctionReplacement = this;
             ((PowerConveyor)ironConveyor).junctionReplacement = this;
-            requirements(Category.distribution, with(lead, 20, rustyIron, 30));
+            requirements(Category.distribution, with(lead, 3, rustyIron, 3));
         }};
 
         rustedBridge = new BufferedItemBridge("rusted-bridge") {{
@@ -512,10 +512,10 @@ public class NyfalisBlocks {
             buildCostMultiplier = 0.3f;
             range = bufferCapacity = 3;
 
-            researchCost = with(lead, 30, rustyIron, 30);
+            researchCost = with(lead, 15, rustyIron, 15);
             ((Conveyor)rustyIronConveyor).bridgeReplacement = this;
             /*expensive, to put off bridge waving/stacking*/
-            requirements(Category.distribution, with(rustyIron, 20, lead, 15));
+            requirements(Category.distribution, with(rustyIron, 6, lead, 6));
         }};
 
         ironBridge = new BufferedItemBridge("iron-bridge"){{
@@ -533,7 +533,7 @@ public class NyfalisBlocks {
 
             researchCost = with(iron, 100, rustyIron, 500, lead, 500);
             ((PowerConveyor)ironConveyor).bridgeReplacement = this;
-            requirements(Category.distribution, with(iron, 10, rustyIron, 5, lead, 5));
+            requirements(Category.distribution, with(iron, 5, rustyIron, 10, lead, 10));
         }};
 
         ironOverflow = new OverflowSorter("iron-overflow"){{
@@ -561,7 +561,7 @@ public class NyfalisBlocks {
             regionRotated1 = 1;
             buildCostMultiplier = 0.3f;
             researchCost = with(lead, 500, graphite, 100, iron, 100);
-            requirements(Category.distribution, with(iron, 20, graphite, 20, lead, 35));
+            requirements(Category.distribution, with(iron, 15, graphite, 15, lead, 30));
         }};
 
         //endregion
@@ -572,7 +572,7 @@ public class NyfalisBlocks {
 
             tier = 1;
             size = 3;
-            drillTime = 60f * 14f;
+            drillTime = 60f * 8.5f;
 
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             researchCost = with(rustyIron,50);
@@ -585,7 +585,8 @@ public class NyfalisBlocks {
             hasPower = true;
             tier = 2;
             size = 3;
-            drillTime = 330;
+            drillTime = 60f * 5f;
+
 
             envEnabled ^= Env.space;
             consumePower(25f/60f);
@@ -598,12 +599,13 @@ public class NyfalisBlocks {
         hydroElectricDrill = new Drill("hydro-electric-drill"){{
             tier = 3;
             size = 4;
-            drillTime = 500;
+            drillTime = 60f * 4.2f;
+            liquidBoostIntensity = 1.7f;
 
             envEnabled ^= Env.space;
-            consumeLiquid(steam, 0.05f);
-            consumePower(0.3f);
-            consumeLiquid(Liquids.slag, 0.06f).boost();
+            consumeLiquid(steam, 0.1f);
+            consumePower(30f/60f);
+            consumeLiquid(Liquids.slag, 0.1f).boost();
             researchCost = with(iron, 1000, graphite, 1000, silicon, 500);
             requirements(Category.production, with(iron, 60, graphite, 70, silicon, 30));
         }};
@@ -639,13 +641,13 @@ public class NyfalisBlocks {
             pumpAmount = 0.06f;
             buildCostMultiplier = 1.5f;
             researchCost = with(lead, 20, rustyIron, 20);
-            requirements(Category.liquid, with(rustyIron, 3, lead, 6));
+            requirements(Category.liquid, with(rustyIron, 1, lead, 3));
         }};
 
         ironPump = new Pump("iron-pump"){{
             size = 2;
-            liquidCapacity = 20f;
-            pumpAmount = 0.085f;
+            liquidCapacity = 15f;
+            pumpAmount = 0.072f;
             buildCostMultiplier = 2f;
             researchCost = with(lead, 500, iron, 100);
             requirements(Category.liquid, with(iron, 10, lead, 10));
@@ -653,12 +655,12 @@ public class NyfalisBlocks {
 
         displacementPump = new BurstPump("displacement-pump"){{
             size = 3;
-            pumpAmount = 130f;
+            pumpAmount = 140f;
             leakAmount = 0.02f;
             liquidCapacity = 150f;
             consumePower(0.3f);
             researchCost = with(iron, 250, lead, 800, graphite, 250, rustyIron, 800);
-            requirements(Category.liquid, with(iron, 30, graphite, 30, lead, 60, rustyIron, 60));
+            requirements(Category.liquid, with(iron, 15, graphite, 15, lead, 30, rustyIron, 30));
         }};
 
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{
@@ -667,15 +669,14 @@ public class NyfalisBlocks {
             pumpAmount = liquidCapacity = 200f;
             consumePower(0.6f);
             researchCost = with(iron, 500, lead, 1000, graphite, 250, silicon, 250);
-            requirements(Category.liquid, with(iron, 60, graphite, 60, lead,150, silicon, 60));
+            requirements(Category.liquid, with(iron, 30, graphite, 30, lead, 75, silicon, 30));
         }};
 
 
         leadPipe = new Conduit("lead-pipe"){{
             leaks = underBullets = true;
 
-            //try no lost, but slow/low capcity
-            health = 60;
+            health = 70;
             liquidCapacity = 2f;
             liquidPressure = 1.05f;
             researchCostMultiplier = 0.5f;
@@ -692,14 +693,14 @@ public class NyfalisBlocks {
             researchCostMultiplier = 3;
             botColor = Color.valueOf("252731");
             researchCost = with(lead, 300, iron, 50);
-            requirements(Category.liquid, with(iron, 5, lead, 5));
+            requirements(Category.liquid, with(iron, 2, lead, 5));
         }};
 
         pipeRouter = new LiquidRouter("pipe-router"){{
             solid = underBullets = true;
             liquidCapacity = 15f;
             liquidPressure = 0.90f; /* Nerfed so you can't bypass lead pipe being terrible */
-            researchCost = with(lead, 20, rustyIron, 20);
+            researchCost = with(lead, 10, rustyIron, 10);
             requirements(Category.liquid, with(lead, 5, rustyIron, 5));
         }};
 
@@ -717,11 +718,11 @@ public class NyfalisBlocks {
             size = 3;
             liquidCapacity = 2300f;
             researchCost = with(lead, 800, iron, 250);
-            requirements(Category.liquid, with(lead, 150, iron, 60));
+            requirements(Category.liquid, with(lead, 75, iron, 30));
         }};
 
         pipeJunction = new LiquidJunction("pipe-junction"){{
-            solid = false;
+            solid = hideDetails = false;
             ((Conduit)ironPipe).junctionReplacement = this;
             ((Conduit)leadPipe).junctionReplacement = this;
             researchCost = with(lead,200, rustyIron,200);
@@ -729,7 +730,7 @@ public class NyfalisBlocks {
 
             /*expensive, since you can cheese the terribleness of pipes with this*/
             requirements(Category.liquid, with(rustyIron, 50, lead, 50));
-            researchCost = with(lead, 50, rustyIron, 50);
+            researchCost = with(lead, 40, rustyIron, 40);
         }};
 
         pipeBridge = new LiquidBridge("pipe-bridge"){{
@@ -740,7 +741,7 @@ public class NyfalisBlocks {
             ((Conduit)ironPipe).bridgeReplacement = this;
             ((Conduit)leadPipe).bridgeReplacement = this;
             researchCost = with(iron, 150, lead, 150);
-            requirements(Category.liquid, with(iron, 10, lead, 20));
+            requirements(Category.liquid, with(iron, 5, lead, 10));
         }};
 
         oilSeparator = new LegacyBlock("oil-separator"){{
@@ -778,7 +779,7 @@ public class NyfalisBlocks {
             attribute = Attribute.steam;
             minEfficiency = 9f - 0.0001f;
 
-            researchCost = with(lead, 1000, rustyIron, 1000);
+            researchCost = with(lead, 750, rustyIron, 750);
             outputLiquid = new LiquidStack(steam, 10/60f);
             requirements(Category.liquid, with(rustyIron, 30, lead, 30));
         }};
@@ -795,7 +796,7 @@ public class NyfalisBlocks {
             consumeItem(scrap, 1).boost();
             outputLiquid = new LiquidStack(Liquids.slag, 12f / 60f);
             drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion());
-            requirements(Category.liquid, with(graphite, 50, iron, 40, lead, 80, silicon, 10));
+            requirements(Category.liquid, with(graphite, 25, iron, 20, lead, 40, silicon, 10));
         }};
 
         //endregion
@@ -817,7 +818,7 @@ public class NyfalisBlocks {
             consumeLiquid(Liquids.water, 24f / 60f);
             consumeItems(with(lead, 2, rustyIron, 2));
             researchCost = with(rustyIron, 50, lead, 50);
-            requirements(Category.crafting, with(rustyIron, 30, lead, 60));
+            requirements(Category.crafting, with(rustyIron, 15, lead, 30));
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawLiquidTile(Liquids.cryofluid){{drawLiquidLight = true;}}, new DrawDefault());
         }};
 
@@ -831,7 +832,7 @@ public class NyfalisBlocks {
             craftEffect = Fx.pulverizeMedium;
 
             consumePower(30f/60f);
-            researchCost = with(lead, 1300,  iron, 500, rustyIron, 1300);
+            researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             outputItem = new ItemStack(Items.graphite, 1);
             requirements(Category.crafting, with(iron, 10, lead, 50, rustyIron, 40));
             consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
@@ -846,7 +847,7 @@ public class NyfalisBlocks {
             consumePower(30f/60f);
             outputItem = new ItemStack(silicon, 1);
             consumeItems(with(quartz, 2, graphite, 1));
-            requirements(Category.crafting, with(lead, 120, rustyIron, 150, graphite, 30, iron, 30));
+            requirements(Category.crafting, with(lead, 65, rustyIron, 65, graphite, 15, iron, 15));
         }};
 
         bioMatterPress = new GenericCrafter("biomatter-press"){{
@@ -870,7 +871,7 @@ public class NyfalisBlocks {
             consumeItem(condensedBiomatter, 1);
             researchCost = with(iron, 250, lead, 500);
             outputLiquid = new LiquidStack(oil, 20f / 60f);
-            requirements(Category.crafting, with(iron, 50, lead, 50));
+            requirements(Category.crafting, with(iron, 25, lead, 25));
         }};
 
         ironSieve  = new GenericCrafter("iron-sieve"){{
@@ -886,8 +887,8 @@ public class NyfalisBlocks {
             consumePower(1.8f);
             consumeItem(Items.sand, 2);
             outputItem = new ItemStack(rustyIron, 2);
-            researchCost = with(lead, 1500, rustyIron, 1500);
-            requirements(Category.crafting, with(rustyIron, 10, lead, 60));
+            researchCost = with(lead, 700, rustyIron, 700);
+            requirements(Category.crafting, with(rustyIron, 20, lead, 50));
         }};
 
         //endregion
@@ -969,7 +970,7 @@ public class NyfalisBlocks {
             requiredItems = with(copper, 10);
             alwaysShooting = hoverShowsSpawn = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            researchCost = with(rustyIron, 1000, silicon, 600,  iron, 600);
+            researchCost = with(rustyIron, 5000, silicon, 300,  iron, 300);
             requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
         }};
 
@@ -997,7 +998,7 @@ public class NyfalisBlocks {
             requiredItems = with(copper, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             alwaysShooting = hoverShowsSpawn = hasPower = true;
-            researchCost = with(lead, 1000, silicon, 600,  iron, 600);
+            researchCost = with(lead, 500, silicon, 300,  iron, 300);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
 
@@ -1008,7 +1009,7 @@ public class NyfalisBlocks {
         // t5 = t1-t4 at assembler
 
         fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
-            requirements(Category.units, with(Items.graphite, 10    , iron, 10));
+            requirements(Category.units, with(Items.graphite, 10 , iron, 5));
             canOverdrive = false;
             payloadLimit = 4f;
             size =4;
@@ -1058,8 +1059,8 @@ public class NyfalisBlocks {
             armor = 5;
             health = 150;
             baseExplosiveness = 0.7f;
-            researchCost = with(iron, 500, cobalt, 100);
-            requirements(Category.power, with(cobalt, 20, iron, 10));
+            researchCost = with(iron, 250, cobalt, 100);
+            requirements(Category.power, with(cobalt, 10, iron, 5));
         }};
 
         wireBridge = new BeamNode("wire-bridge"){{
@@ -1075,7 +1076,7 @@ public class NyfalisBlocks {
             laserColor2 = Color.valueOf("65717E");
             laserColor1 = Color.valueOf("ACB5BA");
             researchCost = with(lead, 100, iron, 50);
-            requirements(Category.power, with(iron, 30, Items.lead, 15));
+            requirements(Category.power, with(iron, 10, Items.lead, 5));
         }};
 
         windMills = new WindMill("wind-mill"){{
@@ -1100,7 +1101,7 @@ public class NyfalisBlocks {
             attribute = hydro;
             generateEffect = Fx.steam;
             ambientSound = Sounds.hum;
-            researchCost = with(iron, 1500, silicon, 1000, lead, 3000, cobalt, 1000);
+            researchCost = with(iron, 750, silicon, 500, lead, 1500, cobalt, 500);
             requirements(Category.power, with(iron, 20, silicon, 20, lead, 50, cobalt, 20));
             drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
                 blurThresh = 0.01f;
@@ -1129,7 +1130,7 @@ public class NyfalisBlocks {
             size = 2;
             baseExplosiveness = 1f;
             consumePowerBuffered(1000f);
-            researchCost = with(quartz, 5000, lead, 5000, silicon, 5000);
+            researchCost = with(quartz, 500, lead, 500, silicon, 500);
             requirements(Category.power, with(quartz, 50, lead, 50, silicon, 50));
         }};
 
@@ -1143,7 +1144,7 @@ public class NyfalisBlocks {
             health =  350;
             buildCostMultiplier = 0.8f;
             researchCost = with(rustyIron, 50);
-            requirements(Category.defense,with(rustyIron, 12));
+            requirements(Category.defense,with(rustyIron, 6));
         }};
 
         rustyWallLarge = new Wall("rusty-wall-large"){{
@@ -1151,7 +1152,7 @@ public class NyfalisBlocks {
             health =  1400;
             buildCostMultiplier = 0.7f;
             researchCost = with(rustyIron, 100);
-            requirements(Category.defense,with(rustyIron, 48));
+            requirements(Category.defense,with(rustyIron, 24));
         }};
 
         rustyWallHuge = new Wall("rusty-wall-huge"){{
@@ -1159,7 +1160,7 @@ public class NyfalisBlocks {
             health = 2690;
             buildCostMultiplier = 0.7f;
             researchCost = with(rustyIron, 200);
-            requirements(Category.defense,with(rustyIron, 108));
+            requirements(Category.defense,with(rustyIron, 54));
         }};
 
         rustyWallGigantic = new Wall("rusty-wall-gigantic"){{
@@ -1174,7 +1175,7 @@ public class NyfalisBlocks {
             health = 700;
             buildCostMultiplier = 0.7f;
             researchCost = with(iron, 500);
-            requirements(Category.defense,with(iron, 15));
+            requirements(Category.defense,with(iron, 6));
         }};
 
         ironWallLarge = new Wall("iron-wall-large"){{
@@ -1182,7 +1183,7 @@ public class NyfalisBlocks {
             health = 2800;
             buildCostMultiplier = 0.7f;
             researchCost = with(iron, 1000);
-            requirements(Category.defense,with(iron, 48));
+            requirements(Category.defense,with(iron, 24));
         }};
 
         rustyScrapWall = new Wall("rusty-scrap-wall"){{
@@ -1257,9 +1258,9 @@ public class NyfalisBlocks {
             limitRange(3f);
             consumePower(100f / 60f);
             shoot = new ShootAlternate(9f);
-            researchCost = with(iron,100, lead, 200);
+            researchCost = with(iron, 100, lead, 200);
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
-            requirements(Category.effect, with(iron, 30, Items.lead, 40));
+            requirements(Category.effect, with(iron, 15, Items.lead, 20));
         }};
 
 
@@ -1273,7 +1274,7 @@ public class NyfalisBlocks {
             buildCostMultiplier = 0.7f;
             scaledHealth = itemCapacity = 150;
             researchCost = with(iron, 250, rustyIron, 550);
-            requirements(Category.effect, with(rustyIron, 75, iron, 50));
+            requirements(Category.effect, with(rustyIron, 55, iron, 25));
         }};
 
         fortifiedVault = new StorageBlock("fortified-vault"){{
@@ -1283,7 +1284,7 @@ public class NyfalisBlocks {
             scaledHealth = 120;
             itemCapacity = 950;
             researchCost = with(iron, 550, rustyIron, 800, silicon, 550);
-            requirements(Category.effect, with(rustyIron, 150, iron, 100, silicon, 100));
+            requirements(Category.effect, with(rustyIron, 75, iron, 50, silicon, 50));
         }};
 
         coreRemnant = new PropellerCoreBlock("core-remnant"){{
@@ -1303,7 +1304,7 @@ public class NyfalisBlocks {
             researchCostMultiplier = 0.5f;
 
             unitType = gnat;
-            requirements(Category.effect, with(rustyIron, 1500, lead, 1500, iron, 1000));
+            requirements(Category.effect, with(rustyIron, 1300, lead, 1300, iron, 1000));
         }};
 
         coreRelic = new PropellerCoreTurret("core-relic"){{
@@ -1318,7 +1319,7 @@ public class NyfalisBlocks {
             unitType = phorid;
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
-            requirements(Category.effect, with(rustyIron, 3500, lead, 3500, iron, 1500, graphite, 1500));
+            requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500, graphite, 500));
             shootType = new SapBulletType(){{
                 damage = 10f;
                 width = 0.8f;
@@ -1346,7 +1347,7 @@ public class NyfalisBlocks {
             limitRange(0);
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
-            requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 6000, silicon, 4500, graphite, 4500, quartz, 4500));
+            requirements(Category.effect, with(rustyIron, 4000, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500));
             shootType = new ArtilleryBulletType(3f, 25){{
                 lifetime = 80f;
                 knockback = 0.8f;
@@ -1377,7 +1378,7 @@ public class NyfalisBlocks {
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
             targetGround = targetHealing = targetAir = true;
-            requirements(Category.effect, with(rustyIron, 7500, lead, 7500, iron, 7500, silicon, 7500, graphite, 7500, quartz, 6000, cobalt, 6000));
+            requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 4500, silicon, 4500, graphite, 4500, quartz, 2500, cobalt, 2500));
             shootType = new RailBulletType(){{
                 length = 255f;
                 damage = 48f;
@@ -1418,7 +1419,7 @@ public class NyfalisBlocks {
 
         mechanicalProcessor = new NyfalisLogicBlock("mechanical-processor"){{
             requirements(Category.logic, with(lead, 300, iron, 100, graphite, 60, silicon, 60));
-            researchCost = with(lead, 1000, iron, 700, graphite, 200, silicon, 200);
+            researchCost = with(lead, 500, iron, 350, graphite, 100, silicon, 100);
 
             instructionsPerTick = 25;
             range = 10 * 22;
@@ -1433,7 +1434,7 @@ public class NyfalisBlocks {
 
         mechanicalRegistry = new MemoryBlock("mechanical-registry"){{
             size = 2;
-            requirements(Category.logic, with(Items.graphite, 20, iron, 20, silicon, 10));
+            requirements(Category.logic, with(Items.graphite, 10, iron, 10, silicon, 5));
             researchCost = with(iron, 400, graphite, 400, silicon, 200);
         }};
 
