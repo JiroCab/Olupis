@@ -577,7 +577,7 @@ public class NyfalisBlocks {
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             researchCost = with(rustyIron,50);
             consumePower(10f/60f);
-            consumeLiquid(Liquids.water, 0.05f).boost(); //TODO: Make it consume either steam or water
+            consumeLiquid(Liquids.water, 0.05f).boost();
             requirements(Category.production, with(rustyIron, 15    ));
         }};
 

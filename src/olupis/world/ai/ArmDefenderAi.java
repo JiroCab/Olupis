@@ -2,14 +2,14 @@ package olupis.world.ai;
 
 import arc.math.Mathf;
 import arc.util.Tmp;
-import mindustry.ai.types.FlyingAI;
 import mindustry.entities.*;
+import mindustry.entities.units.AIController;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 
 import static mindustry.Vars.state;
 
-public class ArmDefenderAi extends FlyingAI {
+public class ArmDefenderAi extends AIController {
     protected Teamc follow;
 
     @Override
@@ -29,7 +29,7 @@ public class ArmDefenderAi extends FlyingAI {
 
     @Override
     public void updateTargeting(){
-        if(follow == null) follow = findFollow(unit.x, unit.y, unit.range(), true, true);
+        if(follow == null) follow = findFollow(unit.x, unit.y, unit.range());
         super.updateTargeting();
     }
 
@@ -55,21 +55,20 @@ public class ArmDefenderAi extends FlyingAI {
         var close = Units.closestTarget(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
         if(close != null) return close;
 
-        if(follow != null) return null;
         //for enemies, target the enemy core.
-        if(state.rules.waves && unit.team == state.rules.waveTeam){
+        if(state.rules.waves && unit.team == state.rules.waveTeam && follow == null){
             return unit.closestEnemyCore();
         }
-        //return core if found
-        var core = unit.closestCore();
-        if(core != null) return core;
 
         return null;
     }
 
-    public Teamc findFollow(float x, float y, float range, boolean air, boolean ground){
+    public Teamc findFollow(float x, float y, float range){
         //Sort by max health and closer target.
-        return Units.closest(unit.team, x, y, Math.max(range, 400f), u -> !u.dead() && u.type != unit.type && u.targetable(unit.team) && u.type.playerControllable,
+        Unit unt = Units.closest(unit.team, x, y, Math.max(range, 400f), u -> !u.dead() && u.type != unit.type && u.targetable(unit.team) && u.type.playerControllable,
                 (u, tx, ty) -> -u.maxHealth + Mathf.dst2(u.x, u.y, tx, ty) / 6400f);
+         if(unt != null) return unt;
+         return unit.within(unit.closestCore(), range) ? unit().closestCore() :  null;
+
     }
 }

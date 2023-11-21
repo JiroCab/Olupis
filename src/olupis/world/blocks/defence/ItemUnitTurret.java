@@ -38,6 +38,7 @@ import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
+import olupis.world.entities.units.NyfalisUnitType;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -231,11 +232,11 @@ public class ItemUnitTurret extends ItemTurret {
             if(payload == null) {
                 payload = new UnitPayload(type.spawnUnit.create(team));
                 Unit p = (payload).unit;
-                if (commandPos != null && unit.isCommandable()) {
-                    unit.command().commandPosition(commandPos);
+                if (commandPos != null && p.isCommandable()) {
+                    p.command().commandPosition(commandPos);
                 }
-                if (unit.isCommandable() && command != null) {
-                    unit.command().command(command);
+                if (p.isCommandable() && command != null) {
+                    p.command().command(command);
                 }
                 Events.fire(new EventType.UnitCreateEvent(p, this));
                 payVector.setZero();
@@ -335,7 +336,7 @@ public class ItemUnitTurret extends ItemTurret {
                 Draw.rect(bottomRegion, x, y);
                 if (peekAmmo() != null && peekAmmo().spawnUnit != null) {
                     UnitType unt = peekAmmo().spawnUnit;
-                    if (this.team.data().unitCap >= this.team.data().countType(unt) || state.rules.waveTeam == this.team) {
+                    if (this.team.data().unitCap >= this.team.data().countType(unt) && unit.type().useUnitCap || state.rules.waveTeam == this.team) {
                         Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rot, reloadCounter / reload, speedScl, time));
                     } else {
                         Draw.draw(Layer.blockOver, () -> {
@@ -418,7 +419,7 @@ public class ItemUnitTurret extends ItemTurret {
             var group = new ButtonGroup<ImageButton>();
             group.setMinCheckCount(0);
             int i = 0, columns = 6;
-            if(peekAmmo() != null && peekAmmo().spawnUnit != null && peekAmmo().spawnUnit.commands.length >1 ){
+            if(peekAmmo() != null && peekAmmo().spawnUnit != null && (peekAmmo().spawnUnit instanceof NyfalisUnitType nyf && !nyf.constructHideDefault) && peekAmmo().spawnUnit.commands.length >1 ){
                 var unit = peekAmmo().spawnUnit;
                 var list = unit.commands;
                 table.row();

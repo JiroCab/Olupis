@@ -1,6 +1,7 @@
 package olupis.input;
 
 import mindustry.ai.UnitCommand;
+import mindustry.entities.units.AIController;
 import olupis.world.ai.*;
 
 public class NyfalisUnitCommands {
@@ -29,6 +30,10 @@ public class NyfalisUnitCommands {
             return ai;
         }),
         nyfalisMoveCommand = new UnitCommand("move", "right", u ->new NyfalisGroundAi()){{
+            switchToMove = resetTarget = false;
+            drawTarget = true;
+        }},
+        nyfalisDeployCommand = new UnitCommand ("nyfalis-deploy", "down", u ->  new AIController()){{
             switchToMove = resetTarget = false;
             drawTarget = true;
         }}

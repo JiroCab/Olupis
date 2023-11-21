@@ -67,7 +67,7 @@ public class NyfalisFxs{
             mixcol(Pal.darkMetal, 1f);
             rect(select.type.fullIcon, select.x, select.y, select.rotation - 90f);
             Lines.stroke(e.fslope());
-            Lines.square(select.x, select.y, e.fout() * select.hitSize * 1.5f, 45);
+            Lines.square(select.x, select.y, (e.fout() * 0.9f) * select.hitSize * 1.5f, 45);
             reset();
 
             Draw.scl = p;

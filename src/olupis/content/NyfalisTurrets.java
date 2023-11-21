@@ -244,7 +244,8 @@ public class NyfalisTurrets {
                     spawnUnit = mite;
                 }}
             );
-            commandable = configurable = false;
+            requiredItems = requiredAlternate = with();
+            commandable = configurable = rallyAim = false;
             playerControllable = true;
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
             requirements(Category.turret, with(iron, 100, lead, 30, silicon, 30));

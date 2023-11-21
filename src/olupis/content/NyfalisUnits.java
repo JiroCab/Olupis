@@ -5,7 +5,6 @@ import arc.math.geom.Rect;
 import arc.struct.Seq;
 import mindustry.ai.UnitCommand;
 import mindustry.content.*;
-import mindustry.entities.abilities.UnitSpawnAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
@@ -19,6 +18,7 @@ import mindustry.type.ammo.PowerAmmoType;
 import mindustry.world.meta.BlockFlag;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
+import olupis.world.entities.abilities.UnitRallySpawnAblity;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.units.*;
 
@@ -322,7 +322,7 @@ public class NyfalisUnits {
                           moveRot = 40f;
                       }}
                     );
-                    bullet = new BasicBulletType(2.5f, 9){{
+                    bullet = new BasicBulletType(2.5f, 8){{
                         width = 7f;
                         height = 9f;
                         lifetime = 57f;
@@ -338,7 +338,7 @@ public class NyfalisUnits {
                     layerOffset = -0.001f;
                     autoTarget = rotate = true;
                     mirror = controllable = false;
-                    bullet = new BasicBulletType(3f, 8){{
+                    bullet = new BasicBulletType(3f, 7){{
                         width = 5f;
                         height = 6f;
                         lifetime = 47.5f;
@@ -357,6 +357,7 @@ public class NyfalisUnits {
 
         //endregion
         //region Naval Units
+        //TODO ZONER FOLLOW TARGET WHEN DEPLOYED
         porter = new NyfalisUnitType("porter"){{
             armor = 6f;
             hitSize = 12f;
@@ -367,10 +368,10 @@ public class NyfalisUnits {
             rotateSpeed = 3.5f;
             researchCostMultiplier = 0f;
 
-            rotateMoveFirst = true;
+            rotateMoveFirst = canDeploy = true;
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
-            abilities.add(new UnitSpawnAbility(zoner, 60f * 15f, 0, 2.5f));
+            abilities.add(new UnitRallySpawnAblity(zoner, 60f * 15f, 0, 2.5f));
         }};
 
         //Minigun turret mounted on the front, 10mm autocannon mounted on the back
@@ -602,7 +603,7 @@ public class NyfalisUnits {
             penaltyMultiplier = 1f;
             ammoDepletionAmount = 0.55f;
 
-            flying = targetGround = targetAir = true;
+            flying = targetGround = targetAir = drawAmmo = true;
             playerControllable  = logicControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
@@ -647,10 +648,9 @@ public class NyfalisUnits {
 
             ammoType = lifeTimeDrill;
             constructor = UnitEntity::create;
-            timedOutFx = NyfalisFxs.failedMake;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = true;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction =false;
         }};
 
@@ -698,7 +698,6 @@ public class NyfalisUnits {
             ammoType = lifeTimeDrill;
             groundLayer = Layer.legUnit;
             constructor = LegsUnit::create;
-            timedOutFx = NyfalisFxs.failedMake;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
             hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = naval = lockLegsOnLiquid= drawAmmo = true;

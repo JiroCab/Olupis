@@ -35,7 +35,7 @@ import static mindustry.Vars.*;
 
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
-    public boolean canCircleTarget = false, canHealUnits = false, customMineAi = false, canGuardUnits  = false, canMend = false;
+    public boolean canCircleTarget = false, canHealUnits = false, customMineAi = false, canGuardUnits  = false, canMend = false, canDeploy = false, constructHideDefault = false;
     /*Makes (legged) units boost automatically regardless of Ai*/
     public boolean alwaysBoostOnSolid = false;
     /*Replace Move Command to a custom one*/
@@ -66,6 +66,7 @@ public class NyfalisUnitType extends UnitType {
                 cmds.remove(UnitCommand.moveCommand);
                 cmds.add(NyfalisUnitCommands.nyfalisMoveCommand);
             }
+            if(canDeploy)cmds.add(NyfalisUnitCommands.nyfalisDeployCommand);
             if(canCircleTarget) cmds.add(NyfalisUnitCommands.circleCommand);
             if(canHealUnits) cmds.add(NyfalisUnitCommands.healCommand);
             if(canMend) cmds.add(NyfalisUnitCommands.nyfalisMendCommand);
