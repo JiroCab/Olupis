@@ -215,6 +215,6 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     public void timedOut(Unit unit){
         timedOutFx.at(unit.x, unit.y, 0, unit);
         timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
-        unit.remove();
+        Call.unitDespawn(unit);
     }
 }

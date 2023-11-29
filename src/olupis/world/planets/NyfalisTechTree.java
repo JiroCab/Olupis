@@ -23,14 +23,18 @@ public class NyfalisTechTree {
                             node(NyfalisSectors.vakinyaDesert, Seq.with(
                                 new Objectives.Produce(iron)
                             ),() ->{
-                                node(NyfalisSectors.gardeniorTemple, () -> {
+                                node(NyfalisSectors.naturalParkOasis, () -> {
+                                    node(NyfalisSectors.lushyRiverComplex, () ->{
 
+                                    });
                                 });
 
-                                node(NyfalisSectors.muddyRivers, Seq.with(
+                                node(NyfalisSectors.muddyLakes, Seq.with(
                                         new Objectives.Produce(iron), new Objectives.Research(steamDrill), new Objectives.Research(ironSieve)
                                 ),() ->{
+                                    node(NyfalisSectors.naturalParkOasis, ()->{
 
+                                    });
                                 });
                             });
                         });

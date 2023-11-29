@@ -310,38 +310,42 @@ public class NyfalisUnits {
             rotateSpeed = 1.72f;
             weapons.add(
                 new Weapon(""){{
-                    x = 4f;
-                    y = 2f;
+                    x = 0f;
+                    y = 1.5f;
                     reload = 15f;
                     top = false;
                     ejectEffect = Fx.casing1;
                     parts.addAll(
-                      new RegionPart("olupis-supella-arm"){{
+                      new RegionPart("olupis-supella-sidewep"){{
                           var p = PartProgress.warmup.add(-1f);
                           heatProgress = progress =p.mul(-1);
-                          moveRot = 40f;
+                          moveRot = 35f;
+                          moveY = 0.8f;
+                          moveX = -0.15f;
                       }}
                     );
                     bullet = new BasicBulletType(2.5f, 8){{
-                        width = 7f;
-                        height = 9f;
-                        lifetime = 57f;
+                        width = 5f;
+                        height = 7f;
+                        lifetime = 45;
                     }};
                 }},
-                new NyfalisWeapon("olupis-dark-pew", true, true){{
-                    x = 0;
-                    y = 3.5f;
+                new NyfalisWeapon("olupis-supella-cockgun", true, true){{
+                    x = 0f;
+                    y = 0.4f;
                     reload = 30;
                     shake = 0.4f;
+                    recoil = 1f;
+                    shootY = 0.5f;
                     shootCone = 55f;
+                    rotateSpeed = 10f;
                     rotationLimit = 90f;
-                    layerOffset = -0.001f;
                     autoTarget = rotate = true;
-                    mirror = controllable = false;
+                    mirror = controllable = top = false;
                     bullet = new BasicBulletType(3f, 7){{
                         width = 5f;
                         height = 6f;
-                        lifetime = 47.5f;
+                        lifetime = 36f;
                         collidesAir = false;
                         frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
                         backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
@@ -658,26 +662,27 @@ public class NyfalisUnits {
             speed = 2.5f;
             ammoCapacity = 320;
 
-            weapons.add(new LimitedRepairBeamWeapon("olupis-heal-weapon-center"){{
-                shootY = 6f;
+            weapons.add(new LimitedRepairBeamWeapon(""){{
+                y = 6f;
                 engineSize = -1;
                 shootCone = 20f;
-                beamWidth = 0.3f;
-                repairSpeed = 0.3f;
-                x = shootX = y = 0;
+                shootX = shootY = x = 0;
                 fractionRepairSpeed = 0.03f;
+                beamWidth = repairSpeed = 0.3f;
 
                 targetBuildings = useAmmo = true;
-                controllable = top =  false;
+                controllable = top = outlines = false;
                 bullet = new BulletType(){{
+                    aimDst = 0f;
                     maxRange = 120f;
                     healPercent = 1f;
                 }};
             }});
 
+
             constructor = UnitEntity::create;
             defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
-            setEnginesMirror(new UnitEngine(8 / 4f, -16 / 4f, 1.4f, 295));
+            setEnginesMirror(new UnitEngine(8 / 4f, -21 / 4f, 2.1f, 245));
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = false;
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = drawAmmo = true;
         }};

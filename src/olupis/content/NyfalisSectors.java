@@ -12,7 +12,7 @@ public class NyfalisSectors {
 
     public  static SectorPreset
         /*Arthin*/
-        sanctuary, vakinyaDesert, muddyRivers, mossyRavine, gardeniorTemple,
+        sanctuary, vakinyaDesert, muddyLakes, mossyRavine, naturalParkOasis, lushyRiverComplex,
         /*Nyfalis*/
         placeholder2,
         /*Spelta*/
@@ -39,7 +39,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
         }};
 
-        muddyRivers = new SectorPreset("muddy-rivers", arthin, 21){{
+        muddyLakes = new SectorPreset("muddy-lakes", arthin, 21){{
             addStartingItems  = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics = false;
 
@@ -57,7 +57,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000, NyfalisItemsLiquid.iron, 200));
         }};
 
-        gardeniorTemple = new SectorPreset("gardenior-temple", arthin, 7){{
+        naturalParkOasis = new SectorPreset("natural-park-oasis", arthin, 19){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -66,6 +66,14 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
         }};
 
+        lushyRiverComplex = new SectorPreset("lushy-river-complex", arthin, 26){{
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 4;
+            captureWave = 22;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
+        }};
         //endregion
         //region Nyfalis
 
@@ -94,6 +102,7 @@ public class NyfalisSectors {
         if(dzRadius <= 0)r.dropZoneRadius = 400f;
         else r.dropZoneRadius = dzRadius;
         r.enemyCoreBuildRadius = 650f;
+
 
         NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
         NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));

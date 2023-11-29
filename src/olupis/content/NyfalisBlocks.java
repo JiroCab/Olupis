@@ -894,32 +894,33 @@ public class NyfalisBlocks {
         //endregion
         //region Units
         construct = new PowerUnitTurret("construct"){{
-            alwaysShooting = true;
-
             size = 4;
             shootY = 0f;
             reload = 600f;
-            shootSound = Sounds.respawn;
-
-            consumePower(80f / 60f);
-            shootType = new BasicBulletType(2.5f, -1){{
+            itemCapacity = 20;
+            failedMakeSoundPitch = 0.7f;
+            powerBulletType = new SpawnHelperBulletType(){{
                 shootEffect = Fx.unitLand;
                 ammoMultiplier = 1f;
                 spawnUnit = spirit;
             }};
             ammo(
                 quartz, new SpawnHelperBulletType(){{
-                        shootEffect = Fx.shootBig;
-                        ammoMultiplier = 0.5f;
-                        spawnUnit = banshee;
-                    }},
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    reloadMultiplier = 0.75f;
+                    spawnUnit = banshee;
+                }},
                 graphite, new SpawnHelperBulletType(){{
-                        shootEffect = Fx.shootBig;
-                        ammoMultiplier = 0.5f;
-                        reloadMultiplier = 0.65f;
-                        spawnUnit = phantom;
-                    }}
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    reloadMultiplier = 0.65f;
+                    spawnUnit = phantom;
+                }}
             );
+            alwaysShooting = true;
+            consumePower(80f / 60f);
+            failedMakeSound = NyfalisSounds.as2ArmorBreak;
             requiredItems = with(lead, 10, copper, 10);
             researchCost = with(lead, 1000, iron, 600, rustyIron, 1000);
             requirements(Category.units, with(iron, 50, lead, 50, rustyIron, 50));

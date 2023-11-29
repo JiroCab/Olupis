@@ -13,21 +13,23 @@ Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
     ~ Added in-map credits for the maps above
     ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor, ironBridge, phantom, rustedBridge, bay, mite
     ~ Sprites Contributed by kapzduke: pipeJuntion, pipeRouter, ironPipe, leadPipe, WindMill, Corroder, rustyDrill, displacementPump, ironPump, rustyPump, rustElectrolyzer, iron (item), rustyIron (item) [https://github.com/kapzduke]
-    ~ Maps Contributed MrApple: vakinyaDesert, muddyRivers
+    ~ Sprites Contributed by Otamamori: supella, phantom
+    ~ Maps Contributed MrApple: vakinyaDesert, muddyLakes
     ~ improved shadows of various props, mossyRavine, gardeniorTemple
     ~ buffed shredder & dissolver
     ~ Pipes has been reworked, made better for longer distance in exchange for lower capacity
     ~ Conveyor & Bridges speed increased, from half of serpulo counterparts to about 70-75%~
     ~ Crusader now have a wip weapon
     ~ Gnats & Phorid now have crawler like weapons along side healing turret
-    ~ Bay can be command to "deploy" preventing Bay's movement and rally zoners to commanded position
+    ~ Porter can be command to "deploy" preventing Bay's movement and rally zoners to commanded position
     ~ Moved hydroMill to post-cobalt
     ~ Units and unit production now costs copper instead of silicon for t1
     ~ constructs can now output to payload
     ~ Improved Shredder's bullet's detection
     ~ Improved Tech tree, new player experience, buildSpeed
-    ~ Bug Fix: Unable to reach other sector due to a bug with mindustry not selecting the proper launch core (allowed launch schematic)
+    ~ Bug Fix: Unable to reach other sector due to a bug with mindustry not selecting the proper launch core (allowed launch schematic) [https://github.com/JiroCab/Olupis/issues/12]
     ~ Bug Fix: Constructs not spawning units on maps without cores despite being on the wave team
+    ~ Bug Fix: AmmoLifeTime units not properly removed in multiplayer
     ~ Bug Fix: Embryo Timing out if it has no a parent (for waves)
     ~ Internal: Expanded Credits
 

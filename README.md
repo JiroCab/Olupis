@@ -24,6 +24,7 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 * [WMF Industries](https://github.com/WMF-Industries) - Code
 * MrApple - Maps
 * [Kapzduke](https://github.com/kapzduke) - Sprites
+* Otamamori - Sprites
 
 ### Music Credits
 * Blossom, Dusk, Feu, Main Title, Reclaiming the Wasteland, Sparkles of Hope - [Terra Nil Soundtrack by Meydän](https://store.steampowered.com/app/2321920/Terra_Nil_Soundtrack/) 

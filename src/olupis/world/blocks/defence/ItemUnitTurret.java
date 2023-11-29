@@ -32,6 +32,7 @@ import mindustry.logic.LAccess;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.UnitPayload;
@@ -63,7 +64,7 @@ public class ItemUnitTurret extends ItemTurret {
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
 
-    public float payloadSpeed = 0.7f;
+    public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
     public Block alternate;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
@@ -79,7 +80,6 @@ public class ItemUnitTurret extends ItemTurret {
         config(UnitCommand.class, (ItemUnitTurretBuild build, UnitCommand command) -> build.command = command);
         configClear((ItemUnitTurretBuild build) -> build.command = null);
     }
-
 
     public void setBars(){
         super.setBars();
@@ -120,7 +120,6 @@ public class ItemUnitTurret extends ItemTurret {
         if(!(drawer instanceof DrawDefault))drawer.getRegionsToOutline(this, out);
         else {generatedIcons = null;}
     }
-
 
     @Override
     public void setStats(){
@@ -177,6 +176,13 @@ public class ItemUnitTurret extends ItemTurret {
 
 
         @Override
+        public int acceptStack(Item item, int amount, Teamc source){
+            if(acceptItem(self(), item) && block.hasItems && (source == null || source.team() == team)){
+                return Math.min(getMaximumAccepted(item) - items.get(item), amount);
+            } else return super.acceptStack(item, amount, source);
+        }
+
+        @Override
         public void handleItem(Building source, Item item){
             if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item)) {
                 super.handleItem(source, item);
@@ -187,7 +193,6 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public void updateTile(){
-
             speedScl = Mathf.lerpDelta(speedScl, 1f, 0.05f);
             time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
 
@@ -279,6 +284,7 @@ public class ItemUnitTurret extends ItemTurret {
             updatePayload();
 
             Vec2 dest = Tmp.v1.trns((direction + 1) * 90, size * tilesize / 2f);
+            payloadRotation = Angles.moveToward(payloadRotation, rotdeg(), payloadRotateSpeed * delta());
             payVector.approach(dest, payloadSpeed * delta());
 
             int trns = this.block.size / 2 + 1;
@@ -296,6 +302,18 @@ public class ItemUnitTurret extends ItemTurret {
                         payload = null;
                     }
                 }else if(canDump) dumpPayload();
+            }
+        }
+
+        @Override
+        public boolean movePayload(Payload todump) {
+            int trns = this.block.size / 2 + 1;
+            Tile next = this.tile.nearby(Geometry.d4(direction + 1).x * trns, Geometry.d4(direction + 1).y * trns);
+            if (next != null && next.build != null && next.build.team == this.team && next.build.acceptPayload(this, todump)) {
+                next.build.handlePayload(this, todump);
+                return true;
+            } else {
+                return false;
             }
         }
 
@@ -368,8 +386,9 @@ public class ItemUnitTurret extends ItemTurret {
             Lines.stroke(1f, team.color);
             Draw.color(team.color, 0.8f);
 
-            float rot = direction == -1 ? rotation - 90 : direction * 90,
-                    squareX = x + Angles.trnsx(rot , shootX, shootY), squareY = y + Angles.trnsy(rot, shootX, shootY);
+            float sx = shootX > size ? shootX : size, sy = shootX > size ? shootY : size,
+                    rot = direction == -1 ? rotation - 90 : direction * 90,
+                    squareX = x + Angles.trnsx(rot , sx, sy), squareY = y + Angles.trnsy(rot, sx, sy);
             if(hoverShowsSpawn && direction == -1){
                 Lines.square(squareX, squareY + 0.5f, 3.5f, Time.time * 0.5f);
             } else if(payloadExitShow && direction != -1){
@@ -466,6 +485,13 @@ public class ItemUnitTurret extends ItemTurret {
             if(sensor == LAccess.config) return null;
             if(sensor == LAccess.rotation) return direction == -1 ? rotation : direction * 90f;
             return super.senseObject(sensor);
+        }
+
+        @Override
+        public double sense(LAccess sensor){
+            if(sensor == LAccess.rotation) return direction == -1 ? rotation : direction * 90f;
+            if(sensor == LAccess.itemCapacity) return Mathf.round(itemCapacity * state.rules.unitCost(team));
+            return super.sense(sensor);
         }
 
         @Override

@@ -175,6 +175,7 @@ public class NyfalisTurrets {
                 rustyIron, new RollBulletType(2.5f, 15){{
                     frontColor = backColor = rustyIron.color;
                     status = StatusEffects.slow;
+                    collidesAir = false;
                     height = 9f;
                     width = 40f;
                     lifetime = 60f;
@@ -190,6 +191,7 @@ public class NyfalisTurrets {
                 iron, new RollBulletType(3f, 27){{
                     frontColor = backColor = iron.color;
                     status = StatusEffects.slow;
+                    collidesAir = false;
                     width = 40f;
                     height = 11f;
                     lifetime = 50f;
@@ -205,6 +207,7 @@ public class NyfalisTurrets {
                 quartz, new RollBulletType(3f, 37){{
                     frontColor = backColor = quartz.color;
                     status = StatusEffects.slow;
+                    collidesAir = false;
                     width = 40f;
                     height = 11f;
                     lifetime = 50f;
@@ -235,6 +238,7 @@ public class NyfalisTurrets {
             shootY = 0f;
             range = 650;
             reload = 600f;
+            fogRadiusMultiplier = 0.5f;
             shootSound = Sounds.respawn;
 
             ammo(

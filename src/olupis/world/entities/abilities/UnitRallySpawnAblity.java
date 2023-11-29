@@ -37,7 +37,7 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
             u.rotation = unit.rotation;
             if (unit.command() != null && unit.isCommandable() && u.isCommandable()){
                 u.command().commandPosition(unit.command().targetPos);
-                if(unit.command().command == NyfalisUnitCommands.nyfalisDeployCommand) u.command().command(UnitCommand.moveCommand);
+                if(unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDeployCommand) u.command().command(UnitCommand.moveCommand);
             }
             Events.fire(new EventType.UnitCreateEvent(u, null, unit));
             if(!Vars.net.client()){
