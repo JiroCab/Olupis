@@ -14,6 +14,7 @@ Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
     ~ Sprites updated: olupis-tree, moss-tree, rustElectrolyzer, ironConveyor, ironBridge, phantom, rustedBridge, bay, mite
     ~ Sprites Contributed by kapzduke: pipeJuntion, pipeRouter, ironPipe, leadPipe, WindMill, Corroder, rustyDrill, displacementPump, ironPump, rustyPump, rustElectrolyzer, iron (item), rustyIron (item) [https://github.com/kapzduke]
     ~ Sprites Contributed by Otamamori: supella, phantom
+    ~ Renamed "Biomatter" -> "Planty Mush"
     ~ Maps Contributed MrApple: vakinyaDesert, muddyLakes
     ~ improved shadows of various props, mossyRavine, gardeniorTemple
     ~ buffed shredder & dissolver

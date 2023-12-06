@@ -223,6 +223,7 @@ public class NyfalisUnits {
             accel = 0.11f;
             health = 200f;
             speed = 3.55f;
+            fogRadius = 10f;
             engineSize = 1.6f;
             rotateSpeed = 19f;
             itemCapacity = 70;
@@ -311,8 +312,9 @@ public class NyfalisUnits {
             weapons.add(
                 new Weapon(""){{
                     x = 0f;
-                    y = 1.5f;
+                    y = 1.3f;
                     reload = 15f;
+                    shootCone = 15f;
                     top = false;
                     ejectEffect = Fx.casing1;
                     parts.addAll(
@@ -320,8 +322,8 @@ public class NyfalisUnits {
                           var p = PartProgress.warmup.add(-1f);
                           heatProgress = progress =p.mul(-1);
                           moveRot = 35f;
-                          moveY = 0.8f;
-                          moveX = -0.15f;
+                          moveY = -0.8f;
+                          moveX = -0.17f;
                       }}
                     );
                     bullet = new BasicBulletType(2.5f, 8){{
@@ -601,6 +603,7 @@ public class NyfalisUnits {
             drag = 0.04f;
             accel = 0.08f;
             health = 100;
+            fogRadius = 6;
             lightRadius = 15f;
             itemCapacity = 0;
             lightOpacity = 50f;
@@ -644,6 +647,7 @@ public class NyfalisUnits {
             range = 30f;
             speed = 1.3f;
             mineTier = 1;
+            fogRadius = 6;
             mineSpeed = 3.5f;
             itemCapacity = 20;
             ammoCapacity = 120;
@@ -659,7 +663,9 @@ public class NyfalisUnits {
         }};
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{
-            speed = 2.5f;
+            armor = 2;
+            speed = 3f;
+            fogRadius = 8;
             ammoCapacity = 320;
 
             weapons.add(new LimitedRepairBeamWeapon(""){{
@@ -671,7 +677,7 @@ public class NyfalisUnits {
                 beamWidth = repairSpeed = 0.3f;
 
                 targetBuildings = useAmmo = true;
-                controllable = top = outlines = false;
+                controllable = top = false;
                 bullet = new BulletType(){{
                     aimDst = 0f;
                     maxRange = 120f;
@@ -679,26 +685,26 @@ public class NyfalisUnits {
                 }};
             }});
 
-
             constructor = UnitEntity::create;
+            aiController = UnitHealerAi::new;
             defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
             setEnginesMirror(new UnitEngine(8 / 4f, -21 / 4f, 2.1f, 245));
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = false;
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = drawAmmo = true;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = drawAmmo  = true;
         }};
 
         banshee = new LeggedWaterUnit("banshee"){{
-            hitSize = 8f;
-
             legCount = 4;
+            hitSize = 8f;
             health = 150;
             mineTier = 3;
+            fogRadius = 8f;
             legLength = 9f;
             mineSpeed = 4f;
+            navalSpeed = 1.1f;
             legForwardScl = 0.6f;
             legMoveSpace = 1.4f;
             ammoCapacity = 300;
-            navalSpeed = 1.1f;
 
             ammoType = lifeTimeDrill;
             groundLayer = Layer.legUnit;
@@ -713,6 +719,7 @@ public class NyfalisUnits {
         embryo = new AmmoLifeTimeUnitType("embryo"){{
             /*(trans) Egg if chan-version is made >;3c */
             speed = 3f;
+            fogRadius = 8f;
             ammoCapacity = 100;
 
             flying = alwaysShootWhenMoving = true;

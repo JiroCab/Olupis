@@ -213,8 +213,9 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     }
 
     public void timedOut(Unit unit){
+        //TODO: Net clients doesn't use right Fx (uses default despawn fx)
+        Call.unitDespawn(unit);
         timedOutFx.at(unit.x, unit.y, 0, unit);
         timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
-        Call.unitDespawn(unit);
     }
 }

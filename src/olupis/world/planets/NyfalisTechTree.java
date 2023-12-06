@@ -3,13 +3,13 @@ package olupis.world.planets;
 import arc.struct.Seq;
 import mindustry.content.Liquids;
 import mindustry.game.Objectives;
-import olupis.content.NyfalisSectors;
 
 import static mindustry.content.Items.*;
 import static mindustry.content.TechTree.*;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisPlanets.*;
+import static olupis.content.NyfalisSectors.*;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisTechTree {
@@ -18,41 +18,46 @@ public class NyfalisTechTree {
         nyfalis.techTree = nodeRoot("olupis", coreRemnant, () -> {
             node(system, () -> {
                 node(arthin, () ->{
-                    node(NyfalisSectors.sanctuary, () -> {
-                        node(NyfalisSectors.mossyRavine, () -> {
-                            node(NyfalisSectors.vakinyaDesert, Seq.with(
+                    node(sanctuary, () -> {
+                        node(mossyRavine,
+                                Seq.with(new Objectives.SectorComplete(sanctuary)),
+                        () -> {
+                            node(vakinyaDesert, Seq.with(
+                                new Objectives.SectorComplete(mossyRavine),
                                 new Objectives.Produce(iron)
                             ),() ->{
-                                node(NyfalisSectors.naturalParkOasis, () -> {
-                                    node(NyfalisSectors.lushyRiverComplex, () ->{
+                                node(muddyLakes,
+                                    Seq.with(new Objectives.SectorComplete(vakinyaDesert)),
+                                () -> {
+                                    node(lushyRiverComplex,
+                                            Seq.with(new Objectives.SectorComplete(muddyLakes)),
+                                    () -> {
 
                                     });
                                 });
 
-                                node(NyfalisSectors.muddyLakes, Seq.with(
-                                        new Objectives.Produce(iron), new Objectives.Research(steamDrill), new Objectives.Research(ironSieve)
-                                ),() ->{
-                                    node(NyfalisSectors.naturalParkOasis, ()->{
+                                node(naturalParkOasis,
+                                    Seq.with(new Objectives.SectorComplete(lushyRiverComplex)),//temp till Rushie is less lazy and adds in the other maps
+                                () -> {
 
-                                    });
                                 });
                             });
                         });
                     });
                 });
                 node(nyfalis, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.sanctuary)
+                        new Objectives.SectorComplete(naturalParkOasis)
                 ),() ->{
-                    node(NyfalisSectors.placeholder2, Seq.with(
-                            new Objectives.SectorComplete(NyfalisSectors.vakinyaDesert)
+                    node(placeholder2, Seq.with(
+                            new Objectives.SectorComplete(sanctuary)
                     ), () ->{
                     });
                 });
                 node(spelta, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(groundConstruct)
+                        new Objectives.SectorComplete(sanctuary), new  Objectives.Research(groundConstruct)
                 ), () ->{
-                    node(NyfalisSectors.forestOfHope,  () ->{
-                        node(NyfalisSectors.dormantCell,  ()-> {
+                    node(forestOfHope,  () ->{
+                        node(dormantCell,  ()-> {
 
                         });
                     });
@@ -98,7 +103,7 @@ public class NyfalisTechTree {
                     });
                 });
                 node(phorid, Seq.with(
-                        new Objectives.SectorComplete(NyfalisSectors.sanctuary), new  Objectives.Research(coreRelic)
+                        new Objectives.SectorComplete(sanctuary), new  Objectives.Research(coreRelic)
                 ), () -> {
                     node(embryo, () -> {
 
@@ -121,13 +126,13 @@ public class NyfalisTechTree {
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
                         node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder)), () -> {
-                            node(garden,()->{
+                            node(garden, Seq.with(new Objectives.Research(sanctuary)),()->{
                                 node(bioMatterPress, () ->{
 
                                 });
                             });
                             node(hydrochloricGraphitePress, ()->{
-                                node(siliconArcSmelter, ()->{
+                                node(siliconArcSmelter ,Seq.with(new Objectives.SectorComplete(vakinyaDesert)), ()->{
 
                                 });
                             });
@@ -142,7 +147,7 @@ public class NyfalisTechTree {
 
                             });
                         });
-                        node(taurus, ()->{
+                        node(taurus ,Seq.with(new Objectives.Research(sanctuary)), ()->{
 
                         });
                     });
@@ -152,7 +157,9 @@ public class NyfalisTechTree {
                     node(rustyPump, () ->{
                         node(pipeRouter, ()->{
                             node(fortifiedCanister, ()->{
-                                node(fortifiedTank, ()->{
+                                node(fortifiedTank,
+                                    Seq.with(new Objectives.OnSector(muddyLakes))
+                                 , ()->{
 
                                 });
                             });
@@ -161,18 +168,25 @@ public class NyfalisTechTree {
 
                                 });
                             });
-                            node(ironPipe, ()->{
+                            node(ironPipe,
+                                Seq.with(new Objectives.OnSector(muddyLakes)),
+                            ()->{
 
                             });
-                            node(steamBoiler, ()->{
+                            node(steamBoiler,
+                                    Seq.with(new Objectives.OnSector(mossyRavine)),
+                            ()->{
                                 node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
 
                                 });
                                 node(broiler, Seq.with(new Objectives.Research(graphite)),()->{
 
                                 });
+
                             });
-                            node(ironPump, () -> {
+                            node(ironPump,
+                                Seq.with(new Objectives.OnSector(muddyLakes)),
+                            () -> {
                                 node(displacementPump, () -> {
                                     node(massDisplacementPump, () -> {
 
@@ -210,12 +224,12 @@ public class NyfalisTechTree {
                     });
 
                     node(rustyDrill, ()->{
-                        node(steamDrill, () ->{
+                        node(steamDrill, Seq.with(new Objectives.Produce(steam)), () ->{
                             node(hydroElectricDrill, () ->{
 
                             });
                         });
-                        node(ironSieve, Seq.with(new Objectives.Research(rustElectrolyzer), new Objectives.Produce(sand)),() ->{
+                        node(ironSieve, Seq.with(new Objectives.SectorComplete(vakinyaDesert), new Objectives.Produce(sand)),() ->{
 
                         });
                     });
@@ -255,7 +269,9 @@ public class NyfalisTechTree {
                 });
 
                 node(construct, Seq.with(new Objectives.Research(ironRouter)), ()->{
-                    node(groundConstruct, () ->{
+                    node(groundConstruct,
+                        Seq.with(new Objectives.Research(silicon))
+                    , () ->{
                         node(arialConstruct, () ->{
                             node(navalConstruct, () ->{
 

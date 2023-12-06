@@ -35,7 +35,7 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
             Unit u = this.unit.create(unit.team);
             u.set(x, y);
             u.rotation = unit.rotation;
-            if (unit.command() != null && unit.isCommandable() && u.isCommandable()){
+            if (unit.isCommandable() && u.isCommandable() && unit.command() != null){
                 u.command().commandPosition(unit.command().targetPos);
                 if(unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDeployCommand) u.command().command(UnitCommand.moveCommand);
             }

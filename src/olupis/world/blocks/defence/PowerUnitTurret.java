@@ -144,6 +144,15 @@ public class PowerUnitTurret extends ItemUnitTurret {
             return super.useAmmo();
         }
 
+
+        @Override
+        public void updateTile() {
+            if(!regularShoot()){ //PowerShot affects things
+                efficiency = power.status;
+            }
+            super.updateTile();
+        }
+
         //Hack to make it reload when only powered & required items
          @Override
         protected float baseReloadSpeed(){

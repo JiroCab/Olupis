@@ -74,7 +74,7 @@ public class NyfalisTurrets {
                 shootY = 7f;
                 range = 90f;
                 health = 1500;
-                fogRadius = 15;
+                fogRadius = 13;
                 shootCone = 50f;
                 liquidCapacity = reload = 5f;
 
@@ -113,6 +113,7 @@ public class NyfalisTurrets {
             targetGround = false;
             size = 3;
             reload = 25f;
+            fogRadiusMultiplier = 0.75f;
             range = 250f;
             minWarmup = 0.96f;
             shootY = shootX= 0f;
@@ -250,7 +251,7 @@ public class NyfalisTurrets {
             );
             requiredItems = requiredAlternate = with();
             commandable = configurable = rallyAim = false;
-            playerControllable = true;
+            playerControllable = drawOnTarget = true;
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
             requirements(Category.turret, with(iron, 100, lead, 30, silicon, 30));
         }};

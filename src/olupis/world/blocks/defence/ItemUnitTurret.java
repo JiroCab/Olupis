@@ -5,8 +5,7 @@ import arc.Events;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
-import arc.math.Angles;
-import arc.math.Mathf;
+import arc.math.*;
 import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.scene.style.Drawable;
@@ -19,6 +18,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
@@ -39,6 +39,7 @@ import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import olupis.content.NyfalisFxs;
+import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.units.NyfalisUnitType;
 
 import java.util.Arrays;
@@ -50,22 +51,25 @@ import static mindustry.Vars.*;
 public class ItemUnitTurret extends ItemTurret {
     /*common required items for all unit types*/
     public ItemStack[] requiredAlternate = ItemStack.with(Items.copper, 20, Items.silicon, 15);
-    public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20, Items.silicon, 15);
     /*Minimum Items needed*/
     /*Parameters when failing to make a unit*/
+    public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20, Items.silicon, 15);
     public Sound failedMakeSound = Sounds.dullExplosion;
     public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 1f;
     public Effect failedMakeFx = NyfalisFxs.failedMake;
     public TextureRegion bottomRegion;
     /*Hovering Shows the unit creation*/
-    public boolean hoverShowsSpawn = false, payloadExitShow = true;
+    public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false;
     /*Aim at the rally point*/
     public boolean rallyAim = true;
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
 
+    //For Shooting whatever is in playload as a bullet
+    BulletType fallbackBullet;
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
     public Block alternate;
+
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
 
@@ -86,16 +90,16 @@ public class ItemUnitTurret extends ItemTurret {
         addBar("bar.progress", (ItemUnitTurretBuild entity) -> new Bar("bar.progress", Pal.ammo,() -> entity.reloadCounter / reload));
 
         /*TODO: Takes a bit to update*/
-        addBar("units", (ItemUnitTurretBuild e) -> e.peekAmmo()  != null && e.peekAmmo().spawnUnit.useUnitCap ? new Bar(() ->
+        addBar("units", (ItemUnitTurretBuild e) -> e.peekAmmo() == null || e.peekAmmo().spawnUnit != null &&  !e.peekAmmo().spawnUnit.useUnitCap ? null : new Bar(() ->
                 e.peekAmmo().spawnUnit == null ? "[lightgray]" + Iconc.cancel :
-                Core.bundle.format("bar.unitcap",
-                        !Objects.equals(Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name), "") ? Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name) : Iconc.units,
-                        e.team.data().countType(e.peekAmmo().spawnUnit),
-                        Units.getStringCap(e.team)
-                ),
-            () -> Pal.power,
-            () -> e.peekAmmo() == null ? 0f : e.peekAmmo().spawnUnit == null ? 0f : (float)e.team.data().countType(e.peekAmmo().spawnUnit) / Units.getCap(e.team)
-        ): null);
+                        Core.bundle.format("bar.unitcap",
+                                !Objects.equals(Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name), "") ? Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name) : Iconc.units,
+                                e.team.data().countType(e.peekAmmo().spawnUnit),
+                                Units.getStringCap(e.team)
+                        ),
+                () -> Pal.power,
+                () -> e.peekAmmo() == null ? 0f : e.peekAmmo().spawnUnit == null ? 0f : (float) e.team.data().countType(e.peekAmmo().spawnUnit) / Units.getCap(e.team)
+        ));
 
     }
 
@@ -198,6 +202,17 @@ public class ItemUnitTurret extends ItemTurret {
 
             moveOutPayload();
             super.updateTile();
+
+            if(direction == -1 && payload != null){
+                BulletType nya = new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    reloadMultiplier = 0.75f;
+                    spawnUnit = payload.unit.type;
+                }};
+                shootRegular(nya, shootCreatable(nya), false);
+                payload = null;
+            }
         }
 
         @Override
@@ -354,7 +369,7 @@ public class ItemUnitTurret extends ItemTurret {
                 Draw.rect(bottomRegion, x, y);
                 if (peekAmmo() != null && peekAmmo().spawnUnit != null) {
                     UnitType unt = peekAmmo().spawnUnit;
-                    if (this.team.data().unitCap >= this.team.data().countType(unt) && unit.type().useUnitCap || state.rules.waveTeam == this.team) {
+                    if (shootCreatable(peekAmmo())) {
                         Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rot, reloadCounter / reload, speedScl, time));
                     } else {
                         Draw.draw(Layer.blockOver, () -> {
@@ -366,7 +381,7 @@ public class ItemUnitTurret extends ItemTurret {
                             Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
                             Draw.reset();
 
-                            Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.5f));
+                            Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.8f));
                             Draw.rect(Icon.warning.getRegion(), x, y);
                             Draw.reset();
                         });
@@ -386,7 +401,7 @@ public class ItemUnitTurret extends ItemTurret {
             Lines.stroke(1f, team.color);
             Draw.color(team.color, 0.8f);
 
-            float sx = shootX > size ? shootX : size, sy = shootX > size ? shootY : size,
+            float sx = shootX < size ? shootX : size, sy = shootX < size ? shootY : size,
                     rot = direction == -1 ? rotation - 90 : direction * 90,
                     squareX = x + Angles.trnsx(rot , sx, sy), squareY = y + Angles.trnsy(rot, sx, sy);
             if(hoverShowsSpawn && direction == -1){
@@ -397,6 +412,9 @@ public class ItemUnitTurret extends ItemTurret {
                 Draw.rect(regionArrow, squareX, squareY -1f, (float) regionArrow.width / size, (float) regionArrow.height / size,direction * 90);
             }
             Draw.reset();
+            if(drawOnTarget && target != null){
+                Drawf.target(target.getX(), target.getY(), 7f * Interp.swingIn.apply(1f), this.team().color);
+            }
 
             super.drawSelect();
         }
@@ -495,8 +513,13 @@ public class ItemUnitTurret extends ItemTurret {
         }
 
         @Override
+        public boolean isShooting(){
+            return super.isShooting() && hasAmmo();
+        }
+
+        @Override
         protected float baseReloadSpeed(){
-            return !hasReqItems() ? 1f : efficiency;
+            return hasReqItems() ? efficiency : 0f;
         }
 
         @Override

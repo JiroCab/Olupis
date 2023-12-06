@@ -29,7 +29,7 @@ public class ArmDefenderAi extends AIController {
 
     @Override
     public void updateTargeting(){
-        if(follow == null) follow = findFollow(unit.x, unit.y, unit.range());
+        if(follow == null) follow = findFollow(unit.x, unit.y, unit.team != state.rules.waveTeam ? unit.range() : Float.MAX_VALUE);
         super.updateTargeting();
     }
 
@@ -65,10 +65,14 @@ public class ArmDefenderAi extends AIController {
 
     public Teamc findFollow(float x, float y, float range){
         //Sort by max health and closer target.
-        Unit unt = Units.closest(unit.team, x, y, Math.max(range, 400f), u -> !u.dead() && u.type != unit.type && u.targetable(unit.team) && u.type.playerControllable,
+        float min = state.rules.waveTeam == unit.team ? Float.MAX_VALUE : 400f; //Prevents the Ai from idling trying to attack with a weapon that does no damge
+        Unit unt = Units.closest(unit.team, x, y, Math.max(range, min), u -> !u.dead() && u.type != unit.type && u.targetable(unit.team) && u.type.playerControllable,
                 (u, tx, ty) -> -u.maxHealth + Mathf.dst2(u.x, u.y, tx, ty) / 6400f);
          if(unt != null) return unt;
-         return unit.within(unit.closestCore(), range) ? unit().closestCore() :  null;
+
+         if(unit.closestCore() != null && unit.within(unit.closestCore(), range))return unit.closestCore();
+         if(state.rules.waveTeam == unit.team && unit.closestEnemyCore() != null && unit.within(unit.closestEnemyCore(), range))return unit.closestEnemyCore();
+         return null;
 
     }
 }

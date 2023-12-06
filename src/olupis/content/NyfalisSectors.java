@@ -36,7 +36,7 @@ public class NyfalisSectors {
 
             difficulty = 2;
             captureWave = 33;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700));
         }};
 
         muddyLakes = new SectorPreset("muddy-lakes", arthin, 21){{
@@ -57,7 +57,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000, NyfalisItemsLiquid.iron, 200));
         }};
 
-        naturalParkOasis = new SectorPreset("natural-park-oasis", arthin, 19){{
+        naturalParkOasis = new SectorPreset("natural-park-oasis", arthin, 12){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -66,7 +66,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
         }};
 
-        lushyRiverComplex = new SectorPreset("lushy-river-complex", arthin, 26){{
+        lushyRiverComplex = new SectorPreset("lushy-river-complex", arthin, 25){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
