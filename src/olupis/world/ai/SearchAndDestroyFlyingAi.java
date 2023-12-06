@@ -33,9 +33,10 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
 
         if(target == null){
             if( Time.time >= idleAfter) {
-                if (unit.closestEnemyCore() != null) moveTo(unit.closestEnemyCore(), unit.range());
-                else if (getClosestSpawner() != null) moveTo(getClosestSpawner(), state.rules.dropZoneRadius + (unit.range() * 0.5f));
-                else moveTo(unit.closestCore(), unit.range());
+                //protect key points on idle
+                if(unit.closestEnemyCore() != null && unit.inFogTo(unit.team) && unit.within(unit.closestEnemyCore(), Math.min(600f, unit().range() * 2f))) moveTo(unit.closestEnemyCore(), unit.range() * 2f);
+                else if(getClosestSpawner() != null && unit.within(getClosestSpawner(), Math.min(600f, unit().range() * 1.5f) + state.rules.dropZoneRadius) ) moveTo(unit.closestCore(), (unit().range() * 1.5f) + state.rules.dropZoneRadius);
+                else if(unit.closestCore() != null && unit.within(unit.closestCore(), Math.min(800f, unit().range() * 2f))) moveTo(unit.closestCore(), unit.range());
             }
             else findMainTarget(unit.x, unit.y, unit.range(), unit.type().targetAir, unit.type().targetGround);
         }
@@ -99,7 +100,8 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
 
     @Override
     public Teamc findMainTarget(float x, float y, float range, boolean air, boolean ground){
-        var search = Units.closestTarget(unit.team, x, y, Float.MAX_VALUE, u -> air, b -> ground) ;
+
+        var search = Units.closestTarget(unit.team, x, y, Float.MAX_VALUE, u -> air && !u.inFogTo(unit.team), b -> ground && !b.inFogTo(unit.team)) ;
         if(search != null){
             suicideOnTarget = Units.closestTarget(unit.team, x, y, Float.MAX_VALUE, u -> u.type().weapons.find(w->w.bullet.killShooter) != null, b -> ground) != null;
             return search;

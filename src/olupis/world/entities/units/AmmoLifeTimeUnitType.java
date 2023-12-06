@@ -9,6 +9,7 @@ import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.util.*;
+import mindustry.Vars;
 import mindustry.ai.types.LogicAI;
 import mindustry.content.Blocks;
 import mindustry.entities.Effect;
@@ -148,8 +149,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     @Override
     public void draw(Unit unit){
         super.draw(unit);
-
-        if(drawAmmo && ammoRegion.found())drawAmmo(unit);
+        if(drawAmmo && ammoRegion.found() && !unit.inFogTo(Vars.player.team()))drawAmmo(unit);
         Draw.reset();
     }
 

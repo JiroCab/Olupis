@@ -72,7 +72,7 @@ public class NyfalisSectors {
 
             difficulty = 4;
             captureWave = 22;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
         }};
         //endregion
         //region Nyfalis

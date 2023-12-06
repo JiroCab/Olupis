@@ -827,7 +827,7 @@ public class NyfalisBlocks {
             hasItems = hasLiquids = hasPower = true;
 
             size = 3;
-            craftTime = 30f;
+            craftTime = 40f;
             itemCapacity = 20;
             buildCostMultiplier = 0.5f;
             craftEffect = Fx.pulverizeMedium;
@@ -836,7 +836,7 @@ public class NyfalisBlocks {
             researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             outputItem = new ItemStack(Items.graphite, 1);
             requirements(Category.crafting, with(iron, 10, lead, 50, rustyIron, 40));
-            consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
+            consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, NyfalisItemsLiquid.steam, 7f/60f));
         }};
 
         siliconArcSmelter = new GenericCrafter("silicon-arc-smelters") {{
@@ -897,7 +897,7 @@ public class NyfalisBlocks {
         construct = new PowerUnitTurret("construct"){{
             size = 4;
             shootY = 0f;
-            reload = 600f;
+            reload = 1200f;
             itemCapacity = 20;
             failedMakeSoundPitch = 0.7f;
             powerBulletType = new SpawnHelperBulletType(){{
@@ -931,7 +931,7 @@ public class NyfalisBlocks {
         arialConstruct = new ItemUnitTurret("arial-construct"){{
             size = 4;
             shootY = 0f;
-            reload = 600f;
+            reload = 1200f;
             itemCapacity = 20;
             failedMakeSoundPitch = 0.7f;
 
@@ -953,7 +953,7 @@ public class NyfalisBlocks {
         groundConstruct = new ItemUnitTurret("ground-construct"){{
             size = 4;
             shootY = 2.5f * Vars.tilesize;
-            reload = 600f;
+            reload = 1200f;
             itemCapacity = 20;
             failedMakeSoundPitch = 0.7f;
 
@@ -979,7 +979,7 @@ public class NyfalisBlocks {
         //navalConstruct -> offensive naval units
         navalConstruct = new ItemUnitTurret("naval-construct"){{
             size = 4;
-            reload = 600f;
+            reload = 1200f;
             itemCapacity = 20;
             failedMakeSoundPitch = 0.7f;
             shootY = 2.5f * Vars.tilesize;
@@ -999,7 +999,7 @@ public class NyfalisBlocks {
             consumePower(80f / 60f);
             requiredItems = with(copper, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            alwaysShooting = hoverShowsSpawn = hasPower = true;
+            alwaysShooting = hoverShowsSpawn = hasPower = floating = true;
             researchCost = with(lead, 500, silicon, 300,  iron, 300);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};

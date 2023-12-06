@@ -311,8 +311,9 @@ public class NyfalisUnits {
             rotateSpeed = 1.72f;
             weapons.add(
                 new Weapon(""){{
-                    x = 0f;
-                    y = 1.3f;
+                    x = -0.1f;
+                    y = 1.25f;
+                    shootX = 6f;
                     reload = 15f;
                     shootCone = 15f;
                     top = false;
@@ -348,7 +349,6 @@ public class NyfalisUnits {
                         width = 5f;
                         height = 6f;
                         lifetime = 36f;
-                        collidesAir = false;
                         frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
                         backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
@@ -603,7 +603,7 @@ public class NyfalisUnits {
             drag = 0.04f;
             accel = 0.08f;
             health = 100;
-            fogRadius = 6;
+            fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
             lightOpacity = 50f;
@@ -665,7 +665,7 @@ public class NyfalisUnits {
         phantom = new AmmoLifeTimeUnitType("phantom"){{
             armor = 2;
             speed = 3f;
-            fogRadius = 8;
+            fogRadius = 6f;
             ammoCapacity = 320;
 
             weapons.add(new LimitedRepairBeamWeapon(""){{
@@ -719,10 +719,10 @@ public class NyfalisUnits {
         embryo = new AmmoLifeTimeUnitType("embryo"){{
             /*(trans) Egg if chan-version is made >;3c */
             speed = 3f;
-            fogRadius = 8f;
+            fogRadius = 0f;
             ammoCapacity = 100;
 
-            flying = alwaysShootWhenMoving = true;
+            flying = alwaysShootWhenMoving = drawAmmo = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new AgressiveFlyingAi(true);
@@ -753,6 +753,7 @@ public class NyfalisUnits {
             health = 420;
             mineTier = 1;
             legCount = 0;
+            fogRadius = 0f;
             /*Corner Engines only*/
             engineSize = -1;
             mineSpeed = 8.5f;
@@ -846,6 +847,7 @@ public class NyfalisUnits {
             health = 560;
             mineTier = 2;
             legCount = 0;
+            fogRadius = 0f;
             /*Corner Engines only*/
             engineSize = -1;
             rotateSpeed = 6f;
