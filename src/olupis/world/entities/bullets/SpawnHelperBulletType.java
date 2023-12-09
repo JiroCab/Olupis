@@ -1,6 +1,7 @@
 package olupis.world.entities.bullets;
 
 import arc.Events;
+import arc.math.Mathf;
 import arc.util.Nullable;
 import mindustry.ai.types.MissileAI;
 import mindustry.entities.Mover;
@@ -54,6 +55,11 @@ public class SpawnHelperBulletType extends BasicBulletType {
             }
             //Since bullet init is never called, handle killing shooter here
             if (killShooter && owner instanceof Healthc h && !h.dead()) h.kill();
+            if (intervalBullet != null){
+                for(int i = 0; i < intervalBullets; i++){
+                    intervalBullet.create(owner, team, x, y, angle + Mathf.range(intervalRandomSpread) + intervalAngle + ((i - (intervalBullets - 1f)/2f) * intervalSpread));
+                }
+            }
 
             //no bullet returned
             return null;

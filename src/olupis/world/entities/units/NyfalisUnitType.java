@@ -7,6 +7,7 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.*;
 import mindustry.Vars;
@@ -26,6 +27,7 @@ import mindustry.type.ammo.ItemAmmoType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatValues;
 import olupis.content.NyfalisItemsLiquid;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
@@ -145,6 +147,13 @@ public class NyfalisUnitType extends UnitType {
                                 t.button("?", Styles.flatBordert, () -> ui.content.show(spawn)).size(40f).pad(10).right().grow().visible(spawn::unlockedNow);
                             }
                         }).growX().pad(5).row();
+                        if(w.bullet.intervalBullet != null){
+                            table.row();
+                            table.table(Styles.grayPanel, t -> {
+                                t.left().top().defaults().padRight(3).left();
+                                StatValues.ammo(ObjectMap.of(this, w.bullet.intervalBullet)).display(t);
+                            }).growX().pad(5).margin(10);
+                        }
                     } else {
                         table.row();
                         TextureRegion region = !w.name.isEmpty() ? Core.atlas.find(w.name + "-preview", w.region) : null;

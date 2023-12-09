@@ -59,7 +59,7 @@ public class ItemUnitTurret extends ItemTurret {
     public Effect failedMakeFx = NyfalisFxs.failedMake;
     public TextureRegion bottomRegion;
     /*Hovering Shows the unit creation*/
-    public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false;
+    public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false;
     /*Aim at the rally point*/
     public boolean rallyAim = true;
     /*Aim for closest liquid*/
@@ -401,7 +401,7 @@ public class ItemUnitTurret extends ItemTurret {
             Lines.stroke(1f, team.color);
             Draw.color(team.color, 0.8f);
 
-            float sx = shootX < size ? shootX : size, sy = shootX < size ? shootY : size,
+            float sx = arrowShootPos ? shootX : 0f, sy = arrowShootPos ? shootY : 6f,
                     rot = direction == -1 ? rotation - 90 : direction * 90,
                     squareX = x + Angles.trnsx(rot , sx, sy), squareY = y + Angles.trnsy(rot, sx, sy);
             if(hoverShowsSpawn && direction == -1){

@@ -42,7 +42,7 @@ public class NyfalisTurrets {
                     speed = 5.5f;
                     damage = 7.8f;
                     drag = 0.008f;
-                    lifetime = 19.5f;
+                    lifetime = 19.7f;
                     rangeChange = 15f;
                     ammoMultiplier = 3f;
                     trailInterval = trailParam = 1.5f;
@@ -273,7 +273,7 @@ public class NyfalisTurrets {
                         speed = 5.4f;
                         damage = 28;
                         drag = 0.0009f;
-                        lifetime = 28.5f;
+                        lifetime = 29.5f;
                         rangeChange = 40f;
                         ammoMultiplier = 4f;
                         statusDuration = 60f * 2;
@@ -305,7 +305,7 @@ public class NyfalisTurrets {
                         speed = 5.8f;
                         damage = 17;
                         drag = 0.0009f;
-                        lifetime = 28.5f;
+                        lifetime = 27.5f;
                         rangeChange = 20f;
                         ammoMultiplier = 4f;
                         statusDuration = 60f * 2;

@@ -59,7 +59,7 @@ public class NyfalisBlocks {
         /*Floors*/
         redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        grassyVent, mossyVent, stoneVent, basaltVent,
+        grassyVent, mossyVent, stoneVent, basaltVent, mossyDirt,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater,
@@ -73,7 +73,7 @@ public class NyfalisBlocks {
         mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall,
 
         /*Trees*/
-        nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree,
+        nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree,
 
         //Buildings, sorted by category
         corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,
@@ -970,7 +970,7 @@ public class NyfalisBlocks {
                 }}
             );
             requiredItems = with(copper, 10);
-            alwaysShooting = hoverShowsSpawn = true;
+            alwaysShooting = hoverShowsSpawn = arrowShootPos = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(rustyIron, 5000, silicon, 300,  iron, 300);
             requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
@@ -999,15 +999,15 @@ public class NyfalisBlocks {
             consumePower(80f / 60f);
             requiredItems = with(copper, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            alwaysShooting = hoverShowsSpawn = hasPower = floating = true;
+            alwaysShooting = hoverShowsSpawn = hasPower = floating = arrowShootPos = true;
             researchCost = with(lead, 500, silicon, 300,  iron, 300);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
 
         //Unit Tree: t1 = construct
         // T2 = construct + Articulator
-        // t3 = t1 + constructor
-        // t4 = t2 + t3 constructor
+        // t3 = t1 + reconstructor
+        // t4 = t2 + t3 reconstructor + Articulator
         // t5 = t1-t4 at assembler
 
         fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
@@ -1301,6 +1301,7 @@ public class NyfalisBlocks {
             size = 2;
             health = 1750;
             itemCapacity = 1500;
+            buildCostMultiplier = 0.5f;
 
             unitType = gnat;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300));
@@ -1310,6 +1311,7 @@ public class NyfalisBlocks {
             size = 3;
             health = 3500;
             itemCapacity = 3000;
+            buildCostMultiplier = 0.5f;
             researchCostMultiplier = 0.5f;
 
             unitType = gnat;
@@ -1322,7 +1324,7 @@ public class NyfalisBlocks {
             health = 70000;
             itemCapacity = 4500;
             shootX = shootY = 0f;
-            buildCostMultiplier = 0.85f;
+            buildCostMultiplier = 0.5f;
             range = 19.5f * Vars.tilesize;
             researchCostMultiplier = 0.5f;
 
@@ -1350,8 +1352,10 @@ public class NyfalisBlocks {
             health = 140000;
             itemCapacity = 6000;
             shootX = shootY = 0f;
+            buildCostMultiplier = 0.5f;
             range = 22.5f * Vars.tilesize;
             researchCostMultiplier = 0.5f;
+
 
             unitType = phorid;
             limitRange(0);
@@ -1366,6 +1370,7 @@ public class NyfalisBlocks {
                 splashDamage = 10f;
                 homingPower = 0.08f;
                 reloadMultiplier = 1.2f;
+                buildCostMultiplier = 0.5f;
                 splashDamageRadius = 30f;
 
                 collidesTiles = false;
@@ -1381,6 +1386,7 @@ public class NyfalisBlocks {
             health = 280000;
             itemCapacity = 7500;
             shootX = shootY = 0f;
+            buildCostMultiplier = 0.5f;
             range = 32 * Vars.tilesize;
             researchCostMultiplier = 0.5f;
 

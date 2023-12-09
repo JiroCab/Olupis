@@ -606,9 +606,8 @@ public class NyfalisUnits {
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
-            lightOpacity = 50f;
             penaltyMultiplier = 1f;
-            ammoDepletionAmount = 0.55f;
+            ammoDepletionAmount = 0.6f;
 
             flying = targetGround = targetAir = drawAmmo = true;
             playerControllable  = logicControllable = useUnitCap = false;
@@ -664,7 +663,7 @@ public class NyfalisUnits {
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{
             armor = 2;
-            speed = 3f;
+            speed = 3.25f;
             fogRadius = 6f;
             ammoCapacity = 320;
 
@@ -793,12 +792,12 @@ public class NyfalisUnits {
                     x = y = shootX = shootY = 0;
                     shootStatus = StatusEffects.unmoving;
                     shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
-                    /*3 bullets deep, just so everything shoot as, as being separate weapons causes early/late shooting*/
+                    /*3 bullets deep, just so everything shoot at the same time, as being separate weapons causes early/late shooting*/
                     bullet = new BulletType() {{
                         collides = hittable = collidesTiles = false;
                         instantDisappear = collidesAir = true;
                         hitSound = Sounds.explosion;
-                        hitEffect = Fx.pulverize;
+                        hitEffect = NyfalisFxs.unitDischarge;
 
                         splashDamage = 65f;
                         rangeOverride = 30f;
@@ -864,10 +863,10 @@ public class NyfalisUnits {
 
             legPhysicsLayer = false;
             canBoost = allowLegStep = hovering = alwaysBoostOnSolid = customMineAi = true;
-            spawnStatus = StatusEffects.disarmed;
             constructor = LegsUnit::create;
-            ammoType = new PowerAmmoType(1000);
+            spawnStatus = StatusEffects.disarmed;
             mineItems = Seq.with(rustyIron, lead, scrap);
+            ammoType = new PowerAmmoType(1000);
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             setEnginesMirror(
                     new UnitEngine(23.5f / 4f, 15 / 4f, 2.3f, 45f), //front
@@ -893,56 +892,45 @@ public class NyfalisUnits {
                         shootEffect = Fx.shootBig;
                         spawnUnit = embryo;
                         //rangeOverride = mineRange;
-                        intervalBullet = new HealOnlyBulletType(0,-5) {{
-                            spin = 3.7f;
-                            drag = 0.9f;
-                            lifetime = 10*60;
-                            shrinkX = 25f/60f;
-                            shrinkY = 35f/60f;
-                            bulletInterval = 25;
-                            intervalBullets = 2;
-                            intervalSpread = 180;
-                            intervalRandomSpread = 90;
-                            height = width = healAmount = 20;
+                        intervalBullet =  new BulletType() {{
+                            instantDisappear = collidesAir = true;
+                            collidesTiles = collides = hittable = false;
+                            hitSound = Sounds.explosion;
+                            hitEffect = NyfalisFxs.unitDischarge;
 
-                            keepVelocity = false;
-                            hitEffect = despawnEffect = Fx.heal;
-                            backColor = frontColor = trailColor = lightColor = Pal.heal;
-                            intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet") {{
-                                lifetime = 60;
-                                trailLength = 11;
-                                trailWidth = 1.5f;
-                                healAmount = 30;
-                                bulletInterval = 10;
-                                homingPower = 0.11f;
+                            speed = 0f;
+                            rangeOverride = 30f;
+                            splashDamage = 70f;
+                            splashDamageRadius = 55f;
+                            intervalBullet = new HealOnlyBulletType(0,-5) {{
+                                spin = 3.7f;
+                                drag = 0.9f;
+                                lifetime = 10*60;
+                                shrinkX = 25f/60f;
+                                shrinkY = 35f/60f;
+                                bulletInterval = 25;
+                                intervalBullets = 2;
+                                intervalSpread = 180;
+                                intervalRandomSpread = 90;
+                                height = width = healAmount = 20;
 
                                 keepVelocity = false;
                                 hitEffect = despawnEffect = Fx.heal;
                                 backColor = frontColor = trailColor = lightColor = Pal.heal;
+                                intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet") {{
+                                    lifetime = 60;
+                                    trailLength = 11;
+                                    trailWidth = 1.5f;
+                                    healAmount = 30;
+                                    bulletInterval = 10;
+                                    homingPower = 0.11f;
+
+                                    keepVelocity = false;
+                                    hitEffect = despawnEffect = Fx.heal;
+                                    backColor = frontColor = trailColor = lightColor = Pal.heal;
+                                }};
                             }};
-
                         }};
-                    }};
-                }},
-                new Weapon(){{
-                    reload = 60*10;
-                    x = shootY = 0f;
-                    shootCone = 180f;
-                    shoot.firstShotDelay = Fx.heal.lifetime-1;
-                    shootOnDeath = true;
-                    mirror  = false;
-                    ejectEffect = Fx.none;
-                    shootSound = Sounds.none;
-                    bullet = new BulletType() {{
-                        instantDisappear = collidesAir = true;
-                        collidesTiles = collides = hittable = false;
-                        hitEffect = Fx.pulverize;
-                        hitSound = Sounds.explosion;
-
-                        speed = 0f;
-                        rangeOverride = 30f;
-                        splashDamage = 70f;
-                        splashDamageRadius = 55f;
                     }};
                 }}
             );
