@@ -3,20 +3,24 @@ package olupis.world.entities.units;
 import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
-import arc.util.Scaling;
+import arc.util.*;
+import mindustry.Vars;
 import mindustry.ai.types.LogicAI;
 import mindustry.content.Blocks;
-import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
+import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Env;
+import olupis.content.NyfalisFxs;
 import olupis.world.ai.NyfalisMiningAi;
 
 import static mindustry.Vars.*;
@@ -35,7 +39,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*mining depletes ammo*/
     public boolean miningDepletesAmmo = false;
     /*Time before depleting ammo*/
-    public float ammoDepletionOffset = 10f;
+    public float ammoDepletionOffset = 0f;
     float startTime;
     /*Being player controlled depletes ammo*/
     public boolean depleteOnInteraction = true, depleteOnInteractionUsesPassive = false;
@@ -44,8 +48,10 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*Anti-spam to hard, aka setting a diminishing return for the sake of frames */
     public float penaltyMultiplier = 2f;
     /*Time out params */
+    public boolean drawAmmo = false;
+    public TextureRegion ammoRegion;
     public Sound timedOutSound = Sounds.explosion;
-    public Effect timedOutFx = Fx.steam;
+    public Effect timedOutFx = NyfalisFxs.unitBreakdown;
     public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f;
 
 
@@ -140,6 +146,31 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         table.row();
     }
 
+    @Override
+    public void draw(Unit unit){
+        super.draw(unit);
+        if(drawAmmo && ammoRegion.found() && !unit.inFogTo(Vars.player.team()))drawAmmo(unit);
+        Draw.reset();
+    }
+
+    @Override
+    public void load() {
+        if(drawAmmo)ammoRegion = Core.atlas.find(name + "-ammo", name);
+        super.load();
+    }
+
+    public void drawAmmo(Unit unit){
+        applyColor(unit);
+
+        Draw.color(ammoColor(unit));
+        Draw.rect(ammoRegion, unit.x, unit.y, unit.rotation - 90);
+        Draw.reset();
+    }
+
+    public Color ammoColor(Unit unit){
+        float f = Mathf.clamp(unit.ammof());
+        return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, Math.max(f * 2.5f, 1f), 1f - f));
+    }
 
     @Override
     public void update(Unit unit){
@@ -149,7 +180,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
 
         boolean multiplier =(unit.count() > unit.cap() && unit.type.useUnitCap || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable);
 
-        boolean shouldDeplete = (startTime+ ammoDepletionOffset) >= startTime || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable;
+        boolean shouldDeplete = (startTime+ ammoDepletionOffset) <= Time.time || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable;
         if(ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap()))){
             unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier ? penaltyMultiplier : 1f));
         }
@@ -165,9 +196,26 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         super.update(unit);
     }
 
+    @Override
+    public Unit create(Team team){
+        Unit unit = constructor.get();
+        unit.team = team;
+        unit.setType(this);
+        unit.ammo = ammoCapacity; //fill up on ammo upon creation
+        unit.elevation = flying ? 1f : 0;
+        unit.heal();
+        if(unit instanceof TimedKillc u){
+            u.lifetime(lifetime);
+        }
+        startTime = Time.time;
+        unit.apply(spawnStatus, spawnStatusDuration);
+        return unit;
+    }
+
     public void timedOut(Unit unit){
-        timedOutFx.at(unit);
+        //TODO: Net clients doesn't use right Fx (uses default despawn fx)
+        Call.unitDespawn(unit);
+        timedOutFx.at(unit.x, unit.y, 0, unit);
         timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
-        unit.remove();
     }
 }

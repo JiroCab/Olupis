@@ -34,12 +34,12 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
     Block[][] arr =
             {
-                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossStone, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone },
-                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, Blocks.grass},
-                    { NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, NyfalisBlocks.mossierStone},
-                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, Blocks.stone},
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossStone, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, Blocks.dirt },
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossiestStone, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, Blocks.grass},
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, NyfalisBlocks.mossierStone},
+                    {NyfalisBlocks.mossyWater, NyfalisBlocks.mossierStone, NyfalisBlocks.mossyStone, Blocks.stone, NyfalisBlocks.mossyStone, Blocks.stone},
                     {Blocks.water, Blocks.sandWater, Blocks.sandWater, NyfalisBlocks.mossierStone, Blocks.stone, NyfalisBlocks.mossyStone, NyfalisBlocks.mossierStone},
-                    {Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.dirt, NyfalisBlocks.mossyStone, Blocks.dirt, Blocks.stone, Blocks.grass },
+                    {Blocks.water, Blocks.sandWater, Blocks.sandWater, Blocks.dirt, NyfalisBlocks.mossyStone, Blocks.dirt, Blocks.stone, Blocks.grass },
                     { Blocks.sandWater, Blocks.sandWater, Blocks.dirt, Blocks.dirt, Blocks.stone, Blocks.grass, Blocks.grass},
                     { Blocks.water, Blocks.dirt, Blocks.dirt, Blocks.stone, Blocks.grass, Blocks.grass, Blocks.stone, NyfalisBlocks.frozenGrass},
                     {Blocks.dirt, Blocks.stone, Blocks.grass, NyfalisBlocks.frozenGrass, Blocks.stone, NyfalisBlocks.frozenGrass , Blocks.stone},
@@ -58,9 +58,9 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
             Blocks.darksandWater, Blocks.darksandWater
     );
 
-    ObjectMap<Block, Block> tars = ObjectMap.of(
-            Blocks.grass, Blocks.shale,
-            Blocks.grass, Blocks.shale
+    ObjectMap<Block, Block> deserts = ObjectMap.of(
+            Blocks.mud, NyfalisBlocks.redSand,
+            Blocks.dirt, NyfalisBlocks.redSand
     );
 
     {
@@ -118,8 +118,8 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         float tar = Simplex.noise3d(seed, 4, 0.55f, 1f/2f, position.x, position.y + 999f, position.z) * 0.3f + Tmp.v31.dst(0, 0, 1f) * 0.2f;
 
         Block res = arr[Mathf.clamp((int)(temp * arr.length), 0, arr[0].length - 1)][Mathf.clamp((int)(height * arr[0].length), 0, arr[0].length - 1)];
-        if(tar > 0.5f){
-            return tars.get(res, res);
+        if(tar > 0.7f){
+            return deserts.get(res, res);
         }else{
             return res;
         }

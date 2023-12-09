@@ -5,6 +5,9 @@ import arc.func.Boolf;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.scene.ui.layout.Collapser;
+import arc.scene.ui.layout.Table;
+import arc.struct.ObjectMap;
 import arc.util.*;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
@@ -17,8 +20,8 @@ import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
+import mindustry.ui.Styles;
+import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
@@ -63,6 +66,25 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
 
     @Override
     public void setStats(){
+        stats.add(Stat.ammo, table ->{
+            table.table(Styles.grayPanel, t ->{
+                t.row();
+
+                Table ic = new Table();
+                StatValues.ammo(ObjectMap.of(this, shootType), 0, false).display(ic);
+                Collapser coll = new Collapser(ic, true);
+                coll.setDuration(0.1f);
+
+                t.table(it -> {
+                    it.left().defaults().left();
+
+                    it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8 * 3).scaling(Scaling.bounded).padLeft(6f).expandX().left();
+                });
+                t.row();
+                t.add(coll);
+            }).growX();
+        });
+
         super.setStats();
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);

@@ -47,7 +47,7 @@ public class NyfalisSettingsDialog {
                 subTable.checkPref("nyfalis-hide-sound",true);
             } else  t.label(() -> "@settings.nyfalis-music-hint").top().center().padBottom(5f).margin(3).row();
 
-            subTable.checkPref("nyfalis-space-sfx",true);
+            subTable.checkPref("nyfalis-space-sfx",false);
             subTable.checkPref("nyfalis-music",true);
             subTable.checkPref("nyfalis-music-only",false);
             subTable.checkPref("nyfalis-music-add",true, c -> NyfalisMain.soundHandler.nyfalisMusicSet = false);

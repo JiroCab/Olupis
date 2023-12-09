@@ -12,7 +12,7 @@ import olupis.world.entities.units.AmmoLifeTimeUnitType;
 import static mindustry.Vars.state;
 
 public class AgressiveFlyingAi extends FlyingAI {
-    public boolean shouldCircle = false;
+    public boolean shouldCircle = false, hasParent = false;
     public float circleDistance = 150f;
     public Unit parent;
     public float parentCircle = 35f, shootSlowDown = 0.5f;
@@ -28,15 +28,22 @@ public class AgressiveFlyingAi extends FlyingAI {
         } else super.updateUnit();
     }
 
+    public AgressiveFlyingAi(boolean hunt){
+        if (hunt)fallback = new SearchAndDestroyFlyingAi();
+    }
+    public AgressiveFlyingAi(){
+
+    }
+
     @Override
     public void updateMovement(){
         unloadPayloads();
 
-         if(parent != null && !parent.dead()) {
+         if(hasParent && parent != null && !parent.dead() && unit.isAdded()) {
             /*Perhaps with more units, use the v5 formations instead*/
             float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.isShooting ? unit.speed() * shootSlowDown: unit.speed()) : unit.speed() ;
             circle(parent, parentCircle, speed);
-        }else if(unit.type instanceof AmmoLifeTimeUnitType unt){
+        }else if(unit.type instanceof AmmoLifeTimeUnitType unt && hasParent){
             unit.ammo = unt.deathThreshold * 0.5f;
         }else if(target != null && unit.hasWeapons()){
             if(unit.type.circleTarget){
@@ -51,7 +58,7 @@ public class AgressiveFlyingAi extends FlyingAI {
     }
 
     public void updateWeapons(){
-        if(parent != null && !parent.dead){
+        if(parent != null && !parent.dead && hasParent){
 
             Vec2 aimVec = Predict.intercept(vec , new Vec2(parent.aimX, parent.aimY), unit.type.weapons.first().bullet.speed);
             if(!parent.isShooting) aimVec = Predict.intercept(vec, unit, unit.speed());
@@ -81,5 +88,10 @@ public class AgressiveFlyingAi extends FlyingAI {
                 unit.isShooting = check != null;
             }
         }
+    }
+
+    @Override
+    public boolean useFallback(){ /*allowed to be used in waves*/
+        return parent == null && (unit.team.isAI() || unit.team == state.rules.waveTeam);
     }
 }

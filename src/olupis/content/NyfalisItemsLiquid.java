@@ -9,9 +9,9 @@ import static mindustry.Vars.content;
 
 public class NyfalisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, cryoRods;
+    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, cryoRods, steel, silicatePowder;
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
-    public static Liquid heavyOil, lightOil, steam;
+    public static Liquid heavyOil, lightOil, steam, lubricant;
 
     public static  void LoadItems(){
         //region Items
@@ -48,32 +48,7 @@ public class NyfalisItemsLiquid {
     }
 
     public static void LoadLiquids(){
-        //TODO keep oils?
-        heavyOil = new Liquid("heavy-oil", Color.valueOf("1A1919")){{
-            viscosity = 0.75f;
-            flammability = 1.2f;
-            explosiveness = 1.2f;
-            heatCapacity = 0.7f;
-            boilPoint = 0.65f;
-            effect = StatusEffects.tarred;
-            canStayOn.add(Liquids.water);
-
-            barColor = Color.valueOf("6b675f");
-            gasColor = Color.grays(0.4f);
-        }};
-
-        lightOil = new Liquid("light-oil", Color.valueOf("4B4A49")){{
-            viscosity = 0.75f;
-            flammability = 1.2f;
-            explosiveness = 1.2f;
-            heatCapacity = 0.7f;
-            boilPoint = 0.65f;
-            effect = StatusEffects.tarred;
-            canStayOn.add(Liquids.water);
-
-            barColor = Color.valueOf("6b675f");
-            gasColor = Color.grays(0.4f);
-        }};
+        heavyOil = lightOil  = Liquids.oil;
 
         steam = new Liquid("steam", Color.valueOf("E0DAE9")){{
             /*hacky way so it acts like a liquid in NoBoilLiquidBulletType  but a gas outside of thar*/
