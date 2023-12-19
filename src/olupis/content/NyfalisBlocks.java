@@ -57,9 +57,9 @@ public class NyfalisBlocks {
         glowSprouts, lumaSprouts,
 
         /*Floors*/
-        redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass,
+        redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass, mossyDirt, frozenDirt, frozenMud, hardenMud, mossyhardenMud,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        grassyVent, mossyVent, stoneVent, basaltVent, mossyDirt,
+        grassyVent, mossyVent, stoneVent, basaltVent,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater,
@@ -73,7 +73,7 @@ public class NyfalisBlocks {
         mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall,
 
         /*Trees*/
-        nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree,
+        nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, spruceTree,
 
         //Buildings, sorted by category
         corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,

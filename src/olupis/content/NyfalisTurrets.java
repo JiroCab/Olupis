@@ -1,5 +1,6 @@
 package olupis.content;
 
+import arc.graphics.Color;
 import arc.struct.EnumSet;
 import mindustry.Vars;
 import mindustry.content.*;
@@ -329,81 +330,91 @@ public class NyfalisTurrets {
 
         //TODO: (rename) Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         obliterator = new ItemTurret("obliterator"){{
-            requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
-            ammo(
-                    Items.graphite, new ArtilleryBulletType(3f, 20){{
-                        knockback = 0.8f;
-                        lifetime = 80f;
-                        width = height = 11f;
-                        collidesTiles = false;
-                        splashDamageRadius = 25f * 0.75f;
-                        splashDamage = 33f;
-                        fragBullets = 2;
-                        fragBullet = new BasicBulletType(3f, 12, "bullet"){{
-                            width = 5f;
-                            height = 12f;
-                            shrinkY = 1f;
-                            lifetime = 20f;
-                            despawnEffect = Fx.none;
-                            frontColor = quartz.color;
-                            backColor = Pal.gray;
-                            fragBullets = 2;
-                            fragBullet = new BasicBulletType(3f, 12, "bullet"){{
-                                width = 5f;
-                                height = 12f;
-                                shrinkY = 1f;
-                                lifetime = 20f;
-                                despawnEffect = Fx.none;
-                                frontColor = quartz.color;
-                                backColor = Pal.gray;
-                            }};
-                        }};
-                    }},
-                    Items.silicon, new ArtilleryBulletType(3f, 20){{
-                        knockback = 0.8f;
-                        lifetime = 80f;
-                        width = height = 11f;
-                        collidesTiles = false;
-                        splashDamageRadius = 25f * 0.75f;
-                        splashDamage = 33f;
-                        reloadMultiplier = 1.2f;
-                        ammoMultiplier = 3f;
-                        homingPower = 0.08f;
-                        homingRange = 50f;
-                        fragBullets = 2;
-                        fragBullet = new BasicBulletType(3f, 12, "bullet"){{
-                            width = 5f;
-                            height = 12f;
-                            shrinkY = 1f;
-                            lifetime = 20f;
-                            despawnEffect = Fx.none;
-                            frontColor = quartz.color;
-                            backColor = Pal.gray;
-                            fragBullets = 2;
-                            fragBullet = new BasicBulletType(3f, 12, "bullet"){{
-                                width = 5f;
-                                height = 12f;
-                                shrinkY = 1f;
-                                lifetime = 20f;
-                                despawnEffect = Fx.none;
-                                frontColor = quartz.color;
-                                backColor = Pal.gray;
-                            }};
-                        }};
-                    }}
-            );
-            targetAir = false;
-            reload = 60f;
+            size = 4;
             recoil = 2f;
+            reload = 60f;
             range = 235f;
+            health = 260;
             inaccuracy = 1f;
             shootCone = 10f;
-            health = 260;
-            size = 4;
+
+            ammo(
+                Items.graphite, new ArtilleryBulletType(3.2f, 20){{
+                    lifetime = 80f;
+                    fragBullets = 2;
+                    knockback = 0.8f;
+                    width = height = 11f;
+                    splashDamage = 33f;
+                    splashDamageRadius = 25f * 0.75f;
+                    collidesTiles = false;
+                    frontColor = new Color().set(graphite.color).lerp(Pal.bulletYellow, 0.25f);
+                    backColor = new Color().set(graphite.color).lerp(Pal.bulletYellowBack, 0.15f);
+                    fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                        width = 5f;
+                        height = 12f;
+                        shrinkY = 1f;
+                        lifetime = 15f;
+                        fragBullets = 2;
+                        despawnEffect = Fx.none;
+                        frontColor = new Color().set(graphite.color).lerp(Pal.bulletYellow, 0.55f);
+                        backColor = new Color().set(graphite.color).lerp(Pal.bulletYellowBack, 0.45f);
+                        fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                            width = 5f;
+                            height = 12f;
+                            shrinkY = 1f;
+                            lifetime = 10f;
+                            despawnEffect = Fx.none;
+                            frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.75f);
+                            backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.65f);
+                        }};
+                    }};
+                }},
+                Items.silicon, new ArtilleryBulletType(3f, 20){{
+                    fragBullets = 2;
+                    lifetime = 80f;
+                    knockback = 0.8f;
+                    homingRange = 50f;
+                    ammoMultiplier = 3f;
+                    splashDamage = 33f;
+                    width = height = 11f;
+                    homingPower = 0.08f;
+                    reloadMultiplier = 1.2f;
+                    splashDamageRadius = 25f * 0.75f;
+                    collidesTiles = false;
+                    frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.25f);
+                    backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.15f);
+                    fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                        width = 5f;
+                        height = 12f;
+                        shrinkY = 1f;
+                        lifetime = 15f;
+                        homingPower = 0.06f;
+                        despawnEffect = Fx.none;
+                        frontColor = quartz.color;
+                        backColor = Pal.gray;
+                        fragBullets = 2;
+                        frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.55f);
+                        backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.45f);
+                        fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                            width = 5f;
+                            height = 12f;
+                            shrinkY = 1f;
+                            lifetime = 10f;
+                            despawnEffect = Fx.none;
+                            frontColor = quartz.color;
+                            backColor = Pal.gray;
+                            frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.75f);
+                            backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.65f);
+                        }};
+                    }};
+                }}
+            );
+            targetAir = false;
+            limitRange(0f);
             shootSound = Sounds.bang;
             coolant = consumeCoolant(0.1f);
-            limitRange(0f);
             drawer = new DrawTurret("iron-");
+            requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
         }};
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)

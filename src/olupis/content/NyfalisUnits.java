@@ -249,12 +249,13 @@ public class NyfalisUnits {
                     homingPower = 0.04f;
                     shootEffect = Fx.none;
                     smokeEffect = Fx.shootSmallSmoke;
-                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
+                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
                     hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
-                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
+                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
                 }};
             }});
         }};
+        //regioner - shotgun aircraft!
 
         //endregion
         //region Ground Units
@@ -349,8 +350,8 @@ public class NyfalisUnits {
                         width = 5f;
                         height = 6f;
                         lifetime = 36f;
-                        frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
-                        backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
+                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                     }};
                 }}
@@ -359,6 +360,7 @@ public class NyfalisUnits {
 
         }};
 
+        //germanica - Melee? with booster that does damge like a mace
         /*TODO: crab tree, bulky and close range, legged naval*/
 
         //endregion
@@ -411,8 +413,8 @@ public class NyfalisUnits {
                     splashDamage = 2f;
                     splashDamageRadius = 25f * 0.75f;
                     collidesAir = false;
-                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.8f);
-                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.8f);
+                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.8f);
+                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.8f);
                 }};
             }});
             weapons.add(new Weapon(""){{
@@ -430,8 +432,8 @@ public class NyfalisUnits {
                     height = 6f;
                     lifetime = 60f;
                     collidesAir = false;
-                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
-                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
+                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
                     hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                 }};
             }});
@@ -482,8 +484,8 @@ public class NyfalisUnits {
                     splashDamage = 2f;
                     splashDamageRadius = 25f * 0.75f;
                     collidesAir = false;
-                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.9f);
-                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.9f);
+                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
+                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
                     hitEffect = despawnEffect = Fx.hitBulletSmall;
                 }};
             }});
@@ -522,8 +524,8 @@ public class NyfalisUnits {
                     height = 6f;
                     lifetime = 78f;
                     collidesAir = false;
-                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.5f);
-                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.5f);
+                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
                     hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                     shootEffect = Fx.shootSmallSmoke;
                 }};
@@ -565,8 +567,8 @@ public class NyfalisUnits {
                     splashDamage = 2f;
                     splashDamageRadius = 25f * 0.75f;
                     collidesAir = false;
-                    frontColor = rustyIron.color.lerp(Pal.bulletYellow, 0.9f);
-                    backColor = rustyIron.color.lerp(Pal.bulletYellowBack, 0.9f);
+                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
+                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
                     hitEffect = despawnEffect = Fx.hitBulletSmall;
                 }};
             }},
