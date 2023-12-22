@@ -89,7 +89,7 @@ public class NyfalisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
 
-        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver,
+        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, lubricantMixer,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall,
 
@@ -903,6 +903,7 @@ public class NyfalisBlocks {
             powerBulletType = new SpawnHelperBulletType(){{
                 shootEffect = Fx.unitLand;
                 ammoMultiplier = 1f;
+                reloadMultiplier = 1.2f;
                 spawnUnit = spirit;
             }};
             ammo(

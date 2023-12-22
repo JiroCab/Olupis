@@ -50,7 +50,7 @@ public class RollBulletType extends BasicBulletType {
     public void updateCollision(Bullet b, Teamc target, AtomicReference<Float> tarSize){
         /*If someone finds a better way to do this, please let us know -RushieWsahie*/
         boolean within = target != null && b.within(target.x(), target.y(), Math.max(tarSize.get(),  b.hitSize)),
-                onOwner = b.owner instanceof Building c && !b.within(c.x(), c.y, c.hitSize());
+                onOwner = b.owner instanceof Building d && !b.within(d.x(), d.y, d.hitSize()) || b.owner instanceof Hitboxc c && !b.within(c.x(), c.y(), c.hitSize());
                 /*Feature/bug: ignore one tile blocks beside the owner except  when shot in corner angle*/
         if(b.tileOn() != null && !within && onOwner) {
             if (b.tileOn().solid()) b.remove();

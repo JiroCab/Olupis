@@ -13,11 +13,11 @@ import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
-import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.BlockFlag;
 import olupis.world.blocks.defence.ItemUnitTurret;
+import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.*;
 
 import static mindustry.content.Items.*;
@@ -29,6 +29,7 @@ import static olupis.content.NyfalisUnits.mite;
 public class NyfalisTurrets {
 
     public static void LoadTurrets(){
+
         //region Turrets
         corroder = new LiquidTurret("corroder"){{ //architronito
             inaccuracy = 8.5f;
@@ -77,6 +78,7 @@ public class NyfalisTurrets {
                 health = 1500;
                 fogRadius = 13;
                 shootCone = 50f;
+                coolantMultiplier = 2.5f;
                 liquidCapacity = reload = 5f;
 
                 parts.addAll(
@@ -114,12 +116,12 @@ public class NyfalisTurrets {
             targetGround = false;
             size = 3;
             reload = 25f;
-            fogRadiusMultiplier = 0.75f;
             range = 250f;
             minWarmup = 0.96f;
             shootY = shootX= 0f;
-            shootWarmupSpeed = 0.11f;
             warmupMaintainTime = 1f;
+            fogRadiusMultiplier = 0.75f;
+            shootWarmupSpeed = 0.11f;
 
             ammo(
                 lead, new MissileBulletType(4.6f, 32f){{
@@ -145,6 +147,7 @@ public class NyfalisTurrets {
             shootEffect = Fx.shootSmallSmoke;
             drawer = new DrawRegion("");
             researchCost = with(lead, 100, rustyIron, 100);
+            coolant = consume(new ConsumeLubricant(30f / 60f));
             requirements(Category.turret, with(rustyIron, 20, lead, 40));
         }};
 
@@ -155,7 +158,7 @@ public class NyfalisTurrets {
             size = 3;
             armor = 5;
             health = 750;
-            reload = 60f;
+            reload = 70f;
             range = 160;
             shootCone = 15f;
             rotateSpeed = 10f;
@@ -172,10 +175,9 @@ public class NyfalisTurrets {
             smokeEffect = Fx.shootSmokeSquareSparse;
             researchCost = with(lead, 1000, iron, 850, graphite, 850);
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
-            coolant = consume(new ConsumeLiquid(Liquids.oil, 15f / 60f));
+            coolant = consume(new ConsumeLubricant(15f / 60f));
             ammo(
-                rustyIron, new RollBulletType(2.5f, 15){{
-                    frontColor = backColor = rustyIron.color;
+                rustyIron, new RollBulletType(2.5f, 18){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     height = 9f;
@@ -189,9 +191,10 @@ public class NyfalisTurrets {
                     buildingDamageMultiplier = 0.4f;
                     ammoMultiplier = pierceCap = 2;
                     shootEffect = smokeEffect = Fx.none;
+                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.3f);
+                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.3f);
                 }},
-                iron, new RollBulletType(3f, 27){{
-                    frontColor = backColor = iron.color;
+                iron, new RollBulletType(3f, 30){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     width = 40f;
@@ -205,9 +208,10 @@ public class NyfalisTurrets {
                     statusDuration = 60f * 2f;
                     buildingDamageMultiplier = 0.4f;
                     shootEffect = smokeEffect = Fx.none;
+                    frontColor = new Color().set(iron.color).lerp(Pal.bulletYellowBack, 0.1f);
+                    backColor = new Color().set(iron.color).lerp(Pal.bulletYellow, 0.2f);
                 }},
                 quartz, new RollBulletType(3f, 37){{
-                    frontColor = backColor = quartz.color;
                     status = StatusEffects.slow;
                     collidesAir = false;
                     width = 40f;
@@ -231,6 +235,8 @@ public class NyfalisTurrets {
                         backColor = Pal.gray;
                     }};
                     shootEffect = smokeEffect = Fx.none;
+                    frontColor = new Color().set(quartz.color).lerp(Pal.bulletYellowBack, 0.1f);
+                    backColor = new Color().set(quartz.color).lerp(Pal.bulletYellow, 0.3f);
                 }}
             );
         }};
@@ -412,7 +418,7 @@ public class NyfalisTurrets {
             targetAir = false;
             limitRange(0f);
             shootSound = Sounds.bang;
-            coolant = consumeCoolant(0.1f);
+            coolant = consume(new ConsumeLubricant(30f / 60f));
             drawer = new DrawTurret("iron-");
             requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
         }};

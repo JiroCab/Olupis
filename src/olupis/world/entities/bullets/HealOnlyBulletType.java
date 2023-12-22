@@ -2,22 +2,30 @@ package olupis.world.entities.bullets;
 
 import arc.math.Angles;
 import arc.util.Time;
+import mindustry.Vars;
+import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BasicBulletType;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Teamc;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 public class HealOnlyBulletType extends BasicBulletType {
-    public HealOnlyBulletType(float speed, float damage, String bulletSprite){
+    public boolean fogVisible;
+
+    public HealOnlyBulletType(float speed, float damage, String bulletSprite, boolean fogVisible){
         super(speed, damage);
         this.sprite = bulletSprite;
         this.collidesAir = this.hittable = false;
         this.collidesTeam = true;
+        this.fogVisible = fogVisible;
     }
-
+    public HealOnlyBulletType(float speed, float damage, String bulletSprite){
+        this(speed, damage, bulletSprite, true);
+    }
     public HealOnlyBulletType(float speed, float damage){
-        this(speed, damage, "bullet");
+        this(speed, damage, "bullet", true);
     }
 
     @Override
@@ -59,5 +67,36 @@ public class HealOnlyBulletType extends BasicBulletType {
                 return (t.team == b.team && t.damaged()) && !b.hasCollided(t.id);
             }
         );
+    }
+
+    /*Don't like how gnats/phorids interval bullets are a dead give away in fog, so only the diamond will be visible*/
+    @Override
+    public void draw(Bullet b){
+        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.draw(b);
+    }
+
+    @Override
+    public void despawned(Bullet b){
+        if(despawnHit) hit(b);
+        else createUnits(b, b.x, b.y);
+
+        if(!fragOnHit) createFrags(b, b.x, b.y);
+
+        if(b.inFogTo(Vars.player.team()) || !fogVisible) return;
+
+        despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        despawnSound.at(b);
+
+        Effect.shake(despawnShake, despawnShake, b);
+    }
+
+    @Override
+    public void drawTrail(Bullet b){
+        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.drawTrail(b);
+    }
+
+    @Override
+    public void removed(Bullet b){
+        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.removed(b);
     }
 }

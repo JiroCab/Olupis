@@ -540,9 +540,9 @@ public class NyfalisUnits {
                 x = 0;
                 y = -5f;
                 recoils = 3;
+                reload = 20;
                 recoil = 0.5f;
-                reload = 13f;
-                rotateSpeed = 1f;
+                rotateSpeed = 5f;
                 mirror = false;
                 rotate= top = true;
                 shoot = new ShootAlternate(2.2f);
@@ -559,10 +559,10 @@ public class NyfalisUnits {
                         moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
                     }}); }
 
-                bullet = new ArtilleryBulletType(3f, 14){{
-                    width = 7f;
+                shootSound = Sounds.shootBig;
+                bullet = new RollBulletType(3f, 16){{
+                    width = 35f;
                     height = 9f;
-                    trailSize = 3f;
                     lifetime = 65f;
                     splashDamage = 2f;
                     splashDamageRadius = 25f * 0.75f;
@@ -821,7 +821,7 @@ public class NyfalisUnits {
                             hitEffect = despawnEffect = Fx.heal;
                             backColor = frontColor = trailColor = lightColor = Pal.heal;
 
-                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet") {{
+                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet", false) {{
                                 lifetime = 60;
                                 trailLength = 10;
                                 trailWidth = 1.5f;
@@ -919,7 +919,7 @@ public class NyfalisUnits {
                                 keepVelocity = false;
                                 hitEffect = despawnEffect = Fx.heal;
                                 backColor = frontColor = trailColor = lightColor = Pal.heal;
-                                intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet") {{
+                                intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet", false) {{
                                     lifetime = 60;
                                     trailLength = 11;
                                     trailWidth = 1.5f;
