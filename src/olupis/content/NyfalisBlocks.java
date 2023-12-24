@@ -120,6 +120,18 @@ public class NyfalisBlocks {
         oreQuartz = new OreBlock("ore-quartz", quartz){{
             variants = 3;
         }};
+
+        glowSprouts = new OverlayFloor("glow-sprout"){{
+            emitLight = true;
+            variants = 1;
+            lightRadius = 10f;
+            //is sad that BlockRenderer.java does not render light from overlays, but ill keep it incase TnT
+        }};
+
+        lumaSprouts = new OverlayFloor("luma-sprout"){{
+            variants = 1;
+        }};
+
         //endregion
         // region Floors
         redSand = new Floor("red-sand-floor"){{
@@ -193,6 +205,31 @@ public class NyfalisBlocks {
 
         mossStone = new Floor("moss-stone"){{
             attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+
+        mossyDirt = new Floor("mossy-dirt"){{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+
+        frozenDirt = new Floor("frozen-dirt"){{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.3f);
+        }};
+
+        frozenMud = new Floor("frozen-mud"){{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.3f);
+        }};
+
+        hardenMud = new Floor("harden-mud"){{
+            attributes.set(Attribute.water, 0.1f);
+            variants = 1;
+        }};
+
+        mossyhardenMud = new Floor("mossy-harden-mud"){{
+            attributes.set(bio, 0.2f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
@@ -345,6 +382,10 @@ public class NyfalisBlocks {
             emitLight = true;
         }};
 
+        deadBush = new Prop("dead-bush"){{
+            variants = 1;
+        }};
+
         //endregion
         //region Walls
 
@@ -475,6 +516,7 @@ public class NyfalisBlocks {
 
         ironRouter = new Router("iron-router"){{
             buildCostMultiplier = 1.5f;
+            speed = 16;
 
             researchCost = with(rustyIron, 10, lead, 10);
             requirements(Category.distribution, with(rustyIron, 3, lead, 1));
@@ -489,7 +531,7 @@ public class NyfalisBlocks {
         }};
 
         ironJunction = new Junction("iron-junction"){{
-            speed = 26;
+            speed = 55;
             armor = 1f;
             health = 50;
             capacity = 6;
@@ -941,6 +983,12 @@ public class NyfalisBlocks {
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 2f;
                     spawnUnit = aero;
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = striker;
+                    }};
                 }}
             );
             alwaysShooting = true;
@@ -1003,6 +1051,11 @@ public class NyfalisBlocks {
             alwaysShooting = hoverShowsSpawn = hasPower = floating = arrowShootPos = true;
             researchCost = with(lead, 500, silicon, 300,  iron, 300);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
+        }};
+
+        alternateArticulator = new Articulator("alternate-articulator"){{
+            size = 3;
+            requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
         }};
 
         //Unit Tree: t1 = construct

@@ -61,9 +61,9 @@ public class NyfalisSectors {
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
-            difficulty = 3;
+            difficulty = 3.5f;
             captureWave = 26;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 2700, Items.lead, 2500, NyfalisItemsLiquid.iron, 400, Items.copper, 400));
         }};
 
         lushyRiverComplex = new SectorPreset("lushy-river-complex", arthin, 25){{
@@ -95,6 +95,7 @@ public class NyfalisSectors {
             difficulty = 2;
             rules = commonRules(captureWave);
         }};
+        //endregion
     }
 
     //moved it here, so players switching planets rule isn't affected & per map dropZonesRadius are possible

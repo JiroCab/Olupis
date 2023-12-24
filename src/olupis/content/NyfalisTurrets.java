@@ -326,7 +326,7 @@ public class NyfalisTurrets {
                     }}
             );
             loopSound = Sounds.steam;
-            consumePower(1.5f);
+            consumePower(100f / 60f);
             outlineColor = nyfalisBlockOutlineColour;
             drawer = new DrawTurret("iron-");
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);

@@ -12,7 +12,7 @@ import arc.scene.style.Drawable;
 import arc.scene.ui.ButtonGroup;
 import arc.scene.ui.ImageButton;
 import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -31,7 +31,6 @@ import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.payloads.Payload;
@@ -42,12 +41,12 @@ import olupis.content.NyfalisFxs;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.units.NyfalisUnitType;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 import static mindustry.Vars.*;
 
-/*The cross bread of a Turret and Unit factory, for the sake of being different*/
+/*The cross bread of a Turret and Unit factory, for the sake of being different
+Now with hints of UnitAssembler for extra spice */
 public class ItemUnitTurret extends ItemTurret {
     /*common required items for all unit types*/
     public ItemStack[] requiredAlternate = ItemStack.with(Items.copper, 20, Items.silicon, 15);
@@ -57,7 +56,7 @@ public class ItemUnitTurret extends ItemTurret {
     public Sound failedMakeSound = Sounds.dullExplosion;
     public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 1f;
     public Effect failedMakeFx = NyfalisFxs.failedMake;
-    public TextureRegion bottomRegion;
+    public TextureRegion bottomRegion, rotatorRegion;
     /*Hovering Shows the unit creation*/
     public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false;
     /*Aim at the rally point*/
@@ -65,11 +64,8 @@ public class ItemUnitTurret extends ItemTurret {
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
 
-    //For Shooting whatever is in playload as a bullet
-    BulletType fallbackBullet;
+    //For Shooting whatever is in payload as a bullet
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
-    public Block alternate;
-
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
 
@@ -106,6 +102,7 @@ public class ItemUnitTurret extends ItemTurret {
     @Override
     public void load(){
         bottomRegion = Core.atlas.find(name + "-bottom");
+        rotatorRegion = Core.atlas.find(name + "-rotator");
         super.load();
     }
 
@@ -135,25 +132,54 @@ public class ItemUnitTurret extends ItemTurret {
         stats.remove(Stat.targetsGround);
 
         if(range <= 1)stats.remove(Stat.shootRange);
-        stats.add(Stat.output, table -> this.ammoTypes.each((item, bul) -> {
-            UnitType displayUnit = bul.spawnUnit;
-            if(displayUnit == null) return;
-            table.row();
-            table.table(Styles.grayPanel, b -> {
-                if(!displayUnit.isBanned()) b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+        stats.add(Stat.output, table ->{
+            HashMap<Item, BulletType> alts = new HashMap<>();
+            this.ammoTypes.each((item, bul) -> {
+                if(bul instanceof SpawnHelperBulletType spw && spw.alternateType != null ) alts.put(item, spw.alternateType);
+                UnitType displayUnit = bul.spawnUnit;
+                if(displayUnit == null) return;
+                table.row();
+                table.table(Styles.grayPanel, b -> {
+                    if(!displayUnit.isBanned()) b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                    else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
 
-                b.table(info -> {
-                    if(item != null) info.table(title -> {
-                        title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
-                        title.add(item.localizedName).left().top();
-                    }).left().row();
-                    info.add(displayUnit.localizedName).left().row();
-                    if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
-                });
-                b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
-            }).growX().pad(5).row();
-        }));
+                    b.table(info -> {
+                        if(item != null) info.table(title -> {
+                            title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                            title.add(item.localizedName).left().top();
+                        }).left().row();
+                        info.add(displayUnit.localizedName).left().row();
+                        if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                    });
+                    b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                }).growX().pad(5);
+            });
+            for (Map.Entry<Item, BulletType> entry : alts.entrySet()) {
+                Item item = entry.getKey();
+                BulletType bul = entry.getValue();
+                if (bul instanceof SpawnHelperBulletType spw && spw.alternateType != null)
+                    alts.put(item, spw.alternateType);
+                UnitType displayUnit = bul.spawnUnit;
+                if (displayUnit == null) continue;
+                table.row();
+                table.table(Styles.grayPanel, b -> {
+                    if (!displayUnit.isBanned())
+                        b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                    else
+                        b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                    b.table(info -> {
+                        if (item != null) info.table(title -> {
+                            title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                            title.add(item.localizedName).left().top();
+                        }).left().row();
+                        info.add(displayUnit.localizedName).left().row();
+                        if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                    });
+                    b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                }).growX().pad(5);
+            }
+        });
     }
 
     @Override
@@ -171,13 +197,32 @@ public class ItemUnitTurret extends ItemTurret {
         public @Nullable UnitPayload payload;
         public Vec2 payVector = new Vec2();
         public @Nullable UnitCommand command;
+        public Seq<Articulator.ArticulatorBuild> modules = new Seq<>();
+        public boolean useAlternate = false;
+
+        public void updateModules(Articulator.ArticulatorBuild build, boolean newBuild){
+            if(newBuild && modules.size == 0) reloadCounter = 0f;
+            modules.addUnique(build);
+            checkTier();
+        }
+        public void updateModules(Articulator.ArticulatorBuild build){ updateModules(build, false);}
+
+        public void removeModule(Articulator.ArticulatorBuild build, boolean newBuild){
+            if(newBuild && modules.size == 0) reloadCounter = 0f;
+            modules.remove(build);
+            checkTier();
+        }
+        public void removeModule(Articulator.ArticulatorBuild build){removeModule(build, false);}
+
+        public void checkTier(){
+            useAlternate = modules.size > 0;
+        }
 
         @Override
         public boolean acceptItem(Building source, Item item){
             return ((ammoTypes.get(item) != null && totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo && !ammoTypes.get(item).spawnUnit.isBanned())
                      || (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)));
         }
-
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
@@ -234,6 +279,17 @@ public class ItemUnitTurret extends ItemTurret {
             return !type.spawnUnit.isBanned() && (type.spawnUnit.unlockedNowHost() && state.isCampaign() || !state.isCampaign());
         }
 
+        @Override
+        protected void updateShooting(){
+            if(reloadCounter >= reload && !charging() && shootWarmup >= minWarmup){
+                BulletType type = peekAmmo();
+                if(useAlternate && type instanceof SpawnHelperBulletType spw && spw.alternateType != null) type = spw.alternateType;
+
+                shoot(type);
+
+                reloadCounter %= reload;
+            }
+        }
         @Override
         protected void shoot(BulletType type){
             boolean creatable = shootCreatable(type);
@@ -367,24 +423,28 @@ public class ItemUnitTurret extends ItemTurret {
             }else{
                 float rot = direction == -1 ? rotation -90: direction * 90;
                 Draw.rect(bottomRegion, x, y);
-                if (peekAmmo() != null && peekAmmo().spawnUnit != null) {
-                    UnitType unt = peekAmmo().spawnUnit;
-                    if (shootCreatable(peekAmmo())) {
-                        Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rot, reloadCounter / reload, speedScl, time));
-                    } else {
-                        Draw.draw(Layer.blockOver, () -> {
-                            Draw.alpha(reloadCounter / reload);
-                            Draw.rect(unt.fullIcon, x, y, rot);
+                if(rotatorRegion.found())Draw.rect(rotatorRegion, x, y, rot);
 
-                            Draw.color(Pal.accent);
-                            Draw.alpha((reloadCounter / reload) / 1.2f);
-                            Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
-                            Draw.reset();
+                if (peekAmmo() != null) {
+                    UnitType unt = useAlternate && peekAmmo() instanceof SpawnHelperBulletType spw && spw.alternateType != null ? spw.alternateType.spawnUnit : peekAmmo().spawnUnit;
+                    if (unit != null) {
+                        if (shootCreatable(peekAmmo())) {
+                            Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rot, reloadCounter / reload, speedScl, time));
+                        } else {
+                            Draw.draw(Layer.blockOver, () -> {
+                                Draw.alpha(reloadCounter / reload);
+                                Draw.rect(unt.fullIcon, x, y, rot);
 
-                            Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.8f));
-                            Draw.rect(Icon.warning.getRegion(), x, y);
-                            Draw.reset();
-                        });
+                                Draw.color(Pal.accent);
+                                Draw.alpha((reloadCounter / reload) / 1.2f);
+                                Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
+                                Draw.reset();
+
+                                Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.8f));
+                                Draw.rect(Icon.warning.getRegion(), x, y);
+                                Draw.reset();
+                            });
+                        }
                     }
                 }
                 Draw.z(Layer.blockOver + 0.1f);

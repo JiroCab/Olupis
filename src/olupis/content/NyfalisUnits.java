@@ -832,7 +832,7 @@ public class NyfalisUnits {
                                 collidesTeam = true;
                                 keepVelocity = false;
                                 hitEffect = despawnEffect = Fx.heal;
-                                backColor = frontColor = trailColor = lightColor = Pal.heal;
+                                backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
                             }};
                         }};
                     }};
@@ -918,7 +918,7 @@ public class NyfalisUnits {
 
                                 keepVelocity = false;
                                 hitEffect = despawnEffect = Fx.heal;
-                                backColor = frontColor = trailColor = lightColor = Pal.heal;
+                                backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
                                 intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet", false) {{
                                     lifetime = 60;
                                     trailLength = 11;
@@ -929,7 +929,7 @@ public class NyfalisUnits {
 
                                     keepVelocity = false;
                                     hitEffect = despawnEffect = Fx.heal;
-                                    backColor = frontColor = trailColor = lightColor = Pal.heal;
+                                    backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.7f);
                                 }};
                             }};
                         }};
