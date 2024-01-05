@@ -11,7 +11,7 @@ public class Articulator extends Block {
     public Articulator(String name){
         super(name);
         rotate = rotateDraw = destructible = update = true;
-        quickRotate = false;
+        quickRotate = solid = false;
         group = BlockGroup.units;
     }
 
@@ -36,7 +36,7 @@ public class Articulator extends Block {
 
             link = this.front() instanceof ItemUnitTurret.ItemUnitTurretBuild bld ? bld : null;
             if(link != null){
-                link.removeModule(this, true);
+                link.removeModule(this);
             }
         }
 
@@ -46,7 +46,7 @@ public class Articulator extends Block {
 
             link = this.front() instanceof ItemUnitTurret.ItemUnitTurretBuild bld ? bld : null;
             if(link != null){
-                link.updateModules(this, true);
+                link.updateModules(this);
             }
         }
 

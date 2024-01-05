@@ -34,7 +34,7 @@ public class NyfalisUnits {
         zoner, regioner, district, division, territory,
 
         /*segmented units*/
-        venom, serpent, reaper, goliath,
+        venom, serpent, reaper, goliath, snek /*TODO: IDK*/,
 
         /*Ground units*/
         supella, germanica , luridiblatta , vaga , parcoblatta, //smallest cockroaches
@@ -196,7 +196,7 @@ public class NyfalisUnits {
             }});
         }};
 
-        //Todo: keep?
+        //Why do i exist? no reason, hope u don't cause any bugs even if you are one
         firefly = new NyfalisUnitType("firefly"){{
             constructor = UnitTypes.mono.constructor;
             defaultCommand = UnitCommand.mineCommand;
@@ -255,7 +255,47 @@ public class NyfalisUnits {
                 }};
             }});
         }};
-        //regioner - shotgun aircraft!
+        //re.gioner - shotgun aircraft!
+        regioner = new NyfalisUnitType("regioner"){{
+            armor = 1f;
+            hitSize = 11f;
+            drag = 0.05f;
+            accel = 0.11f;
+            health = 200f;
+            speed = 3.55f;
+            fogRadius = 10f;
+            engineSize = 1.6f;
+            rotateSpeed = 19f;
+            itemCapacity = 70;
+            engineOffset = 4.6f;
+
+            constructor = UnitEntity::create;
+            aiController = ArmDefenderAi::new;
+            lowAltitude = flying = canGuardUnits = true;
+            defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
+
+            weapons.add(new Weapon("olupis-zoner-weapon"){{
+                top = alternate = false;
+                y = -1f;
+                x = -4.8f;
+                reload = 13f;
+                shootCone = 45f;
+                baseRotation = -15f;
+                ejectEffect = Fx.none;
+                shoot = new ShootSpread(7, 1f);
+
+                showStatSprite = false;
+                bullet = new BasicBulletType(2f, 3.5f, "olupis-diamond-bullet"){{
+                    width = 6;
+                    height = 8f;
+                    lifetime = 20f;
+
+                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                    hitEffect = despawnEffect = NyfalisFxs.scatterDebris;
+                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                }};
+            }});
+        }};
 
         //endregion
         //region Ground Units
@@ -264,7 +304,7 @@ public class NyfalisUnits {
             armor = 2;
             hitSize = 11f;
             health = 350;
-            segments = 8;
+            segments = 7;
             speed = 2.25f;
             segmentScl = 7f;
             rotateSpeed = 10f;
@@ -360,7 +400,90 @@ public class NyfalisUnits {
 
         }};
 
-        //germanica - Melee? with booster that does damge like a mace
+        //germanica - candidates:
+            //1) Drill/ melee main weapon + boost fire
+            //2) Small Auro chip main weapon + boost fire
+
+        germanica = new NyfalisUnitType("germanica"){{
+            constructor = MechUnit::create;
+
+            canBoost = lowAltitude = true;
+            boostMultiplier = 0.8f;
+
+            armor = 4;
+            hitSize = 8;
+            health = 620;
+            speed = 0.7f;
+            engineSize = -1;
+            rotateSpeed = 2.25f;
+            weapons.add( //NOT FINAL
+                    new Weapon(""){{
+                        x = -0.1f;
+                        y = 2.25f;
+                        shootX = 6f;
+                        reload = 15f;
+                        recoil = 5f;
+                        shootCone = 15f;
+                        top = false;
+                        ejectEffect = Fx.none;
+                        shootSound = Sounds.noammo;
+                        parts.addAll(
+                                new RegionPart("olupis-supella-sidewep"){{
+                                    var p = PartProgress.warmup.add(-1f);
+                                    heatProgress = progress =p.mul(-1);
+                                    moveRot = 35f;
+                                    moveY = -0.8f;
+                                    moveX = -0.17f;
+                                }}
+                        );
+                        bullet = new BasicBulletType( 5f, 60){{
+                            width = 5f;
+                            height = 7f;
+                            lifetime = 2.5f;
+                            hitSoundPitch = 1.7f;
+                            hitSoundVolume = 0.8f;
+                            hitEffect = Fx.pulverizeSmall;
+                            shootEffect  = despawnEffect = smokeEffect = Fx.none;
+                            hitSound = Sounds.boom;
+                        }};
+                    }},
+                    new NyfalisWeapon("", true, false){{
+                        x = 22f / 4f;
+                        y = 0.4f;
+                        recoil = 0f;
+                        reload = 12f;
+                        shake = 0.4f;
+                        shootY = 0f;
+                        inaccuracy = 7.5f;
+                        shootCone = 360f;
+                        baseRotation = -90f;
+                        ejectEffect = Fx.none;
+                        shootSound = Sounds.none;
+                        controllable = top = rotate = false;
+                        autoTarget = autoFindTarget = ignoreRotation = true;
+                        bullet = new BombBulletType(17f, 25f){{
+                            hitSize = 3f;
+                            lifetime = 10f;
+                            damage = 17f;
+                            height = width = 10f;
+                            statusDuration = 60f * 4;
+
+                            incendChance = 0.01f;
+                            incendSpread = 2.5f;
+                            incendAmount = 1;
+
+                            hittable = keepVelocity = top = collidesAir = false;
+                            despawnEffect = Fx.none;
+                            status = StatusEffects.burning;
+                            shootEffect = hitEffect = Fx.hitFlameSmall;
+                        }};
+                    }}
+            );
+            setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
+            immunities.add(StatusEffects.burning);
+
+        }};
+
         /*TODO: crab tree, bulky and close range, legged naval*/
 
         //endregion

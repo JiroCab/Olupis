@@ -97,7 +97,7 @@ public class NyfalisBlocks {
         mendFieldProjector, taurus,
 
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry
-    ; //endregionf
+    ; //endregion
 
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
     public static ObjectSet<Block> nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>();
@@ -1055,6 +1055,7 @@ public class NyfalisBlocks {
 
         alternateArticulator = new Articulator("alternate-articulator"){{
             size = 3;
+            hasPower = consumesPower = conductivePower = true;
             requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
         }};
 

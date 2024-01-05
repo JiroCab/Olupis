@@ -101,19 +101,15 @@ public class ItemUnitTurret extends ItemTurret {
 
     @Override
     public void load(){
-        bottomRegion = Core.atlas.find(name + "-bottom");
-        rotatorRegion = Core.atlas.find(name + "-rotator");
+        bottomRegion = Core.atlas.find(name + "-bottom", "olupis-construct-bottom");
+        rotatorRegion = Core.atlas.find(name + "-rotator", "olupis-construct-rotator");
         super.load();
     }
 
     @Override
     public TextureRegion[] icons(){
         if(!(drawer instanceof  DrawDefault))return drawer.finalIcons(this);
-        else {
-            //use team region in vanilla team blocks
-            TextureRegion r = variants > 0 ? Core.atlas.find(name + "1") : region;
-            return teamRegion.found() && minfo.mod == null ? new TextureRegion[]{bottomRegion, r, teamRegions[Team.sharded.id]} : new TextureRegion[]{bottomRegion, r};
-        }
+        else return new TextureRegion[]{bottomRegion, region, rotatorRegion, teamRegions[Team.sharded.id]};
     }
 
     @Override
@@ -200,22 +196,25 @@ public class ItemUnitTurret extends ItemTurret {
         public Seq<Articulator.ArticulatorBuild> modules = new Seq<>();
         public boolean useAlternate = false;
 
-        public void updateModules(Articulator.ArticulatorBuild build, boolean newBuild){
-            if(newBuild && modules.size == 0) reloadCounter = 0f;
+        public void updateModules(Articulator.ArticulatorBuild build){
             modules.addUnique(build);
             checkTier();
         }
-        public void updateModules(Articulator.ArticulatorBuild build){ updateModules(build, false);}
 
-        public void removeModule(Articulator.ArticulatorBuild build, boolean newBuild){
-            if(newBuild && modules.size == 0) reloadCounter = 0f;
+        public void removeModule(Articulator.ArticulatorBuild build){
             modules.remove(build);
             checkTier();
         }
-        public void removeModule(Articulator.ArticulatorBuild build){removeModule(build, false);}
 
         public void checkTier(){
             useAlternate = modules.size > 0;
+        }
+
+        @Override
+        public void onProximityUpdate() {
+            super.onProximityUpdate();
+            if(useAlternate && modules.size >= 1) reloadCounter = 0;
+            if(!useAlternate && modules.size == 0) reloadCounter = 0;
         }
 
         @Override
@@ -423,31 +422,28 @@ public class ItemUnitTurret extends ItemTurret {
             }else{
                 float rot = direction == -1 ? rotation -90: direction * 90;
                 Draw.rect(bottomRegion, x, y);
-                if(rotatorRegion.found())Draw.rect(rotatorRegion, x, y, rot);
+                Draw.rect(rotatorRegion, x, y, rot);
 
                 if (peekAmmo() != null) {
                     UnitType unt = useAlternate && peekAmmo() instanceof SpawnHelperBulletType spw && spw.alternateType != null ? spw.alternateType.spawnUnit : peekAmmo().spawnUnit;
-                    if (unit != null) {
-                        if (shootCreatable(peekAmmo())) {
-                            Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rot, reloadCounter / reload, speedScl, time));
-                        } else {
-                            Draw.draw(Layer.blockOver, () -> {
-                                Draw.alpha(reloadCounter / reload);
-                                Draw.rect(unt.fullIcon, x, y, rot);
+                    if (unt != null) { Draw.draw(Layer.blockOver, () ->{
+                        if (shootCreatable(peekAmmo())) { Drawf.construct(this, unt.fullIcon != null ? unt.fullIcon : unt.region, rot, reloadCounter / reload, speedScl, time);}
+                        else {
+                            Draw.alpha(reloadCounter / reload);
+                            Draw.rect(unt.fullIcon, x, y, rot);
 
-                                Draw.color(Pal.accent);
-                                Draw.alpha((reloadCounter / reload) / 1.2f);
-                                Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
-                                Draw.reset();
+                            Draw.color(Pal.accent);
+                            Draw.alpha((reloadCounter / reload) / 1.2f);
+                            Lines.lineAngleCenter(this.x + Mathf.sin(this.time, 20f, (this.block.size * tilesize - 4f) / 4f), this.y, 90, this.block.size * tilesize - 4f);
+                            Draw.reset();
 
-                                Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.8f));
-                                Draw.rect(Icon.warning.getRegion(), x, y);
-                                Draw.reset();
-                            });
+                            Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.8f));
+                            Draw.rect(Icon.warning.getRegion(), x, y);
+                            Draw.reset();
                         }
-                    }
+                    });}
                 }
-                Draw.z(Layer.blockOver + 0.1f);
+                Draw.z(Layer.blockBuilding + 0.1f);
                 if(payload != null){
                     payload.draw();
                 }
