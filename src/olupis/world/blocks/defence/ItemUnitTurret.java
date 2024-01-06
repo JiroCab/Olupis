@@ -9,10 +9,9 @@ import arc.math.*;
 import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.scene.style.Drawable;
-import arc.scene.ui.ButtonGroup;
-import arc.scene.ui.ImageButton;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
-import arc.struct.*;
+import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -31,12 +30,14 @@ import mindustry.io.TypeIO;
 import mindustry.logic.LAccess;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import olupis.content.NyfalisFxs;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.units.NyfalisUnitType;
@@ -63,6 +64,7 @@ public class ItemUnitTurret extends ItemTurret {
     public boolean rallyAim = true;
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
+    public Block statArticulator;
 
     //For Shooting whatever is in payload as a bullet
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
@@ -126,6 +128,7 @@ public class ItemUnitTurret extends ItemTurret {
         stats.remove(Stat.targetsAir);
         stats.remove(Stat.inaccuracy);
         stats.remove(Stat.targetsGround);
+        stats.remove(Stat.input);
 
         if(range <= 1)stats.remove(Stat.shootRange);
         stats.add(Stat.output, table ->{
@@ -176,11 +179,50 @@ public class ItemUnitTurret extends ItemTurret {
                 }).growX().pad(5);
             }
         });
+        if(requiredItems.length > 0)stats.add(Stat.input, table -> {
+        /*I'm sorry*/
+            if(statArticulator != null) table.row();
+            table.add(new Table(statArticulator != null ? Styles.grayPanel : Styles.none, b ->{
+                for(ItemStack stack : requiredItems){
+                    b.add(new ItemDisplay(stack.item, stack.amount, true)).padRight(5);
+                }
+            })).growX().pad(5);
+
+            if(statArticulator != null) {
+                table.row();
+                if(!statArticulator.unlockedNow() || !statArticulator.isVisible()){
+                    table.add(new Table(Styles.grayPanel, r -> r.image(Icon.cancel.getRegion()).color(Pal.remove).size(22).pad(10f).left().scaling(Scaling.fit))).growX().pad(5);
+                    return;
+                }
+                table.add(new Table(Styles.grayPanel, r -> {
+                    r.add(new Table(c ->{
+                        c.add(new Table(o -> {
+                            o.left();
+                            o.add(new Image(statArticulator.uiIcon)).size(32f).scaling(Scaling.fit);
+                        })).padLeft(3);
+                        c.table(info -> {
+                            info.add(statArticulator.localizedName).left();
+                            if (Core.settings.getBool("console")) {
+                                info.row();
+                                info.add(statArticulator.name).left().color(Color.lightGray);
+                            }
+                        });
+                        c.button("?", Styles.flatBordert, () -> ui.content.show(statArticulator)).size(40f).pad(10).right().grow().visible(statArticulator::unlockedNow);
+                    })).row();
+                    r.add(new Table(i -> { for (ItemStack stack : requiredAlternate) {
+                        i.add(new ItemDisplay(stack.item, stack.amount, true)).padRight(5);
+                    }}));
+                })
+
+                ).growX().pad(5);
+            }
+        });
+        if(heatRequirement > 0) stats.add(Stat.input, heatRequirement, StatUnit.heatUnits);
     }
 
     @Override
     public void init(){
-        if(requiredItems.length >= 1) for (ItemStack i : requiredItems) consumeItem(i.item, i.amount);
+        consumeBuilder.each(c -> c.multiplier = b -> state.rules.unitCost(b.team));
 
         /*Todo: Hover icon for the unit (UnitFactory)*/
         super.init();
@@ -220,7 +262,8 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public boolean acceptItem(Building source, Item item){
             return ((ammoTypes.get(item) != null && totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo && !ammoTypes.get(item).spawnUnit.isBanned())
-                     || (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)));
+                     || !useAlternate && (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)))
+                    || useAlternate && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item));
         }
 
         @Override
@@ -232,7 +275,7 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public void handleItem(Building source, Item item){
-            if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item)) {
+            if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item) && Arrays.stream(requiredAlternate).noneMatch(i -> item == i.item)) {
                 super.handleItem(source, item);
             } else if(items.get(item) < getMaximumAccepted(item)) {
                 items.add(item, 1);
@@ -267,7 +310,8 @@ public class ItemUnitTurret extends ItemTurret {
         }
 
         public boolean hasReqItems(){
-            for (ItemStack req : requiredItems) {
+
+            for (ItemStack req : useAlternate ? requiredAlternate : requiredItems) {
                 if(items.get(req.item) >= req.amount) continue;
                 return false;
             }

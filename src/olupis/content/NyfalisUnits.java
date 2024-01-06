@@ -18,6 +18,7 @@ import mindustry.type.ammo.PowerAmmoType;
 import mindustry.world.meta.BlockFlag;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
+import olupis.world.entities.abilities.MicroWaveFieldAblity;
 import olupis.world.entities.abilities.UnitRallySpawnAblity;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.units.*;
@@ -311,6 +312,7 @@ public class NyfalisUnits {
             legMoveSpace = 1.1f;
             crushDamage = 0.25f;
             segmentMaxRot = 80f;
+            crawlSlowdown = 0.2f;
             segmentRotSpeed = 5f;
             crawlSlowdownFrac = 1f;
             drownTimeMultiplier = 4f;
@@ -336,6 +338,69 @@ public class NyfalisUnits {
                     fragRandomSpread = 0f;
                 }};
             }});
+        }};
+
+        serpent = new SnekUnitType("serpent"){{
+            constructor = CrawlUnit::create;
+            armor = 2;
+            hitSize = 11f;
+            health = 350;
+            segments = 3;
+            speed = 2.25f;
+            segmentScl = 7f;
+            rotateSpeed = 10f;
+            legMoveSpace = 1.1f;
+            crushDamage = 0.45f;
+            segmentMaxRot = 80f;
+            crawlSlowdown = 0.4f;
+            segmentRotSpeed = 5f;
+            crawlSlowdownFrac = 1f;
+            drownTimeMultiplier = 4f;
+            omniMovement = drawBody = false;
+            allowLegStep = true;
+
+           weapons.addAll(
+               new SnekWeapon("flamethrower"){{
+                   x = 0f;
+                   recoil = 1f;
+                   shootY = 2f;
+                   reload = 11f;
+                   shootCone = 45f;
+                   ejectEffect = Fx.none;
+                   shootSound = Sounds.flame;
+                   autoTarget = true;
+                   rotate = alternate = mirror = controllable = false;
+                   bullet = new BulletType(4.2f, 37f){{
+                       ammoMultiplier = 3f;
+                       hitSize = 7f;
+                       lifetime = 13f;
+                       despawnEffect = Fx.none;
+                       keepVelocity = hittable = false;
+                   }};
+               }},
+               new SnekWeapon("olupis-dark-pew"){{
+                    x = 0f;
+                    y = -11f;
+                    reload = 35f;
+                    shootCone = 360f;
+                    baseRotation = 180f;
+                    weaponSegmentParent = 1;
+                    rotate = alternate = mirror = false;
+                    ignoreRotation = true;
+                    ejectEffect = Fx.casing1;
+                    bullet = new BasicBulletType(4.2f, 10f){{
+                        width = 7f;
+                        height = 9f;
+                        recoil = 10f;
+                        shrinkX = 25f /60;
+                        shrinkY = 35f /60;
+                        lifetime = 13f;
+                        fragBullets = 1;
+                        fragVelocityMin = 1f;
+                        fragRandomSpread = 0f;
+                    }};
+                }}
+           );
         }};
 
         supella = new NyfalisUnitType("supella"){{
@@ -402,65 +467,43 @@ public class NyfalisUnits {
 
         //germanica - candidates:
             //1) Drill/ melee main weapon + boost fire
-            //2) Small Auro chip main weapon + boost fire
+            //2) Small Aura chip main weapon + boost fire
 
         germanica = new NyfalisUnitType("germanica"){{
             constructor = MechUnit::create;
 
-            canBoost = lowAltitude = true;
-            boostMultiplier = 0.8f;
-
+            canBoost = lowAltitude = alwaysShootWhenMoving = true;
             armor = 4;
             hitSize = 8;
+            range = 1.5f;
             health = 620;
             speed = 0.7f;
             engineSize = -1;
             rotateSpeed = 2.25f;
+            boostMultiplier = 0.8f;
+            abilities.add(new MicroWaveFieldAblity(8f, 40f, 35f){{
+                boostShoot = ideRangeDisplay = false;
+                damageEffect = Fx.none;
+                statusDuration = 60f * 6f;
+                maxTargets = 25;
+                healPercent = 0f;
+                sameTypeHealMult = 0.5f;
+            }});
+
             weapons.add( //NOT FINAL
-                    new Weapon(""){{
-                        x = -0.1f;
-                        y = 2.25f;
-                        shootX = 6f;
-                        reload = 15f;
-                        recoil = 5f;
-                        shootCone = 15f;
-                        top = false;
-                        ejectEffect = Fx.none;
-                        shootSound = Sounds.noammo;
-                        parts.addAll(
-                                new RegionPart("olupis-supella-sidewep"){{
-                                    var p = PartProgress.warmup.add(-1f);
-                                    heatProgress = progress =p.mul(-1);
-                                    moveRot = 35f;
-                                    moveY = -0.8f;
-                                    moveX = -0.17f;
-                                }}
-                        );
-                        bullet = new BasicBulletType( 5f, 60){{
-                            width = 5f;
-                            height = 7f;
-                            lifetime = 2.5f;
-                            hitSoundPitch = 1.7f;
-                            hitSoundVolume = 0.8f;
-                            hitEffect = Fx.pulverizeSmall;
-                            shootEffect  = despawnEffect = smokeEffect = Fx.none;
-                            hitSound = Sounds.boom;
-                        }};
-                    }},
-                    new NyfalisWeapon("", true, false){{
-                        x = 22f / 4f;
+                    new NyfalisWeapon("large-weapon", true, false){{
                         y = 0.4f;
-                        recoil = 0f;
-                        reload = 12f;
+                        x = 22f / 4f;
                         shake = 0.4f;
-                        shootY = 0f;
+                        reload = 12f;
                         inaccuracy = 7.5f;
                         shootCone = 360f;
                         baseRotation = -90f;
+                        recoil = shootY = 0f;
                         ejectEffect = Fx.none;
                         shootSound = Sounds.none;
                         controllable = top = rotate = false;
-                        autoTarget = autoFindTarget = ignoreRotation = true;
+                        autoTarget = ignoreRotation = aiControllable = alwaysShooting = true;
                         bullet = new BombBulletType(17f, 25f){{
                             hitSize = 3f;
                             lifetime = 10f;
@@ -472,7 +515,7 @@ public class NyfalisUnits {
                             incendSpread = 2.5f;
                             incendAmount = 1;
 
-                            hittable = keepVelocity = top = collidesAir = false;
+                            hittable = keepVelocity = top = collidesAir = collides = false;
                             despawnEffect = Fx.none;
                             status = StatusEffects.burning;
                             shootEffect = hitEffect = Fx.hitFlameSmall;

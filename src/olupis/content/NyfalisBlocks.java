@@ -1055,6 +1055,12 @@ public class NyfalisBlocks {
 
         alternateArticulator = new Articulator("alternate-articulator"){{
             size = 3;
+
+            ((ItemUnitTurret) arialConstruct).statArticulator = this;
+            ((ItemUnitTurret) navalConstruct).statArticulator = this;
+            ((ItemUnitTurret) groundConstruct).statArticulator = this;
+
+
             hasPower = consumesPower = conductivePower = true;
             requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
         }};
