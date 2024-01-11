@@ -59,11 +59,11 @@ public class PowerUnitTurret extends ItemUnitTurret {
                     b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
 
                 b.table(info -> {
-                    info.add(displayUnit.localizedName).left().row();
                     info.table(title ->{
                         title.image(Icon.powerSmall).size(3 * 8).left().scaling(Scaling.bounded).color(Pal.accent).top();
                         title.add(Core.bundle.get("stat.olupis-unitpowercost")).left().top();
                     }).left().row();
+                    info.add(displayUnit.localizedName).left().row();
                     if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
                 });
                 b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);

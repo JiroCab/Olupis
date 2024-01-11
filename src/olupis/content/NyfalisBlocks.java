@@ -35,6 +35,7 @@ import olupis.world.blocks.defence.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
+import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 
@@ -487,6 +488,7 @@ public class NyfalisBlocks {
             itemCapacity = 1;
             displayedSpeed = 4.8f;
             poweredSpeed = 0.05f;
+            powerRequired = 15f/60f;
             buildCostMultiplier = 0.45f;
             unpoweredSpeed = 0.025f;
             displayedSpeedPowered = 7f;
@@ -504,12 +506,12 @@ public class NyfalisBlocks {
             speed = 0.06f;
             itemCapacity = 1;
             displayedSpeed = 0f;
-            poweredSpeed = 0.09f;
-            unpoweredSpeed = 0.020f;
+            poweredSpeed = 0.095f;
+            unpoweredSpeed = 0.023f;
             displayedSpeedPowered = 9f;
             buildCostMultiplier = 2f;
 
-            consumePower (1f/60);
+            consumePower (5f/60);
             researchCost = with(cobalt, 500, lead, 500);
             requirements(Category.distribution, with(cobalt, 1, lead, 5 ));
         }};
@@ -1011,11 +1013,23 @@ public class NyfalisBlocks {
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = supella;
+                        alternateType = new SpawnHelperBulletType(){{
+                            shootEffect = Fx.shootBig;
+                            ammoMultiplier = 2f;
+                            reloadMultiplier = 0.45f;
+                            spawnUnit = germanica;
+                        }};
                 }},
                 graphite, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = venom;
+                        alternateType = new SpawnHelperBulletType(){{
+                            shootEffect = Fx.shootBig;
+                            ammoMultiplier = 2f;
+                            reloadMultiplier = 0.45f;
+                            spawnUnit = serpent;
+                        }};
                 }}
             );
             requiredItems = with(copper, 10);
@@ -1286,8 +1300,9 @@ public class NyfalisBlocks {
         taurus = new PowerTurret("taurus"){{
             size = 3;
             recoils = 2;
-            reload = 10f;
+            reload = 9.5f;
             inaccuracy = 10f;
+            coolantMultiplier = 1.6f;
             shootEffect = Fx.shootHeal;
             outlineColor = nyfalisBlockOutlineColour;
 
@@ -1314,7 +1329,9 @@ public class NyfalisBlocks {
                 homingRange = 10f;
                 homingPower = 0.07f;
                 splashDamageRadius = 25f * 0.75f;
+                hitEffect =Fx.none;
                 backColor = Pal.heal;
+                despawnEffect = Fx.heal;
                 frontColor = Color.white;
                 shootSound = Sounds.sap;
             }};
@@ -1325,6 +1342,7 @@ public class NyfalisBlocks {
             consumePower(100f / 60f);
             shoot = new ShootAlternate(9f);
             researchCost = with(iron, 100, lead, 200);
+            coolant = consume(new ConsumeLubricant(45f / 60f));
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             requirements(Category.effect, with(iron, 15, Items.lead, 20));
         }};

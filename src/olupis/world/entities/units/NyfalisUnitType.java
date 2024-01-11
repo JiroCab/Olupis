@@ -37,7 +37,8 @@ import static mindustry.Vars.*;
 
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
-    public boolean canCircleTarget = false, canHealUnits = false, customMineAi = false, canGuardUnits  = false, canMend = false, canDeploy = false, constructHideDefault = false;
+    public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false,
+                            constructHideDefault = false, customMineAi = false;
     /*Makes (legged) units boost automatically regardless of Ai*/
     public boolean alwaysBoostOnSolid = false;
     /*Replace Move Command to a custom one*/
@@ -74,6 +75,7 @@ public class NyfalisUnitType extends UnitType {
             if(canMend) cmds.add(NyfalisUnitCommands.nyfalisMendCommand);
             if (customMineAi) cmds.add(NyfalisUnitCommands.nyfalisMineCommand);
             if (canGuardUnits) cmds.add(NyfalisUnitCommands.nyfalisGuardCommand);
+            if (canDash)cmds.add(NyfalisUnitCommands.nyfalisDashCommand);
         commands = cmds.toArray();
     }
 
@@ -197,20 +199,30 @@ public class NyfalisUnitType extends UnitType {
 
     }
 
-    public class NyfalisWeapon extends Weapon {
-        boolean boostShoot = true, groundShoot = true, partailControl = true, idlePrefRot = true;
+    public  class NyfalisWeapon extends Weapon {
+        public boolean
+        /*Determines if the weapon can shoot while boosting or not*/
+        boostShoot = true, groundShoot = true,
+        /*Allows weapon to be shot by the player when Ai is not using it*/
+        partialControl = false,
+        idlePrefRot = true,
+        /*Shoot while dash command is selected*/
+        dashShoot = false,
+        /*Check for angle to target before shooting */
+        strictAngle = true;
 
-        public NyfalisWeapon(String name){this.name = name;}
+        public NyfalisWeapon(String name){super(name);}
         public NyfalisWeapon(String name, boolean boostShoot, boolean groundShoot ){
-            this.name = name;
-            this.groundShoot = groundShoot;
+            super(name);
             this.boostShoot = boostShoot;
+            this.groundShoot = groundShoot;
         }
         NyfalisWeapon(){}
 
         @Override
         public void update(Unit unit, WeaponMount mount){
-            boolean can = !unit.disarmed && (unit.type.canBoost && (unit.isFlying() && boostShoot || unit.isGrounded() && groundShoot));
+            boolean can = !unit.disarmed
+                    && (!unit.type.canBoost || (unit.isFlying() && boostShoot || unit.isGrounded() && groundShoot));
             float lastReload = mount.reload;
             mount.reload =Math.max(mount.reload -Time.delta *unit.reloadMultiplier,0);
             mount.recoil =Mathf.approachDelta(mount.recoil,0,unit.reloadMultiplier /recoilTime);
@@ -283,9 +295,9 @@ public class NyfalisUnitType extends UnitType {
                         mount.aimY = mount.target.y();
                     }
                 } else{
-                    shoot = partailControl && unit.isShooting && can;
-                    mount.aimX = partailControl ? unit.aimX : bulletX;
-                    mount.aimY = partailControl ? unit.aimY : bulletY;
+                    shoot = partialControl && unit.isShooting && can;
+                    mount.aimX = partialControl ? unit.aimX : bulletX;
+                    mount.aimY = partialControl ? unit.aimY : bulletY;
                 }
 
                 mount.shoot = mount.rotate = shoot;
@@ -295,6 +307,7 @@ public class NyfalisUnitType extends UnitType {
             }
 
             if(alwaysShooting)mount.shoot =true;
+            if(dashShoot && !unit.isPlayer() && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDashCommand) mount.shoot =true;
 
             //update continuous state
             if(continuous &&mount.bullet !=null) {
@@ -335,7 +348,7 @@ public class NyfalisUnitType extends UnitType {
             }
 
             //shoot if applicable
-            if((mount.shoot || partailControl && unit.isShooting && !controllable) && //must be shooting
+            if((mount.shoot || partialControl && unit.isShooting && !controllable) && //must be shooting
                     can && //must be able to shoot
                     !(bullet.killShooter &&mount.totalShots >0)&& //if the bullet kills the shooter, you should only ever be able to shoot once
                     (!useAmmo ||unit.ammo >0||!state.rules.unitAmmo ||unit.team.rules().infiniteAmmo)&& //check ammo
@@ -343,10 +356,8 @@ public class NyfalisUnitType extends UnitType {
                     mount.warmup >=minWarmup && //must be warmed up
                     unit.vel.len()>=minShootVelocity && //check velocity requirements
                     (mount.reload <=0.0001f||(alwaysContinuous &&mount.bullet ==null))&& //reload has to be 0, or it has to be an always-continuous weapon
-                    (alwaysShooting ||Angles.within(rotate ?mount.rotation :unit.rotation +baseRotation,mount.targetRotation,shootCone)) //has to be within the cone
-            )
-
-            {
+                    (alwaysShooting || (!strictAngle || Angles.within(rotate ?mount.rotation :unit.rotation +baseRotation,mount.targetRotation,shootCone))) //has to be within the cone
+            ) {
                 shoot(unit, mount, bulletX, bulletY, shootAngle);
 
                 mount.reload = reload;

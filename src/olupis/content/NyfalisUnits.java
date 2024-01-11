@@ -356,24 +356,26 @@ public class NyfalisUnits {
             segmentRotSpeed = 5f;
             crawlSlowdownFrac = 1f;
             drownTimeMultiplier = 4f;
-            omniMovement = drawBody = false;
-            allowLegStep = true;
+            omniMovement = drawBody =  false;
+            allowLegStep = canDash = true;
 
            weapons.addAll(
-               new SnekWeapon("flamethrower"){{
+               new SnekWeapon(""){{
                    x = 0f;
+                   y = 11f;
                    recoil = 1f;
                    shootY = 2f;
                    reload = 11f;
                    shootCone = 45f;
+                   weaponSegmentParent = 0;
                    ejectEffect = Fx.none;
                    shootSound = Sounds.flame;
-                   autoTarget = true;
-                   rotate = alternate = mirror = controllable = false;
+                   autoTarget = top = partialControl = true;
+                   rotate = alternate = mirror = controllable = strictAngle =false;
                    bullet = new BulletType(4.2f, 37f){{
                        ammoMultiplier = 3f;
                        hitSize = 7f;
-                       lifetime = 13f;
+                       lifetime = 12f;
                        despawnEffect = Fx.none;
                        keepVelocity = hittable = false;
                    }};
@@ -384,9 +386,10 @@ public class NyfalisUnits {
                     reload = 35f;
                     shootCone = 360f;
                     baseRotation = 180f;
+                    minShootVelocity = 0.1f;
                     weaponSegmentParent = 1;
-                    rotate = alternate = mirror = false;
-                    ignoreRotation = true;
+                    ignoreRotation = dashShoot = true;
+                    rotate = alternate = mirror = aiControllable = false;
                     ejectEffect = Fx.casing1;
                     bullet = new BasicBulletType(4.2f, 10f){{
                         width = 7f;
@@ -449,7 +452,7 @@ public class NyfalisUnits {
                     shootCone = 55f;
                     rotateSpeed = 10f;
                     rotationLimit = 90f;
-                    autoTarget = rotate = true;
+                    autoTarget = rotate = partialControl = true;
                     mirror = controllable = top = false;
                     bullet = new BasicBulletType(3f, 7){{
                         width = 5f;
@@ -491,36 +494,36 @@ public class NyfalisUnits {
             }});
 
             weapons.add( //NOT FINAL
-                    new NyfalisWeapon("large-weapon", true, false){{
-                        y = 0.4f;
-                        x = 22f / 4f;
-                        shake = 0.4f;
-                        reload = 12f;
-                        inaccuracy = 7.5f;
-                        shootCone = 360f;
-                        baseRotation = -90f;
-                        recoil = shootY = 0f;
-                        ejectEffect = Fx.none;
-                        shootSound = Sounds.none;
-                        controllable = top = rotate = false;
-                        autoTarget = ignoreRotation = aiControllable = alwaysShooting = true;
-                        bullet = new BombBulletType(17f, 25f){{
-                            hitSize = 3f;
-                            lifetime = 10f;
-                            damage = 17f;
-                            height = width = 10f;
-                            statusDuration = 60f * 4;
+                new NyfalisWeapon("large-weapon", true, false){{
+                    y = 0.4f;
+                    x = 22f / 4f;
+                    shake = 0.4f;
+                    reload = 12f;
+                    inaccuracy = 7.5f;
+                    shootCone = 360f;
+                    baseRotation = -90f;
+                    recoil = shootY = 0f;
+                    ejectEffect = Fx.none;
+                    shootSound = Sounds.none;
+                    controllable = top = rotate = false;
+                    autoTarget = ignoreRotation = aiControllable = alwaysShooting = true;
+                    bullet = new BombBulletType(17f, 25f){{
+                        hitSize = 3f;
+                        lifetime = 10f;
+                        damage = 17f;
+                        height = width = 10f;
+                        statusDuration = 60f * 4;
 
-                            incendChance = 0.01f;
-                            incendSpread = 2.5f;
-                            incendAmount = 1;
+                        incendChance = 0.01f;
+                        incendSpread = 2.5f;
+                        incendAmount = 1;
 
-                            hittable = keepVelocity = top = collidesAir = collides = false;
-                            despawnEffect = Fx.none;
-                            status = StatusEffects.burning;
-                            shootEffect = hitEffect = Fx.hitFlameSmall;
-                        }};
-                    }}
+                        hittable = keepVelocity = top = collidesAir = collides = false;
+                        despawnEffect = Fx.none;
+                        status = StatusEffects.burning;
+                        shootEffect = hitEffect = Fx.hitFlameSmall;
+                    }};
+                }}
             );
             setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
             immunities.add(StatusEffects.burning);
@@ -531,7 +534,6 @@ public class NyfalisUnits {
 
         //endregion
         //region Naval Units
-        //TODO ZONER FOLLOW TARGET WHEN DEPLOYED
         porter = new NyfalisUnitType("porter"){{
             armor = 6f;
             hitSize = 12f;
@@ -583,7 +585,7 @@ public class NyfalisUnits {
                     backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.8f);
                 }};
             }});
-            weapons.add(new Weapon(""){{
+            weapons.add(new NyfalisWeapon(""){{
                 x = 0f;
                 y = 6.5f;
                 reload = 7f;
@@ -591,7 +593,7 @@ public class NyfalisUnits {
                 shootCone = 30f;
                 rotateSpeed = 10f;
                 rotationLimit = 45f;
-                autoTarget = rotate = true;
+                autoTarget = rotate = partialControl = true;
                 mirror = controllable = false;
                 bullet = new BasicBulletType(2.5f, 10){{
                     width = 5f;

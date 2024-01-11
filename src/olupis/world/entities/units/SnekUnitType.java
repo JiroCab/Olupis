@@ -12,7 +12,6 @@ import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Crawlc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
-import mindustry.type.Weapon;
 
 /*ehehe snek*/
 public class SnekUnitType extends NyfalisUnitType{
@@ -64,15 +63,18 @@ public class SnekUnitType extends NyfalisUnitType{
 
     }
     /*Very janky but gets the work done*/
-    public class SnekWeapon extends Weapon {
+    public class SnekWeapon extends NyfalisWeapon {
         /*Sets which segment the weapon is "mounted" to*/
         public float weaponSegmentParent = segments -1;
 
         public SnekWeapon(String name){
-            this.name = name;
+            super(name);
+        }
+        public SnekWeapon(String name, boolean boostShoot, boolean groundShoot ){
+            super(name, boostShoot, groundShoot);
         }
         public SnekWeapon(){
-            this("");
+            super("");
         }
 
         @Override

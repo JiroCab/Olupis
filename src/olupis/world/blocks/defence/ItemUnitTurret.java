@@ -35,6 +35,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.UnitPayload;
+import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
@@ -81,6 +82,8 @@ public class ItemUnitTurret extends ItemTurret {
         range = 0f;
         config(UnitCommand.class, (ItemUnitTurretBuild build, UnitCommand command) -> build.command = command);
         configClear((ItemUnitTurretBuild build) -> build.command = null);
+
+        consume(new ConsumeItemDynamic((ItemUnitTurretBuild e) -> e.useAlternate ? requiredAlternate : requiredItems));
     }
 
     public void setBars(){
@@ -184,7 +187,7 @@ public class ItemUnitTurret extends ItemTurret {
             if(statArticulator != null) table.row();
             table.add(new Table(statArticulator != null ? Styles.grayPanel : Styles.none, b ->{
                 for(ItemStack stack : requiredItems){
-                    b.add(new ItemDisplay(stack.item, stack.amount, true)).padRight(5);
+                    b.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
                 }
             })).growX().pad(5);
 
@@ -197,9 +200,8 @@ public class ItemUnitTurret extends ItemTurret {
                 table.add(new Table(Styles.grayPanel, r -> {
                     r.add(new Table(c ->{
                         c.add(new Table(o -> {
-                            o.left();
                             o.add(new Image(statArticulator.uiIcon)).size(32f).scaling(Scaling.fit);
-                        })).padLeft(3);
+                        })).left().pad(10f);
                         c.table(info -> {
                             info.add(statArticulator.localizedName).left();
                             if (Core.settings.getBool("console")) {
@@ -210,7 +212,7 @@ public class ItemUnitTurret extends ItemTurret {
                         c.button("?", Styles.flatBordert, () -> ui.content.show(statArticulator)).size(40f).pad(10).right().grow().visible(statArticulator::unlockedNow);
                     })).row();
                     r.add(new Table(i -> { for (ItemStack stack : requiredAlternate) {
-                        i.add(new ItemDisplay(stack.item, stack.amount, true)).padRight(5);
+                        i.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
                     }}));
                 })
 
@@ -255,8 +257,9 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public void onProximityUpdate() {
             super.onProximityUpdate();
-            if(useAlternate && modules.size >= 1) reloadCounter = 0;
+
             if(!useAlternate && modules.size == 0) reloadCounter = 0;
+            else if(useAlternate && modules.size >= 1) reloadCounter = 0;
         }
 
         @Override
