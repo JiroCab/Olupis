@@ -62,10 +62,10 @@ public class NyfalisItemsLiquid {
         lubricant = new Liquid("lubricant", Color.valueOf("787878")){{
             viscosity = 0.7f;
             flammability = 1.4f;
-            explosiveness = 1.3f;
+            explosiveness = 1.25f;
             heatCapacity = 0.86f;
             barColor = Color.valueOf("6b675f");
-            effect = StatusEffects.tarred;
+            effect = StatusEffects.fast;
             boilPoint = 0.65f;
             gasColor = Color.grays(0.4f);
             canStayOn.addAll(Liquids.water, Liquids.oil);

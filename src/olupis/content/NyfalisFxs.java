@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Interp;
 import arc.math.Mathf;
+import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
@@ -12,7 +13,7 @@ import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 
-public class NyfalisFxs{
+public class NyfalisFxs extends Fx {
     public static final Effect
         hollowPointHit =  new Effect(30f, e -> {
             color(Pal.lightOrange, Color.lightGray, Pal.lightishGray, e.fin());

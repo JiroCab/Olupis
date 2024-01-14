@@ -334,7 +334,7 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 50, lead, 50, quartz, 25));
         }};
 
-        //TODO: (rename) Blitz (Recursor) - A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
+        //A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
         obliterator = new ItemTurret("obliterator"){{
             size = 4;
             recoil = 2f;
@@ -423,10 +423,49 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
         }};
 
+        //Aegis AA SAM Turrets (later game),  Inspired by bullet hell shoot'em ups... or btd's tack shooter
+        aegis = new ItemTurret("aegis"){{
+            targetAir = true;
+            targetGround = false;
+            size = 6;
+            reload = 65f;
+            range = 250f;
+            shootY = shootX= 0f;
+            fogRadiusMultiplier = 0.75f;
+            shootWarmupSpeed = 0.11f;
+
+            ammo(
+                    lead, new MissileBulletType(2.8f, 64f){{
+                        width = 7f;
+                        shrinkX = 0;
+                        height = 11.5f;
+                        lifetime = 120f;
+                        knockback = 0.9f;
+                        homingDelay = 18f;
+                        homingPower = 0.1f;
+                        splashDamage = 10f;
+                        statusDuration = 25f;
+                        homingRange = 35f;
+                        splashDamageRadius = 25f * 0.75f;
+                        status = StatusEffects.slow;
+                        backColor = trailColor = lead.color;
+                        collidesAir = true;
+                        collidesGround = false;
+                        hitEffect = NyfalisFxs.hollowPointHit;
+                    }}
+            );
+            limitRange(1.5f);
+            shootSound = Sounds.missile;
+            shootEffect = Fx.shootSmallSmoke;
+            drawer = new DrawRegion("");
+            shoot = new ShootSpread(9, 45);
+            researchCost = with(lead, 100, rustyIron, 100);
+            coolant = consume(new ConsumeLubricant(30f / 60f));
+            requirements(Category.turret, with(rustyIron, 20, lead, 40));
+        }};
+
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
-
-        //TODO: Aegis AA SAMM Turrets (later game)
 
         //endregion
     }

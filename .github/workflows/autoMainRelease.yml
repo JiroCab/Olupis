@@ -36,9 +36,9 @@ jobs:
         run: hjson mod.json > mod.hjson
 
       - name: build-tools
-        run: sdkmanager "build-tools;29.0.3"
+        run: sdkmanager "build-tools;34.0.0"
       - name: Add Android SDK to PATH
-        run: echo "${ANDROID_HOME}/build-tools/29.0.3" >> $GITHUB_PATH
+        run: echo "${ANDROID_HOME}/build-tools/34.0.0" >> $GITHUB_PATH
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew

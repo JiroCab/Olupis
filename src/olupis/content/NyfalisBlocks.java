@@ -1013,12 +1013,12 @@ public class NyfalisBlocks {
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = supella;
-                        alternateType = new SpawnHelperBulletType(){{
-                            shootEffect = Fx.shootBig;
-                            ammoMultiplier = 2f;
-                            reloadMultiplier = 0.45f;
-                            spawnUnit = germanica;
-                        }};
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = germanica;
+                    }};
                 }},
                 graphite, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
@@ -1052,11 +1052,23 @@ public class NyfalisBlocks {
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = bay;
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = blitz;
+                    }};
                 }},
                 iron, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = porter;
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = essex;
+                    }};
                 }}
             );
             consumePower(80f / 60f);
@@ -1266,6 +1278,9 @@ public class NyfalisBlocks {
             requirements(Category.defense,with(iron, 24));
         }};
 
+        //TODO: late game wall is also a router
+
+
         rustyScrapWall = new Wall("rusty-scrap-wall"){{
             size = 1;
             variants = 1;
@@ -1347,6 +1362,7 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(iron, 15, Items.lead, 20));
         }};
 
+        //Healing turret that has ammo and water to heal better
 
         //TODO: Mister -> phase fluid = to give units a temp shied
         //  -> Nanite Fluid = repair

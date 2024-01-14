@@ -12,6 +12,7 @@ import mindustry.gen.Iconc;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.*;
+import mindustry.world.consumers.ConsumePowerCondition;
 import mindustry.world.meta.Stat;
 
 import java.util.Objects;
@@ -25,7 +26,7 @@ public class PowerUnitTurret extends ItemUnitTurret {
     public PowerUnitTurret(String name){
         super(name);
         hasPower = true;
-        consumePower(80f / 60f);
+        consume(new ConsumePowerCondition(80f / 60f, e -> e instanceof PowerUnitTurretBuild b && b.hasAmmo()));
     }
 
     public void setBars(){

@@ -15,10 +15,11 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
+import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.world.meta.BlockFlag;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
-import olupis.world.entities.abilities.MicroWaveFieldAblity;
+import olupis.world.entities.abilities.MicroWaveFieldAbility;
 import olupis.world.entities.abilities.UnitRallySpawnAblity;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.units.*;
@@ -468,10 +469,6 @@ public class NyfalisUnits {
 
         }};
 
-        //germanica - candidates:
-            //1) Drill/ melee main weapon + boost fire
-            //2) Small Aura chip main weapon + boost fire
-
         germanica = new NyfalisUnitType("germanica"){{
             constructor = MechUnit::create;
 
@@ -484,47 +481,17 @@ public class NyfalisUnits {
             engineSize = -1;
             rotateSpeed = 2.25f;
             boostMultiplier = 0.8f;
-            abilities.add(new MicroWaveFieldAblity(8f, 40f, 35f){{
-                boostShoot = ideRangeDisplay = false;
+            abilities.add(new MicroWaveFieldAbility(6.5f, 40f, 35f, 20f){{
+                ideRangeDisplay = false;
                 damageEffect = Fx.none;
-                statusDuration = 60f * 6f;
-                maxTargets = 25;
-                healPercent = 0f;
-                sameTypeHealMult = 0.5f;
+                sectors = 3;
+                boostRange = 20f;
+                maxTargetBoost = 7;
+                maxTargetsGround = 14;
+
             }});
+            //Gave up trying to make it, so it has a boost damage weapon since the ability's range display won't go away while boosting if triggered, so made it just it sole weapon that changes on boost or not
 
-            weapons.add( //NOT FINAL
-                new NyfalisWeapon("large-weapon", true, false){{
-                    y = 0.4f;
-                    x = 22f / 4f;
-                    shake = 0.4f;
-                    reload = 12f;
-                    inaccuracy = 7.5f;
-                    shootCone = 360f;
-                    baseRotation = -90f;
-                    recoil = shootY = 0f;
-                    ejectEffect = Fx.none;
-                    shootSound = Sounds.none;
-                    controllable = top = rotate = false;
-                    autoTarget = ignoreRotation = aiControllable = alwaysShooting = true;
-                    bullet = new BombBulletType(17f, 25f){{
-                        hitSize = 3f;
-                        lifetime = 10f;
-                        damage = 17f;
-                        height = width = 10f;
-                        statusDuration = 60f * 4;
-
-                        incendChance = 0.01f;
-                        incendSpread = 2.5f;
-                        incendAmount = 1;
-
-                        hittable = keepVelocity = top = collidesAir = collides = false;
-                        despawnEffect = Fx.none;
-                        status = StatusEffects.burning;
-                        shootEffect = hitEffect = Fx.hitFlameSmall;
-                    }};
-                }}
-            );
             setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
             immunities.add(StatusEffects.burning);
 
@@ -548,6 +515,36 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
             abilities.add(new UnitRallySpawnAblity(zoner, 60f * 15f, 0, 2.5f));
+        }};
+
+        essex = new NyfalisUnitType("essex"){{
+            armor = 6f;
+            hitSize = 12f;
+            health = 850;
+            speed = 0.75f;
+            itemCapacity = 0;
+            treadPullOffset = 3;
+            rotateSpeed = 3.5f;
+            researchCostMultiplier = 0f;
+
+            rotateMoveFirst = canDeploy = true;
+            constructor = UnitWaterMove::create;
+            treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
+            abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 2.5f));
+            weapons.add(new PointDefenseWeapon("point-defense-mount"){{
+                x = 0;
+                y = -3f;
+                reload = 6f;
+                targetInterval = targetSwitchInterval = 14f;
+                mirror = false;
+
+                bullet = new BulletType(){{
+                    shootEffect = Fx.shootSmokeSquare;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 80f;
+                    damage = 45f;
+                }};
+            }});
         }};
 
         //Minigun turret mounted on the front, 10mm autocannon mounted on the back
