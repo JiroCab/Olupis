@@ -65,7 +65,7 @@ public class NyfalisItemsLiquid {
             explosiveness = 1.25f;
             heatCapacity = 0.86f;
             barColor = Color.valueOf("6b675f");
-            effect = StatusEffects.fast;
+            effect = NyfalisStatusEffects.lubed;
             boilPoint = 0.65f;
             gasColor = Color.grays(0.4f);
             canStayOn.addAll(Liquids.water, Liquids.oil);

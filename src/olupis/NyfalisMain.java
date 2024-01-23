@@ -8,15 +8,15 @@ import arc.scene.ui.Label;
 import arc.util.*;
 import mindustry.Vars;
 import mindustry.content.Planets;
-import mindustry.game.EventType;
+import mindustry.game.*;
 import mindustry.game.EventType.ClientLoadEvent;
-import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.CustomRulesDialog;
 import mindustry.world.Block;
 import olupis.content.*;
 import olupis.input.NyfalisLogicDialog;
@@ -38,6 +38,7 @@ public class NyfalisMain extends Mod{
     @Override
     public void loadContent(){
         NyfalisItemsLiquid.LoadItems();
+        NyfalisStatusEffects.loadStatusEffects();
         NyfalisItemsLiquid.LoadLiquids();
         NyfalisUnits.LoadUnits();
         NyfalisBlocks.LoadWorldTiles();
@@ -118,13 +119,19 @@ public class NyfalisMain extends Mod{
     }
 
     public static void buildDebugUI(Group group){
+
+        CustomRulesDialog ruleInfo = new CustomRulesDialog();
+
         group.fill(t -> {
             t.visible(() -> Vars.ui.hudfrag.shown);
             t.bottom().left();
-            t.button("Export w/ Nyfalis", Icon.file, Styles.squareTogglet, () -> {
+            t.button("Export w/ Nyf", Icon.file, Styles.squareTogglet, () -> {
                 state.rules.blockWhitelist = true;
                 NyfalisPlanets.nyfalis.applyRules(state.rules);
                 ui.paused.show();
+            }).width(155f).height(50f).margin(12f).checked(false).row();
+            t.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
+                ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
             }).width(155f).height(50f).margin(12f).checked(false);
         });
     }

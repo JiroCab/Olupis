@@ -23,6 +23,7 @@ public class NyfalisSettingsDialog {
             /* uncomment when name/icon is final
                table.checkPref("nyfalis-blue-icon", true);
                table.checkPref("nyfalis-blue-name", true); */
+            table.checkPref("nyfalis-cloud-shadows", true);
             table.checkPref("nyfalis-auto-ban", true);
             table.checkPref("nyfalis-disclaimer", true);
             table.checkPref("nyfalis-debug", false);

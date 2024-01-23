@@ -12,6 +12,7 @@ import mindustry.graphics.*;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
+import static olupis.content.NyfalisItemsLiquid.rustyIron;
 
 public class NyfalisFxs extends Fx {
     public static final Effect
@@ -83,13 +84,15 @@ public class NyfalisFxs extends Fx {
             Draw.scl = p;
         }),
 
-        unitDischarge = new Effect(13, e -> {
+        unitDischarge = new Effect(18, e -> {
             color(NyfalisItemsLiquid.rustyIron.color, 0.7f);
             stroke(e.fout() * 2f);
-            Lines.circle(e.x, e.y, 3f + e.finpow() * 7f);
+            float s = 16f;
+            Lines.circle(e.x, e.y, 30f + e.finpow() * s);
+            Lines.square(e.x, e.y, 30f + e.finpow() * -s, 45);
             randLenVectors(e.id, 5, 3f + e.fin() * 8f, (x, y) -> {
-                color(Pal.stoneGray);
-                Fill.square(e.x + x, e.y + y, e.fout() + 0.5f, 45);
+                color( new Color().set(rustyIron.color).lerp(Pal.stoneGray, 0.7f));
+                Fill.square(e.x + x, e.y + y, e.fout() + 1.5f , 45);
             });
         })
     ;

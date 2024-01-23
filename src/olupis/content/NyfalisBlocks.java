@@ -26,6 +26,7 @@ import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.payloads.PayloadRouter;
 import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.BeamNode;
+import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumePower;
@@ -1223,6 +1224,14 @@ public class NyfalisBlocks {
             requirements(Category.power, with(quartz, 50, lead, 50, silicon, 50));
         }};
 
+        steamTurbine = new ConsumeGenerator("steam-turbine"){{
+            size = 6;
+            powerProduction = 145f/60f;
+
+            consumeLiquid(steam, 24f/60f);
+            consumeLiquid(oil, 20f / 60f).boost();
+            requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
+        }};
         //TODO: Solar receiver & Mirror -> Super structure `Mirror(s)->Redirector->Solar tower+water=steam->steam turbine(s)`
         // Mirror -> SolarTower -> Heat + water-> SteamTurbine -> power
 
@@ -1391,11 +1400,13 @@ public class NyfalisBlocks {
 //         deliveryTerminal == redirects all cannons in a planet to this sector (since only 1 sector can be played)
 //        Vars.state.getPlanet().sectors.forEach(a -> {a.info.destination = Vars.state.getSector();});
 
+        int coreBaseHp = 600;
+
         coreRemnant = new PropellerCoreBlock("core-remnant"){{
             alwaysUnlocked = isFirstTier = true;
             size = 2;
-            health = 1750;
             itemCapacity = 1500;
+            health = coreBaseHp * 3;
             buildCostMultiplier = 0.5f;
 
             unitType = gnat;
@@ -1404,10 +1415,10 @@ public class NyfalisBlocks {
 
         coreVestige = new PropellerCoreBlock("core-vestige"){{
             size = 3;
-            health = 3500;
             itemCapacity = 3000;
             buildCostMultiplier = 0.5f;
             researchCostMultiplier = 0.5f;
+            health = Math.round(coreBaseHp * 3.5f);
 
             unitType = gnat;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300, iron, 1000));
@@ -1415,49 +1426,19 @@ public class NyfalisBlocks {
 
         coreRelic = new PropellerCoreTurret("core-relic"){{
             size = 4;
-            reload = 72f;
-            health = 70000;
+            reload = 80f;
             itemCapacity = 4500;
             shootX = shootY = 0f;
             buildCostMultiplier = 0.5f;
-            range = 19.5f * Vars.tilesize;
+            range = 20f * Vars.tilesize;
             researchCostMultiplier = 0.5f;
+            health = Math.round(coreBaseHp * 5f);
 
             unitType = phorid;
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
             requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500, graphite, 500));
-            shootType = new SapBulletType(){{
-                damage = 10f;
-                width = 0.8f;
-                lifetime = 20f;
-                sapStrength = 0f;
-                length = 19.5f * Vars.tilesize;
-                status = StatusEffects.none;
-                despawnEffect = Fx.none;
-                color = hitColor = rustyIron.color;
-                collidesTiles = false;
-                collidesAir = collidesGround = collidesTeam = true;
-            }};
-        }};
-
-        coreShrine = new PropellerCoreTurret("core-shrine"){{
-            size = 5;
-            reload = 55f;
-            health = 140000;
-            itemCapacity = 6000;
-            shootX = shootY = 0f;
-            buildCostMultiplier = 0.5f;
-            range = 22.5f * Vars.tilesize;
-            researchCostMultiplier = 0.5f;
-
-
-            unitType = phorid;
-            limitRange(0);
-            shootEffect = Fx.none;
-            shootSound = Sounds.bigshot;
-            requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500));
-            shootType = new ArtilleryBulletType(3f, 25){{
+            shootType = new ArtilleryBulletType(3f, 10){{
                 lifetime = 80f;
                 knockback = 0.8f;
                 homingRange = 50f;
@@ -1475,14 +1456,44 @@ public class NyfalisBlocks {
             }};
         }};
 
+        coreShrine = new PropellerCoreTurret("core-shrine"){{
+            size = 5;
+            reload = 55f;
+            itemCapacity = 6000;
+            shootX = shootY = 0f;
+            buildCostMultiplier = 0.5f;
+            range = 25f * Vars.tilesize;
+            researchCostMultiplier = 0.5f;
+            Math.round(coreBaseHp * 6.5f);
+
+
+            unitType = phorid;
+            limitRange(0);
+            shootEffect = Fx.none;
+            shootSound = Sounds.bigshot;
+            requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500));
+            shootType = new SapBulletType(){{
+                damage = 25f;
+                width = 0.8f;
+                lifetime = 20f;
+                sapStrength = 0f;
+                length = 19.5f * Vars.tilesize;
+                status = StatusEffects.none;
+                despawnEffect = Fx.none;
+                color = hitColor = rustyIron.color;
+                collidesTiles = false;
+                collidesAir = collidesGround = collidesTeam = true;
+            }};
+        }};
+
         coreTemple = new PropellerCoreTurret("core-temple"){{
             size = 6;
             reload = 35f;
-            health = 280000;
             itemCapacity = 7500;
             shootX = shootY = 0f;
             buildCostMultiplier = 0.5f;
-            range = 32 * Vars.tilesize;
+            range = 35 * Vars.tilesize;
+            Math.round(coreBaseHp * 8f);
             researchCostMultiplier = 0.5f;
 
             unitType = phorid;

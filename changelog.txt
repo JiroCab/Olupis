@@ -2,7 +2,18 @@
 https://github.com/JiroCab/Olupis
 Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
 
-= Version 1-6 () =
+= Version 1-7() =
+    + Units added: regioner, germanica, serpent, essex, revenant
+    + Blocks added: steamTurbine, aegis, alternateArticulator ,  glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush
+    + Status Effect added: lubed, mossed
+    + Added a toggleable weather effect for clould shadows (still need to be manually added as a weather)
+    ~ Balance: Reduced junction to better scale with other blocks
+    ~ Balance: Core scale 2x -> 1.5x from previous their, Remnant buffed too 1800hp
+    ~ Balance: Relic & Vestige Weapon types swaped, stats unchanged
+    ~ Bug Fix: Colours of certin content not being set corectly
+    ~ Improved Gnat and Phorid's attacking visual design to better indicate area of damage
+
+= Version 1-6 (9d343a0) = https://github.com/JiroCab/Olupis/tree/9d343a0e5fc3aab9c5efc5073e9b9d7e4edfb1e5
     + Support/Ammo limited units have ammo visual indicators
     + Made planets be hidden until a sector is unlocked for it
     + Weather added: acidRain, mossMist

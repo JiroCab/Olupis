@@ -2,19 +2,25 @@ package olupis.content;
 
 import arc.graphics.Color;
 import arc.math.geom.Rect;
+import arc.struct.Queue;
 import arc.struct.Seq;
+import arc.util.Interval;
 import mindustry.ai.UnitCommand;
+import mindustry.ai.types.BuilderAI;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.entities.pattern.ShootSpread;
+import mindustry.entities.units.WeaponMount;
+import mindustry.game.Teams;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
+import mindustry.type.weapons.BuildWeapon;
 import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.world.meta.BlockFlag;
 import olupis.input.NyfalisUnitCommands;
@@ -34,6 +40,7 @@ public class NyfalisUnits {
         /*Air units*/
         aero, striker, falcon, vortex, tempest,
         zoner, regioner, district, division, territory,
+        pteropus, acerodon, nyctalus, mirimiri , vampyrum, //Bat Genus
 
         /*segmented units*/
         venom, serpent, reaper, goliath, snek /*TODO: IDK*/,
@@ -46,7 +53,7 @@ public class NyfalisUnits {
         bay, blitz, crusader, torrent, vanguard,
 
         /*core units*/
-        gnat, phorid,
+        gnat, pedicia, phorid, diptera, midges, //Fruit flies
 
         /*assistant core units*/
         embryo, larva, pupa,
@@ -59,7 +66,7 @@ public class NyfalisUnits {
 
     public static AmmoLifeTimeUnitType
         mite,
-        //yes its just Phasmophobia ghost types
+        //support - yes, its just Phasmophobia ghost types
         spirit, phantom, banshee, revenant, poltergeist
     ;
 
@@ -228,7 +235,7 @@ public class NyfalisUnits {
             fogRadius = 10f;
             engineSize = 1.6f;
             rotateSpeed = 19f;
-            itemCapacity = 70;
+            itemCapacity = 40;
             engineOffset = 4.6f;
 
             constructor = UnitEntity::create;
@@ -257,18 +264,19 @@ public class NyfalisUnits {
                 }};
             }});
         }};
+
         //re.gioner - shotgun aircraft!
         regioner = new NyfalisUnitType("regioner"){{
-            armor = 1f;
-            hitSize = 11f;
+            armor = 3f;
+            hitSize = 13f;
             drag = 0.05f;
-            accel = 0.11f;
-            health = 200f;
-            speed = 3.55f;
-            fogRadius = 10f;
+            accel = 0.10f;
+            health = 400f;
+            speed = 3.7f;
+            fogRadius = 11f;
             engineSize = 1.6f;
             rotateSpeed = 19f;
-            itemCapacity = 70;
+            itemCapacity = 65;
             engineOffset = 4.6f;
 
             constructor = UnitEntity::create;
@@ -276,18 +284,19 @@ public class NyfalisUnits {
             lowAltitude = flying = canGuardUnits = true;
             defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
 
-            weapons.add(new Weapon("olupis-zoner-weapon"){{
+            weapons.add(new Weapon("olupis-regioner-weapon"){{
                 top = alternate = false;
-                y = -1f;
-                x = -4.8f;
+                y = 0.9f;
+                x = -3.6f;
+                recoil = 0.47f;
                 reload = 13f;
                 shootCone = 45f;
-                baseRotation = -15f;
+                baseRotation = -7f;
                 ejectEffect = Fx.none;
-                shoot = new ShootSpread(7, 1f);
+                shoot = new ShootSpread(7, 1.3f);
 
                 showStatSprite = false;
-                bullet = new BasicBulletType(2f, 3.5f, "olupis-diamond-bullet"){{
+                bullet = new BasicBulletType(2f, 5, "olupis-diamond-bullet"){{
                     width = 6;
                     height = 8f;
                     lifetime = 20f;
@@ -298,6 +307,8 @@ public class NyfalisUnits {
                 }};
             }});
         }};
+
+        //TODO: Aircraft tree that deploys into stationary ground
 
         //endregion
         //region Ground Units
@@ -881,6 +892,50 @@ public class NyfalisUnits {
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = false;
         }};
 
+        revenant = new AmmoLifeTimeUnitType("revenant"){{
+            armor = 2;
+            speed = 3.25f;
+            fogRadius = 6f;
+            buildSpeed = 0.8f;
+            ammoCapacity = 1200;
+
+            weapons.add(new BuildWeapon("build-weapon"){{
+                rotate = useAmmo = true;
+                rotateSpeed = 7f;
+                x = 14/4f;
+                y = 15/4f;
+                layerOffset = -0.001f;
+                shootY = 3f;
+            }
+
+            Interval timer = new Interval(4);
+            float lastProgress;
+
+            @Override
+            public void update(Unit unit, WeaponMount mount){
+                Queue<Teams.BlockPlan> blocks = unit.team.data().plans;
+
+                if(unit.buildPlan() != null && lastProgress == unit.buildPlan().progress && timer.get(3, 40)){
+                    blocks.addLast(blocks.removeFirst());
+                    lastProgress = unit.buildPlan().progress;
+                }
+
+                if(unit.activelyBuilding() && useAmmo ){ //TODO: AMMO SHOULDN'T USE WHEN TRYING TO BUILD W/O ITEMS FOR IT
+                    //Since it isn't really shooting, ammo isn't used properly handled
+                    unit.ammo--;
+                    if(unit.ammo < 0) unit.ammo = 0;
+                }
+                super.update(unit, mount);
+            }
+            });
+
+            constructor = UnitEntity::create;
+            aiController = BuilderAI::new;
+            defaultCommand = UnitCommand.rebuildCommand;
+            setEnginesMirror(new UnitEngine(8 / 4f, -21 / 4f, 2.1f, 245));
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = false;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive =  targetAir = targetGround = singleTarget  = drawAmmo  = true;
+        }};
 
         embryo = new AmmoLifeTimeUnitType("embryo"){{
             /*(trans) Egg if chan-version is made >;3c */
@@ -909,6 +964,7 @@ public class NyfalisUnits {
                 }};
             }});
         }};
+
         //endregion
         //region Nyfalis Core Units
         gnat = new NyfalisUnitType("gnat"){{
@@ -926,7 +982,7 @@ public class NyfalisUnits {
             buildSpeed = 0.5f;
             itemCapacity = 70;
             rotateSpeed = 4.5f;
-            range = mineRange;
+            //range = mineRange;
             legMoveSpace = 1.2f; //Limits world tiles movement
             boostMultiplier = 0.75f;
             buildBeamOffset = 4.2f;

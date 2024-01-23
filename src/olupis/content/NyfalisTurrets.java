@@ -246,6 +246,7 @@ public class NyfalisTurrets {
             shootY = 0f;
             range = 650;
             reload = 600f;
+            maxAmmo  = 20;
             fogRadiusMultiplier = 0.5f;
             shootSound = Sounds.respawn;
 
@@ -435,18 +436,18 @@ public class NyfalisTurrets {
             shootWarmupSpeed = 0.11f;
 
             ammo(
-                    lead, new MissileBulletType(2.8f, 64f){{
+                    lead, new MissileBulletType(2.8f, 68f){{
                         width = 7f;
                         shrinkX = 0;
                         height = 11.5f;
                         lifetime = 120f;
-                        knockback = 0.9f;
+                        knockback = 1.2f;
                         homingDelay = 18f;
-                        homingPower = 0.1f;
+                        homingPower = 0.22f;
                         splashDamage = 10f;
                         statusDuration = 25f;
-                        homingRange = 35f;
-                        splashDamageRadius = 25f * 0.75f;
+                        homingRange = 5f;
+                        splashDamageRadius = 30f * 0.75f;
                         status = StatusEffects.slow;
                         backColor = trailColor = lead.color;
                         collidesAir = true;
