@@ -45,6 +45,10 @@ public class NyfalisUnitType extends UnitType {
     public boolean customMoveCommand = false;
     /*Face targets when idle/not moving, assumes `customMoveCommand` = true  */
     public boolean idleFaceTargets = false;
+    /*forces the unit to be landed on deploy*/
+    public boolean deployLands = false, alwaysBoosts = false, deployHasEffect = false;
+    public StatusEffect deployEffect = StatusEffects.none;
+    public float deployEffectTime = 20f;
     /*Effects that a unit spawns with, gnat cheese fix*/
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
@@ -76,6 +80,7 @@ public class NyfalisUnitType extends UnitType {
             if (customMineAi) cmds.add(NyfalisUnitCommands.nyfalisMineCommand);
             if (canGuardUnits) cmds.add(NyfalisUnitCommands.nyfalisGuardCommand);
             if (canDash)cmds.add(NyfalisUnitCommands.nyfalisDashCommand);
+            if (canBoost && alwaysBoosts) cmds.remove(UnitCommand.boostCommand);
         commands = cmds.toArray();
     }
 
@@ -190,8 +195,22 @@ public class NyfalisUnitType extends UnitType {
     }
 
     @Override
-    public void update(Unit unit){
+    public void update(Unit unit){//TODO: UNDEPLOY DOESNT BOOST
         super.update(unit);
+
+        if(deployHasEffect && (!deployLands || unit.isGrounded())) unit.apply(deployEffect, deployEffectTime);
+        if(unit.type instanceof  NyfalisUnitType nyf && nyf.canDeploy) {
+            if (!unit.isPlayer()) {
+                boolean deployed = (unit.controller() instanceof CommandAI c && c.command == NyfalisUnitCommands.nyfalisDeployCommand);
+                if(!deployed && unit.isGrounded())unit.apply(deployEffect, deployEffectTime);
+
+                if (!deployed && alwaysBoosts) {
+                    unit.updateBoosting(true);
+                    unit.unapply(deployEffect);
+                } else if (deployLands) unit.updateBoosting(!(deployed && unit.canLand()));
+                else if (alwaysBoosts) unit.updateBoosting(true);
+            }
+        }
 
         if(alwaysBoostOnSolid && canBoost && (unit.controller() instanceof CommandAI c && c.command != UnitCommand.boostCommand)){
             unit.updateBoosting(unit.onSolid());
@@ -205,11 +224,13 @@ public class NyfalisUnitType extends UnitType {
         boostShoot = true, groundShoot = true,
         /*Allows weapon to be shot by the player when Ai is not using it*/
         partialControl = false,
-        idlePrefRot = true,
+        idlePrefRot = true, alwaysRotate = false,
         /*Shoot while dash command is selected*/
         dashShoot = false,
         /*Check for angle to target before shooting */
         strictAngle = true;
+        /*Margin where when a weapon can fire while transition from ground to air*/
+        float boostedEvaluation = 0.95f, groundedEvaluation = 0.05f;
 
         public NyfalisWeapon(String name){super(name);}
         public NyfalisWeapon(String name, boolean boostShoot, boolean groundShoot ){
@@ -221,8 +242,9 @@ public class NyfalisUnitType extends UnitType {
 
         @Override
         public void update(Unit unit, WeaponMount mount){
-            boolean can = !unit.disarmed
-                    && (!unit.type.canBoost || (unit.isFlying() && boostShoot || unit.isGrounded() && groundShoot));
+            boolean can = (!unit.disarmed
+                    && (!unit.type.canBoost ||
+                    (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation)));
             float lastReload = mount.reload;
             mount.reload =Math.max(mount.reload -Time.delta *unit.reloadMultiplier,0);
             mount.recoil =Mathf.approachDelta(mount.recoil,0,unit.reloadMultiplier /recoilTime);
@@ -258,7 +280,7 @@ public class NyfalisUnitType extends UnitType {
             }else if(!rotate){
                 mount.rotation = baseRotation;
                 mount.targetRotation = unit.angleTo(mount.aimX, mount.aimY);
-            } else if ( !mount.shoot && idlePrefRot) {
+            } else if ( ( alwaysRotate || !mount.rotate || !mount.shoot) && idlePrefRot) {
                 mount.targetRotation = baseRotation;
                 mount.rotation = Angles.moveToward(mount.rotation, mount.targetRotation, rotateSpeed * Time.delta);
             }

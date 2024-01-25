@@ -1,8 +1,10 @@
 package olupis.input;
 
 import mindustry.ai.UnitCommand;
+import mindustry.ai.types.CommandAI;
 import mindustry.entities.units.AIController;
 import olupis.world.ai.*;
+import olupis.world.entities.units.NyfalisUnitType;
 
 public class NyfalisUnitCommands {
 
@@ -30,11 +32,24 @@ public class NyfalisUnitCommands {
             ai.includeBlocks = true;
             return ai;
         }),
-        nyfalisMoveCommand = new UnitCommand("move", "right", u ->new NyfalisGroundAi()){{
+        nyfalisMoveCommand = new UnitCommand("move", "right", u ->{
+            if(u.isGrounded()){
+                return new NyfalisGroundAi();
+            } return new AIController(){
+                @Override
+                public void updateUnit() {
+                    if (unit.controller() instanceof CommandAI ai) {
+                        ai.defaultBehavior();
+                    }
+                    super.updateUnit();
+                    if(u.type instanceof NyfalisUnitType nyf && nyf.alwaysBoosts) unit.updateBoosting(true);
+                }
+            };
+        }){{
             switchToMove = resetTarget = false;
             drawTarget = true;
         }},
-        nyfalisDeployCommand = new UnitCommand ("nyfalis-deploy", "down", u ->  new AIController()){{
+        nyfalisDeployCommand = new UnitCommand ("nyfalis-deploy", "down", u ->  new DeployedAi()){{
             switchToMove = resetTarget = false;
             drawTarget = true;
         }},

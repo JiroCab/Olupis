@@ -8,6 +8,7 @@ import arc.scene.ui.Label;
 import arc.util.*;
 import mindustry.Vars;
 import mindustry.content.Planets;
+import mindustry.editor.WaveInfoDialog;
 import mindustry.game.*;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Icon;
@@ -121,6 +122,7 @@ public class NyfalisMain extends Mod{
     public static void buildDebugUI(Group group){
 
         CustomRulesDialog ruleInfo = new CustomRulesDialog();
+        WaveInfoDialog waveInfo = new WaveInfoDialog();
 
         group.fill(t -> {
             t.visible(() -> Vars.ui.hudfrag.shown);
@@ -129,10 +131,11 @@ public class NyfalisMain extends Mod{
                 state.rules.blockWhitelist = true;
                 NyfalisPlanets.nyfalis.applyRules(state.rules);
                 ui.paused.show();
-            }).width(155f).height(50f).margin(12f).checked(false).row();
+            }).width(155f).height(40f).margin(12f).checked(false).row();
             t.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
                 ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
-            }).width(155f).height(50f).margin(12f).checked(false);
+            }).width(155f).height(40f).margin(12f).checked(false).row();
+            t.button("@editor.waves", Icon.waves, Styles.squareTogglet, waveInfo::show).width(155f).height(40f).margin(12f).checked(false);
         });
     }
 

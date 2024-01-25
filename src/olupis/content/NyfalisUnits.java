@@ -205,24 +205,78 @@ public class NyfalisUnits {
             }});
         }};
 
-        //Why do i exist? no reason, hope u don't cause any bugs even if you are one
-        firefly = new NyfalisUnitType("firefly"){{
-            constructor = UnitTypes.mono.constructor;
-            defaultCommand = UnitCommand.mineCommand;
-            ammoType = new PowerAmmoType(500);
+        pteropus = new NyfalisUnitType("pteropus"){{
+            armor = 1f;
+            hitSize = 11f;
+            drag = 0.05f;
+            accel = 0.11f;
+            health = 200f;
+            speed = 3.55f;
+            fogRadius = 10f;
+            engineSize = 1.6f;
+            rotateSpeed = 19f;
+            itemCapacity = 40;
+            engineOffset = 4.6f;
 
-            flying = true;
-            isEnemy = false;
+            constructor = UnitEntity::create;
+            aiController = ArmDefenderAi::new;
+            deployEffect = NyfalisStatusEffects.deployed;
+            lowAltitude = flying = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
+            weapons.addAll(
+                new NyfalisWeapon("", true, false){{
+                    top = alternate = false;
+                    y = 4f;
+                    x = -2f;
+                    inaccuracy = 3f;
+                    reload = shootCone = 15f;
+                    ejectEffect = Fx.casing1;
 
-            range = 50f;
-            health = 100;
-            speed = 1.5f;
-            drag = 0.06f;
-            accel = 0.12f;
-            mineTier = 1;
-            engineSize = 1.8f;
-            mineSpeed = 2.5f;
-            engineOffset = 5.7f;
+                    showStatSprite = false;
+                    bullet = new BasicBulletType(2.5f, 5, "olupis-diamond-bullet"){{
+                        width = 4;
+                        height = 6f;
+                        lifetime = 60f;
+                        homingPower = 0.04f;
+                        shootEffect = Fx.none;
+                        smokeEffect = Fx.shootSmallSmoke;
+                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                    }};
+                }},
+
+                new NyfalisWeapon("", false, true){{
+                    x = y = 0;
+                    shootY = 8.5f;
+                    recoil = 0.5f;
+                    reload = 13f;
+                    recoils = 1;
+                    top = alternate = mirror = false;
+                    rotate = alwaysRotate = true;
+
+                    parts.addAll(
+                        new RegionPart("olupis-pteropus-weapon"){{
+                            mirror = true;
+                            x = -2.3f;
+                            moveX = 1f;
+                        }}
+                    );
+
+                    bullet = new ArtilleryBulletType(3f, 14){{
+                        width = 7f;
+                        height = 9f;
+                        trailSize = 3f;
+                        lifetime = 65f;
+                        splashDamage = 2f;
+                        splashDamageRadius = 25f * 0.75f;
+                        collidesAir = false;
+                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
+                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
+                        hitEffect = despawnEffect = Fx.hitBulletSmall;
+                    }};
+                }}
+
+            );
         }};
 
         zoner = new NyfalisUnitType("zoner"){{
@@ -308,7 +362,7 @@ public class NyfalisUnits {
             }});
         }};
 
-        //TODO: Aircraft tree that deploys into stationary ground
+        //district -> a gun ship, light gun as primary and ammo limited secondary that resupplies from mother shi/maker
 
         //endregion
         //region Ground Units
@@ -1160,6 +1214,34 @@ public class NyfalisUnits {
         }};
 
         //added a death weapon
+        //endregion
+        //region Misc/Extra/Internal
+
+        //Why do i exist? no reason, hope u don't cause any bugs even if you are one
+        firefly = new NyfalisUnitType("firefly"){{
+            constructor = UnitTypes.mono.constructor;
+            defaultCommand = UnitCommand.mineCommand;
+            ammoType = new PowerAmmoType(500);
+
+            flying = true;
+            isEnemy = false;
+
+            range = 50f;
+            health = 100;
+            speed = 1.5f;
+            drag = 0.06f;
+            accel = 0.12f;
+            mineTier = 1;
+            engineSize = 1.8f;
+            mineSpeed = 2.5f;
+            engineOffset = 5.7f;
+        }
+            @Override
+            public void update(Unit unit){
+                super.update(unit);
+                unit.remove();
+            }
+        };
         //endregion
     }
 

@@ -48,7 +48,8 @@ public class ArmDefenderAi extends AIController {
     public Teamc findTarget(float x, float y, float range, boolean air, boolean ground){
 
         if(follow != null){
-            var followTarget = Units.closestTarget(unit.team, follow.x(), follow.y(), range, u -> u.checkTarget(air, ground), t -> ground);
+            //TODO: Prevent two armed defenders from following each other :p
+            var followTarget = Units.closestTarget(unit.team, follow.x(), follow.y(), range, u -> u.checkTarget(air, ground) && !(u.type.aiController instanceof ArmDefenderAi), t -> ground);
             if(followTarget != null )return followTarget;
         }
 
