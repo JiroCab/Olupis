@@ -467,6 +467,9 @@ public class NyfalisBlocks {
         orangeTree = new TreeBlock("orange-tree"){{
             variants = 3;
         }};
+        deadTree = new TreeBlock("dead-tree"){{
+            variants = 1; //TODO: more
+        }};
 
         //endregion
     }
@@ -534,7 +537,7 @@ public class NyfalisBlocks {
         }};
 
         ironJunction = new Junction("iron-junction"){{
-            speed = 55;
+            speed = 45;
             armor = 1f;
             health = 50;
             capacity = 6;
@@ -827,7 +830,8 @@ public class NyfalisBlocks {
 
             researchCost = with(lead, 750, rustyIron, 750);
             outputLiquid = new LiquidStack(steam, 10/60f);
-            requirements(Category.liquid, with(rustyIron, 30, lead, 30));
+            requirements(Category.production, with(rustyIron, 30, lead, 30));
+
         }};
 
         broiler = new GenericCrafter("broiler"){{
@@ -963,6 +967,12 @@ public class NyfalisBlocks {
                     ammoMultiplier = 1f;
                     reloadMultiplier = 0.65f;
                     spawnUnit = phantom;
+                }},
+                silicon, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    reloadMultiplier = 0.65f;
+                    spawnUnit = revenant;
                 }}
             );
             alwaysShooting = true;
@@ -992,6 +1002,17 @@ public class NyfalisBlocks {
                         reloadMultiplier = 0.45f;
                         spawnUnit = striker;
                     }};
+                }},
+                graphite, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 2f;
+                    spawnUnit = pteropus;
+//                    alternateType = new SpawnHelperBulletType(){{
+//                        shootEffect = Fx.shootBig;
+//                        ammoMultiplier = 2f;
+//                        reloadMultiplier = 0.45f;
+//                        spawnUnit = striker;
+//                    }};
                 }}
             );
             alwaysShooting = true;
@@ -1477,7 +1498,7 @@ public class NyfalisBlocks {
                 width = 0.8f;
                 lifetime = 20f;
                 sapStrength = 0f;
-                length = 19.5f * Vars.tilesize;
+                length = 25f * Vars.tilesize;
                 status = StatusEffects.none;
                 despawnEffect = Fx.none;
                 color = hitColor = rustyIron.color;

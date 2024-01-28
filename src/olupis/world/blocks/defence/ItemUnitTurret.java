@@ -156,6 +156,14 @@ public class ItemUnitTurret extends ItemTurret {
                     b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
                 }).growX().pad(5);
             });
+            if(statArticulator != null && (!statArticulator.unlockedNow() || !statArticulator.isVisible())){
+                table.row();
+                table.table(Styles.grayPanel, b -> {
+                    b.image(Icon.cancel.getRegion()).color(Pal.remove).size(30).pad(10f).left().scaling(Scaling.fit).tooltip(statArticulator.localizedName);
+                    b.add(new Table(o -> o.add(new Image(statArticulator.uiIcon)).size(30f).scaling(Scaling.fit).tooltip(statArticulator.localizedName))).left().pad(10f);
+                }).growX().pad(5);
+                return;
+            }
             for (Map.Entry<Item, BulletType> entry : alts.entrySet()) {
                 Item item = entry.getKey();
                 BulletType bul = entry.getValue();
@@ -194,9 +202,10 @@ public class ItemUnitTurret extends ItemTurret {
             if(statArticulator != null) {
                 table.row();
                 if(!statArticulator.unlockedNow() || !statArticulator.isVisible()){
-                    table.add(new Table(Styles.grayPanel, r -> r.image(Icon.cancel.getRegion()).color(Pal.remove).size(22).pad(10f).left().scaling(Scaling.fit))).growX().pad(5);
+                    table.add(new Table(Styles.grayPanel, r -> r.image(Icon.cancel.getRegion()).color(Pal.remove).size(22).pad(10f).left().scaling(Scaling.fit))).growX().pad(5).tooltip(statArticulator.localizedName);
                     return;
                 }
+
                 table.add(new Table(Styles.grayPanel, r -> {
                     r.add(new Table(c ->{
                         c.add(new Table(o -> {

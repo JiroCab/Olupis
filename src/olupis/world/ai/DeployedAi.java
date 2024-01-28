@@ -6,6 +6,14 @@ import olupis.world.entities.units.NyfalisUnitType;
 
 public class DeployedAi extends FlyingAI {
 
+    @Override
+    public void updateUnit(){
+        if(unit.controller() instanceof CommandAI ai){
+            ai.defaultBehavior();
+            target = ai.attackTarget;
+        }
+        super.updateUnit();
+    }
 
     @Override
     public void updateMovement(){

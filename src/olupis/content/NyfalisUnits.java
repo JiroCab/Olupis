@@ -11,8 +11,7 @@ import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
-import mindustry.entities.pattern.ShootAlternate;
-import mindustry.entities.pattern.ShootSpread;
+import mindustry.entities.pattern.*;
 import mindustry.entities.units.WeaponMount;
 import mindustry.game.Teams;
 import mindustry.gen.*;
@@ -82,7 +81,7 @@ public class NyfalisUnits {
             engineSize = 3f;
             engineOffset = 7f;
             rotateSpeed = 30f;
-            itemCapacity = 30;
+            itemCapacity = 15;
             drag = accel = 0.08f;
             strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
 
@@ -127,13 +126,13 @@ public class NyfalisUnits {
         //Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
         striker = new NyfalisUnitType("striker"){{
             armor = 3f;
-            hitSize = 13f;
+            hitSize = 16f;
             drag = 0.05f;
             speed = 5.5f;
             accel = 0.07f;
             health = 300f;
             engineSize = 4f;
-            itemCapacity = 70;
+            itemCapacity = 30;
             engineOffset = 13.5f;
             strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
             rotateSpeed = baseRotateSpeed = 30f;
@@ -206,36 +205,35 @@ public class NyfalisUnits {
         }};
 
         pteropus = new NyfalisUnitType("pteropus"){{
-            armor = 1f;
-            hitSize = 11f;
-            drag = 0.05f;
-            accel = 0.11f;
-            health = 200f;
-            speed = 3.55f;
+            hitSize = 10f;
+            drag = 0.06f;
+            accel = 0.08f;
+            health = 250f;
+            speed = 2.20f;
             fogRadius = 10f;
             engineSize = 1.6f;
             rotateSpeed = 19f;
-            itemCapacity = 40;
-            engineOffset = 4.6f;
+            itemCapacity = 20;
+            engineOffset = 6.6f;
 
             constructor = UnitEntity::create;
-            aiController = ArmDefenderAi::new;
+            aiController = AgressiveFlyingAi::new;
             deployEffect = NyfalisStatusEffects.deployed;
             lowAltitude = flying = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
             weapons.addAll(
                 new NyfalisWeapon("", true, false){{
                     top = alternate = false;
-                    y = 4f;
+                    y = 3.8f;
                     x = -2f;
                     inaccuracy = 3f;
                     reload = shootCone = 15f;
                     ejectEffect = Fx.casing1;
 
                     showStatSprite = false;
-                    bullet = new BasicBulletType(2.5f, 5, "olupis-diamond-bullet"){{
+                    bullet = new BasicBulletType(2.5f, 3, "olupis-diamond-bullet"){{
                         width = 4;
                         height = 6f;
-                        lifetime = 60f;
+                        lifetime = 40f;
                         homingPower = 0.04f;
                         shootEffect = Fx.none;
                         smokeEffect = Fx.shootSmallSmoke;
@@ -247,9 +245,9 @@ public class NyfalisUnits {
 
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
-                    shootY = 8.5f;
+                    shootY = 7.5f;
                     recoil = 0.5f;
-                    reload = 13f;
+                    reload = 15f;
                     recoils = 1;
                     top = alternate = mirror = false;
                     rotate = alwaysRotate = true;
@@ -262,14 +260,12 @@ public class NyfalisUnits {
                         }}
                     );
 
-                    bullet = new ArtilleryBulletType(3f, 14){{
-                        width = 7f;
-                        height = 9f;
-                        trailSize = 3f;
-                        lifetime = 65f;
-                        splashDamage = 2f;
-                        splashDamageRadius = 25f * 0.75f;
-                        collidesAir = false;
+                    bullet = new BasicBulletType(2.6f, 9){{
+                        width = 6f;
+                        height = 8f;
+                        lifetime = 40f;
+                        splashDamage = 1f;
+                        splashDamageRadius = 5f * 0.75f;
                         frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
                         backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
                         hitEffect = despawnEffect = Fx.hitBulletSmall;
@@ -281,7 +277,7 @@ public class NyfalisUnits {
 
         zoner = new NyfalisUnitType("zoner"){{
             armor = 1f;
-            hitSize = 11f;
+            hitSize = 5.5f;
             drag = 0.05f;
             accel = 0.11f;
             health = 200f;
@@ -289,7 +285,7 @@ public class NyfalisUnits {
             fogRadius = 10f;
             engineSize = 1.6f;
             rotateSpeed = 19f;
-            itemCapacity = 40;
+            itemCapacity = 5;
             engineOffset = 4.6f;
 
             constructor = UnitEntity::create;
@@ -321,17 +317,16 @@ public class NyfalisUnits {
 
         //re.gioner - shotgun aircraft!
         regioner = new NyfalisUnitType("regioner"){{
-            armor = 3f;
-            hitSize = 13f;
+            hitSize = 7f;
             drag = 0.05f;
             accel = 0.10f;
-            health = 400f;
-            speed = 3.7f;
+            health = 450f;
             fogRadius = 11f;
             engineSize = 1.6f;
             rotateSpeed = 19f;
-            itemCapacity = 65;
+            itemCapacity = 25;
             engineOffset = 4.6f;
+            armor = speed = 3f;
 
             constructor = UnitEntity::create;
             aiController = ArmDefenderAi::new;
@@ -372,9 +367,10 @@ public class NyfalisUnits {
             hitSize = 11f;
             health = 350;
             segments = 7;
-            speed = 2.25f;
-            segmentScl = 7f;
+            speed = 2.2f;
+            segmentScl = 8f;
             rotateSpeed = 10f;
+            itemCapacity = 20;
             legMoveSpace = 1.1f;
             crushDamage = 0.25f;
             segmentMaxRot = 80f;
@@ -389,7 +385,7 @@ public class NyfalisUnits {
                 x = 0f;
                 y = -11f;
                 reload = 35f;
-                weaponSegmentParent = 1;
+                weaponSegmentParent = 3;
                 mirror = false;
                 rotate = true;
                 ejectEffect = Fx.casing1;
@@ -673,6 +669,7 @@ public class NyfalisUnits {
             armor = 5f;
             accel = 0.6f;
             drag = 0.14f;
+            hitSize = 14f;
             range = 200f;
             trailScl = 1.9f;
             health = 550f;
@@ -684,98 +681,101 @@ public class NyfalisUnits {
 
             idleFaceTargets = customMoveCommand = true;
             constructor = UnitWaterMove::create;
-            weapons.add(new Weapon("olupis-twin-mount"){{
-                x = 0;
-                y = -9.5f;
-                recoils = 2;
-                recoil = 0.5f;
-                reload = 13f;
-                mirror = false;
-                rotate= top = true;
-                shoot = new ShootAlternate(3.6f);
-                for(int i = 0; i < 2; i ++){ int f = i;
-                    parts.add(new RegionPart("-barrel-" + (i == 0 ? "r" : "l")){{
-                        x = (f == 0) ? 1.8f : -1.8f;
-                        y = 3f;
-                        shootY = 6f;
-                        recoilIndex = f;
-                        outlineLayerOffset = 0f;
-                        outlineColor = unitOutLine;
-                        outline = drawRegion = under = true;
-                        progress = PartProgress.recoil;
-                        moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
-                }}); }
+            weapons.add(
+                new Weapon("olupis-twin-mount"){{
+                    x = 0;
+                    y = -9.5f;
+                    recoils = 2;
+                    recoil = 0.5f;
+                    reload = 13f;
+                    mirror = false;
+                    rotate= top = true;
+                    shoot = new ShootAlternate(3.6f);
+                    for(int i = 0; i < 2; i ++){ int f = i;
+                        parts.add(new RegionPart("-barrel-" + (i == 0 ? "r" : "l")){{
+                            x = (f == 0) ? 1.8f : -1.8f;
+                            y = 3f;
+                            shootY = 6f;
+                            recoilIndex = f;
+                            outlineLayerOffset = 0f;
+                            outlineColor = unitOutLine;
+                            outline = drawRegion = under = true;
+                            progress = PartProgress.recoil;
+                            moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
+                    }}); }
 
-                bullet = new ArtilleryBulletType(3f, 14){{
-                    width = 7f;
-                    height = 9f;
-                    trailSize = 3f;
-                    lifetime = 65f;
-                    splashDamage = 2f;
-                    splashDamageRadius = 25f * 0.75f;
-                    collidesAir = false;
-                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
-                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
-                    hitEffect = despawnEffect = Fx.hitBulletSmall;
-                }};
-            }});
-            weapons.add(new Weapon("olupis-twin-auto-cannon"){{
-                x = 0f;
-                y = 10.5f;
-                recoil = 1f;
-                recoils = 2;
-                reload = 4f;
-                hitSize = 14f;
-                trailScl = 1.9f;
-                shootY = 5.3f;
-                inaccuracy = 8f;
-                trailLength = 22;
-                waveTrailY = -4f;
-                rotateSpeed = 3f;
-                waveTrailX = 5.5f;
-                rotate = true;
-                mirror = false;
-                shootSound = Sounds.shoot;
-                shoot = new ShootAlternate(4.1f);
-                for(int i = 0; i < 2; i ++){ int f = i;
-                    parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
-                        x = (f == 0) ? 1.6f : -1.6f;
-                        y = 2f;
-                        recoilIndex = f;
-                        outlineLayerOffset = 0f;
-                        outlineColor = unitOutLine;
-                        outline = drawRegion = under = true;
-                        progress = PartProgress.recoil;
-                        moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
-                }}); }
+                    bullet = new ArtilleryBulletType(3f, 14){{
+                        width = 7f;
+                        height = 9f;
+                        trailSize = 3f;
+                        lifetime = 65f;
+                        splashDamage = 2f;
+                        splashDamageRadius = 25f * 0.75f;
+                        collidesAir = false;
+                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
+                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
+                        hitEffect = despawnEffect = Fx.hitBulletSmall;
+                    }};
+                }},
+                new Weapon("olupis-twin-auto-cannon"){{
+                    x = 0f;
+                    y = 10.5f;
+                    recoil = 1f;
+                    recoils = 2;
+                    reload = 4f;
+                    shootY = 5.3f;
+                    inaccuracy = 8f;
+                    rotateSpeed = 3f;
+                    rotate = true;
+                    mirror = false;
+                    shootSound = Sounds.shoot;
+                    shoot = new ShootAlternate(4.1f);
+                    for(int i = 0; i < 2; i ++){ int f = i;
+                        parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
+                            x = (f == 0) ? 1.6f : -1.6f;
+                            y = 2f;
+                            recoilIndex = f;
+                            outlineLayerOffset = 0f;
+                            outlineColor = unitOutLine;
+                            outline = drawRegion = under = true;
+                            progress = PartProgress.recoil;
+                            moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
+                    }}); }
 
-                bullet = new BasicBulletType(2.5f, 14){{
-                    width = 5f;
-                    height = 6f;
-                    lifetime = 78f;
-                    collidesAir = false;
-                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
-                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
-                    hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
-                    shootEffect = Fx.shootSmallSmoke;
-                }};
-            }});
+                    bullet = new BasicBulletType(2.5f, 14){{
+                        width = 5f;
+                        height = 6f;
+                        lifetime = 78f;
+                        collidesAir = false;
+                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        shootEffect = Fx.shootSmallSmoke;
+                    }};
+                }}
+            );
         }};
 
         crusader = new NyfalisUnitType("crusader"){{
             armor = 7f;
+            hitSize = 20f;
             health = 870f;
+            trailScl = 1.5f;
+            trailLength = 22;
+            waveTrailX = 7f;
+            waveTrailY = -9f;
+            itemCapacity = 60;
             constructor = bay.constructor;
             weapons.add(new Weapon("olupis-tri-mount"){{
                 x = 0;
-                y = -5f;
+                y = -9f;
                 recoils = 3;
                 reload = 20;
                 recoil = 0.5f;
                 rotateSpeed = 5f;
                 mirror = false;
                 rotate= top = true;
-                shoot = new ShootAlternate(2.2f);
+                shoot = new ShootAlternate(2.7f);
                 for(int i = 0; i < 3; i ++){ int f = i;
                     parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : i == 1 ? "m" : "r")){{
                         x = (f == 0) ? 3.8f : (f == 1) ? 0f : -3.8f;
@@ -804,11 +804,30 @@ public class NyfalisUnits {
             }},
             new Weapon("olupis-dark-pew"){{
                 x = 0;
-                y = -5f;
+                y = -9f;
                 reload = 35f;
                 mirror = false;
                 rotate = true;
                 layerOffset = 0.01f;
+                ejectEffect = Fx.casing1;
+                shoot = new ShootSpread(6, 2f);
+                bullet = new BasicBulletType(2.5f, 10f){{
+                    width = 7f;
+                    height = 9f;
+                    shrinkX = 25f /60;
+                    shrinkY = 35f /60;
+                    lifetime = 40f;
+                    fragBullets = 1;
+                    fragVelocityMin = 1f;
+                    fragRandomSpread = 0f;
+                }};
+            }},
+            new Weapon("olupis-dark-pew"){{
+                x = 0;
+                y = 11f;
+                reload = 35f;
+                mirror = false;
+                rotate = true;
                 ejectEffect = Fx.casing1;
                 shoot = new ShootSpread(6, 2f);
                 bullet = new BasicBulletType(2.5f, 10f){{
@@ -828,7 +847,7 @@ public class NyfalisUnits {
         //region Nyfalis Limited LifeTime / Support Units
         mite = new AmmoLifeTimeUnitType("mite"){{
             /*Rework: only no ammo deplete over time if with X of parent, once out, high  deplete amount*/
-            hitSize = 9;
+            hitSize = 8f;
             range = 45f;
             armor = 10f;
             speed = 2.7f;
@@ -895,6 +914,7 @@ public class NyfalisUnits {
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{
             armor = 2;
+            hitSize = 7f;
             speed = 3.25f;
             fogRadius = 6f;
             ammoCapacity = 320;
@@ -925,9 +945,9 @@ public class NyfalisUnits {
         }};
 
         banshee = new LeggedWaterUnit("banshee"){{
-            legCount = 4;
             hitSize = 8f;
             health = 150;
+            legCount = 4;
             mineTier = 3;
             fogRadius = 8f;
             legLength = 9f;
@@ -951,7 +971,7 @@ public class NyfalisUnits {
             speed = 3.25f;
             fogRadius = 6f;
             buildSpeed = 0.8f;
-            ammoCapacity = 1200;
+            ammoCapacity = 2500;
 
             weapons.add(new BuildWeapon("build-weapon"){{
                 rotate = useAmmo = true;
@@ -1023,7 +1043,7 @@ public class NyfalisUnits {
         //region Nyfalis Core Units
         gnat = new NyfalisUnitType("gnat"){{
             armor = 1f;
-            hitSize = 9f;
+            hitSize = 10f;
             speed = 2.4f;
             drag = 0.11f;
             health = 420;
@@ -1117,7 +1137,7 @@ public class NyfalisUnits {
 
         phorid = new NyfalisUnitType("phorid"){{
             armor = 3f;
-            hitSize = 10f;
+            hitSize = 10.5f;
             speed = 2.6f;
             drag = 0.11f;
             health = 560;
@@ -1175,10 +1195,10 @@ public class NyfalisUnits {
                             hitSound = Sounds.explosion;
                             hitEffect = NyfalisFxs.unitDischarge;
 
-                            speed = 0f;
                             rangeOverride = 30f;
                             splashDamage = 70f;
                             splashDamageRadius = 55f;
+                            speed = buildingDamageMultiplier = 0f;
                             intervalBullet = new HealOnlyBulletType(0,-5) {{
                                 spin = 3.7f;
                                 drag = 0.9f;

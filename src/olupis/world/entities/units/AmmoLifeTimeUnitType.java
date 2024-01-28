@@ -16,6 +16,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
 import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
@@ -160,6 +161,8 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     }
 
     public void drawAmmo(Unit unit){
+        float z = !unit.isAdded() ? Draw.z() : unit.elevation > 0.5f ? (lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : groundLayer + Mathf.clamp(hitSize / 4000f, 0, 0.01f);
+        Draw.z(z);
         applyColor(unit);
 
         Draw.color(ammoColor(unit));
