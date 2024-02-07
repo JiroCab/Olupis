@@ -18,6 +18,7 @@ public class PoweredLightingWall extends Wall {
     public PoweredLightingWall(String name) {
         super(name);
         hasPower = true;
+
     }
 
     @Override
