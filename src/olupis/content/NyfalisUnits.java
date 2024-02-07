@@ -7,17 +7,22 @@ import arc.struct.Seq;
 import arc.util.Interval;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
-import mindustry.content.*;
+import mindustry.content.Fx;
+import mindustry.content.StatusEffects;
+import mindustry.content.UnitTypes;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
-import mindustry.entities.pattern.*;
+import mindustry.entities.pattern.ShootAlternate;
+import mindustry.entities.pattern.ShootSpread;
 import mindustry.entities.units.WeaponMount;
 import mindustry.game.Teams;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.*;
+import mindustry.type.AmmoType;
+import mindustry.type.ItemStack;
+import mindustry.type.Weapon;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.BuildWeapon;
 import mindustry.type.weapons.PointDefenseWeapon;
@@ -26,11 +31,15 @@ import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
 import olupis.world.entities.abilities.MicroWaveFieldAbility;
 import olupis.world.entities.abilities.UnitRallySpawnAblity;
-import olupis.world.entities.bullets.*;
+import olupis.world.entities.bullets.HealOnlyBulletType;
+import olupis.world.entities.bullets.NoBoilLiquidBulletType;
+import olupis.world.entities.bullets.RollBulletType;
+import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.units.*;
 
 import static mindustry.content.Items.*;
-import static olupis.content.NyfalisItemsLiquid.*;
+import static olupis.content.NyfalisItemsLiquid.rustyIron;
+import static olupis.content.NyfalisItemsLiquid.steam;
 
 public class NyfalisUnits {
 
@@ -205,16 +214,17 @@ public class NyfalisUnits {
         }};
 
         pteropus = new NyfalisUnitType("pteropus"){{
+            //TODO: deploying is not possible w/ logic
             hitSize = 10f;
             drag = 0.06f;
             accel = 0.08f;
             health = 250f;
             speed = 2.20f;
             fogRadius = 10f;
-            engineSize = 1.6f;
+            engineSize = 1.7f;
             rotateSpeed = 19f;
             itemCapacity = 20;
-            engineOffset = 6.6f;
+            engineOffset = 7f;
 
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
@@ -245,7 +255,7 @@ public class NyfalisUnits {
 
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
-                    shootY = 7.5f;
+                    shootY = 7.4f;
                     recoil = 0.5f;
                     reload = 15f;
                     recoils = 1;
@@ -366,8 +376,8 @@ public class NyfalisUnits {
             armor = 2;
             hitSize = 11f;
             health = 350;
-            segments = 7;
             speed = 2.2f;
+            segments = 7;
             segmentScl = 8f;
             rotateSpeed = 10f;
             itemCapacity = 20;
@@ -382,8 +392,8 @@ public class NyfalisUnits {
             allowLegStep = true;
 
            weapons.addAll(new SnekWeapon("olupis-dark-pew"){{
-                x = 0f;
-                y = -11f;
+                x = y = 0f;
+                shootY = 4.5f;
                 reload = 35f;
                 weaponSegmentParent = 3;
                 mirror = false;

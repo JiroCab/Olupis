@@ -4,7 +4,8 @@ Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
 
 = Version 1-7() =
     + Units added: regioner, germanica, serpent, essex, revenant, pteropus
-    + Blocks added: steamTurbine, aegis, alternateArticulator,  glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush, deadTree
+    + Blocks added: steamTurbine, lubricantMixer, discardDriver, siliconKiln, rustEngraver, alternateArticulator, uartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge
+    + Tiles added:  glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush, deadTree, hardenMuddyVent
     + Status Effect added: lubed, mossed, deployed
     + Added a toggleable weather effect for cloud shadows (still need to be manually added as a weather)
     ~ Balance: Reduced junction to better scale with other blocks

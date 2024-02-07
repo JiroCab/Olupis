@@ -3,14 +3,22 @@ package olupis;
 import arc.Core;
 import arc.Events;
 import arc.graphics.g2d.TextureRegion;
+import arc.scene.Element;
 import arc.scene.Group;
+import arc.scene.event.Touchable;
 import arc.scene.ui.Label;
-import arc.util.*;
+import arc.scene.ui.layout.Table;
+import arc.util.Align;
+import arc.util.Log;
+import arc.util.Scaling;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Planets;
 import mindustry.editor.WaveInfoDialog;
-import mindustry.game.*;
+import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.Rules;
+import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
 import mindustry.type.Planet;
@@ -32,6 +40,7 @@ import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisMain extends Mod{
+    public static Table debugTable = new Table();
     public static NyfalisSounds soundHandler = new NyfalisSounds();
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
@@ -66,6 +75,7 @@ public class NyfalisMain extends Mod{
                 state.rules.hiddenBuildItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
             });
             unlockPlanets();
+            rebuildDebugTable();
             if(headless)return;
 
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
@@ -121,22 +131,35 @@ public class NyfalisMain extends Mod{
 
     public static void buildDebugUI(Group group){
 
+        group.fill(t -> {
+            t.name = "nyfalis-debug-cont";
+            t.visible(() -> Vars.ui.hudfrag.shown);
+            t.bottom().left();
+            rebuildDebugTable();
+            t.table(tab -> tab.add(debugTable)).row();
+        });
+    }
+
+    public static void rebuildDebugTable(){
+        debugTable.reset();
+        debugTable.clear();
+
         CustomRulesDialog ruleInfo = new CustomRulesDialog();
         WaveInfoDialog waveInfo = new WaveInfoDialog();
 
-        group.fill(t -> {
-            t.visible(() -> Vars.ui.hudfrag.shown);
-            t.bottom().left();
-            t.button("Export w/ Nyf", Icon.file, Styles.squareTogglet, () -> {
-                state.rules.blockWhitelist = true;
-                NyfalisPlanets.nyfalis.applyRules(state.rules);
-                ui.paused.show();
-            }).width(155f).height(40f).margin(12f).checked(false).row();
-            t.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
-                ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
-            }).width(155f).height(40f).margin(12f).checked(false).row();
-            t.button("@editor.waves", Icon.waves, Styles.squareTogglet, waveInfo::show).width(155f).height(40f).margin(12f).checked(false);
-        });
+        debugTable.button("Export w/ Nyf", Icon.file, Styles.squareTogglet, () -> {
+            state.rules.blockWhitelist = true;
+            NyfalisPlanets.nyfalis.applyRules(state.rules);
+            ui.paused.show();
+        }).width(155f).height(40f).margin(12f).checked(false).row();
+        debugTable.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
+            ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
+        }).width(155f).height(40f).margin(12f).checked(false).row();
+        debugTable.button("@editor.waves", Icon.waves, Styles.squareTogglet, waveInfo::show).width(155f).height(40f).margin(12f).checked(false);
+        if(mobile || testMobile){
+            debugTable.row();
+            debugTable.add(new Element()).width(155f).height(50f).margin(12f).touchable( Touchable.disabled);
+        }
     }
 
 
@@ -147,7 +170,7 @@ public class NyfalisMain extends Mod{
         unlockPlanets();
     }
 
-    public static void disclaimerDialog(){
+    public static void  disclaimerDialog(){
         BaseDialog dialog = new BaseDialog("@nyfalis-disclaimer.name");
         dialog.centerWindow();
 

@@ -13,6 +13,7 @@ import arc.util.*;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.CommandAI;
+import mindustry.ai.types.LogicAI;
 import mindustry.audio.SoundLoop;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
@@ -200,7 +201,7 @@ public class NyfalisUnitType extends UnitType {
 
         if(deployHasEffect && (!deployLands || unit.isGrounded())) unit.apply(deployEffect, deployEffectTime);
         if(unit.type instanceof  NyfalisUnitType nyf && nyf.canDeploy) {
-            if (!unit.isPlayer()) {
+            if (!unit.isPlayer() && (unit.controller() instanceof LogicAI)) {
                 boolean deployed = (unit.controller() instanceof CommandAI c && c.command == NyfalisUnitCommands.nyfalisDeployCommand);
                 if(!deployed && unit.isGrounded())unit.apply(deployEffect, deployEffectTime);
 
@@ -231,6 +232,9 @@ public class NyfalisUnitType extends UnitType {
         strictAngle = true;
         /*Margin where when a weapon can fire while transition from ground to air*/
         float boostedEvaluation = 0.95f, groundedEvaluation = 0.05f;
+        /*Snek weapon helper so I don't have to override anything else there*/
+        float shootXf = shootX, shootYf = shootY;
+        boolean altWeaponPos = false;
 
         public NyfalisWeapon(String name){super(name);}
         public NyfalisWeapon(String name, boolean boostShoot, boolean groundShoot ){
@@ -288,8 +292,8 @@ public class NyfalisUnitType extends UnitType {
             float weaponRotation = unit.rotation - 90 + (rotate ? mount.rotation : baseRotation),
                     mountX = unit.x + Angles.trnsx(unit.rotation - 90, x, y),
                     mountY = unit.y + Angles.trnsy(unit.rotation - 90, x, y),
-                    bulletX = mountX + Angles.trnsx(weaponRotation, this.shootX, this.shootY),
-                    bulletY = mountY + Angles.trnsy(weaponRotation, this.shootX, this.shootY),
+                    bulletX = altWeaponPos  ? shootXf : mountX + Angles.trnsx(weaponRotation, this.shootX, this.shootY),
+                    bulletY =  altWeaponPos  ? shootYf : mountY + Angles.trnsy(weaponRotation, this.shootX, this.shootY),
                     shootAngle = bulletRotation(unit, mount, bulletX, bulletY);
 
             //find a new target

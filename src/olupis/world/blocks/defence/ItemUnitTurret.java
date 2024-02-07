@@ -180,6 +180,7 @@ public class ItemUnitTurret extends ItemTurret {
 
                     b.table(info -> {
                         if (item != null) info.table(title -> {
+                            title.image(statArticulator.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top().tooltip(statArticulator.localizedName).padLeft(0.5f);
                             title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
                             title.add(item.localizedName).left().top();
                         }).left().row();

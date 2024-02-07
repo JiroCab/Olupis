@@ -12,9 +12,9 @@ author: "Programming:\nRushieWashie, Siede, WMF Industries \n----------------
 main: "olupis.NyfalisMain"
 
 #the mod description as seen in the mod dialog
-description: "(\u26A0Work in progress\u26A0)\n Yet another planet mod \nThat does it's best to give the player(s) a bit of something new,\n with a minor hint of what the base game has to offer and pain on top"
+description: "(\u26A0Work in progress\u26A0)\n Yet another planet mod \nThat does it's best to give the player(s) a bit of something new,\n with a minor hint of what the base game has to offer, focus on RTS controls, and pain on top"
 
-subtitle: "Yet another planet mod, v1.7-b1"
+subtitle: "Yet another planet mod, v1.7-b2"
 
 #the mod version
 version: 1.7

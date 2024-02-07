@@ -51,7 +51,7 @@ import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisBlocks {
-    //region Blocks Variables
+        //region Blocks Variables
     public static Block
         //environment
         /*Ores / Overlays */
@@ -61,7 +61,7 @@ public class NyfalisBlocks {
         /*Floors*/
         redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass, mossyDirt, frozenDirt, frozenMud, hardenMud, mossyhardenMud,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        grassyVent, mossyVent, stoneVent, basaltVent,
+        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater,
@@ -85,13 +85,13 @@ public class NyfalisBlocks {
         rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader, rustedBridge,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
-        steamBoiler, steamAgitator, broiler, oilSeparator,
+        steamBoiler, steamAgitator, broiler, oilSeparator, lubricantMixer,
 
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine,
 
-        rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
+        rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, lubricantMixer,
+        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall,
 
@@ -194,7 +194,6 @@ public class NyfalisBlocks {
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        /*TODO: diff gray-greens for each stage*/
         mossierStone = new Floor("mossier-stone"){{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
@@ -227,7 +226,7 @@ public class NyfalisBlocks {
 
         hardenMud = new Floor("harden-mud"){{
             attributes.set(Attribute.water, 0.1f);
-            variants = 1;
+            variants = 3;
         }};
 
         mossyhardenMud = new Floor("mossy-harden-mud"){{
@@ -250,6 +249,12 @@ public class NyfalisBlocks {
         stoneVent = new SteamVent("stone-vent"){{
             effectColor = Color.white;
             parent = blendGroup = stone;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
+        hardenMuddyVent = new SteamVent("harden-muddy-vent"){{
+            effectColor = Color.white;
+            parent = blendGroup = hardenMud;
             attributes.set(Attribute.steam, 1f);
         }};
 
@@ -835,7 +840,7 @@ public class NyfalisBlocks {
         }};
 
         broiler = new GenericCrafter("broiler"){{
-            hasLiquids = hasPower = true;
+            hasLiquids = hasPower =  outputsLiquid = true;
 
             size = 2;
             health = 600;
@@ -849,10 +854,23 @@ public class NyfalisBlocks {
             requirements(Category.liquid, with(graphite, 25, iron, 20, lead, 40, silicon, 10));
         }};
 
+        lubricantMixer = new GenericCrafter("lubricant-mixer"){{
+            hasLiquids = hasPower =  outputsLiquid = true;
+
+            size = 3;
+
+            consumeItem(silicon);
+            lightLiquid = lubricant;
+            consumePower(1f);
+            consumeLiquid(Liquids.oil, 12f / 60f);
+            outputLiquid = new LiquidStack(lubricant, 10/60f);
+            requirements(Category.liquid, with(quartz, 25, iron, 50, silicon, 40, quartz, 10));
+        }};
+
         //endregion
         //region Production
         rustElectrolyzer = new GenericCrafter("rust-electrolyzer"){{
-            hasPower = hasItems = hasLiquids = solid = outputsLiquid = true;
+            hasPower = hasItems = hasLiquids = solid = true;
             rotate = false;
 
             size = 2;
@@ -869,7 +887,27 @@ public class NyfalisBlocks {
             consumeItems(with(lead, 2, rustyIron, 2));
             researchCost = with(rustyIron, 50, lead, 50);
             requirements(Category.crafting, with(rustyIron, 15, lead, 30));
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawLiquidTile(Liquids.cryofluid){{drawLiquidLight = true;}}, new DrawDefault());
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawDefault());
+        }};
+
+        rustEngraver = new GenericCrafter("rust-engraver"){{
+            hasPower = hasItems = hasLiquids = solid  = true;
+            rotate = false;
+
+            size = 4;
+            craftTime = 120;
+            envEnabled = Env.any;
+            buildCostMultiplier = 0.4f;
+
+            lightLiquid = Liquids.cryofluid;
+            consumePower(1f);
+            craftEffect = Fx.pulverizeMedium;
+            outputItem = new ItemStack(iron, 2);
+            consumeLiquid(Liquids.water, 38f / 60f).boost();
+            consumeItems(with(quartz, 1, rustyIron, 6));
+            researchCost = with(iron, 2000, lead, 2000, rustyIron, 2000, quartz, 1000, cobalt, 500);
+            requirements(Category.crafting, with(iron, 25, lead, 30, rustyIron, 30, quartz, 25, cobalt, 25));
+            //drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawLiquidTile(Liquids.cryofluid){{drawLiquidLight = true;}}, new DrawDefault());
         }};
 
         hydrochloricGraphitePress  = new GenericCrafter("hydro-graphite-press"){{
@@ -888,16 +926,33 @@ public class NyfalisBlocks {
             consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, NyfalisItemsLiquid.steam, 7f/60f));
         }};
 
+        siliconKiln = new GenericCrafter("silicon-kiln"){{
+            requirements(Category.crafting, with(Items.copper, 30, Items.lead, 25));
+            craftEffect = Fx.smeltsmoke;
+            outputItem = new ItemStack(Items.silicon, 1);
+            craftTime = 40f;
+            size = 2;
+            hasPower = true;
+            hasLiquids = false;
+            drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("ffef99")));
+            ambientSound = Sounds.smelter;
+            ambientSoundVolume = 0.07f;
+
+            consumeItem(quartz, 2);
+            consumeLiquid(oil, 15f/60f);
+            consumePower(0.50f);
+        }};
+
         siliconArcSmelter = new GenericCrafter("silicon-arc-smelters") {{
             hasPower= hasItems = true;
             size = 4;
             craftTime = 30f;
-            itemCapacity = 20;
+            itemCapacity = 30;
 
-            consumePower(30f/60f);
-            outputItem = new ItemStack(silicon, 1);
+            consumePower(70f/60f);
+            outputItem = new ItemStack(silicon, 3);
             consumeItems(with(quartz, 2, graphite, 1));
-            requirements(Category.crafting, with(lead, 65, rustyIron, 65, graphite, 15, iron, 15));
+            requirements(Category.crafting, with(lead, 65, iron, 65, graphite, 15, iron, 15, cobalt, 15));
         }};
 
         bioMatterPress = new GenericCrafter("biomatter-press"){{
@@ -940,6 +995,12 @@ public class NyfalisBlocks {
             researchCost = with(lead, 700, rustyIron, 700);
             requirements(Category.crafting, with(rustyIron, 20, lead, 50));
         }};
+
+        discardDriver = new DiscardDriver("discard-driver"){{
+
+        }};
+
+        //discardDriver -> mass driver that discards item in a random direction
 
         //endregion
         //region Units
@@ -1308,6 +1369,49 @@ public class NyfalisBlocks {
             requirements(Category.defense,with(iron, 24));
         }};
 
+        quartzWall = new Wall("quartz-wall"){{
+            absorbLasers = true;
+            size = 1;
+            health = 1100;
+            buildCostMultiplier = 0.7f;
+            researchCost = with(quartz, 500, lead, 200);
+            requirements(Category.defense,with(quartz, 6, lead, 2));
+        }};
+
+        quartzWallLarge = new Wall("quartz-wall-large"){{
+            absorbLasers = true;
+            size = 2;
+            health = 4600;
+            buildCostMultiplier = 0.7f;
+            researchCost = with(quartz, 1000, lead, 200);
+            requirements(Category.defense,with(quartz, 24, lead, 8));
+        }};
+
+
+        cobaltWall = new PoweredLightingWall("cobalt-wall"){{
+            conductivePower = consumesPower = update = true;
+            size = 1;
+            health = 1500;
+            buildCostMultiplier = 0.7f;
+            lightningChancePowered = 0.06f;
+            consumePower(5f / 60f);
+            researchCost = with(cobalt, 500, copper, 200);
+            requirements(Category.defense,with(cobalt, 6, silicon, 2));
+            lightningColor = new Color().set(cobalt.color).lerp(surgeAlloy.color, 0.5f);
+        }};
+
+        cobaltWallLarge = new PoweredLightingWall("cobalt-wall-large"){{
+            conductivePower = consumesPower = update = true;
+            size = 2;
+            health = 5700;
+            buildCostMultiplier = 0.7f;
+            lightningChancePowered = 0.06f;
+            consumePower(20f / 60f);
+            researchCost = with(cobalt, 1000, copper, 200);
+            requirements(Category.defense,with(cobalt, 24, silicon, 8));
+            lightningColor = new Color().set(cobalt.color).lerp(surgeAlloy.color, 0.5f);
+        }};
+
         //TODO: late game wall is also a router
 
 
@@ -1602,5 +1706,15 @@ public class NyfalisBlocks {
             itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid, powerSource, powerVoid, heatSource,
             worldProcessor, worldMessage
         );
+
+        cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
+        cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);
+        cinderBloomiest.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.25f);
+        mossyStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.75f);
+        mossierStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.5f);
+        mossiestStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.25f);
+        mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
+        frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
+
     }
 }
