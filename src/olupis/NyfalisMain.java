@@ -57,7 +57,7 @@ public class NyfalisMain extends Mod{
         NyfalisAttributeWeather.loadWeather();
         NyfalisPlanets.LoadPlanets();
         NyfalisSectors.LoadSectors();
-        NyfalisSounds.LoadMusic();
+        //NyfalisSounds.LoadMusic();
 
         NyfalisPlanets.PostLoadPlanet();
         NyfalisTechTree.load();
@@ -80,7 +80,7 @@ public class NyfalisMain extends Mod{
 
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
             if( Core.settings.getBool("nyfalis-debug")) buildDebugUI(Vars.ui.hudGroup);
-            soundHandler.replaceSoundHandler();
+            //soundHandler.replaceSoundHandler();
         });
 
         if(headless)return;
