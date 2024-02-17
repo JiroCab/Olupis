@@ -15,8 +15,11 @@ public class NyfalisSettingsDialog {
     public NyfalisSettingsDialog() {
         if(!headless) BuildDialog();
     }
+    public boolean musicModPresent = false;
 
     public void BuildDialog(){
+        musicModPresent =  mods.locateMod("nyfalis-music") != null;
+
         ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
@@ -30,7 +33,10 @@ public class NyfalisSettingsDialog {
 
             table.row();
 
-            BuildNyfalisSoundSettings(table, false);
+            if(musicModPresent)BuildNyfalisSoundSettings(table, false);
+            else table.checkPref("nyfalis-space-sfx", false);
+            table.row();
+
             table.button("@nyfalis-disclaimer.name", NyfalisMain::disclaimerDialog).margin(14).width(260f).pad(6);
         });
     }
@@ -51,7 +57,7 @@ public class NyfalisSettingsDialog {
             subTable.checkPref("nyfalis-space-sfx",false);
             subTable.checkPref("nyfalis-music",true);
             subTable.checkPref("nyfalis-music-only",false);
-            subTable.checkPref("nyfalis-music-add",true, c -> NyfalisMain.soundHandler.nyfalisMusicSet = false);
+            subTable.checkPref("nyfalis-music-add",true, c -> Core.settings.put("nyfalis-replacemusic", false));
             subTable.checkPref("nyfalis-music-custom-game",true);
             t.add(subTable);
         }, () ->shown[0]).growX().center().row();

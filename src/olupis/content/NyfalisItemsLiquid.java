@@ -9,7 +9,7 @@ import static mindustry.Vars.content;
 
 public class NyfalisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, cryoRods, steel, silicatePowder;
+    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, alucryoRods, steel, silicatePowder;
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam, lubricant;
 
@@ -28,7 +28,7 @@ public class NyfalisItemsLiquid {
             hardness = 2;
             healthScaling = 0.25f;
         }};
-        cobalt = new Item("cobalt", Color.valueOf("0b6e87")) {{
+        cobalt = new Item("cobalt", Color.valueOf("5D5D74")) {{
             hardness = 2;
             charge = 0.5f;
             healthScaling = 0.25f;
@@ -36,6 +36,15 @@ public class NyfalisItemsLiquid {
         quartz = new Item("quartz", Color.valueOf("E2D6D5")){{
             hardness = 2;
         }};
+
+        aluminum = new Item("aluminum", Color.valueOf("6D6D6D")){{
+            hardness = 2;
+        }};
+
+        alcoAlloy = new Item("aloco-alloy", Color.valueOf("546295")){{
+            hardness = 2;
+        }};
+
 
         nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz);
         nyfalisItems.add(nyfalisOnlyItems);
@@ -61,7 +70,7 @@ public class NyfalisItemsLiquid {
 
         lubricant = new Liquid("lubricant", Color.valueOf("787878")){{
             viscosity = 0.7f;
-            flammability = 1.4f;
+            flammability = 1.35f;
             explosiveness = 1.25f;
             heatCapacity = 0.86f;
             barColor = Color.valueOf("6b675f");

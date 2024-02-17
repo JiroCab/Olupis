@@ -3,17 +3,21 @@ https://github.com/JiroCab/Olupis
 Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
 
 = Version 1-7() =
-    + Units added: regioner, germanica, serpent, essex, revenant, pteropus
-    + Blocks added: steamTurbine, lubricantMixer, discardDriver, siliconKiln, rustEngraver, alternateArticulator, uartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge
-    + Tiles added:  glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush, deadTree, hardenMuddyVent
+    + Units added: regioner, germanica, serpent, essex, revenant, pteropus, acerodon
+    + Blocks added: steamTurbine, lubricantMixer, discardDriver, siliconKiln, rustEngraver, alternateArticulator, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge
+    + Tiles added: glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush, deadTree, hardenMuddyVent
     + Status Effect added: lubed, mossed, deployed
+    + Items added: alcoAlloy, aluminum
     + Added a toggleable weather effect for cloud shadows (still need to be manually added as a weather)
     ~ Balance: Reduced junction to better scale with other blocks
-    ~ Balance: Core scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp
+    ~ Balance: Core health scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp
     ~ Balance: Relic & Vestige Weapon types swapped, stats unchanged
     ~ Bug Fix: Colours of certain content not being set correctly
     ~ Bug Fix: Hit boxes of certain units being small/bigger than appropriate
     ~ Improved Gnat and Phorid's attacking visual design to better indicate area of damage
+    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item)
+    ~ Sprites Contributed by Remington Thomas: acerodon
+    -- Music removed from content mod - https://github.com/JiroCab/Nyfalis-Music
 
 = Version 1-6 (9d343a0) = https://github.com/JiroCab/Olupis/tree/9d343a0e5fc3aab9c5efc5073e9b9d7e4edfb1e5
     + Support/Ammo limited units have ammo visual indicators

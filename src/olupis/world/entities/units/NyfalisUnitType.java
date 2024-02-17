@@ -33,6 +33,7 @@ import olupis.content.NyfalisItemsLiquid;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
+import olupis.world.entities.parts.NyfPartParms;
 
 import static mindustry.Vars.*;
 
@@ -245,7 +246,17 @@ public class NyfalisUnitType extends UnitType {
         NyfalisWeapon(){}
 
         @Override
+        public void draw(Unit unit, WeaponMount mount){
+            if(parts.size > 0){
+                NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation());
+            }
+            super.draw(unit, mount);
+        }
+
+
+        @Override
         public void update(Unit unit, WeaponMount mount){
+
             boolean can = (!unit.disarmed
                     && (!unit.type.canBoost ||
                     (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation)));

@@ -7,9 +7,7 @@ import arc.struct.Seq;
 import arc.util.Interval;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
-import mindustry.content.Fx;
-import mindustry.content.StatusEffects;
-import mindustry.content.UnitTypes;
+import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
@@ -20,9 +18,7 @@ import mindustry.game.Teams;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.AmmoType;
-import mindustry.type.ItemStack;
-import mindustry.type.Weapon;
+import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.BuildWeapon;
 import mindustry.type.weapons.PointDefenseWeapon;
@@ -31,15 +27,13 @@ import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
 import olupis.world.entities.abilities.MicroWaveFieldAbility;
 import olupis.world.entities.abilities.UnitRallySpawnAblity;
-import olupis.world.entities.bullets.HealOnlyBulletType;
-import olupis.world.entities.bullets.NoBoilLiquidBulletType;
-import olupis.world.entities.bullets.RollBulletType;
-import olupis.world.entities.bullets.SpawnHelperBulletType;
+import olupis.world.entities.bullets.*;
+import olupis.world.entities.parts.CellPart;
+import olupis.world.entities.parts.NyfPartParms;
 import olupis.world.entities.units.*;
 
 import static mindustry.content.Items.*;
-import static olupis.content.NyfalisItemsLiquid.rustyIron;
-import static olupis.content.NyfalisItemsLiquid.steam;
+import static olupis.content.NyfalisItemsLiquid.*;
 
 public class NyfalisUnits {
 
@@ -267,6 +261,92 @@ public class NyfalisUnits {
                             mirror = true;
                             x = -2.3f;
                             moveX = 1f;
+                            progress = NyfPartParms.NyfPartProgress.elevationP.inv();
+                        }}
+                    );
+
+                    bullet = new BasicBulletType(2.6f, 9){{
+                        width = 6f;
+                        height = 8f;
+                        lifetime = 40f;
+                        splashDamage = 1f;
+                        splashDamageRadius = 5f * 0.75f;
+                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
+                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
+                        hitEffect = despawnEffect = Fx.hitBulletSmall;
+                    }};
+                }}
+
+            );
+        }};
+
+
+        acerodon = new NyfalisUnitType("acerodon"){{
+            //TODO: deploying is not possible w/ logic
+            hitSize = 10f;
+            drag = 0.06f;
+            accel = 0.08f;
+            health = 250f;
+            speed = 2.20f;
+            fogRadius = 10f;
+            engineSize = 1.7f;
+            rotateSpeed = 19f;
+            itemCapacity = 20;
+            engineOffset = 7f;
+
+            constructor = UnitEntity::create;
+            aiController = AgressiveFlyingAi::new;
+            deployEffect = NyfalisStatusEffects.deployed;
+            lowAltitude = flying = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
+            weapons.addAll(
+                new NyfalisWeapon("", true, false){{
+                    top = alternate = false;
+                    y = 3.8f;
+                    x = -2f;
+                    inaccuracy = 3f;
+                    reload = shootCone = 15f;
+                    ejectEffect = Fx.casing1;
+
+                    showStatSprite = false;
+                    bullet = new BasicBulletType(2.5f, 3, "olupis-diamond-bullet"){{
+                        width = 4;
+                        height = 6f;
+                        lifetime = 40f;
+                        homingPower = 0.04f;
+                        shootEffect = Fx.none;
+                        smokeEffect = Fx.shootSmallSmoke;
+                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                    }};
+                }},
+
+                new NyfalisWeapon("", false, true){{
+                    x = y = 0;
+                    shootY = 7.4f;
+                    recoil = 0.5f;
+                    reload = 15f;
+                    recoils = 1;
+                    top = alternate = mirror = false;
+                    rotate = alwaysRotate = true;
+
+                    float cx = -4.2f, mx = 0.6f, cy = 2.8f, r = 1;
+                    parts.addAll(
+                        new RegionPart("olupis-acerodon-weapon"){{
+                            mirror = true;
+                            x = cx;
+                            y = cy;
+                            moveX = mx;
+                            moveRot = r;
+                            progress = NyfPartParms.NyfPartProgress.elevationP.inv();
+                        }},
+                        new CellPart("olupis-acerodon-weapon-cell"){{
+                            mirror = true;
+                            x = cx;
+                            y = cy;
+                            moveX = mx;
+                            moveRot = r;
+                            progress = NyfPartParms.NyfPartProgress.elevationP.inv();
                         }}
                     );
 

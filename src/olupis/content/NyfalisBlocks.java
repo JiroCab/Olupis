@@ -2,6 +2,7 @@ package olupis.content;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.*;
 import mindustry.Vars;
@@ -37,8 +38,7 @@ import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
 import olupis.world.consumer.ConsumeLubricant;
-import olupis.world.entities.bullets.HealOnlyBulletType;
-import olupis.world.entities.bullets.SpawnHelperBulletType;
+import olupis.world.entities.bullets.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -55,7 +55,7 @@ public class NyfalisBlocks {
     public static Block
         //environment
         /*Ores / Overlays */
-        oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead, oreQuartz,
+        oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead, oreQuartz, oreAlco,
         glowSprouts, lumaSprouts,
 
         /*Floors*/
@@ -93,7 +93,7 @@ public class NyfalisBlocks {
 
         garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln,
 
-        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall,
+        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall, repairPin,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal,
         mendFieldProjector, taurus,
@@ -1180,6 +1180,46 @@ public class NyfalisBlocks {
         // t4 = t2 + t3 reconstructor + Articulator
         // t5 = t1-t4 at assembler
 
+        repairPin = new UnitRailingRepairTurret("repair-pin"){{
+            //Intrusive bottom thoughts won -Rushie
+            size = 3;
+            shootY = 20f;
+            repairSpeed = 2f;
+            repairRadius = 110;
+
+            length = 100f;
+            lineFx = new Effect(20f, e -> {
+                if(!(e.data instanceof Vec2 v)) return;
+                color(e.color);
+                stroke(e.fout() * 0.9f + 0.6f);
+                Fx.rand.setSeed(e.id);
+                for(int i = 0; i < 7; i++){
+                    Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                    Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                }
+                e.scaled(14f, b -> {
+                    stroke(b.fout() * 1.5f);
+                    color(e.color);
+                    Lines.line(e.x, e.y, v.x, v.y);
+                });
+            });
+
+            fireFx = new Effect(10, e -> {
+                color(e.color);
+                float w = 1.2f + 7 * e.fout();
+
+                Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+                color(e.color);
+
+                for(int i : Mathf.signs){
+                    Drawf.tri(e.x, e.y, w * 0.9f, 18f * e.fout(), e.rotation + i * 90f);
+                }
+
+                Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+            });
+            requirements(Category.units, with(iron, 15, Items.lead, 20));
+        }};
+
         fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
             requirements(Category.units, with(Items.graphite, 10 , iron, 5));
             canOverdrive = false;
@@ -1443,7 +1483,7 @@ public class NyfalisBlocks {
         }};
 
         //endregion
-        //region Effect
+        //region Effect / Storage
         mendFieldProjector = new DirectionalMendProjector("mend-field-projector");
 
         taurus = new PowerTurret("taurus"){{
