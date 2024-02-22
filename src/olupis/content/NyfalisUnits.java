@@ -249,7 +249,7 @@ public class NyfalisUnits {
 
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
-                    shootY = 7.4f;
+                    shootY = 6.9f;
                     recoil = 0.5f;
                     reload = 15f;
                     recoils = 1;
@@ -540,7 +540,7 @@ public class NyfalisUnits {
                     baseRotation = 180f;
                     minShootVelocity = 0.1f;
                     weaponSegmentParent = 1;
-                    ignoreRotation = dashShoot = true;
+                    ignoreRotation = dashShoot = dashExclusive = true;
                     rotate = alternate = mirror = aiControllable = false;
                     ejectEffect = Fx.casing1;
                     bullet = new BasicBulletType(4.2f, 10f){{

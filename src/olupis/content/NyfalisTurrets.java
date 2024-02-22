@@ -462,7 +462,7 @@ public class NyfalisTurrets {
             shoot = new ShootSpread(9, 45);
             researchCost = with(lead, 100, rustyIron, 100);
             coolant = consume(new ConsumeLubricant(30f / 60f));
-            requirements(Category.turret, with(rustyIron, 20, lead, 40));
+            requirements(Category.turret, with(iron, 20, lead, 40, alcoAlloy, 20));
         }};
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)

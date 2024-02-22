@@ -202,9 +202,9 @@ public class NyfalisUnitType extends UnitType {
 
         if(deployHasEffect && (!deployLands || unit.isGrounded())) unit.apply(deployEffect, deployEffectTime);
         if(unit.type instanceof  NyfalisUnitType nyf && nyf.canDeploy) {
-            if (!unit.isPlayer() && (unit.controller() instanceof LogicAI)) {
-                boolean deployed = (unit.controller() instanceof CommandAI c && c.command == NyfalisUnitCommands.nyfalisDeployCommand);
-                if(!deployed && unit.isGrounded())unit.apply(deployEffect, deployEffectTime);
+            if (!unit.isPlayer() && !(unit.controller() instanceof LogicAI)) {
+                boolean deployed = (unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDeployCommand);
+                if(deployed && unit.isGrounded())unit.apply(deployEffect, deployEffectTime);
 
                 if (!deployed && alwaysBoosts) {
                     unit.updateBoosting(true);
@@ -228,7 +228,7 @@ public class NyfalisUnitType extends UnitType {
         partialControl = false,
         idlePrefRot = true, alwaysRotate = false,
         /*Shoot while dash command is selected*/
-        dashShoot = false,
+        dashShoot = false, dashExclusive = false,
         /*Check for angle to target before shooting */
         strictAngle = true;
         /*Margin where when a weapon can fire while transition from ground to air*/
@@ -344,7 +344,9 @@ public class NyfalisUnitType extends UnitType {
             }
 
             if(alwaysShooting)mount.shoot =true;
-            if(dashShoot && !unit.isPlayer() && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDashCommand) mount.shoot =true;
+            boolean isDashing = !unit.isPlayer() && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDashCommand;
+            if(dashShoot && isDashing) mount.shoot =true;
+            else if(dashExclusive && !isDashing) mount.shoot =false;
 
             //update continuous state
             if(continuous &&mount.bullet !=null) {

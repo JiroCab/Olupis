@@ -712,7 +712,7 @@ public class NyfalisBlocks {
             pumpAmount = 140f;
             leakAmount = 0.02f;
             liquidCapacity = 150f;
-            consumePower(0.3f);
+            consumePower(25f/60f);
             researchCost = with(iron, 250, lead, 800, graphite, 250, rustyIron, 800);
             requirements(Category.liquid, with(iron, 15, graphite, 15, lead, 30, rustyIron, 30));
         }};
@@ -1009,6 +1009,7 @@ public class NyfalisBlocks {
             shootY = 0f;
             reload = 1200f;
             itemCapacity = 20;
+            alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
             powerBulletType = new SpawnHelperBulletType(){{
                 shootEffect = Fx.unitLand;
@@ -1050,6 +1051,7 @@ public class NyfalisBlocks {
             shootY = 0f;
             reload = 1200f;
             itemCapacity = 20;
+            alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
 
             ammo(
@@ -1089,6 +1091,7 @@ public class NyfalisBlocks {
             shootY = 2.5f * Vars.tilesize;
             reload = 1200f;
             itemCapacity = 20;
+            alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
 
             ammo(
@@ -1127,6 +1130,7 @@ public class NyfalisBlocks {
             size = 4;
             reload = 1200f;
             itemCapacity = 20;
+            alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
             shootY = 2.5f * Vars.tilesize;
 
@@ -1171,7 +1175,7 @@ public class NyfalisBlocks {
 
 
             hasPower = consumesPower = conductivePower = true;
-            requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
+            requirements(Category.units, with(aluminum, 100, rustyIron, 100, copper, 100));
         }};
 
         //Unit Tree: t1 = construct
@@ -1183,8 +1187,8 @@ public class NyfalisBlocks {
         repairPin = new UnitRailingRepairTurret("repair-pin"){{
             //Intrusive bottom thoughts won -Rushie
             size = 3;
-            shootY = 20f;
-            repairSpeed = 2f;
+            shootY = 10;
+            repairSpeed = 2.5f;
             repairRadius = 110;
 
             length = 100f;

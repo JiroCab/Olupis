@@ -3,10 +3,16 @@ package olupis.input;
 import arc.Core;
 import arc.scene.ui.layout.Table;
 import mindustry.Vars;
+import mindustry.content.TechTree;
+import mindustry.ctype.UnlockableContent;
+import mindustry.game.Saves;
 import mindustry.gen.Icon;
+import mindustry.type.Planet;
+import mindustry.type.Sector;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import olupis.NyfalisMain;
+import olupis.content.NyfalisPlanets;
 
 import static mindustry.Vars.*;
 
@@ -37,7 +43,43 @@ public class NyfalisSettingsDialog {
             else table.checkPref("nyfalis-space-sfx", false);
             table.row();
 
-            table.button("@nyfalis-disclaimer.name", NyfalisMain::disclaimerDialog).margin(14).width(260f).pad(6);
+            table.button("@nyfalis-disclaimer.name", Icon.chat, NyfalisMain::disclaimerDialog).margin(14).width(260f).pad(6).row();
+
+            boolean[] showData = {false};
+            table.button("@setting.nyfalis-data-category", Icon.trash, Styles.togglet, () -> showData[0] = !showData[0]).margin(14f).padLeft(5f).padRight(5f).growX().height(60f).checked(a -> showData[0]).pad(5f).center().row();
+            table.collapser(t -> {
+                SettingsMenuDialog.SettingsTable subTable = new SettingsMenuDialog.SettingsTable();
+                subTable.button("@setting.nyfalis-resetsector.name", Icon.trash, () -> {
+                    ui.showConfirm("@confirm", "@setting.nyfalis-resetsector.confirm", () -> {
+                        for (Planet p : content.planets()) {
+                            if (!p.name.contains("olupis-")) continue;
+                            for (Sector s : p.sectors) {
+                                s.clearInfo();
+                                if (s.save == null) continue;
+                                s.save.delete();
+                                s.save = null;
+                            }
+                        }
+
+                        for (Saves.SaveSlot s : control.saves.getSaveSlots()) {
+                            if (s.isSector() && NyfalisPlanets.isNyfalianPlanet(s.getSector().planet)) s.delete();;
+                        }
+                    });
+                }).margin(14).width(260f).pad(6);
+                subTable.button("@setting.nyfalis-resetresearch.name", Icon.trash, () -> {
+                    ui.showConfirm("@confirm", "@setting.nyfalis-resetresearch.confirm", () -> {
+                        content.each(c -> {
+                            for(TechTree.TechNode node : NyfalisPlanets.nyfalis.techTree.children){
+                                node.reset();
+                            }
+                            if(c instanceof UnlockableContent u && u.name.contains("olupis-")){
+                                u.clearUnlock();
+                            }
+                        });
+                    });
+                }).margin(14).width(260f).pad(6);
+                t.add(subTable);
+            }, true, () -> showData[0]).growX().center().row();
         });
     }
 

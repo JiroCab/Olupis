@@ -3,7 +3,6 @@ package olupis.content;
 import arc.graphics.Color;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
-import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 
 public class NyfalisStatusEffects {
@@ -16,16 +15,15 @@ public class NyfalisStatusEffects {
             speedMultiplier = 1.15f;
             effect = Fx.oily;
 
-            init(() -> {
-                this.affinities = StatusEffects.tarred.affinities;
-            });
+            init(() -> this.affinities = StatusEffects.tarred.affinities);
         }};
 
         deployed = new StatusEffect("deployed"){{
-            color = Pal.lightOrange;
-            healthMultiplier = 1.15f;
+            color = Color.valueOf("DE9458");
             speedMultiplier = 0f;
-            effectChance = 0.3f;
+            effectChance = 0.25f;
+            healthMultiplier = 1.15f;
+            effect =Fx.unitDust;
         }};
 
 

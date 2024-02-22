@@ -40,6 +40,7 @@ import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import olupis.content.NyfalisFxs;
+import olupis.content.NyfalisItemsLiquid;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.units.NyfalisUnitType;
 
@@ -51,10 +52,10 @@ import static mindustry.Vars.*;
 Now with hints of UnitAssembler for extra spice */
 public class ItemUnitTurret extends ItemTurret {
     /*common required items for all unit types*/
-    public ItemStack[] requiredAlternate = ItemStack.with(Items.copper, 20, Items.silicon, 15);
-    /*Minimum Items needed*/
+    public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20);
+    public ItemStack[] requiredAlternate = ItemStack.with(NyfalisItemsLiquid.aluminum, 15, Items.copper, 25);
+    public int alternateCapacity = itemCapacity * 2;
     /*Parameters when failing to make a unit*/
-    public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20, Items.silicon, 15);
     public Sound failedMakeSound = Sounds.dullExplosion;
     public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 1f;
     public Effect failedMakeFx = NyfalisFxs.failedMake;
@@ -247,17 +248,19 @@ public class ItemUnitTurret extends ItemTurret {
         public @Nullable UnitPayload payload;
         public Vec2 payVector = new Vec2();
         public @Nullable UnitCommand command;
-        public Seq<Articulator.ArticulatorBuild> modules = new Seq<>();
+        public Seq<Articulator.ArticulatorBuild> modules = new Seq<>(), prevModules = new Seq<>();
         public boolean useAlternate = false;
 
         public void updateModules(Articulator.ArticulatorBuild build){
             modules.addUnique(build);
             checkTier();
+            prevModules.add(build);
         }
 
         public void removeModule(Articulator.ArticulatorBuild build){
             modules.remove(build);
             checkTier();
+            prevModules.remove(build);
         }
 
         public void checkTier(){
@@ -268,21 +271,21 @@ public class ItemUnitTurret extends ItemTurret {
         public void onProximityUpdate() {
             super.onProximityUpdate();
 
-            if(!useAlternate && modules.size == 0) reloadCounter = 0;
-            else if(useAlternate && modules.size >= 1) reloadCounter = 0;
+            if(!useAlternate && modules.size == 0 && prevModules.size != 0) reloadCounter = 0;
+            else if(useAlternate && modules.size >= 1 && prevModules.size == 0) reloadCounter = 0;
         }
 
         @Override
         public boolean acceptItem(Building source, Item item){
             return ((ammoTypes.get(item) != null && totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo && !ammoTypes.get(item).spawnUnit.isBanned())
                      || !useAlternate && (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)))
-                    || useAlternate && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item));
+                    || useAlternate && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < alternateCapacity);
         }
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
             if(acceptItem(self(), item) && block.hasItems && (source == null || source.team() == team)){
-                return Math.min(getMaximumAccepted(item) - items.get(item), amount);
+                return Math.min((useAlternate ? alternateCapacity : getMaximumAccepted(item)) - items.get(item), amount);
             } else return super.acceptStack(item, amount, source);
         }
 
@@ -290,7 +293,7 @@ public class ItemUnitTurret extends ItemTurret {
         public void handleItem(Building source, Item item){
             if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item) && Arrays.stream(requiredAlternate).noneMatch(i -> item == i.item)) {
                 super.handleItem(source, item);
-            } else if(items.get(item) < getMaximumAccepted(item)) {
+            } else if (useAlternate && items.get(item) < alternateCapacity || (items.get(item) < getMaximumAccepted(item))) {
                 items.add(item, 1);
             }
         }

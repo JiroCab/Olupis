@@ -39,10 +39,13 @@ public class NyfalisUnitCommands {
                 @Override
                 public void updateUnit() {
                     if (unit.controller() instanceof CommandAI ai) {
+                        if(u.type instanceof NyfalisUnitType nyf && nyf.canDeploy && unit.isGrounded()) return;
                         ai.defaultBehavior();
                     }
                     super.updateUnit();
-                    if(u.type instanceof NyfalisUnitType nyf && nyf.alwaysBoosts) unit.updateBoosting(true);
+                    if(u.type instanceof NyfalisUnitType nyf){
+                        if(nyf.alwaysBoosts) unit.updateBoosting(true);
+                    }
                 }
             };
         }){{

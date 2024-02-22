@@ -118,6 +118,17 @@ public class NyfalisPlanets {
     }
 
     public  static void PostLoadPlanet(){
-        system.sectors.set(systemSector);
+         Seq<Sector> finalSectors = new Seq<>();
+         finalSectors.add(systemSector.find(t -> t.preset == NyfalisSectors.sanctuary)); //prevents launching at sector 0 of nyfalis if you double tap while system is selected
+        systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
+         finalSectors.add(systemSector);
+        system.sectors.set(finalSectors);
+    }
+
+    public static boolean isNyfalianPlanet (Planet planet){
+        if (planet == null) return false;
+        if (planet == arthin) return true;
+        if (planet == spelta) return true;
+        return planet == nyfalis;
     }
 }
