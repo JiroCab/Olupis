@@ -100,6 +100,7 @@ public class NyfalisMain extends Mod{
             nyfalis.uiIcon = redSandBoulder.fullIcon;
             spelta.uiIcon = pinkTree.fullIcon;
             system.uiIcon = Icon.planet.getRegion();
+            //Vars.renderer.maxZoom  = 100; //just going to leave this here so aligning, screenshot are easier
 
             /*For those people who don't like the name/icon or overwrites in general*/
             if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";

@@ -235,8 +235,8 @@ public class NyfalisTurrets {
                         backColor = Pal.gray;
                     }};
                     shootEffect = smokeEffect = Fx.none;
-                    frontColor = new Color().set(quartz.color).lerp(Pal.bulletYellowBack, 0.1f);
-                    backColor = new Color().set(quartz.color).lerp(Pal.bulletYellow, 0.3f);
+                    backColor = new Color().set(quartz.color).lerp(Pal.bulletYellowBack, 0.1f);
+                    frontColor = new Color().set(quartz.color).lerp(Pal.bulletYellow, 0.3f);
                 }}
             );
         }};
@@ -313,7 +313,7 @@ public class NyfalisTurrets {
                         speed = 5.8f;
                         damage = 17;
                         drag = 0.0009f;
-                        lifetime = 27.5f;
+                        lifetime = 26.5f;
                         rangeChange = 20f;
                         ammoMultiplier = 4f;
                         statusDuration = 60f * 2;

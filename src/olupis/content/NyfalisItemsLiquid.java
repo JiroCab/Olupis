@@ -33,7 +33,7 @@ public class NyfalisItemsLiquid {
             charge = 0.5f;
             healthScaling = 0.25f;
         }};
-        quartz = new Item("quartz", Color.valueOf("E2D6D5")){{
+        quartz = new Item("quartz", Color.valueOf("494963")){{
             hardness = 2;
         }};
 

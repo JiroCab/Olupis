@@ -308,7 +308,7 @@ public class NyfalisUnitType extends UnitType {
                     shootAngle = bulletRotation(unit, mount, bulletX, bulletY);
 
             //find a new target
-            if(!controllable &&autoTarget){
+            if(!controllable && autoTarget){
                 if ((mount.retarget -= Time.delta) <= 0f) {
                     mount.target = findTarget(unit, mountX, mountY, bullet.range, bullet.collidesAir, bullet.collidesGround);
                     mount.retarget = mount.target == null ? targetInterval : targetSwitchInterval;
@@ -344,6 +344,9 @@ public class NyfalisUnitType extends UnitType {
             }
 
             if(alwaysShooting)mount.shoot =true;
+            // deploying units can shoot regardless of elevation && LogicAi 's shouldShoot checks for boosting and this is a work around
+            if(unit.type instanceof NyfalisUnitType nyf && nyf.canDeploy && unit.controller() instanceof LogicAI ai && ai.shoot)mount.shoot = true;
+
             boolean isDashing = !unit.isPlayer() && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDashCommand;
             if(dashShoot && isDashing) mount.shoot =true;
             else if(dashExclusive && !isDashing) mount.shoot =false;

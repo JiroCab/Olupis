@@ -208,7 +208,6 @@ public class NyfalisUnits {
         }};
 
         pteropus = new NyfalisUnitType("pteropus"){{
-            //TODO: deploying is not possible w/ logic
             hitSize = 10f;
             drag = 0.06f;
             accel = 0.08f;
@@ -223,7 +222,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
             deployEffect = NyfalisStatusEffects.deployed;
-            lowAltitude = flying = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
+            lowAltitude = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
             weapons.addAll(
                 new NyfalisWeapon("", true, false){{
                     top = alternate = false;
@@ -249,7 +248,7 @@ public class NyfalisUnits {
 
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
-                    shootY = 6.9f;
+                    shootY = 4.5f;
                     recoil = 0.5f;
                     reload = 15f;
                     recoils = 1;
@@ -266,6 +265,7 @@ public class NyfalisUnits {
                     );
 
                     bullet = new BasicBulletType(2.6f, 9){{
+                        spin = 30f;
                         width = 6f;
                         height = 8f;
                         lifetime = 40f;
@@ -274,15 +274,13 @@ public class NyfalisUnits {
                         frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
                         backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
                         hitEffect = despawnEffect = Fx.hitBulletSmall;
+                        sprite = "mine-bullet";
                     }};
                 }}
-
             );
         }};
 
-
         acerodon = new NyfalisUnitType("acerodon"){{
-            //TODO: deploying is not possible w/ logic
             hitSize = 10f;
             drag = 0.06f;
             accel = 0.08f;
@@ -297,35 +295,37 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
             deployEffect = NyfalisStatusEffects.deployed;
-            lowAltitude = flying = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
+            lowAltitude  = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
             weapons.addAll(
                 new NyfalisWeapon("", true, false){{
                     top = alternate = false;
-                    y = 3.8f;
-                    x = -2f;
+                    reload = 25f;
                     inaccuracy = 3f;
-                    reload = shootCone = 15f;
+                    shootX = x = 0;
+                    shootCone = 15f;
                     ejectEffect = Fx.casing1;
 
-                    showStatSprite = false;
-                    bullet = new BasicBulletType(2.5f, 3, "olupis-diamond-bullet"){{
-                        width = 4;
-                        height = 6f;
+                    showStatSprite = mirror = false;
+                    bullet = new ArtilleryBulletType(2.5f, 3, "olupis-diamond-bullet"){{
+                        width = 8;
+                        height = 10f;
+                        trailSize = 2f;
                         lifetime = 40f;
-                        homingPower = 0.04f;
+                        knockback = 0.3f;
                         shootEffect = Fx.none;
                         smokeEffect = Fx.shootSmallSmoke;
                         frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                         backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                        collidesTiles = collidesAir = false;
                     }};
                 }},
 
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
-                    shootY = 7.4f;
+                    shootY = -0.5f;
                     recoil = 0.5f;
-                    reload = 15f;
+                    reload = 25f;
                     recoils = 1;
                     top = alternate = mirror = false;
                     rotate = alwaysRotate = true;
@@ -351,14 +351,18 @@ public class NyfalisUnits {
                     );
 
                     bullet = new BasicBulletType(2.6f, 9){{
-                        width = 6f;
-                        height = 8f;
+                        spin = 60f;
                         lifetime = 40f;
+                        trailWidth = 2f;
+                        trailLength = 10;
+                        trailChance = -1f;
                         splashDamage = 1f;
+                        width = height = 10f;
                         splashDamageRadius = 5f * 0.75f;
                         frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
                         backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
                         hitEffect = despawnEffect = Fx.hitBulletSmall;
+                        sprite = "mine-bullet";
                     }};
                 }}
 
@@ -932,6 +936,9 @@ public class NyfalisUnits {
                 }};
             }});
         }};
+
+        //TODO: Test if a cargo carrying-booting naval is possible  (essex & nimitz)
+
 
         //endregion Units
         //region Nyfalis Limited LifeTime / Support Units

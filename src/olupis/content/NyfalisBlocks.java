@@ -997,7 +997,14 @@ public class NyfalisBlocks {
         }};
 
         discardDriver = new DiscardDriver("discard-driver"){{
-
+            range = itemCapacity = 110;
+            size = 1;
+            bullet = new BasicBulletType(2.5f, 9){{
+                width = 7f;
+                height = 9f;
+                lifetime = 60f;
+            }};
+            requirements(Category.crafting, with(iron, 25, copper, 25));
         }};
 
         //discardDriver -> mass driver that discards item in a random direction
