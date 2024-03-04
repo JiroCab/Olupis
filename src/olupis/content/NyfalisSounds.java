@@ -23,7 +23,8 @@ public class NyfalisSounds {
 
     public static Sound
             as2ArmorBreak = new Sound(),
-            as2PlasmaShot = new Sound()
+            as2PlasmaShot = new Sound(),
+            cncZhBattleMasterWeapon = new Sound()
     ;
 
     public static void LoadMusic() {
@@ -33,6 +34,7 @@ public class NyfalisSounds {
     public static void  LoadSounds(){
         as2PlasmaShot = loadSound("sounds/as2_plasma_shot.wav");
         as2ArmorBreak = loadSound("sounds/as2_broke_armor.wav");
+        cncZhBattleMasterWeapon = loadSound("sounds/cnc_zh_battlemaster_weapon.wav");
     }
 
 

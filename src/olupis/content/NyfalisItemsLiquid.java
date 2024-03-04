@@ -9,7 +9,7 @@ import static mindustry.Vars.content;
 
 public class NyfalisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, alucryoRods, steel, silicatePowder;
+    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, cryoRods, steel, silicatePowder;
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam, lubricant;
 
@@ -21,7 +21,7 @@ public class NyfalisItemsLiquid {
 
             flammability = 1.2f;
         }};
-        rustyIron = new Item("rusty-iron", Color.valueOf("8E320A")) {{
+        rustyIron = new Item("rusty-iron", Color.valueOf("9B5534")) {{
             hardness = 1;
         }};
         iron = new Item("iron", Color.valueOf("989AA4")) {{
@@ -46,7 +46,7 @@ public class NyfalisItemsLiquid {
         }};
 
 
-        nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz);
+        nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum);
         nyfalisItems.add(nyfalisOnlyItems);
         nyfalisItems.add(Items.serpuloItems);
 
@@ -68,10 +68,10 @@ public class NyfalisItemsLiquid {
             effect = StatusEffects.corroded;
         }};
 
-        lubricant = new Liquid("lubricant", Color.valueOf("787878")){{
+        lubricant = new Liquid("lubricant", Color.valueOf("C4AA90")){{
             viscosity = 0.7f;
-            flammability = 1.35f;
-            explosiveness = 1.25f;
+            flammability = 1.3f;
+            explosiveness = 1.2f;
             heatCapacity = 0.86f;
             barColor = Color.valueOf("6b675f");
             effect = NyfalisStatusEffects.lubed;

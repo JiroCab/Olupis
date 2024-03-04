@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Interp;
 import arc.math.Mathf;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Unit;
@@ -94,6 +95,13 @@ public class NyfalisFxs extends Fx {
                 color( new Color().set(rustyIron.color).lerp(Pal.stoneGray, 0.7f));
                 Fill.square(e.x + x, e.y + y, e.fout() + 1.5f , 45);
             });
+        }),
+
+        taurusHeal = new Effect(11, e -> {
+            color(Pal.heal);
+            stroke(e.fout() * 2f);
+            Lines.circle(e.x, e.y, 2f + e.finpow() * (Vars.tilesize * 2));
+            Lines.square(e.x, e.y, 2f + e.finpow() * (Vars.tilesize * -2), 45);
         })
     ;
 

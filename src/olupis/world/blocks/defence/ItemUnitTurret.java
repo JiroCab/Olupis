@@ -9,6 +9,7 @@ import arc.math.*;
 import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.scene.style.Drawable;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
@@ -91,16 +92,15 @@ public class ItemUnitTurret extends ItemTurret {
         super.setBars();
         addBar("bar.progress", (ItemUnitTurretBuild entity) -> new Bar("bar.progress", Pal.ammo,() -> entity.reloadCounter / reload));
 
-        /*TODO: Takes a bit to update*/
-        addBar("units", (ItemUnitTurretBuild e) -> e.peekAmmo() == null || e.peekAmmo().spawnUnit != null &&  !e.peekAmmo().spawnUnit.useUnitCap ? null : new Bar(() ->
-                e.peekAmmo().spawnUnit == null ? "[lightgray]" + Iconc.cancel :
+        addBar("units", (ItemUnitTurretBuild e) -> e.peekAmmo() == null || e.getUnit() != null &&  !e.getUnit().useUnitCap ? null : new Bar(() ->
+                e.getUnit() == null ? "[lightgray]" + Iconc.cancel :
                         Core.bundle.format("bar.unitcap",
-                                !Objects.equals(Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name), "") ? Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name) : Iconc.units,
-                                e.team.data().countType(e.peekAmmo().spawnUnit),
+                                !Objects.equals(Fonts.getUnicodeStr(e.getUnit().name), "") ? Fonts.getUnicodeStr(e.getUnit().name) : Iconc.units,
+                                e.team.data().countType(e.getUnit()),
                                 Units.getStringCap(e.team)
                         ),
                 () -> Pal.power,
-                () -> e.peekAmmo() == null ? 0f : e.peekAmmo().spawnUnit == null ? 0f : (float) e.team.data().countType(e.peekAmmo().spawnUnit) / Units.getCap(e.team)
+                () -> e.peekAmmo() == null ? 0f : e.getUnit() == null ? 0f : (float) e.team.data().countType(e.getUnit()) / Units.getCap(e.team)
         ));
 
     }
@@ -237,7 +237,6 @@ public class ItemUnitTurret extends ItemTurret {
     public void init(){
         consumeBuilder.each(c -> c.multiplier = b -> state.rules.unitCost(b.team));
 
-        /*Todo: Hover icon for the unit (UnitFactory)*/
         super.init();
     }
 
@@ -323,6 +322,16 @@ public class ItemUnitTurret extends ItemTurret {
             if(payload != null) return false;
             if(!hasReqItems()) return false;
             return super.hasAmmo();
+        }
+
+        public UnitType getUnit(){
+            if(ammo.size > 0 && peekAmmo().spawnUnit != null){
+                if(useAlternate && peekAmmo() instanceof  SpawnHelperBulletType bt ){
+                    if(bt.alternateType != null) return bt.alternateType.spawnUnit;
+                }
+                return peekAmmo().spawnUnit;
+            }
+            return null;
         }
 
         public boolean hasReqItems(){
@@ -534,6 +543,25 @@ public class ItemUnitTurret extends ItemTurret {
 
             super.drawSelect();
         }
+
+        @Override
+        public void display(Table table) {
+            super.display(table);
+
+            TextureRegionDrawable reg = new TextureRegionDrawable();
+
+            table.row();
+            table.collapser(t ->{
+                t.left();
+                t.image().update(i -> {
+                    i.setDrawable(getUnit() == null ? Icon.cancel : reg.set(getUnit().uiIcon));
+                    i.setScaling(Scaling.fit);
+                    i.setColor(getUnit() == null ? Color.lightGray : Color.white);
+                }).size(32).padBottom(-4).padRight(2);
+                t.label(() -> getUnit() == null ? "@none" : getUnit().localizedName).wrap().width(230f).color(Color.lightGray);
+            }, true, () -> getUnit() != null).left();
+        }
+
 
         @Override
         public Vec2 getCommandPosition(){return commandPos;}

@@ -323,13 +323,15 @@ public class NyfalisUnits {
 
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
-                    shootY = -0.5f;
+                    recoils = 1;
                     recoil = 0.5f;
                     reload = 25f;
-                    recoils = 1;
-                    top = alternate = mirror = false;
+                    shootY = -0.5f;
+                    rotateSpeed = 10f;
                     rotate = alwaysRotate = true;
+                    top = alternate = mirror = false;
 
+                    shootSound = Sounds.shootAlt;
                     float cx = -4.2f, mx = 0.6f, cy = 2.8f, r = 1;
                     parts.addAll(
                         new RegionPart("olupis-acerodon-weapon"){{
@@ -370,16 +372,18 @@ public class NyfalisUnits {
         }};
 
         zoner = new NyfalisUnitType("zoner"){{
+            //todo prevent following a phantomt
             armor = 1f;
+            speed = 3f;
             hitSize = 5.5f;
             drag = 0.05f;
-            accel = 0.11f;
+            accel = 0.16f;
             health = 200f;
-            speed = 3.55f;
             fogRadius = 10f;
+            itemCapacity = 5;
             engineSize = 1.6f;
             rotateSpeed = 19f;
-            itemCapacity = 5;
+            strafePenalty = 0.35f;
             engineOffset = 4.6f;
 
             constructor = UnitEntity::create;
@@ -636,7 +640,7 @@ public class NyfalisUnits {
             engineSize = -1;
             rotateSpeed = 2.25f;
             boostMultiplier = 0.8f;
-            abilities.add(new MicroWaveFieldAbility(6.5f, 40f, 35f, 20f){{
+            abilities.add(new MicroWaveFieldAbility(6.5f, 40f, 37f, 20f){{
                 ideRangeDisplay = false;
                 damageEffect = Fx.none;
                 sectors = 3;
@@ -652,7 +656,7 @@ public class NyfalisUnits {
 
         }};
 
-        /*TODO: crab tree, bulky and close range, legged naval*/
+        /*To be considered: crab tree, bulky and close range, legged naval*/
 
         //endregion
         //region Naval Units

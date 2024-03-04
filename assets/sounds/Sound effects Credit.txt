@@ -1,3 +1,4 @@
 as2_plasma_shot.wav -> Alien shooter 2
 as2_broke_armor.wav -> Alien shooter 2
 space.ogg -> Command and Conquer: Red alert 3
+cnc_zh_battlemaster_weapon.wav -> Command and Conquer: Generals/Zero Hour

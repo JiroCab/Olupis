@@ -117,6 +117,7 @@ public class NyfalisTurrets {
             size = 3;
             reload = 25f;
             range = 250f;
+            health = 600;
             minWarmup = 0.96f;
             shootY = shootX= 0f;
             warmupMaintainTime = 1f;
@@ -339,14 +340,15 @@ public class NyfalisTurrets {
         obliterator = new ItemTurret("obliterator"){{
             size = 4;
             recoil = 2f;
-            reload = 60f;
-            range = 235f;
-            health = 260;
-            inaccuracy = 1f;
-            shootCone = 10f;
+            reload = 85f;
+            range = 265f;
+            health = 1000;
+            inaccuracy = 2f;
+            shootCone = 15f;
+            coolantMultiplier = 4f;
 
             ammo(
-                Items.graphite, new ArtilleryBulletType(3.2f, 20){{
+                Items.graphite, new ArtilleryBulletType(3.2f, 25){{
                     lifetime = 80f;
                     fragBullets = 2;
                     knockback = 0.8f;
@@ -354,8 +356,8 @@ public class NyfalisTurrets {
                     splashDamage = 33f;
                     splashDamageRadius = 25f * 0.75f;
                     collidesTiles = false;
-                    frontColor = new Color().set(graphite.color).lerp(Pal.bulletYellow, 0.25f);
-                    backColor = new Color().set(graphite.color).lerp(Pal.bulletYellowBack, 0.15f);
+                    frontColor = new Color().set(graphite.color).lerp(Pal.bulletYellow, 0.25f).a(1f);
+                    backColor = new Color().set(graphite.color).lerp(Pal.bulletYellowBack, 0.15f).a(1f);
                     fragBullet = new BasicBulletType(3f, 12, "bullet"){{
                         width = 5f;
                         height = 12f;
@@ -376,7 +378,7 @@ public class NyfalisTurrets {
                         }};
                     }};
                 }},
-                Items.silicon, new ArtilleryBulletType(3f, 20){{
+                Items.silicon, new ArtilleryBulletType(3f, 25){{
                     fragBullets = 2;
                     lifetime = 80f;
                     knockback = 0.8f;
@@ -388,8 +390,8 @@ public class NyfalisTurrets {
                     reloadMultiplier = 1.2f;
                     splashDamageRadius = 25f * 0.75f;
                     collidesTiles = false;
-                    frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.25f);
-                    backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.15f);
+                    frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.25f).a(1f);
+                    backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.15f).a(1f);
                     fragBullet = new BasicBulletType(3f, 12, "bullet"){{
                         width = 5f;
                         height = 12f;
@@ -418,11 +420,11 @@ public class NyfalisTurrets {
             );
             targetAir = false;
             limitRange(0f);
-            shootSound = Sounds.bang;
+            shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
             coolant = consume(new ConsumeLubricant(30f / 60f));
             drawer = new DrawTurret("iron-");
             requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
-        }};
+        }}; //TODO STEAL SHOOT SOUND FROM CNC ZH battle ships
 
         //Aegis AA SAM Turrets (later game),  Inspired by bullet hell shoot'em ups... or btd's tack shooter
         aegis = new ItemTurret("aegis"){{

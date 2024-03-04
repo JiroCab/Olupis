@@ -63,9 +63,9 @@ public class MicroWaveFieldAbility extends Ability {
         t.add(Core.bundle.format("bullet.damage", damage)).row();
         t.add("[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60f / reload, 2) + " " + StatUnit.perSecond.localized()).row();
         t.add("[lightgray]" + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(groundRange / tilesize, 2) + " " + StatUnit.blocks.localized()).row();
-        t.add("[lightgray]Boosted " + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(boostRange / tilesize, 2) + " " + StatUnit.blocks.localized()).row();
+        t.add("[lightgray]" + Core.bundle.get("ability.microwavefieldAbility.boostrange") + ": [white]" +  Strings.autoFixed(boostRange / tilesize, 2) + " " + StatUnit.blocks.localized()).row();
         t.add(Core.bundle.format("ability.energyfield.maxtargets", maxTargetsGround)).row();
-        t.add(Core.bundle.format("ability.MicroWaveFieldAbility.maxtargetsBoost", maxTargetBoost)).row();
+        t.add(Core.bundle.format("ability.microwavefieldAbility.maxtargetsBoost", maxTargetBoost)).row();
 
         if(status != StatusEffects.none){
             t.row();

@@ -11,7 +11,6 @@ import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
-import olupis.NyfalisMain;
 import olupis.content.NyfalisPlanets;
 
 import static mindustry.Vars.*;
@@ -43,7 +42,7 @@ public class NyfalisSettingsDialog {
             else table.checkPref("nyfalis-space-sfx", false);
             table.row();
 
-            table.button("@nyfalis-disclaimer.name", Icon.chat, NyfalisMain::disclaimerDialog).margin(14).width(260f).pad(6).row();
+            table.button("@nyfalis-disclaimer.name", Icon.chat, NyfalisStartUpUis::disclaimerDialog).margin(14).width(260f).pad(6).row();
 
             boolean[] showData = {false};
             table.button("@setting.nyfalis-data-category", Icon.trash, Styles.togglet, () -> showData[0] = !showData[0]).margin(14f).padLeft(5f).padRight(5f).growX().height(60f).checked(a -> showData[0]).pad(5f).center().row();

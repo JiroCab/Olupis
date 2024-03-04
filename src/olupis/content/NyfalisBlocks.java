@@ -42,6 +42,7 @@ import olupis.world.entities.bullets.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
+import static mindustry.Vars.tilesize;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.oil;
@@ -59,9 +60,9 @@ public class NyfalisBlocks {
         glowSprouts, lumaSprouts,
 
         /*Floors*/
-        redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass, mossyDirt, frozenDirt, frozenMud, hardenMud, mossyhardenMud,
+        redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass, mossyDirt, frozenDirt, frozenMud, hardenMud, mossyhardenMud, crackedIce,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent,
+        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandvent, snowVent,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater,
@@ -914,7 +915,7 @@ public class NyfalisBlocks {
             hasItems = hasLiquids = hasPower = true;
 
             size = 3;
-            craftTime = 40f;
+            craftTime = 50f;
             itemCapacity = 20;
             buildCostMultiplier = 0.5f;
             craftEffect = Fx.pulverizeMedium;
@@ -923,22 +924,21 @@ public class NyfalisBlocks {
             researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             outputItem = new ItemStack(Items.graphite, 1);
             requirements(Category.crafting, with(iron, 10, lead, 50, rustyIron, 40));
-            consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, NyfalisItemsLiquid.steam, 7f/60f));
+            consumeLiquids(LiquidStack.with(Liquids.oil, 10f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
         }};
 
         siliconKiln = new GenericCrafter("silicon-kiln"){{
-            requirements(Category.crafting, with(Items.copper, 30, Items.lead, 25));
+            requirements(Category.crafting, with(Items.copper, 30, Items.lead, 25, rustyIron, 15));
             craftEffect = Fx.smeltsmoke;
             outputItem = new ItemStack(Items.silicon, 1);
             craftTime = 40f;
             size = 2;
-            hasPower = true;
-            hasLiquids = false;
+            hasPower = hasLiquids = true;
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("ffef99")));
             ambientSound = Sounds.smelter;
             ambientSoundVolume = 0.07f;
 
-            consumeItem(quartz, 2);
+            consumeItem(quartz, 4);
             consumeLiquid(oil, 15f/60f);
             consumePower(0.50f);
         }};
@@ -1077,12 +1077,12 @@ public class NyfalisBlocks {
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 2f;
                     spawnUnit = pteropus;
-//                    alternateType = new SpawnHelperBulletType(){{
-//                        shootEffect = Fx.shootBig;
-//                        ammoMultiplier = 2f;
-//                        reloadMultiplier = 0.45f;
-//                        spawnUnit = striker;
-//                    }};
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = acerodon;
+                    }};
                 }}
             );
             alwaysShooting = true;
@@ -1197,6 +1197,7 @@ public class NyfalisBlocks {
             shootY = 10;
             repairSpeed = 2.5f;
             repairRadius = 110;
+            powerUse =100f / 60f;
 
             length = 100f;
             lineFx = new Effect(20f, e -> {
@@ -1500,12 +1501,39 @@ public class NyfalisBlocks {
         taurus = new PowerTurret("taurus"){{
             size = 3;
             recoils = 2;
-            reload = 9.5f;
-            inaccuracy = 10f;
+            reload = 10f;
+            shootCone =12f;
+            rotateSpeed = 3;
+            inaccuracy = 15f;
             coolantMultiplier = 1.6f;
-            shootEffect = Fx.shootHeal;
-            outlineColor = nyfalisBlockOutlineColour;
+            shootY = (size * tilesize / 2f) -2f;
 
+            hasPower = targetHealing = true;
+            targetAir = targetGround  = false;
+            shootType = new HealOnlyBulletType(5.2f, -5, "olupis-diamond-bullet"){{
+                collidesTeam = despawnHit = splashDamagePierce = alwaysSplashDamage = despawnHitEffect = true;
+                collidesAir = absorbable = false;
+                width = 10f;
+                height = 16f;
+                lifetime = 30f;
+                healPercent = 3f;
+                splashDamage = 0f;
+                /*added slight homing, so it can hit 1x1 blocks better or at all*/
+                homingRange = 5f;
+                homingPower = 0.2f;
+                splashDamageRadius = Vars.tilesize * 2;
+                backColor = Pal.heal;
+                hitEffect = despawnEffect = NyfalisFxs.taurusHeal;
+                frontColor = Color.white;
+                shootSound = Sounds.sap;
+            }};
+            limitRange(3f);
+            shootEffect = Fx.shootHeal;
+            group = BlockGroup.projectors;
+            outlineColor = nyfalisBlockOutlineColour;
+            shoot = new ShootAlternate(9f);
+            consumePower(100f / 60f);
+            researchCost = with(iron, 100, lead, 200);
             drawer = new DrawTurret("iron-"){{
                 for(int i = 0; i < 2; i ++){
                     int f = i;
@@ -1517,33 +1545,8 @@ public class NyfalisBlocks {
                     }});
                 }
             }};
-            shootType = new HealOnlyBulletType(5.2f, -5, "olupis-diamond-bullet"){{
-                collidesTeam = true;
-                collidesAir = absorbable = false;
-                width = 10f;
-                height = 16f;
-                lifetime = 30f;
-                healPercent = 7f;
-                splashDamage = -3f;
-                /*added slight homing, so it can hit 1x1 blocks better or at all*/
-                homingRange = 10f;
-                homingPower = 0.07f;
-                splashDamageRadius = 25f * 0.75f;
-                hitEffect =Fx.none;
-                backColor = Pal.heal;
-                despawnEffect = Fx.heal;
-                frontColor = Color.white;
-                shootSound = Sounds.sap;
-            }};
-            hasPower = targetHealing = true;
-            targetAir = targetGround  = false;
-            group = BlockGroup.projectors;
-            limitRange(3f);
-            consumePower(100f / 60f);
-            shoot = new ShootAlternate(9f);
-            researchCost = with(iron, 100, lead, 200);
-            coolant = consume(new ConsumeLubricant(45f / 60f));
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
+            coolant = consume(new ConsumeLubricant(45f / 60f));
             requirements(Category.effect, with(iron, 15, Items.lead, 20));
         }};
 

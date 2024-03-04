@@ -1,6 +1,7 @@
 package olupis.world.ai;
 
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.entities.*;
 import mindustry.entities.units.AIController;
@@ -25,6 +26,7 @@ public class ArmDefenderAi extends AIController {
             moveTo(follow, (follow instanceof Sized s ? s.hitSize()/2f * 1.1f : 0f) + unit.hitSize/2f + 15f, 50f);
             unit.lookAt(follow);
         }
+
     }
 
     @Override
@@ -48,9 +50,8 @@ public class ArmDefenderAi extends AIController {
     public Teamc findTarget(float x, float y, float range, boolean air, boolean ground){
 
         if(follow != null){
-            //TODO: Prevent two armed defenders from following each other :p
-            var followTarget = Units.closestTarget(unit.team, follow.x(), follow.y(), range, u -> u.checkTarget(air, ground) && !(u.type.aiController instanceof ArmDefenderAi), t -> ground);
-            if(followTarget != null )return followTarget;
+            var followTarget = Units.closestTarget(unit.team, follow.x(), follow.y(), range, u -> u.checkTarget(air, ground), t -> ground);
+            if(followTarget != null ) return followTarget;
         }
 
         var close = Units.closestTarget(unit.team, x, y, range, u -> u.checkTarget(air, ground), t -> ground);
@@ -64,10 +65,15 @@ public class ArmDefenderAi extends AIController {
         return null;
     }
 
+    public boolean checkType(Unit u){
+        Log.err(u.controller() + "");
+        return !(u.controller() instanceof ArmDefenderAi) && !(u.controller() instanceof UnitHealerAi);
+    }
+
     public Teamc findFollow(float x, float y, float range){
         //Sort by max health and closer target.
         float min = state.rules.waveTeam == unit.team ? Float.MAX_VALUE : 400f; //Prevents the Ai from idling trying to attack with a weapon that does no damge
-        Unit unt = Units.closest(unit.team, x, y, Math.max(range, min), u -> !u.dead() && u.type != unit.type && u.targetable(unit.team) && u.type.playerControllable,
+        Unit unt = Units.closest(unit.team, x, y, Math.max(range, min), u -> !u.dead() && u.type != unit.type && u.targetable(unit.team) && u.type.playerControllable && checkType(u),
                 (u, tx, ty) -> -u.maxHealth + Mathf.dst2(u.x, u.y, tx, ty) / 6400f);
          if(unt != null) return unt;
 

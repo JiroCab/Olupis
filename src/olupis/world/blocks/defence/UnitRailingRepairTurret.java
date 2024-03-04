@@ -36,7 +36,7 @@ public class UnitRailingRepairTurret extends RepairTurret {
     public void setStats(){
         super.setStats();
         stats.remove(Stat.repairSpeed);
-        stats.add(Stat.repairSpeed,60f / (repairSpeed * (60f / (reload))), StatUnit.perSecond);
+        stats.add(Stat.repairSpeed,60f / (repairSpeed * (60f / (reload))), StatUnit.perShot);
     }
 
     @Override
@@ -80,9 +80,12 @@ public class UnitRailingRepairTurret extends RepairTurret {
                     reloadTimer = 0f;
                     float xf = x + Angles.trnsx(rotation - 90, shootX, shootY),
                             yf = y + Angles.trnsy(rotation - 90, shootX, shootY);
-                    fireFx.at(xf, yf, rotation, Pal.heal);
+                    boolean onTop = !target.within(x, y, size);
 
-                    if(lineFx != Fx.none){
+                    if(onTop)fireFx.at(xf, yf, rotation, Pal.heal);
+                    else fireFx.at(target.x, target.y, rotation, Pal.heal);
+
+                    if(lineFx != Fx.none && onTop){
                         Vec2 nor = Tmp.v1.trns(rotation, 1f).nor();
                         lineFx.at(xf, yf, rotation, Pal.heal, new Vec2(xf, yf).mulAdd(nor, Math.min(this.dst(target.x, target.y), length) - shootY));
                     }

@@ -3,16 +3,15 @@ package olupis.world.entities.bullets;
 import arc.math.Angles;
 import arc.util.Time;
 import mindustry.Vars;
-import mindustry.entities.Effect;
-import mindustry.entities.Units;
+import mindustry.entities.*;
 import mindustry.entities.bullet.BasicBulletType;
-import mindustry.gen.Bullet;
-import mindustry.gen.Teamc;
+import mindustry.gen.*;
+import mindustry.world.blocks.ConstructBlock;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 public class HealOnlyBulletType extends BasicBulletType {
-    public boolean fogVisible;
+    public boolean fogVisible, alwaysSplashDamage = false, despawnHitEffect = false;
 
     public HealOnlyBulletType(float speed, float damage, String bulletSprite, boolean fogVisible){
         super(speed, damage);
@@ -52,8 +51,9 @@ public class HealOnlyBulletType extends BasicBulletType {
         /*If someone finds a better way to do this, please let us know -RushieWsahie*/
         if (!heals())return;
         /*heals only the target, passing over any damaged blocks is ignored, debating if this a feature or bug*/
+        float splash = Math.max(b.type.splashDamageRadius * 0.8f, 1f);
         if(target == null) this.collides = this.collidesGround = false;
-        else this.collides  = this.collidesGround = target.within(b.x(), b.y(), Math.max(tarSize.get() -3.5f, 1f));
+        else this.collides  = this.collidesGround = target.within(b.x(), b.y(), Math.max(tarSize.get() -3.5f, splash));
     }
 
     public Teamc findTarget(Bullet b, AtomicReference<Float> tarSize){
@@ -98,5 +98,25 @@ public class HealOnlyBulletType extends BasicBulletType {
     @Override
     public void removed(Bullet b){
         if(!b.inFogTo(Vars.player.team()) || fogVisible) super.removed(b);
+    }
+
+    @Override
+    /** If direct is false, this is an indirect hit and the tile was already damaged.
+     * TODO this is a mess. */
+    public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+        if(makeFire && build.team != b.team){
+            Fires.create(build.tile);
+        }
+
+        if(heals() && build.team == b.team && !(build.block instanceof ConstructBlock)){
+            healEffect.at(build.x, build.y, 0f, healColor, build.block);
+            build.heal(healPercent / 100f * build.maxHealth + healAmount);
+            if(alwaysSplashDamage)createSplashDamage(b, x, y);
+            if(despawnHitEffect) despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        }else if(build.team != b.team && direct){
+            hit(b);
+        }
+
+        handlePierce(b, initialHealth, x, y);
     }
 }

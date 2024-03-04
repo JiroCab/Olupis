@@ -14,6 +14,7 @@ import mindustry.type.UnitType;
 import mindustry.ui.*;
 import mindustry.world.consumers.ConsumePowerCondition;
 import mindustry.world.meta.Stat;
+import olupis.world.entities.bullets.SpawnHelperBulletType;
 
 import java.util.Objects;
 
@@ -150,6 +151,16 @@ public class PowerUnitTurret extends ItemUnitTurret {
             return super.useAmmo();
         }
 
+        @Override
+        public UnitType getUnit(){
+            if(ammo.size > 0 && peekAmmo().spawnUnit != null){
+                if(useAlternate && peekAmmo() instanceof  SpawnHelperBulletType bt ){
+                    if(bt.alternateType != null) return bt.alternateType.spawnUnit;
+                }
+                return peekAmmo().spawnUnit;
+            }
+            return powerBulletType.spawnUnit;
+        }
 
         @Override
         public void updateTile() {

@@ -9,17 +9,19 @@ Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
     + Status Effect added: lubed, mossed, deployed
     + Items added: alcoAlloy, aluminum
     + Added a buttons to clear Nyfalis Sectors and research data
-    + Added a toggleable weather effect for cloud shadows (still need to be manually added as a weather)
+    + Added a toggleable weather effect for cloud shadows (still needs to be manually added as a weather)
     ~ Balance: Reduced junction to better scale with other blocks
     ~ Balance: Core health scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp
     ~ Balance: Relic & Vestige Weapon types swapped, stats unchanged
+    ~ Balance: Taurus rework -> -2% heal, 2 Tiles aoe, faster rotate speed
+    ~ Bug Fix: Fix Regioner's Ai being stuck following a phantom when no other units are present & used in waves
     ~ Bug Fix: Colours of certain content not being set correctly
     ~ Bug Fix: Hit boxes of certain units being small/bigger than appropriate
     ~ Bug Fix: Double tapping on Nyfalian System will launch you in sector 0 of nyfalis
     ~ Improved Gnat and Phorid's attacking visual design to better indicate area of damage
-    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item) quartz (ore)
+    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item) quartz (ore), rustyIron (item), lubricant (liquid)
     ~ Sprites Contributed by Remington Thomas: acerodon
-    + Sprites Contributed by Ethanol10: acerodon
+    ~ Sprites Contributed by Ethanol10: acerodon
 
     -- Music removed from content mod - https://github.com/JiroCab/Nyfalis-Music
 
