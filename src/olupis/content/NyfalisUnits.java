@@ -32,6 +32,7 @@ import olupis.world.entities.parts.CellPart;
 import olupis.world.entities.parts.NyfPartParms;
 import olupis.world.entities.units.*;
 
+import static mindustry.Vars.tilePayload;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 
@@ -372,7 +373,6 @@ public class NyfalisUnits {
         }};
 
         zoner = new NyfalisUnitType("zoner"){{
-            //todo prevent following a phantomt
             armor = 1f;
             speed = 3f;
             hitSize = 5.5f;
@@ -702,6 +702,28 @@ public class NyfalisUnits {
                     hitEffect = Fx.pointHit;
                     maxRange = 80f;
                     damage = 45f;
+                }};
+            }});
+        }};
+
+        excess = new LeggedWaterUnit("excess"){{
+            groundSpeed = 0.4f;
+            navalSpeed = 2;
+            constructor = PayloadUnit::create;
+            pathCost = NyfalisPathfind.costPreferNaval; //Still prefer liquid movement
+            canBoost = hovering = boostUsesNaval = naval = true;
+            canDrown = ammoDepletesOverTime = killOnAmmoDepletion = false;
+            payloadCapacity = (5.5f * 5.5f) * tilePayload;
+            weapons.add(new Weapon("large-weapon"){{
+                reload = 13f;
+                x = 4f;
+                y = 2f;
+                top = false;
+                ejectEffect = Fx.casing1;
+                bullet = new BasicBulletType(2.5f, 9){{
+                    width = 7f;
+                    height = 9f;
+                    lifetime = 60f;
                 }};
             }});
         }};
@@ -1090,7 +1112,7 @@ public class NyfalisUnits {
             public void update(Unit unit, WeaponMount mount){
                 Queue<Teams.BlockPlan> blocks = unit.team.data().plans;
 
-                if(unit.buildPlan() != null && lastProgress == unit.buildPlan().progress && timer.get(3, 40)){
+                if(unit.buildPlan() != null && lastProgress == unit.buildPlan().progress && timer.get(3, 40) && !blocks.isEmpty()){
                     blocks.addLast(blocks.removeFirst());
                     lastProgress = unit.buildPlan().progress;
                 }
@@ -1169,6 +1191,7 @@ public class NyfalisUnits {
             canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi = true;
             constructor = LegsUnit::create;
             spawnStatus = StatusEffects.disarmed;
+            pathCost = NyfalisPathfind.costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             mineItems = Seq.with(rustyIron, lead, scrap);
@@ -1264,6 +1287,7 @@ public class NyfalisUnits {
             constructor = LegsUnit::create;
             spawnStatus = StatusEffects.disarmed;
             mineItems = Seq.with(rustyIron, lead, scrap);
+            pathCost = NyfalisPathfind.costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             setEnginesMirror(

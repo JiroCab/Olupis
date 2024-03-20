@@ -1,24 +1,31 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 20/03/2024 (+8utc) by Jirocab/RushieWashie
 
 = Version 1-7() =
     + Units added: regioner, germanica, serpent, essex, revenant, pteropus, acerodon
-    + Blocks added: steamTurbine, lubricantMixer, discardDriver, siliconKiln, rustEngraver, alternateArticulator, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge
-    + Tiles added: glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush, deadTree, hardenMuddyVent
+    + Blocks added: steamTurbine, lubricantMixer, discardDriver, siliconKiln, rustEngraver, alternateArticulator, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge, lidar, inductionSmelter
+    + Tiles added: glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush, deadTree, hardenMuddyVent, oreAlco
     + Status Effect added: lubed, mossed, deployed
     + Items added: alcoAlloy, aluminum
-    + Added a buttons to clear Nyfalis Sectors and research data
-    + Added a toggleable weather effect for cloud shadows (still needs to be manually added as a weather)
+    + Added: Buttons to clear Nyfalis Sectors and research data
+    + Added: Disclaimer system that warns the player if their sectors are outdated
+    + Added: Toggleable weather effect for cloud shadows (still needs to be manually added as a weather)
     ~ Balance: Reduced junction to better scale with other blocks
     ~ Balance: Core health scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp
     ~ Balance: Relic & Vestige Weapon types swapped, stats unchanged
-    ~ Balance: Taurus rework -> -2% heal, 2 Tiles aoe, faster rotate speed
+    ~ Balance: Taurus rework = 7% > heal 3%, 2 Tiles aoe, faster rotate speed & better consistency
+    ~ Balance: Blast pump (150 > 300) & Impact pump (200 > 400) doubled liquid capacity
     ~ Bug Fix: Fix Regioner's Ai being stuck following a phantom when no other units are present & used in waves
     ~ Bug Fix: Colours of certain content not being set correctly
     ~ Bug Fix: Hit boxes of certain units being small/bigger than appropriate
     ~ Bug Fix: Double tapping on Nyfalian System will launch you in sector 0 of nyfalis
-    ~ Improved Gnat and Phorid's attacking visual design to better indicate area of damage
+    ~ Bug Fix: Liquid Tank and Canister liquid layer are visible in corners
+    ~ Bug Fix: Broiler now gets it production boosted with scrap and is functional
+    ~ Improved: Gnat and Phorid's attacking visual design to better indicate area of damage
+    ~ Improved: Stats and general core database changes
+    ~ Improved: Obliterator fully implemented
+    ~ Improved: Broiler now gets
     ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item) quartz (ore), rustyIron (item), lubricant (liquid)
     ~ Sprites Contributed by Remington Thomas: acerodon
     ~ Sprites Contributed by Ethanol10: acerodon

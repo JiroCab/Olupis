@@ -2,11 +2,13 @@ package olupis.input;
 
 import arc.Core;
 import arc.scene.ui.layout.Table;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.TechTree;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Saves;
 import mindustry.gen.Icon;
+import mindustry.gen.Sounds;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.ui.Styles;
@@ -78,6 +80,18 @@ public class NyfalisSettingsDialog {
                     });
                 }).margin(14).width(260f).pad(6);
                 t.add(subTable);
+                if(Core.settings.getBool("nyfalis-debug")){
+                    t.row();
+                    Table debugTable = new Table();
+                    debugTable.button("test save disclaimer",  Icon.save, () -> {
+                        Core.settings.put("nyf-lastver", 0.1f);
+                        Sounds.respawn.play();
+                        float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
+                        Log.err("" + lVer);
+                    }).margin(14).width(260f).height(50f).pad(6);
+                    debugTable.button("Save Disclaimer", Icon.chat, NyfalisStartUpUis::showSaveDisclaimerDialog).margin(14).width(260f).height(50f).pad(6);
+                    t.add(debugTable);
+                }
             }, true, () -> showData[0]).growX().center().row();
         });
     }

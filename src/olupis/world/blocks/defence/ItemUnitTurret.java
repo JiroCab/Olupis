@@ -192,6 +192,7 @@ public class ItemUnitTurret extends ItemTurret {
                 }).growX().pad(5);
             }
         });
+
         if(requiredItems.length > 0)stats.add(Stat.input, table -> {
         /*I'm sorry*/
             if(statArticulator != null) table.row();
@@ -199,7 +200,7 @@ public class ItemUnitTurret extends ItemTurret {
                 for(ItemStack stack : requiredItems){
                     b.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
                 }
-            })).growX().pad(5);
+            }).align(statArticulator != null ? Align.center : Align.left)).growX().pad(5);
 
             if(statArticulator != null) {
                 table.row();

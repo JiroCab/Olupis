@@ -1,7 +1,6 @@
 package olupis.world.ai;
 
 import arc.math.Mathf;
-import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.entities.*;
 import mindustry.entities.units.AIController;
@@ -66,7 +65,6 @@ public class ArmDefenderAi extends AIController {
     }
 
     public boolean checkType(Unit u){
-        Log.err(u.controller() + "");
         return !(u.controller() instanceof ArmDefenderAi) && !(u.controller() instanceof UnitHealerAi);
     }
 

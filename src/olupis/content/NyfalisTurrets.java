@@ -5,6 +5,7 @@ import arc.struct.EnumSet;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
@@ -20,6 +21,7 @@ import olupis.world.blocks.defence.ItemUnitTurret;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.*;
 
+import static mindustry.Vars.tilesize;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisBlocks.*;
@@ -346,85 +348,151 @@ public class NyfalisTurrets {
             inaccuracy = 2f;
             shootCone = 15f;
             coolantMultiplier = 4f;
+            fogRadiusMultiplier = 0.6f;
+            shootY = (size * tilesize / 2f) - 7f;
 
+            float primaryLifeTime = 20f, primaryMinL = 0.8f, primaryMaxL = 1f, primaryHeight = 4f, primaryWidth = 7f,
+                    secondaryHeight = 4f, secondaryWidth = 3f;
             ammo(
                 Items.graphite, new ArtilleryBulletType(3.2f, 25){{
                     lifetime = 80f;
                     fragBullets = 2;
                     knockback = 0.8f;
-                    width = height = 11f;
-                    splashDamage = 33f;
+                    splashDamage = 29f;
+                    width = height = 14f;
+                    fragLifeMax = primaryMaxL;
+                    fragLifeMin = primaryMinL;
                     splashDamageRadius = 25f * 0.75f;
+
                     collidesTiles = false;
                     frontColor = new Color().set(graphite.color).lerp(Pal.bulletYellow, 0.25f).a(1f);
                     backColor = new Color().set(graphite.color).lerp(Pal.bulletYellowBack, 0.15f).a(1f);
-                    fragBullet = new BasicBulletType(3f, 12, "bullet"){{
-                        width = 5f;
-                        height = 12f;
+                    hitEffect = despawnEffect = NyfalisFxs.obliteratorShockwave;
+
+                    fragBullet = new ArtilleryBulletType(2f, 12, "bullet"){{
                         shrinkY = 1f;
-                        lifetime = 15f;
-                        fragBullets = 2;
+                        fragBullets = 3;
+                        width = primaryWidth;
+                        height = primaryHeight;
+                        lifetime = primaryLifeTime;
+
                         despawnEffect = Fx.none;
                         frontColor = new Color().set(graphite.color).lerp(Pal.bulletYellow, 0.55f);
                         backColor = new Color().set(graphite.color).lerp(Pal.bulletYellowBack, 0.45f);
+
                         fragBullet = new BasicBulletType(3f, 12, "bullet"){{
-                            width = 5f;
-                            height = 12f;
                             shrinkY = 1f;
                             lifetime = 10f;
+                            splashDamage = 7f;
+                            width = secondaryWidth;
+                            height = secondaryHeight;
+                            splashDamageRadius = Vars.tilesize;
+
                             despawnEffect = Fx.none;
+                            hitEffect = Fx.flakExplosion;
+                            frontColor = new Color().set(graphite.color).lerp(Pal.bulletYellow, 0.75f);
+                            backColor = new Color().set(graphite.color).lerp(Pal.bulletYellowBack, 0.65f);
+                        }};
+                    }};
+                }},
+
+                Items.silicon, new ArtilleryBulletType(3f, 25){{
+                    lifetime = 80f;
+                    fragBullets = 2;
+                    knockback = 0.8f;
+                    homingRange = 50f;
+                    ammoMultiplier = 3f;
+                    splashDamage = 29f;
+                    width = height = 11f;
+                    homingPower = 0.08f;
+                    reloadMultiplier = 1.2f;
+                    fragLifeMax = primaryMaxL;
+                    fragLifeMin = primaryMinL;
+                    splashDamageRadius = 25f * 0.75f;
+
+                    collidesTiles = false;
+                    frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.25f).a(1f);
+                    backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.15f).a(1f);
+                    hitEffect = despawnEffect = NyfalisFxs.obliteratorShockwave;
+
+                    fragBullet = new ArtilleryBulletType(2f, 12, "bullet"){{
+                        shrinkY = 1f;
+                        fragBullets = 2;
+                        homingPower = 0.06f;
+                        width = primaryWidth;
+                        height = primaryHeight;
+                        lifetime = primaryLifeTime;
+                        despawnEffect = Fx.none;
+
+                        frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.55f);
+                        backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.45f);
+
+                        fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                            shrinkY = 1f;
+                            lifetime = 10f;
+                            splashDamage = 7f;
+                            width = secondaryWidth;
+                            height = secondaryHeight;
+                            splashDamageRadius = Vars.tilesize;
+
+                            despawnEffect = Fx.none;
+                            hitEffect = Fx.flakExplosion;
                             frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.75f);
                             backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.65f);
                         }};
                     }};
                 }},
-                Items.silicon, new ArtilleryBulletType(3f, 25){{
-                    fragBullets = 2;
+
+                alcoAlloy, new ArtilleryBulletType(3.2f, 30){{
                     lifetime = 80f;
+                    fragBullets = 2;
                     knockback = 0.8f;
-                    homingRange = 50f;
-                    ammoMultiplier = 3f;
-                    splashDamage = 33f;
-                    width = height = 11f;
-                    homingPower = 0.08f;
-                    reloadMultiplier = 1.2f;
+                    splashDamage = 31f;
+                    width = height = 14f;
+                    fragLifeMax = primaryMaxL;
+                    fragLifeMin = primaryMinL;
                     splashDamageRadius = 25f * 0.75f;
+
                     collidesTiles = false;
-                    frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.25f).a(1f);
-                    backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.15f).a(1f);
-                    fragBullet = new BasicBulletType(3f, 12, "bullet"){{
-                        width = 5f;
-                        height = 12f;
+                    frontColor = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellow, 0.25f).a(1f);
+                    backColor = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellowBack, 0.15f).a(1f);
+                    hitEffect = despawnEffect = NyfalisFxs.obliteratorShockwave;
+
+                    fragBullet = new ArtilleryBulletType(2f, 20, "bullet"){{
                         shrinkY = 1f;
-                        lifetime = 15f;
-                        homingPower = 0.06f;
-                        despawnEffect = Fx.none;
-                        frontColor = quartz.color;
-                        backColor = Pal.gray;
                         fragBullets = 2;
-                        frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.55f);
-                        backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.45f);
-                        fragBullet = new BasicBulletType(3f, 12, "bullet"){{
-                            width = 5f;
-                            height = 12f;
+                        width = primaryWidth;
+                        height = primaryHeight;
+                        lifetime = primaryLifeTime;
+
+                        despawnEffect = Fx.none;
+                        frontColor = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellow, 0.55f);
+                        backColor = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellowBack, 0.45f);
+
+                        fragBullet = new BasicBulletType(2.7f, 20, "bullet"){{
                             shrinkY = 1f;
                             lifetime = 10f;
+                            splashDamage = 16f;
+                            width = secondaryWidth;
+                            height = secondaryHeight;
+                            splashDamageRadius = Vars.tilesize * 2f;
+
                             despawnEffect = Fx.none;
-                            frontColor = quartz.color;
-                            backColor = Pal.gray;
-                            frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.75f);
-                            backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.65f);
+                            hitEffect = Fx.flakExplosion;
+                            frontColor = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellow, 0.75f);
+                            backColor = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellowBack, 0.65f);
                         }};
                     }};
                 }}
             );
+            shootEffect = new MultiEffect( Fx.shootBigColor, Fx.shootSmokeSquare);
             targetAir = false;
-            limitRange(0f);
+            limitRange(10f);
+            drawer = new DrawTurret("iron-");
             shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
             coolant = consume(new ConsumeLubricant(30f / 60f));
-            drawer = new DrawTurret("iron-");
             requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
-        }}; //TODO STEAL SHOOT SOUND FROM CNC ZH battle ships
+        }};
 
         //Aegis AA SAM Turrets (later game),  Inspired by bullet hell shoot'em ups... or btd's tack shooter
         aegis = new ItemTurret("aegis"){{

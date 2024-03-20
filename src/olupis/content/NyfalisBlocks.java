@@ -16,6 +16,7 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Radar;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
@@ -92,12 +93,12 @@ public class NyfalisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln,
+        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall, repairPin,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal,
-        mendFieldProjector, taurus,
+        mendFieldProjector, taurus, ladar,
 
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry
     ; //endregion
@@ -122,6 +123,10 @@ public class NyfalisBlocks {
 
         oreQuartz = new OreBlock("ore-quartz", quartz){{
             variants = 3;
+        }};
+
+        oreAlco = new OreBlock("ore-alco", alcoAlloy){{
+            variants = 1;
         }};
 
         glowSprouts = new OverlayFloor("glow-sprout"){{
@@ -712,7 +717,7 @@ public class NyfalisBlocks {
             size = 3;
             pumpAmount = 140f;
             leakAmount = 0.02f;
-            liquidCapacity = 150f;
+            liquidCapacity = 300f;
             consumePower(25f/60f);
             researchCost = with(iron, 250, lead, 800, graphite, 250, rustyIron, 800);
             requirements(Category.liquid, with(iron, 15, graphite, 15, lead, 30, rustyIron, 30));
@@ -721,7 +726,8 @@ public class NyfalisBlocks {
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{
             size = 4;
             leakAmount = 0.1f;
-            pumpAmount = liquidCapacity = 200f;
+            pumpAmount = 200f;
+            liquidCapacity = 400f;
             consumePower(0.6f);
             researchCost = with(iron, 500, lead, 1000, graphite, 250, silicon, 250);
             requirements(Category.liquid, with(iron, 30, graphite, 30, lead, 75, silicon, 30));
@@ -762,6 +768,7 @@ public class NyfalisBlocks {
         fortifiedCanister = new LiquidRouter("pipe-canister"){{
             solid = true;
             size = 2;
+            liquidPadding = 2f;
             liquidCapacity = 850f;
             liquidPressure = 0.95f;
             researchCost = with(lead, 300, iron, 50);
@@ -771,6 +778,7 @@ public class NyfalisBlocks {
         fortifiedTank = new LiquidRouter("pipe-tank"){{
             solid = true;
             size = 3;
+            liquidPadding = 2f;
             liquidCapacity = 2300f;
             researchCost = with(lead, 800, iron, 250);
             requirements(Category.liquid, with(lead, 75, iron, 30));
@@ -840,7 +848,7 @@ public class NyfalisBlocks {
 
         }};
 
-        broiler = new GenericCrafter("broiler"){{
+        broiler = new BoostableGenericCrafter("broiler"){{
             hasLiquids = hasPower =  outputsLiquid = true;
 
             size = 2;
@@ -891,24 +899,23 @@ public class NyfalisBlocks {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawDefault());
         }};
 
-        rustEngraver = new GenericCrafter("rust-engraver"){{
+        rustEngraver = new BoostableGenericCrafter("rust-engraver"){{
             hasPower = hasItems = hasLiquids = solid  = true;
             rotate = false;
 
             size = 4;
-            craftTime = 120;
+            craftTime = 250;
             envEnabled = Env.any;
             buildCostMultiplier = 0.4f;
 
             lightLiquid = Liquids.cryofluid;
-            consumePower(1f);
+            consumePower(200f / 60f);
             craftEffect = Fx.pulverizeMedium;
             outputItem = new ItemStack(iron, 2);
             consumeLiquid(Liquids.water, 38f / 60f).boost();
             consumeItems(with(quartz, 1, rustyIron, 6));
             researchCost = with(iron, 2000, lead, 2000, rustyIron, 2000, quartz, 1000, cobalt, 500);
             requirements(Category.crafting, with(iron, 25, lead, 30, rustyIron, 30, quartz, 25, cobalt, 25));
-            //drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawLiquidTile(Liquids.cryofluid){{drawLiquidLight = true;}}, new DrawDefault());
         }};
 
         hydrochloricGraphitePress  = new GenericCrafter("hydro-graphite-press"){{
@@ -952,7 +959,23 @@ public class NyfalisBlocks {
             consumePower(70f/60f);
             outputItem = new ItemStack(silicon, 3);
             consumeItems(with(quartz, 2, graphite, 1));
-            requirements(Category.crafting, with(lead, 65, iron, 65, graphite, 15, iron, 15, cobalt, 15));
+            requirements(Category.crafting, with(lead, 65, iron, 65, graphite, 15, silicon, 15, cobalt, 15));
+        }};
+
+        inductionSmelter = new SeparatorWithLiquidOutput("induction-smelter"){{
+            size = 3;
+            craftTime = 80f;
+            liquidCapacity = 30;
+            results = with(
+                aluminum, 3,
+                cobalt, 1
+            );
+            consumeItem(alcoAlloy);
+            consumePower(80f /60f);
+            liquidOutputDirections = new int[]{4};
+            hasLiquids = outputsLiquid = rotate = quickRotate = true;
+            liquidOutputs = LiquidStack.with(Liquids.slag, 5f / 60f);
+            requirements(Category.crafting, with(iron, 25, lead, 25));
         }};
 
         bioMatterPress = new GenericCrafter("biomatter-press"){{
@@ -1548,6 +1571,17 @@ public class NyfalisBlocks {
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             coolant = consume(new ConsumeLubricant(45f / 60f));
             requirements(Category.effect, with(iron, 15, Items.lead, 20));
+        }};
+
+        ladar = new Radar("ladar"){{
+            size = 2;
+            fogRadius = 64;
+            rotateSpeed = 20f;
+            glowMag = glowScl = 0f;
+            discoveryTime = 60f * 80f;
+            consumePower(240f/60f);
+            glowColor = Color.valueOf("00000000");
+            requirements(Category.effect, BuildVisibility.fogOnly, with(Items.lead, 60, Items.graphite, 50, iron, 10));
         }};
 
         //Healing turret that has ammo and water to heal better

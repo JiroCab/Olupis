@@ -13,10 +13,13 @@ import mindustry.Vars;
 import mindustry.editor.WaveInfoDialog;
 import mindustry.game.Rules;
 import mindustry.gen.Icon;
+import mindustry.type.Planet;
+import mindustry.type.Sector;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.CustomRulesDialog;
 import olupis.content.NyfalisPlanets;
+import olupis.content.NyfalisSectors;
 
 import java.util.Objects;
 
@@ -38,6 +41,7 @@ public class NyfalisStartUpUis {
             header.setAlignment(Align.center);
             header.setWrap(true);
             body.setWrap(true);
+            body.sizeBy(10f);
             body.setAlignment(Align.center);
 
             t.add(header).row();
@@ -55,8 +59,24 @@ public class NyfalisStartUpUis {
         dialog.show();
     }
 
-
     public static void  saveDisclaimerDialog(){
+        //This is here bc in the beta versions, placeholder was int (`1`) and would crash with the new check
+        float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
+        boolean hasSave = false;
+        for (Planet p : content.planets()) {
+            if (!p.name.contains("olupis-")) continue;
+            if(hasSave) break;
+            for (Sector s : p.sectors) {
+                if(s.hasSave()) hasSave = true;
+                break;
+            }
+        }
+        if (hasSave && !(lVer < NyfalisSectors.sectorVersion)) return;
+        showSaveDisclaimerDialog();
+    }
+
+    public static void showSaveDisclaimerDialog(){
+        float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
         BaseDialog dialog = new BaseDialog("@nyfalis-disclaimer.name");
         dialog.centerWindow();
 
@@ -64,7 +84,7 @@ public class NyfalisStartUpUis {
         dialog.cont.table(t -> {
             t.defaults().growY().growX().center();
 
-            Label body = new Label("@nyfalis-disclaimer.save");
+            Label body = new Label(Core.bundle.format("nyfalis-disclaimer.save", lVer, NyfalisSectors.sectorVersion));
             body.setWrap(true);
             body.setAlignment(Align.center);
             t.add(body).row();
@@ -74,9 +94,11 @@ public class NyfalisStartUpUis {
 
         dialog.cont.button("@back", Icon.left, () -> {
             dialog.hide();
-            Core.settings.put("nyf-lastver", 1); //TODO IMPLEMENT
+            Core.settings.put("nyf-lastver", NyfalisSectors.sectorVersion);
         }).padTop(-1f).size(220f, 55f).bottom();
-        dialog.closeOnBack();
+        dialog.closeOnBack( () -> {
+            Core.settings.put("nyf-lastver", NyfalisSectors.sectorVersion);
+        });
         dialog.show();
     }
 
