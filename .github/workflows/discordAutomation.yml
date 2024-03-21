@@ -5,6 +5,7 @@ on:
     workflows: [Build Mod]
     types: [completed]
     branches: [experimental]
+  workflow_call:
 
 jobs:
   on-success:
