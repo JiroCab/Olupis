@@ -1,0 +1,34 @@
+name: Send Artifact To Discord
+
+on:
+  workflow_run:
+    workflows: [Build Mod]
+    types: [completed]
+    branches: [experimental]
+  workflow_call:
+
+jobs:
+  on-success:
+      runs-on: ubuntu-latest
+      if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+      steps:
+      - name: 'Download artifact'
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: deploy.yml
+          branch: experimental
+
+      - name: Send file Olupis-but-a-jar.jar to discord channel
+        uses: sinshutu/upload-to-discord@master
+        env:
+            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+            args: Olupis-but-a-jar.jar/Olupis-but-a-jar.jar
+
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed sadge'
