@@ -13,7 +13,7 @@ public class NyfalisSectors {
 
     public static SectorPreset
         /*Arthin*/
-        sanctuary, vakinyaDesert, muddyLakes, mossyRavine, naturalParkOasis, lushyRiverComplex,
+        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, naturalParkOasis, lushyRiverComplex, abandonedTrainStations, kanwadolRuins, snowPisos,
         /*Nyfalis*/
         placeholder2,
         /*Spelta*/
@@ -31,13 +31,13 @@ public class NyfalisSectors {
             rules = commonRules(captureWave);
         }};
 
-        mossyRavine = new SectorPreset("mossy-ravine", arthin, 31){{
+        mossyCaverns = new SectorPreset("mossy-caverns", arthin, 31){{
             overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
             difficulty = 2;
             captureWave = 33;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 150));
         }};
 
         muddyLakes = new SectorPreset("muddy-lakes", arthin, 21){{
@@ -58,7 +58,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000, NyfalisItemsLiquid.iron, 200));
         }};
 
-        naturalParkOasis = new SectorPreset("natural-park-oasis", arthin, 12){{
+        naturalParkOasis = new SectorPreset("natural-park-oasis", arthin, 11){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -67,7 +67,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 2700, Items.lead, 2500, NyfalisItemsLiquid.iron, 400, Items.copper, 400));
         }};
 
-        lushyRiverComplex = new SectorPreset("lushy-river-complex", arthin, 25){{
+        lushyRiverComplex = new SectorPreset("lushy-river-complex", arthin, 7){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -75,6 +75,34 @@ public class NyfalisSectors {
             captureWave = 22;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
         }};
+
+        abandonedTrainStations = new SectorPreset("abandoned-train-station", arthin, 29){{
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 5;
+            captureWave = 22;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
+        }};
+
+        kanwadolRuins = new SectorPreset("kanwadol-ruins", arthin, 6){{
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 3;
+            captureWave = 22;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
+        }};
+
+        snowPisos = new SectorPreset("snow-pisos", arthin, 0){{
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 5;
+            captureWave = 22;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
+        }};
+
         //endregion
         //region Nyfalis
 

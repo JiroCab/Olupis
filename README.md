@@ -10,13 +10,13 @@ otherwise use [GitHub Actions](https://github.com/JiroCab/Olupis/actions) for re
 See [change logs here](https://github.com/JiroCab/Olupis/blob/main/changelog.txt).
 
 Building Locally works the same as most other mods,  use `./gradlew jar` or `./gradlew deploy`.
-alternatively you may use `./gradlew runMindustryClient `or `./gradlew runMindustryServer ` for testing with [Toxopid](https://github.com/Xpdustry/Toxopid).
+alternatively you may use [Toxopid](https://github.com/Xpdustry/Toxopid) with `./gradlew runMindustryClient ` , `./gradlew runMindustryServer`.
 you can figure out the rest, you got this, you're a smart cookie
 
 [Discord server](https://discord.gg/S8wuZAF4ZZ) to talk and complain about the mod.
 
 # Contributing
-With the way the repository is structured, please refer to the [Experimental branch](https://github.com/JiroCab/Olupis/tree/experimental) on basing changes to avoid conflict.
+With the way the repository is structured, please refer to the [Experimental branch](https://github.com/JiroCab/Olupis/tree/experimental) on basing changes to avoid future conflict.
 And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/Olupis/blob/experimental/changelog.txt) in case of any similar changes are made
 
 ## Credits:

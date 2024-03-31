@@ -80,7 +80,7 @@ public class NyfalisPlanets {
         }};
 
         //1st moon
-        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.8f, 1){{
+        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 1.1f, 1){{
             accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics =  true;
 
             startSector = 2;
@@ -96,7 +96,7 @@ public class NyfalisPlanets {
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
 
-        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.8f, 2){{
+        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
             clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
 
@@ -115,6 +115,7 @@ public class NyfalisPlanets {
 
         //TODO: rework the planets generators
         //TODO: Caves, capture 1, get 2 sectors!
+        //TODO: LUMA THEMED ASTEROID
     }
 
     public  static void PostLoadPlanet(){

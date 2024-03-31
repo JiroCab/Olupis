@@ -120,16 +120,21 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
         }
 
-        if(unit.controller() instanceof NyfalisMiningAi ai && ai.targetItem != null && ai.ore != null && unit.closestCore() != null){
+        if(unit.controller() instanceof NyfalisMiningAi ai ){
             table.row();
             table.table().left().growX().update(i -> {
+                i.left().clear();
+                if(ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null){
+                    i.add(Core.bundle.get("nyfalis-ai-inoperable"));
+                    return;
+                }
                 TextureRegion icon = unit.closestCore().block.fullIcon;
                 if(ai.mineType >= 2 && ai.ore != null){
                     if(ai.mineType == 2) icon = ai.ore.floor().fullIcon;
                     else if(ai.mineType == 3) icon = ai.ore.block().fullIcon;
                     else if(ai.mineType == 4) icon = ai.ore.overlay().fullIcon;
                 }
-                i.left().clear();
+
                 i.image(icon).size(iconSmall).scaling(Scaling.bounded).left();
                 i.add(ai.mineType != 1 ? ai.targetItem.localizedName: unit.closestCore().block.localizedName).wrap().left();
             });

@@ -12,10 +12,15 @@ java{
 
 sourceSets.main.java.srcDirs = ["src"]
 
+
+
+import fr.xpdustry.toxopid.spec.ModPlatform
+
 repositories{
     mavenCentral()
     maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven { url 'https://jitpack.io' }
+    anukenJitpack()
 }
 
 ext{
@@ -27,7 +32,6 @@ ext{
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
 
-import fr.xpdustry.toxopid.spec.ModPlatform
 toxopid {
     compileVersion.set("$mindustryVersion")
     runtimeVersion.set("$mindustryVersion")
@@ -46,6 +50,7 @@ dependencies{
     compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+    mindustryDependencies()
 }
 
 
@@ -108,4 +113,25 @@ task deploy(type: Jar){
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
         }
     }
+}
+
+//var musicMod = tasks.register("downloadMusicMod", GithubArtifactDownload) {
+//    user.set("JiroCab")
+//    name.set ("Nyfalis-Music-1.1b.jar") //WTF MAN WHY DOES THIS BREAK THINGS
+//    repo.set("Nyfalis-Music")
+//    version.set("1.1b")
+//}
+//
+//task runClientWithMusicMod {
+//    dependsOn runMindustryClient{
+//        mods.setFrom(tasks.jar, musicMod)
+//    }
+//}
+
+
+task runClientwithLocalMods{
+    dependsOn runMindustryClient{
+        mods.setFrom (tasks.jar, project.file("./build/libs/mods/a.jar"), project.file("./build/libs/mods/b.zip"), project.file("./build/libs/mods/c.zip"), project.file("./build/libs/mods/t.zip"))
+    }
+
 }

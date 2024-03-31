@@ -1,14 +1,16 @@
 package olupis.input;
 
 import arc.Core;
+import arc.graphics.Color;
+import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.TechTree;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Saves;
-import mindustry.gen.Icon;
-import mindustry.gen.Sounds;
+import mindustry.gen.*;
+import mindustry.graphics.Pal;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.ui.Styles;
@@ -18,7 +20,7 @@ import olupis.content.NyfalisPlanets;
 import static mindustry.Vars.*;
 
 public class NyfalisSettingsDialog {
-
+    public static String nyfalisDiscordInvite = "https://discord.gg/K5YX2ECjv7";
     public NyfalisSettingsDialog() {
         if(!headless) BuildDialog();
     }
@@ -93,6 +95,8 @@ public class NyfalisSettingsDialog {
                     t.add(debugTable);
                 }
             }, true, () -> showData[0]).growX().center().row();
+
+            table.button("@nyfalis-discord", Icon.discord, NyfalisSettingsDialog::nyfalisDiscordDialog).margin(14).width(260f).pad(6).row();
         });
     }
 
@@ -121,4 +125,50 @@ public class NyfalisSettingsDialog {
     public static void AddNyfalisSoundSettings(){
         BuildNyfalisSoundSettings(Vars.ui.settings.sound, true);
     }
+
+    public static void nyfalisDiscordDialog(){
+        Dialog dialog = new Dialog("");
+
+        float h = 70f;
+        dialog.cont.margin(12f);
+        Color color = Color.valueOf("3ED09A");
+
+        dialog.cont.table(t -> {
+            t.background(Tex.button).margin(0);
+
+            t.table(img -> {
+                img.image().height(h - 5).width(40f).color(color);
+                img.row();
+                img.image().height(5).width(40f).color(color.cpy().mul(0.8f, 0.8f, 0.8f, 1f));
+            }).expandY();
+
+            t.table(i -> {
+                i.image(Icon.discord);
+            }).size(h).left();
+
+            t.add("@nyfalis-discord-long").color(Pal.accent).growX().padLeft(10f);
+
+            Table c = new Table();
+            c.add(nyfalisDiscordInvite).growX();
+
+        }).size(520f, h).pad(10f);
+
+        dialog.buttons.defaults().size(170f, 50);
+
+        dialog.buttons.button("@back", Icon.left, dialog::hide);
+        dialog.buttons.button("@copylink", Icon.copy, () -> {
+            Core.app.setClipboardText(nyfalisDiscordInvite);
+            ui.showInfoFade("@copied");
+        });
+        dialog.buttons.button("@openlink", Icon.discord, () -> {
+            if(!Core.app.openURI(nyfalisDiscordInvite)){
+                ui.showErrorMessage("@linkfail");
+                Core.app.setClipboardText(nyfalisDiscordInvite);
+            }
+        });
+        dialog.closeOnBack();
+        dialog.show();
+    }
+
+
 }

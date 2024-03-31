@@ -48,7 +48,7 @@ public class NyfalisTurrets {
                     drag = 0.008f;
                     lifetime = 19.7f;
                     rangeChange = 15f;
-                    ammoMultiplier = 3f;
+                    ammoMultiplier = 1.5f;
                     trailInterval = trailParam = 1.5f;
                     buildingDamageMultiplier = 0.5f;
 
@@ -64,7 +64,7 @@ public class NyfalisTurrets {
                         lifetime = 12f;
                         damage = 10.3f;
                         pierceCap = 1;
-                        ammoMultiplier = 3f;
+                        ammoMultiplier = 2.5f;
                         statusDuration = 60f * 5;
                         trailInterval = trailParam = 1.5f;
                         buildingDamageMultiplier = 0.5f;
@@ -127,7 +127,7 @@ public class NyfalisTurrets {
             shootWarmupSpeed = 0.11f;
 
             ammo(
-                lead, new MissileBulletType(4.6f, 32f){{
+                lead, new MissileBulletType(4.6f, 24f){{
                     width = 6f;
                     height = 10.5f;
                     shrinkX = 0;
@@ -138,7 +138,7 @@ public class NyfalisTurrets {
                     collidesAir = true;
                     collidesGround = false;
                     hitEffect = NyfalisFxs.hollowPointHit;
-                    knockback = 0.5f;
+                    knockback = 0.4f;
                     status = StatusEffects.slow;
                     statusDuration = 25f;
                     splashDamage = 10f;
@@ -180,7 +180,7 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
             coolant = consume(new ConsumeLubricant(15f / 60f));
             ammo(
-                rustyIron, new RollBulletType(2.5f, 18){{
+                rustyIron, new RollBulletType(3f, 18){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     height = 9f;
@@ -197,7 +197,7 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.3f);
                     backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.3f);
                 }},
-                iron, new RollBulletType(3f, 30){{
+                iron, new RollBulletType(3.5f, 30){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     width = 40f;
@@ -214,7 +214,7 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(iron.color).lerp(Pal.bulletYellowBack, 0.1f);
                     backColor = new Color().set(iron.color).lerp(Pal.bulletYellow, 0.2f);
                 }},
-                quartz, new RollBulletType(3f, 37){{
+                quartz, new RollBulletType(3.5f, 37){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     width = 40f;
@@ -259,6 +259,7 @@ public class NyfalisTurrets {
                     ammoMultiplier = 1f;
                     spawnUnit = mite;
                 }}
+                    //TODO: CRAWER THAT FLIES
             );
             requiredItems = requiredAlternate = with();
             commandable = configurable = rallyAim = false;
@@ -286,7 +287,7 @@ public class NyfalisTurrets {
                         drag = 0.0009f;
                         lifetime = 29.5f;
                         rangeChange = 40f;
-                        ammoMultiplier = 4f;
+                        ammoMultiplier = 2f;
                         statusDuration = 60f * 2;
                         layer = Layer.bullet -2f;
                         hitSize = puddleSize = 7f;
@@ -318,7 +319,7 @@ public class NyfalisTurrets {
                         drag = 0.0009f;
                         lifetime = 26.5f;
                         rangeChange = 20f;
-                        ammoMultiplier = 4f;
+                        ammoMultiplier = 3f;
                         statusDuration = 60f * 2;
                         layer = Layer.bullet -2f;
                         hitSize = puddleSize = 7f;
@@ -506,7 +507,7 @@ public class NyfalisTurrets {
             shootWarmupSpeed = 0.11f;
 
             ammo(
-                    lead, new MissileBulletType(2.8f, 68f){{
+                    lead, new MissileBulletType(2.8f, 69f){{
                         width = 7f;
                         shrinkX = 0;
                         height = 11.5f;

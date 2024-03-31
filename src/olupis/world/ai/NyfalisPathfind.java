@@ -8,7 +8,6 @@ public class NyfalisPathfind {
     private static final int wallImpassableCap = 1_000_000;
 
     public static final Pathfinder.PathCost
-
         costLeggedNaval =(team, tile) ->
             PathTile.legSolid(tile) ? impassable : 1 +
             (PathTile.nearLegSolid(tile) ? 3 : 0),

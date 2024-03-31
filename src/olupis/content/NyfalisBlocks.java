@@ -4,7 +4,8 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.struct.*;
+import arc.struct.EnumSet;
+import arc.struct.ObjectSet;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.Effect;
@@ -16,7 +17,6 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.Radar;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
@@ -26,9 +26,7 @@ import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.payloads.PayloadRouter;
-import mindustry.world.blocks.power.Battery;
-import mindustry.world.blocks.power.BeamNode;
-import mindustry.world.blocks.power.ConsumeGenerator;
+import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumePower;
@@ -39,7 +37,8 @@ import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
 import olupis.world.consumer.ConsumeLubricant;
-import olupis.world.entities.bullets.*;
+import olupis.world.entities.bullets.HealOnlyBulletType;
+import olupis.world.entities.bullets.SpawnHelperBulletType;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -66,7 +65,7 @@ public class NyfalisBlocks {
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandvent, snowVent,
 
         /*Liquid floors*/
-        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater,
+        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater, sandOil,
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
@@ -688,7 +687,7 @@ public class NyfalisBlocks {
             );
             consumePower(40f / 60f);
             consumeLiquid(Liquids.water, 18f / 60f);
-            researchCost = with(iron, 700, lead, 1500, rustyIron, 1500, condensedBiomatter, 500);
+            researchCost = with(iron, 700, lead, 1500, rustyIron, 1500);
             outputItem = new ItemStack(condensedBiomatter, 1);
             requirements(Category.production, ItemStack.with(iron, 30, lead, 60, rustyIron, 60));
         }};
@@ -816,17 +815,18 @@ public class NyfalisBlocks {
             rotate = false;
 
             size = 2;
-            craftTime = 150f;
+            craftTime = 140f;
             boostScale = 0.1f;
-            liquidCapacity = 30f;
+            scaledHealth = 50f;
+            liquidCapacity = 50f;
             envEnabled = Env.any;
             attribute = Attribute.heat;
 
             consumePower(1f);
             consumeLiquid(Liquids.water, 20/60f);
-            researchCost = with(rustyIron, 50, lead, 50);
+            researchCost = with(rustyIron, 50, lead, 50, copper, 50);
             outputLiquid = new LiquidStack(steam, 12/60f);
-            requirements(Category.liquid, with(rustyIron, 10, lead, 10));
+            requirements(Category.liquid, with(rustyIron, 10, lead, 10, copper, 10));
         }};
 
         steamAgitator = new AttributeCrafter("steam-agitator"){{
@@ -837,14 +837,15 @@ public class NyfalisBlocks {
             boostScale = 0.1f;
             craftTime = 150f;
             baseEfficiency = 0f;
+            scaledHealth = 50f;
             liquidCapacity = 30f;
+            minEfficiency = 9f - 0.0001f;
             envEnabled = Env.any;
             attribute = Attribute.steam;
-            minEfficiency = 9f - 0.0001f;
 
-            researchCost = with(lead, 750, rustyIron, 750);
-            outputLiquid = new LiquidStack(steam, 10/60f);
-            requirements(Category.production, with(rustyIron, 30, lead, 30));
+            researchCost = with(lead, 750, rustyIron, 750, copper, 750);
+            outputLiquid = new LiquidStack(steam, 15/60f);
+            requirements(Category.production, with(rustyIron, 30, lead, 30, copper, 30));
 
         }};
 
@@ -1002,7 +1003,7 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25));
         }};
 
-        ironSieve  = new GenericCrafter("iron-sieve"){{
+        ironSieve  = new Separator("iron-sieve"){{
             //not to be confused with iron shiv
             hasPower = hasItems = true;
             hasLiquids = false;
@@ -1011,12 +1012,16 @@ public class NyfalisBlocks {
             craftTime = 30f;
             itemCapacity = 20;
 
-            craftEffect = Fx.pulverizeMedium;
-            consumePower(1.8f);
-            consumeItem(Items.sand, 2);
-            outputItem = new ItemStack(rustyIron, 2);
+            results = with(
+                Items.copper, 3,
+                Items.lead, 1,
+                rustyIron, 2
+            );
+            consumePower(2f);
+            consumeItem(Items.sand, 3);
             researchCost = with(lead, 700, rustyIron, 700);
             requirements(Category.crafting, with(rustyIron, 20, lead, 50));
+
         }};
 
         discardDriver = new DiscardDriver("discard-driver"){{
@@ -1025,7 +1030,8 @@ public class NyfalisBlocks {
             bullet = new BasicBulletType(2.5f, 9){{
                 width = 7f;
                 height = 9f;
-                lifetime = 60f;
+                lifetime = 10f;
+                scaleLife = true;
             }};
             requirements(Category.crafting, with(iron, 25, copper, 25));
         }};
@@ -1573,7 +1579,7 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(iron, 15, Items.lead, 20));
         }};
 
-        ladar = new Radar("ladar"){{
+        ladar = new Ladar("ladar"){{
             size = 2;
             fogRadius = 64;
             rotateSpeed = 20f;

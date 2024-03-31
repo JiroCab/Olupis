@@ -68,7 +68,7 @@ public class NyfalisUnits {
 
 
     public static AmmoLifeTimeUnitType
-        mite,
+        mite, ticks,
         //support - yes, its just Phasmophobia ghost types
         spirit, phantom, banshee, revenant, poltergeist
     ;
@@ -143,7 +143,8 @@ public class NyfalisUnits {
 
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
-            flying = canCircleTarget = true;
+            defaultCommand = NyfalisUnitCommands.circleCommand;
+            flying = canCircleTarget = circleTarget = true;
             weapons.add(new Weapon(""){{
                 x = 0;
                 y = 1.5f;
@@ -594,6 +595,7 @@ public class NyfalisUnits {
                           moveRot = 35f;
                           moveY = -0.8f;
                           moveX = -0.17f;
+
                       }}
                     );
                     bullet = new BasicBulletType(2.5f, 8){{
@@ -1085,7 +1087,7 @@ public class NyfalisUnits {
             constructor = LegsUnit::create;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = naval = lockLegsOnLiquid= drawAmmo = true;
+            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = lockLegsOnLiquid= drawAmmo = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = false;
         }};
 
@@ -1193,6 +1195,7 @@ public class NyfalisUnits {
             spawnStatus = StatusEffects.disarmed;
             pathCost = NyfalisPathfind.costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
+
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             mineItems = Seq.with(rustyIron, lead, scrap);
             setEnginesMirror(
