@@ -314,12 +314,14 @@ public class NyfalisUnits {
                         trailSize = 2f;
                         lifetime = 40f;
                         knockback = 0.3f;
+                        splashDamage = 33f;
+                        splashDamageRadius = 25f * 0.75f;
                         shootEffect = Fx.none;
                         smokeEffect = Fx.shootSmallSmoke;
                         frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                         backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
-                        collidesTiles = collidesAir = false;
+                        collidesAir = false;
                     }};
                 }},
 
@@ -438,13 +440,13 @@ public class NyfalisUnits {
                 x = -3.6f;
                 recoil = 0.47f;
                 reload = 13f;
-                shootCone = 45f;
+                shootCone = 65f;
                 baseRotation = -7f;
                 ejectEffect = Fx.none;
                 shoot = new ShootSpread(7, 1.3f);
 
                 showStatSprite = false;
-                bullet = new BasicBulletType(2f, 5, "olupis-diamond-bullet"){{
+                bullet = new BasicBulletType(2f, 3.5f, "olupis-diamond-bullet"){{
                     width = 6;
                     height = 8f;
                     lifetime = 20f;
@@ -503,9 +505,9 @@ public class NyfalisUnits {
 
         serpent = new SnekUnitType("serpent"){{
             constructor = CrawlUnit::create;
-            armor = 2;
+            armor = 5;
             hitSize = 11f;
-            health = 350;
+            health = 450;
             segments = 3;
             speed = 2.25f;
             segmentScl = 7f;
@@ -1140,7 +1142,7 @@ public class NyfalisUnits {
             /*(trans) Egg if chan-version is made >;3c */
             speed = 3f;
             fogRadius = 0f;
-            ammoCapacity = 100;
+            ammoCapacity = 150;
 
             flying = alwaysShootWhenMoving = drawAmmo = true;
             playerControllable = useUnitCap = false;
@@ -1371,7 +1373,7 @@ public class NyfalisUnits {
             defaultCommand = UnitCommand.mineCommand;
             ammoType = new PowerAmmoType(500);
 
-            flying = true;
+            flying = hidden = true;
             isEnemy = false;
 
             range = 50f;
@@ -1387,6 +1389,7 @@ public class NyfalisUnits {
             @Override
             public void update(Unit unit){
                 super.update(unit);
+                spirit.spawn( unit.team, unit.x(), unit.y());
                 unit.remove();
             }
         };
@@ -1461,14 +1464,24 @@ public class NyfalisUnits {
     public static void PostLoadUnits(){
         /*Blocks are null while loading units, so this exists for as a work around*/
         mite.displayFactory = Seq.with(NyfalisBlocks.hive);
+
         spirit.displayFactory = Seq.with(NyfalisBlocks.construct);
         phantom.displayFactory = Seq.with(NyfalisBlocks.construct);
         banshee.displayFactory = Seq.with(NyfalisBlocks.construct);
-        aero.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
-        venom.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
-        supella.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+        revenant.displayFactory = Seq.with(NyfalisBlocks.construct);
 
-        porter.displayFactory = Seq.with(zoner, NyfalisBlocks.groundConstruct);
+        aero.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
+        striker.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
+        pteropus.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
+        acerodon.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
+
+        venom.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+        serpent.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+        supella.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+        germanica.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+
+        porter.displayFactory = Seq.with(zoner, NyfalisBlocks.navalConstruct);
+        bay.displayFactory = Seq.with(zoner, NyfalisBlocks.navalConstruct);
 
         zoner.displayFactory = Seq.with(porter);
         embryo.displayFactory = Seq.with(phorid);

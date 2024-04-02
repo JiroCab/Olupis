@@ -180,7 +180,7 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
             coolant = consume(new ConsumeLubricant(15f / 60f));
             ammo(
-                rustyIron, new RollBulletType(3f, 18){{
+                rustyIron, new RollBulletType(3f, 31){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     height = 9f;
@@ -197,14 +197,14 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.3f);
                     backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.3f);
                 }},
-                iron, new RollBulletType(3.5f, 30){{
+                iron, new RollBulletType(3.5f, 38){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     width = 40f;
                     height = 11f;
                     lifetime = 50f;
-                    pierceCap = 3;
-                    knockback = 3f;
+                    pierceCap = 4;
+                    knockback = 5f;
                     ammoMultiplier = 2;
                     homingPower = 0.2f;
                     homingRange = 100f;
@@ -214,7 +214,7 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(iron.color).lerp(Pal.bulletYellowBack, 0.1f);
                     backColor = new Color().set(iron.color).lerp(Pal.bulletYellow, 0.2f);
                 }},
-                quartz, new RollBulletType(3.5f, 37){{
+                quartz, new RollBulletType(3.5f, 42){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     width = 40f;
@@ -531,9 +531,9 @@ public class NyfalisTurrets {
             shootEffect = Fx.shootSmallSmoke;
             drawer = new DrawRegion("");
             shoot = new ShootSpread(9, 45);
-            researchCost = with(lead, 100, rustyIron, 100);
+            researchCost = with(lead, 1500, iron, 700, cobalt, 700);
             coolant = consume(new ConsumeLubricant(30f / 60f));
-            requirements(Category.turret, with(iron, 20, lead, 40, alcoAlloy, 20));
+            requirements(Category.turret, with(iron, 20, lead, 40, cobalt, 20));
         }};
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)

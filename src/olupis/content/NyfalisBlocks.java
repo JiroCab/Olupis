@@ -714,8 +714,9 @@ public class NyfalisBlocks {
 
         displacementPump = new BurstPump("displacement-pump"){{
             size = 3;
-            pumpAmount = 140f;
+            pumpTime = 350;
             leakAmount = 0.02f;
+            pumpAmount = 140f;
             liquidCapacity = 300f;
             consumePower(25f/60f);
             researchCost = with(iron, 250, lead, 800, graphite, 250, rustyIron, 800);
@@ -874,7 +875,7 @@ public class NyfalisBlocks {
             consumePower(1f);
             consumeLiquid(Liquids.oil, 12f / 60f);
             outputLiquid = new LiquidStack(lubricant, 10/60f);
-            requirements(Category.liquid, with(quartz, 25, iron, 50, silicon, 40, quartz, 10));
+            requirements(Category.liquid, with(quartz, 25, iron, 50, silicon, 40, cobalt, 10));
         }};
 
         //endregion
@@ -1019,6 +1020,7 @@ public class NyfalisBlocks {
             );
             consumePower(2f);
             consumeItem(Items.sand, 3);
+            consumeItem(scrap, 3).boost();
             researchCost = with(lead, 700, rustyIron, 700);
             requirements(Category.crafting, with(rustyIron, 20, lead, 50));
 
@@ -1044,6 +1046,7 @@ public class NyfalisBlocks {
             size = 4;
             shootY = 0f;
             reload = 1200f;
+            maxAmmo = 15;
             itemCapacity = 20;
             alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
@@ -1086,6 +1089,7 @@ public class NyfalisBlocks {
             size = 4;
             shootY = 0f;
             reload = 1200f;
+            maxAmmo = 15;
             itemCapacity = 20;
             alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
@@ -1124,11 +1128,12 @@ public class NyfalisBlocks {
         // groundConstruct -> offensive ground units
         groundConstruct = new ItemUnitTurret("ground-construct"){{
             size = 4;
-            shootY = 2.5f * Vars.tilesize;
             reload = 1200f;
+            maxAmmo = 15;
             itemCapacity = 20;
             alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
+            shootY = 2.5f * Vars.tilesize;
 
             ammo(
                 lead, new SpawnHelperBulletType(){{
@@ -1165,6 +1170,7 @@ public class NyfalisBlocks {
         navalConstruct = new ItemUnitTurret("naval-construct"){{
             size = 4;
             reload = 1200f;
+            maxAmmo = 15;
             itemCapacity = 20;
             alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
@@ -1545,7 +1551,7 @@ public class NyfalisBlocks {
                 width = 10f;
                 height = 16f;
                 lifetime = 30f;
-                healPercent = 3f;
+                healPercent = 2.6f;
                 splashDamage = 0f;
                 /*added slight homing, so it can hit 1x1 blocks better or at all*/
                 homingRange = 5f;
@@ -1576,7 +1582,7 @@ public class NyfalisBlocks {
             }};
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             coolant = consume(new ConsumeLubricant(45f / 60f));
-            requirements(Category.effect, with(iron, 15, Items.lead, 20));
+            requirements(Category.effect, with(iron, 25, Items.lead, 30));
         }};
 
         ladar = new Ladar("ladar"){{
