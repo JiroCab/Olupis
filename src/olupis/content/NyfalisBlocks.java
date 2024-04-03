@@ -57,7 +57,7 @@ public class NyfalisBlocks {
         //environment
         /*Ores / Overlays */
         oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead, oreQuartz, oreAlco,
-        glowSprouts, lumaSprouts,
+        glowSprouts, lumaSprouts, redCorals, blueCorals, greenCorals, kelp,
 
         /*Floors*/
         redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass, mossyDirt, frozenDirt, frozenMud, hardenMud, mossyhardenMud, crackedIce,
@@ -65,7 +65,7 @@ public class NyfalisBlocks {
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandvent, snowVent,
 
         /*Liquid floors*/
-        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater, sandOil,
+        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater, coralReef,
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
@@ -130,6 +130,7 @@ public class NyfalisBlocks {
 
         glowSprouts = new OverlayFloor("glow-sprout"){{
             emitLight = true;
+            needsSurface = false;
             variants = 1;
             lightRadius = 10f;
             //is sad that BlockRenderer.java does not render light from overlays, but ill keep it incase TnT
@@ -137,6 +138,27 @@ public class NyfalisBlocks {
 
         lumaSprouts = new OverlayFloor("luma-sprout"){{
             variants = 1;
+            needsSurface = false;
+        }};
+
+        redCorals = new OverlayFloor("red-corals"){{
+            variants = 1;
+            needsSurface = false;
+        }};
+
+        blueCorals = new OverlayFloor("blue-corals"){{
+            variants = 1;
+            needsSurface = false;
+        }};
+
+        greenCorals = new OverlayFloor("green-corals"){{
+            variants = 1;
+            needsSurface = false;
+        }};
+
+        kelp = new OverlayFloor("kelp"){{
+            variants = 1;
+            needsSurface = false;
         }};
 
         //endregion
@@ -343,6 +365,19 @@ public class NyfalisBlocks {
             speedMultiplier = 0.8f;
             status = StatusEffects.wet;
             liquidDrop = Liquids.water;
+            cacheLayer = CacheLayer.water;
+        }};
+
+        coralReef = new Floor("coral-reef"){{
+            variants = 0;
+            albedo = 0.9f;
+            drownTime = 200f;
+            statusDuration = 120f;
+            liquidMultiplier = 1.5f;
+            speedMultiplier = 0.2f;
+            isLiquid = supportsOverlay = true;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
             cacheLayer = CacheLayer.water;
         }};
 
@@ -705,16 +740,16 @@ public class NyfalisBlocks {
 
         ironPump = new Pump("iron-pump"){{
             size = 2;
-            liquidCapacity = 15f;
-            pumpAmount = 0.075f;
+            liquidCapacity = 20f;
+            pumpAmount = 0.08f;
             buildCostMultiplier = 2.1f;
             researchCost = with(lead, 500, iron, 100);
-            requirements(Category.liquid, with(iron, 12, lead, 12));
+            requirements(Category.liquid, with(iron, 12, lead, 12, copper, 12));
         }};
 
         displacementPump = new BurstPump("displacement-pump"){{
             size = 3;
-            pumpTime = 350;
+            pumpTime = 310;
             leakAmount = 0.02f;
             pumpAmount = 140f;
             liquidCapacity = 300f;
@@ -726,6 +761,7 @@ public class NyfalisBlocks {
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{
             size = 4;
             leakAmount = 0.1f;
+            pumpTime = 320;
             pumpAmount = 200f;
             liquidCapacity = 400f;
             consumePower(0.6f);
@@ -1318,8 +1354,8 @@ public class NyfalisBlocks {
             armor = 5;
             health = 150;
             baseExplosiveness = 0.7f;
-            researchCost = with(iron, 250, cobalt, 100);
-            requirements(Category.power, with(cobalt, 10, iron, 5));
+            researchCost = with(iron, 250, cobalt, 100, copper, 250);
+            requirements(Category.power, with(cobalt, 10, iron, 5, copper, 10));
         }};
 
         wireBridge = new BeamNode("wire-bridge"){{
@@ -1625,7 +1661,7 @@ public class NyfalisBlocks {
 //         deliveryTerminal == redirects all cannons in a planet to this sector (since only 1 sector can be played)
 //        Vars.state.getPlanet().sectors.forEach(a -> {a.info.destination = Vars.state.getSector();});
 
-        int coreBaseHp = 600;
+        int coreBaseHp = 600, coreUnitCap = 2;
 
         coreRemnant = new PropellerCoreBlock("core-remnant"){{
             alwaysUnlocked = isFirstTier = true;
@@ -1633,6 +1669,7 @@ public class NyfalisBlocks {
             itemCapacity = 1500;
             health = coreBaseHp * 3;
             buildCostMultiplier = 0.5f;
+            unitCapModifier  = 8;
 
             unitType = gnat;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300));
@@ -1644,6 +1681,7 @@ public class NyfalisBlocks {
             buildCostMultiplier = 0.5f;
             researchCostMultiplier = 0.5f;
             health = Math.round(coreBaseHp * 3.5f);
+            unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap));
 
             unitType = gnat;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300, iron, 1000));
@@ -1658,6 +1696,7 @@ public class NyfalisBlocks {
             range = 20f * Vars.tilesize;
             researchCostMultiplier = 0.5f;
             health = Math.round(coreBaseHp * 5f);
+            unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap * 2));
 
             unitType = phorid;
             shootEffect = Fx.none;
@@ -1689,8 +1728,8 @@ public class NyfalisBlocks {
             buildCostMultiplier = 0.5f;
             range = 25f * Vars.tilesize;
             researchCostMultiplier = 0.5f;
-            Math.round(coreBaseHp * 6.5f);
-
+            health = Math.round(coreBaseHp * 6.5f);
+            unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap) * 3);
 
             unitType = phorid;
             limitRange(0);
@@ -1718,8 +1757,9 @@ public class NyfalisBlocks {
             shootX = shootY = 0f;
             buildCostMultiplier = 0.5f;
             range = 35 * Vars.tilesize;
-            Math.round(coreBaseHp * 8f);
             researchCostMultiplier = 0.5f;
+            health = Math.round(coreBaseHp * 8f);
+            unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap) * 4);
 
             unitType = phorid;
             shootEffect = Fx.none;

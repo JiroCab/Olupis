@@ -129,12 +129,12 @@ public class NyfalisUnits {
 
         //Striker ->pretty quick, maybe twice as fast as a flare, and shoots arc shots, like the Javelin from v5
         striker = new NyfalisUnitType("striker"){{
-            armor = 3f;
+            armor = 4f;
             hitSize = 16f;
             drag = 0.05f;
             speed = 5.5f;
             accel = 0.07f;
-            health = 300f;
+            health = 230f;
             engineSize = 4f;
             itemCapacity = 30;
             engineOffset = 13.5f;
@@ -289,10 +289,10 @@ public class NyfalisUnits {
             health = 250f;
             speed = 2.20f;
             fogRadius = 10f;
-            engineSize = 1.7f;
+            engineSize = 4f;
             rotateSpeed = 19f;
             itemCapacity = 20;
-            engineOffset = 7f;
+            engineOffset = 8f;
 
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
@@ -811,7 +811,7 @@ public class NyfalisUnits {
                     y = -9.5f;
                     recoils = 2;
                     recoil = 0.5f;
-                    reload = 13f;
+                    reload = 18f;
                     mirror = false;
                     rotate= top = true;
                     shoot = new ShootAlternate(3.6f);
@@ -828,13 +828,13 @@ public class NyfalisUnits {
                             moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
                     }}); }
 
-                    bullet = new ArtilleryBulletType(3f, 14){{
+                    bullet = new ArtilleryBulletType(3f, 16){{
                         width = 7f;
                         height = 9f;
                         trailSize = 3f;
                         lifetime = 65f;
-                        splashDamage = 2f;
-                        splashDamageRadius = 25f * 0.75f;
+                        splashDamage = 3f;
+                        splashDamageRadius = 30f * 0.75f;
                         collidesAir = false;
                         frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
                         backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);

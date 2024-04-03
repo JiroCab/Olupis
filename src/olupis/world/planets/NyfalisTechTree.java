@@ -46,18 +46,25 @@ public class NyfalisTechTree {
                                                     Seq.with(new Objectives.SectorComplete(abandonedTrainStations)),
                                                     () -> {
 
-                                                    });
-                                            });    
-                                    });
+                                                });
+                                        });
+                                });
+                                node(snowPisos,
+                                        Seq.with(new Objectives.SectorComplete(kanwadolRuins), new Objectives.SectorComplete(muddyLakes)),
+                                        () -> {
+
+                                        }
+                                );
                             });
                         });
                     });
                 });
                 node(nyfalis, Seq.with(
                         new Objectives.SectorComplete(naturalParkOasis),
-                        new Objectives.SectorComplete(lushyRiverComplex)
+                        new Objectives.SectorComplete(lushyRiverComplex),
+                        new Objectives.SectorComplete(snowPisos)
                 ),() ->{
-                    node(placeholder2, Seq.with(
+                    node(conservatorium, Seq.with(
                             new Objectives.SectorComplete(sanctuary)
                     ), () ->{
                     });
@@ -78,7 +85,9 @@ public class NyfalisTechTree {
                 node(aero, Seq.with(
                     new  Objectives.Research(arialConstruct)
                 ), () -> {
-                    node(striker, () -> {
+                    node(striker, Seq.with(
+                            new  Objectives.Research(alternateArticulator)
+                    ), () -> {
 
                     });
                 });
@@ -88,14 +97,24 @@ public class NyfalisTechTree {
                 ), () ->{
                     node(phantom, () ->{
                         node(banshee, () -> {
-
                         });
                     });
                 });
                 node(venom, Seq.with(
                         new  Objectives.Research(groundConstruct)
                 ), () -> {
-                    node(supella, () -> {
+                    node(serpent, Seq.with(
+                            new  Objectives.Research(alternateArticulator)
+                    ), () -> {
+
+                    });
+                });
+                node(supella, Seq.with(
+                        new  Objectives.Research(groundConstruct)
+                ), () -> {
+                    node(germanica, Seq.with(
+                            new  Objectives.Research(alternateArticulator)
+                    ), () -> {
 
                     });
                 });
@@ -108,6 +127,11 @@ public class NyfalisTechTree {
                     node(bay, () -> {
                         node(blitz, () -> {
 
+                        });
+                        node(essex, () -> {
+                            node(regioner, () -> {
+
+                            });
                         });
                     });
                 });

@@ -15,7 +15,7 @@ public class NyfalisSectors {
         /*Arthin*/
         sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, naturalParkOasis, lushyRiverComplex, abandonedTrainStations, kanwadolRuins, snowPisos,
         /*Nyfalis*/
-        placeholder2,
+        conservatorium,
         /*Spelta*/
          dormantCell, forestOfHope
     ;
@@ -106,7 +106,7 @@ public class NyfalisSectors {
         //endregion
         //region Nyfalis
 
-        placeholder2 = new SectorPreset("placeholder2", nyfalis, 69){{
+        conservatorium = new SectorPreset("conservatorium", nyfalis, 0){{
             captureWave = 20;
             difficulty = 3;
             rules = commonRules(captureWave);

@@ -23,7 +23,6 @@ public class NyfalisStatusEffects {
             speedMultiplier = 0f;
             effectChance = 0.25f;
             healthMultiplier = 1.15f;
-            effect =Fx.unitDust;
         }};
 
 
