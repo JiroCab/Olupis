@@ -89,9 +89,10 @@ public class NyfalisUnits {
             drag = accel = 0.08f;
             strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
 
-            lowAltitude = flying = canCircleTarget = alwaysShootWhenMoving = true;
-            aiController = AgressiveFlyingAi::new;
+            lowAltitude = flying = canCircleTarget = alwaysShootWhenMoving = circleTarget = true;
             constructor = UnitEntity::create;
+            aiController = AgressiveFlyingAi::new;
+            defaultCommand = NyfalisUnitCommands.circleCommand;
             weapons.add(new Weapon(""){{
                 top = mirror = false;
                 continuous = alwaysContinuous = parentizeEffects  = true;
@@ -693,10 +694,10 @@ public class NyfalisUnits {
             rotateMoveFirst = canDeploy = true;
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
-            abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 2.5f));
+            abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f));
             weapons.add(new PointDefenseWeapon("point-defense-mount"){{
                 x = 0;
-                y = -3f;
+                y = -7f;
                 reload = 6f;
                 targetInterval = targetSwitchInterval = 14f;
                 mirror = false;
