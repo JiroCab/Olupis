@@ -27,4 +27,4 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 * [WMF Industries](https://github.com/WMF-Industries) - Code
 * MrApple - Maps
 * [Kapzduke](https://github.com/kapzduke) - Sprites
-* Otamamori - Sprites
+* [Otamamori](https://github.com/Otamamori917) - Sprites
