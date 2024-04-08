@@ -28,7 +28,7 @@ Last updated on 20/03/2024 (+8utc) by Jirocab/RushieWashie
     ~ Improved: Broiler now gets
     ~ Sprites: Recoloured blocks to have new iron pallet
     ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item) quartz (ore), rustyIron (item), lubricant (liquid)
-    ~ Sprites Contributed by Ethanol10: acerodon, germanica, essex, serpent
+    ~ Sprites Contributed by Ethanol10: acerodon, germanica, essex, serpent, avenger
 
     -- Music removed from content mod - https://github.com/JiroCab/Nyfalis-Music
 

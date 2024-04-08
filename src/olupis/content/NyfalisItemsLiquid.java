@@ -41,7 +41,7 @@ public class NyfalisItemsLiquid {
             hardness = 2;
         }};
 
-        alcoAlloy = new Item("aloco-alloy", Color.valueOf("546295")){{
+        alcoAlloy = new Item("alco-alloy", Color.valueOf("546295")){{
             hardness = 2;
         }};
 

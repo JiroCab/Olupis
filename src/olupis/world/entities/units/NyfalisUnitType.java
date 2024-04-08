@@ -187,7 +187,7 @@ public class NyfalisUnitType extends UnitType {
         unit.team = team;
         unit.setType(this);
         unit.ammo = ammoCapacity; //fill up on ammo upon creation
-        unit.elevation = flying ? 1f : 0;
+        unit.elevation = flying || alwaysBoosts ? 1f : 0;
         unit.heal();
         if(unit instanceof TimedKillc u){
             u.lifetime(lifetime);
@@ -197,7 +197,15 @@ public class NyfalisUnitType extends UnitType {
     }
 
     @Override
-    public void update(Unit unit){//TODO: UNDEPLOY DOESNT BOOST
+    public void draw(Unit unit){
+        if(parts.size > 0){
+            NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation());
+        }
+        super.draw(unit);
+    }
+
+    @Override
+    public void update(Unit unit){
         super.update(unit);
 
         if(deployHasEffect && (!deployLands || unit.isGrounded())) unit.apply(deployEffect, deployEffectTime);
@@ -217,7 +225,6 @@ public class NyfalisUnitType extends UnitType {
         if(alwaysBoostOnSolid && canBoost && (unit.controller() instanceof CommandAI c && c.command != UnitCommand.boostCommand)){
             unit.updateBoosting(unit.onSolid());
         }
-
     }
 
     public  class NyfalisWeapon extends Weapon {

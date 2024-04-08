@@ -398,16 +398,16 @@ public class NyfalisUnits {
                 top = alternate = false;
                 y = -1f;
                 x = -1.8f;
-                inaccuracy = 3f;
+                inaccuracy = 5f;
                 reload = shootCone = 15f;
                 ejectEffect = Fx.casing1;
 
                 showStatSprite = false;
-                bullet = new BasicBulletType(2.5f, 5, "olupis-diamond-bullet"){{
+                bullet = new BasicBulletType(3.2f, 5, "olupis-diamond-bullet"){{
                     width = 4;
                     height = 6f;
-                    lifetime = 60f;
-                    homingPower = 0.04f;
+                    lifetime = 40f;
+                    homingPower = 0.05f;
                     shootEffect = Fx.none;
                     smokeEffect = Fx.shootSmallSmoke;
                     frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
@@ -643,9 +643,11 @@ public class NyfalisUnits {
             health = 620;
             speed = 0.7f;
             engineSize = -1;
+            itemOffsetY = 3f;
             rotateSpeed = 2.25f;
             boostMultiplier = 0.8f;
-            abilities.add(new MicroWaveFieldAbility(6.5f, 40f, 37f, 20f){{
+            immunities.add(StatusEffects.burning);
+            abilities.add(new MicroWaveFieldAbility(6.5f, 40f, 38f, 20f){{
                 ideRangeDisplay = false;
                 damageEffect = Fx.none;
                 sectors = 3;
@@ -655,10 +657,29 @@ public class NyfalisUnits {
 
             }});
             //Gave up trying to make it, so it has a boost damage weapon since the ability's range display won't go away while boosting if triggered, so made it just it sole weapon that changes on boost or not
-
             setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
-            immunities.add(StatusEffects.burning);
-
+            parts.add(
+                new RegionPart("-arm"){{
+                    y = 5f;
+                    x = -4f;
+                    moveX = 1f;
+                    moveRot = -20;
+                    progress = NyfPartParms.NyfPartProgress.elevationP;
+                    mirror = true;
+                    layerOffset = -0.001f;
+                    outlineLayerOffset = 0f;
+                }},
+                new CellPart("-arm-cell"){{
+                    y = 4.075f;
+                    x = -3.1f;
+                    moveX = 1f;
+                    moveRot = -20;
+                    outlineLayerOffset = 0f;
+                    progress = NyfPartParms.NyfPartProgress.elevationP;
+                    outline = false;
+                    mirror =  true;
+                }}
+            );
         }};
 
         /*To be considered: crab tree, bulky and close range, legged naval*/

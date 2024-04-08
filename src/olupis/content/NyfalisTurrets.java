@@ -113,9 +113,8 @@ public class NyfalisTurrets {
 
         }};
 
-        avenger = new ItemTurret("avenger"){{
+        avenger = new ItemTurret("avenger"){{ //TODO: AIR 1st before ground, ground penalty
             targetAir = true;
-            targetGround = false;
             size = 3;
             reload = 25f;
             range = 250f;
@@ -135,11 +134,26 @@ public class NyfalisTurrets {
                     homingPower = 0.4f;
                     homingRange = 150f;
                     backColor = trailColor = lead.color;
-                    collidesAir = true;
-                    collidesGround = false;
+                    collidesAir = collidesGround = true;
                     hitEffect = NyfalisFxs.hollowPointHit;
                     knockback = 0.4f;
                     status = StatusEffects.slow;
+                    statusDuration = 25f;
+                    splashDamage = 10f;
+                    splashDamageRadius = 25f * 0.75f;
+                }},
+                cobalt, new MissileBulletType(4.6f, 24f){{
+                    width = 6f;
+                    height = 10.5f;
+                    shrinkX = 0;
+                    lifetime = 60f;
+                    homingPower = 0.4f;
+                    homingRange = 150f;
+                    backColor = trailColor = cobalt.color;
+                    collidesAir =  collidesGround = true;
+                    hitEffect = NyfalisFxs.hollowPointHit;
+                    knockback = 0.4f;
+                    status = StatusEffects.shocked;
                     statusDuration = 25f;
                     splashDamage = 10f;
                     splashDamageRadius = 25f * 0.75f;

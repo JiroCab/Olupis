@@ -75,9 +75,9 @@ public class ArmDefenderAi extends AIController {
                 (u, tx, ty) -> -u.maxHealth + Mathf.dst2(u.x, u.y, tx, ty) / 6400f);
          if(unt != null) return unt;
 
-         if(unit.closestCore() != null && unit.within(unit.closestCore(), range))return unit.closestCore();
-         if(state.rules.waveTeam == unit.team && unit.closestEnemyCore() != null && unit.within(unit.closestEnemyCore(), range))return unit.closestEnemyCore();
-         return null;
+        if(state.rules.waveTeam == unit.team && unit.closestEnemyCore() != null && unit.within(unit.closestEnemyCore(), range))return unit.closestEnemyCore();
+        if(unit.closestCore() != null && unit.within(unit.closestCore(), range))return unit.closestCore();
+        return null;
 
     }
 }

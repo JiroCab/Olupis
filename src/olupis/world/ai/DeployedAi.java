@@ -2,6 +2,7 @@ package olupis.world.ai;
 
 import mindustry.ai.types.CommandAI;
 import mindustry.ai.types.FlyingAI;
+import olupis.input.NyfalisUnitCommands;
 import olupis.world.entities.units.NyfalisUnitType;
 
 public class DeployedAi extends FlyingAI {
@@ -9,7 +10,7 @@ public class DeployedAi extends FlyingAI {
     @Override
     public void updateUnit(){
         if(unit.controller() instanceof CommandAI ai){
-            ai.defaultBehavior();
+            if(unit.isCommandable() && unit.command().command != NyfalisUnitCommands.nyfalisDeployCommand) ai.defaultBehavior();
             target = ai.attackTarget;
         }
         super.updateUnit();
