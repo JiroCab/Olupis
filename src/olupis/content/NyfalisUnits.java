@@ -307,6 +307,7 @@ public class NyfalisUnits {
                     shootX = x = 0;
                     shootCone = 15f;
                     ejectEffect = Fx.casing1;
+                    shootSound = Sounds.missile;
 
                     showStatSprite = mirror = false;
                     bullet = new ArtilleryBulletType(2.5f, 3, "olupis-diamond-bullet"){{
@@ -506,13 +507,13 @@ public class NyfalisUnits {
 
         serpent = new SnekUnitType("serpent"){{
             constructor = CrawlUnit::create;
-            armor = 5;
+            armor = 6;
             hitSize = 11f;
-            health = 450;
-            segments = 3;
+            health = 420;
+            segments = 8;
             speed = 2.25f;
             segmentScl = 7f;
-            rotateSpeed = 10f;
+            rotateSpeed = 15f;
             legMoveSpace = 1.1f;
             crushDamage = 0.45f;
             segmentMaxRot = 80f;

@@ -1,43 +1,37 @@
 package olupis.content;
 
 import arc.graphics.Color;
-import arc.math.Interp;
+import arc.math.Mathf;
 import arc.struct.EnumSet;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.abilities.MoveEffectAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
-import mindustry.entities.pattern.ShootBarrel;
-import mindustry.entities.pattern.ShootMulti;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
+import mindustry.type.Weapon;
+import mindustry.type.unit.MissileUnitType;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
-import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.*;
 import olupis.world.blocks.defence.ItemUnitTurret;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.*;
-import arc.math.*;
-import mindustry.entities.effect.*;
-import mindustry.type.*;
-import mindustry.type.unit.*;
-
-import static mindustry.Vars.*;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisItemsLiquid.*;
-import static olupis.content.NyfalisItemsLiquid.steam;
 import static olupis.content.NyfalisUnits.mite;
 
 public class NyfalisTurrets {
@@ -125,60 +119,92 @@ public class NyfalisTurrets {
 
         }};
 
-        avenger = new ItemTurret("avenger"){{ //TODO: AIR 1st before ground, ground penalty
-            targetAir = true;
-            size = 3;
-            reload = 25f;
-            range = 250f;
-            health = 600;
-            minWarmup = 0.96f;
-            shootY = shootX= 0f;
-            warmupMaintainTime = 1f;
-            fogRadiusMultiplier = 0.75f;
-            shootWarmupSpeed = 0.11f;
+        avenger = new ItemTurret("avenger"){
+            final float groundPenalty = 0.2f; //This is mess lmao
+            {
+                targetAir = true;
+                size = 3;
+                reload = 42f;
+                range = 250f;
+                health = 600;
+                minWarmup = 0.96f;
+                shootY = shootX= 0f;
+                coolantMultiplier = 2.5f;
+                warmupMaintainTime = 1f;
+                fogRadiusMultiplier = 0.75f;
+                shootWarmupSpeed = 0.11f;
 
-            ammo(
-                lead, new MissileBulletType(4.6f, 24f){{
-                    width = 6f;
-                    height = 10.5f;
-                    shrinkX = 0;
-                    lifetime = 60f;
-                    homingPower = 0.4f;
-                    homingRange = 150f;
-                    backColor = trailColor = lead.color;
-                    collidesAir = collidesGround = true;
-                    hitEffect = NyfalisFxs.hollowPointHit;
-                    knockback = 0.4f;
-                    status = StatusEffects.slow;
-                    statusDuration = 25f;
-                    splashDamage = 10f;
-                    splashDamageRadius = 25f * 0.75f;
-                }},
-                cobalt, new MissileBulletType(4.6f, 24f){{
-                    width = 6f;
-                    height = 10.5f;
-                    shrinkX = 0;
-                    lifetime = 60f;
-                    homingPower = 0.4f;
-                    homingRange = 150f;
-                    backColor = trailColor = cobalt.color;
-                    collidesAir =  collidesGround = true;
-                    hitEffect = NyfalisFxs.hollowPointHit;
-                    knockback = 0.4f;
-                    status = StatusEffects.shocked;
-                    statusDuration = 25f;
-                    splashDamage = 10f;
-                    splashDamageRadius = 25f * 0.75f;
-                }}
-            );
-            limitRange(1.5f);
-            shootSound = Sounds.missile;
-            shootEffect = Fx.shootSmallSmoke;
-            drawer = new DrawRegion("");
-            researchCost = with(lead, 100, rustyIron, 100);
-            coolant = consume(new ConsumeLubricant(30f / 60f));
-            requirements(Category.turret, with(rustyIron, 20, lead, 40));
-        }};
+                ammo(
+                    lead, new AirEffectiveMissleType(4.6f, 80f){{
+                        width = 6f;
+                        shrinkX = 0;
+                        lifetime = 60f;
+                        height = 10.5f;
+                        knockback = 0.4f;
+                        splashDamage = 10f;
+                        statusDuration = 5f;
+                        homingPower = 0.4f;
+                        homingRange = 150f;
+                        splashDamageRadius = 25f * 0.75f;
+                        backColor = trailColor = lead.color;
+                        collidesAir = collidesGround = true;
+                        shootEffect = Fx.shootBigColor;
+                        hitEffect = NyfalisFxs.hollowPointHit;
+                        status = StatusEffects.shocked;
+                        groundDamageMultiplier = groundPenalty;
+                    }},
+                    iron, new AirEffectiveMissleType(5f, 95f){{
+                        width = 6f;
+                        shrinkX = 0;
+                        lifetime = 60f;
+                        height = 10.5f;
+                        knockback = 0.4f;
+                        splashDamage = 10f;
+                        statusDuration = 25f;
+                        homingPower = 0.4f;
+                        homingRange = 150f;
+                        splashDamageRadius = 25f * 0.75f;
+                        backColor = trailColor = lead.color;
+                        collidesAir = collidesGround = true;
+                        shootEffect = Fx.shootBigColor;
+                        hitEffect = NyfalisFxs.hollowPointHit;
+                        status = StatusEffects.slow;
+                        groundDamageMultiplier = groundPenalty;
+                    }},
+                    cobalt, new AirEffectiveMissleType(4.6f, 80f){{
+                        width = 6f;
+                        shrinkX = 0;
+                        lifetime = 60f;
+                        height = 10.5f;
+                        knockback = 0.4f;
+                        splashDamage = 10f;
+                        statusDuration = 25f;
+                        homingPower = 0.4f;
+                        homingRange = 150f;
+                        splashDamageRadius = 25f * 0.75f;
+                        backColor = trailColor = cobalt.color;
+                        collidesAir =  collidesGround = true;
+                        shootEffect = Fx.shootBigColor;
+                        hitEffect = NyfalisFxs.hollowPointHit;
+                        status = StatusEffects.shocked;
+                        groundDamageMultiplier = groundPenalty;
+                    }}
+                );
+                limitRange(1.5f);
+                shootSound = Sounds.missile;
+                shootEffect = Fx.blastsmoke;
+                drawer = new DrawRegion("");
+                researchCost = with(lead, 100, rustyIron, 100);
+                coolant = consume(new ConsumeLubricant(30f / 60f));
+                requirements(Category.turret, with(rustyIron, 20, lead, 40));
+            }
+
+            @Override
+            public void setStats() {
+                stats.add(new Stat("olupis-groundpenalty", StatCat.function), "[scarlet]-" + Math.round(Math.abs((1 - groundPenalty) * 100)) + "%");
+                super.setStats();
+            }
+        };
 
         shredder = new ItemTurret("shredder"){{
             //TODO: check for clear path to unit
