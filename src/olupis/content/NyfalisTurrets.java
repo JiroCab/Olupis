@@ -1,12 +1,17 @@
 package olupis.content;
 
 import arc.graphics.Color;
+import arc.math.Interp;
 import arc.struct.EnumSet;
 import mindustry.Vars;
 import mindustry.content.*;
+import mindustry.entities.abilities.MoveEffectAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
+import mindustry.entities.pattern.ShootAlternate;
+import mindustry.entities.pattern.ShootBarrel;
+import mindustry.entities.pattern.ShootMulti;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
@@ -20,12 +25,19 @@ import mindustry.world.meta.BlockFlag;
 import olupis.world.blocks.defence.ItemUnitTurret;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.*;
+import arc.math.*;
+import mindustry.entities.effect.*;
+import mindustry.type.*;
+import mindustry.type.unit.*;
+
+import static mindustry.Vars.*;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisItemsLiquid.*;
+import static olupis.content.NyfalisItemsLiquid.steam;
 import static olupis.content.NyfalisUnits.mite;
 
 public class NyfalisTurrets {
@@ -509,42 +521,144 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
         }};
 
-        //Aegis AA SAM Turrets (later game),  Inspired by bullet hell shoot'em ups... or btd's tack shooter
+
         aegis = new ItemTurret("aegis"){{
             targetAir = true;
-            targetGround = false;
-            size = 6;
-            reload = 65f;
+            targetGround = true;
+            size = 4;
+            reload = 240f;
             range = 250f;
             shootY = shootX= 0f;
             fogRadiusMultiplier = 0.75f;
             shootWarmupSpeed = 0.11f;
 
             ammo(
-                    lead, new MissileBulletType(2.8f, 69f){{
-                        width = 7f;
-                        shrinkX = 0;
-                        height = 11.5f;
-                        lifetime = 120f;
-                        knockback = 1.2f;
-                        homingDelay = 18f;
-                        homingPower = 0.22f;
-                        splashDamage = 10f;
-                        statusDuration = 25f;
-                        homingRange = 5f;
-                        splashDamageRadius = 30f * 0.75f;
-                        status = StatusEffects.slow;
-                        backColor = trailColor = lead.color;
-                        collidesAir = true;
-                        collidesGround = false;
-                        hitEffect = NyfalisFxs.hollowPointHit;
+                    Items.lead, new BasicBulletType(0f, 1){{
+                        shootEffect = Fx.shootBig;
+                        smokeEffect = Fx.shootSmokeMissile;
+                        ammoMultiplier = 1f;
+
+                        spawnUnit = new MissileUnitType("aegis-lead-missile"){{
+                            speed = 4.6f;
+                            maxRange = 6f;
+                            lifetime = 60f * 5.5f;
+                            outlineColor = Pal.darkOutline;
+                            engineColor = trailColor = Items.lead.color;
+                            engineLayer = Layer.effect;
+                            engineSize = 3.1f;
+                            engineOffset = 10f;
+                            rotateSpeed = 0.25f;
+                            trailLength = 18;
+                            missileAccelTime = 50f;
+                            lowAltitude = true;
+                            loopSound = Sounds.missileTrail;
+                            loopSoundVolume = 0.6f;
+                            deathSound = Sounds.largeExplosion;
+                            targetAir = true;
+
+                            fogRadius = 6f;
+
+                            health = 210;
+
+                            weapons.add(new Weapon(){{
+                                shootCone = 360f;
+                                mirror = false;
+                                reload = 1f;
+                                deathExplosionEffect = Fx.massiveExplosion;
+                                shootOnDeath = true;
+                                shake = 10f;
+                                bullet = new ExplosionBulletType(1500f, 65f){{
+                                    hitColor = Items.lead.color;
+                                    shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
+                                        lifetime = 10f;
+                                        strokeFrom = 4f;
+                                        sizeTo = 130f;
+                                    }});
+
+                                    collidesAir = false;
+                                    buildingDamageMultiplier = 0.25f;
+
+                                    ammoMultiplier = 1f;
+                                }};
+                            }});
+
+                            abilities.add(new MoveEffectAbility(){{
+                                effect = Fx.missileTrailSmoke;
+                                rotation = 180f;
+                                y = -9f;
+                                color = Color.grays(0.6f).lerp(Items.lead.color, 0.5f).a(0.4f);
+                                interval = 7f;
+                            }});
+                        }};
                     }}
             );
+
+            drawer = new DrawTurret(""){{
+                parts.add(new RegionPart("-core"){{
+                            progress = PartProgress.recoil;
+                            heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                            mirror = false;
+                            under = true;
+                            children.add(new RegionPart("-core-barrel"){{
+                                progress = PartProgress.recoil.delay(0.5f);
+                                heatProgress = PartProgress.recoil;
+                                heatColor = NyfalisItemsLiquid.alcoAlloy.color;
+                                mirror = false;
+                                under = false;
+                                moveY = -2f;
+                                moveX = 0f;
+                            }},
+                            new RegionPart("-side-l"){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                heatProgress = PartProgress.recoil;
+                                heatColor = NyfalisItemsLiquid.alcoAlloy.color;
+                                mirror = false;
+                                under = false;
+                                moveY = 0f;
+                                moveRot = -5f;
+                                moveX = 4f;
+
+                                moves.add(new PartMove(PartProgress.recoil, 0.5f, -1f, 0f));
+                                children.add(new RegionPart("-side-barrel-l"){{
+                                    progress = PartProgress.recoil.delay(0.8f);
+                                    heatProgress = PartProgress.recoil;
+                                    heatColor = NyfalisItemsLiquid.alcoAlloy.color;
+                                    mirror = false;
+                                    under = false;
+                                    moveY = -2f;
+                                }});
+                            }},
+                            new RegionPart("-side-r"){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                heatProgress = PartProgress.recoil;
+                                heatColor = NyfalisItemsLiquid.alcoAlloy.color;
+                                mirror = false;
+                                under = false;
+                                moveY = 0f;
+                                moveRot = 5f;
+                                moveX = -4f;
+
+                                moves.add(new PartMove(PartProgress.recoil, -0.5f, -1f, 0f));
+                                children.add(new RegionPart("-side-barrel-r"){{
+                                    progress = PartProgress.recoil.delay(0.2f);
+                                    heatProgress = PartProgress.recoil;
+                                    heatColor = NyfalisItemsLiquid.alcoAlloy.color;
+                                    mirror = false;
+                                    under = false;
+                                    moveY = -2f;
+                                    moveRot = 0;
+                                }});
+                            }});
+                        }});
+            }};
             limitRange(1.5f);
+            shoot = new ShootAlternate(){{
+               shots = 3;
+               barrels = 3;
+               shotDelay = 20;
+            }};
             shootSound = Sounds.missile;
             shootEffect = Fx.shootSmallSmoke;
-            drawer = new DrawRegion("");
-            shoot = new ShootSpread(9, 45);
             researchCost = with(lead, 1500, iron, 700, cobalt, 700);
             coolant = consume(new ConsumeLubricant(30f / 60f));
             requirements(Category.turret, with(iron, 20, lead, 40, cobalt, 20));
