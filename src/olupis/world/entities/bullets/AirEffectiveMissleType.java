@@ -8,7 +8,7 @@ import mindustry.gen.*;
 
 public class AirEffectiveMissleType extends MissileBulletType {
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
-    public float groundDamageMultiplier = 0.8f;
+    public float groundDamageMultiplier = 1f;
 
     public AirEffectiveMissleType(float speed, float damge, String bulletSprite){
         super(speed, damge, bulletSprite);

@@ -124,15 +124,17 @@ public class NyfalisTechTree {
                     node(zoner, () -> {
 
                     });
-                    node(bay, () -> {
-                        node(blitz, () -> {
+                    node(essex, () -> {
+                        node(regioner, () -> {
 
                         });
-                        node(essex, () -> {
-                            node(regioner, () -> {
+                    });
+                });
+                node(bay, Seq.with(
+                    new  Objectives.Research(navalConstruct)
+                ), () -> {
+                    node(blitz, () -> {
 
-                            });
-                        });
                     });
                 });
                 node(phorid, Seq.with(

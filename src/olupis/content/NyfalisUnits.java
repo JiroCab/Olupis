@@ -1045,12 +1045,15 @@ public class NyfalisUnits {
 
         spirit = new AmmoLifeTimeUnitType("spirit"){{
             range = 30f;
+            health = 150f;
             speed = 1.3f;
             mineTier = 1;
+            hitSize = 8.5f;
+            itemOffsetY = 5f;
             fogRadius = 6;
             mineSpeed = 3.5f;
             itemCapacity = 20;
-            ammoCapacity = 120;
+            ammoCapacity = 150;
             passiveAmmoDepletion = 0.1f;
             ammoDepletionAmount = 0.15f;
 
@@ -1058,7 +1061,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = true;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction =false;
         }};
 
@@ -1068,6 +1071,7 @@ public class NyfalisUnits {
             speed = 3.25f;
             fogRadius = 6f;
             ammoCapacity = 320;
+
 
             weapons.add(new LimitedRepairBeamWeapon(""){{
                 y = 6f;

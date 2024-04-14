@@ -399,7 +399,7 @@ public class NyfalisBlocks {
 
         bush = new Prop("bush"){{
             variants = 2;
-            breakSound = Sounds.plantBreak;
+            breakSound = Sounds.plantBreak; // Buildable via planty mush
         }};
 
         mossyBoulder = new Prop("mossy-boulder"){{
@@ -1082,17 +1082,17 @@ public class NyfalisBlocks {
             size = 4;
             shootY = 0f;
             reload = 1200f;
-            maxAmmo = 15;
+            maxAmmo = 16;
             itemCapacity = 20;
             alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
-            powerBulletType = new SpawnHelperBulletType(){{
-                shootEffect = Fx.unitLand;
-                ammoMultiplier = 1f;
-                reloadMultiplier = 1.2f;
-                spawnUnit = spirit;
-            }};
             ammo(
+                powerAmmoItem ,new SpawnHelperBulletType(){{
+                    shootEffect = Fx.unitLand;
+                    ammoMultiplier = 1f;
+                    reloadMultiplier = 1.2f;
+                    spawnUnit = spirit;
+                }},
                 quartz, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
@@ -1834,7 +1834,7 @@ public class NyfalisBlocks {
         nyfalisBuildBlockSet.clear();
         Vars.content.blocks().each(b->{
             if(b.name.startsWith("olupis-")){
-                if(b.isVisible()) nyfalisBuildBlockSet.add(b);
+                if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 allNyfalisBlocks.add(b);
             }
         });

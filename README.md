@@ -28,3 +28,4 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 * MrApple - Maps
 * [Kapzduke](https://github.com/kapzduke) - Sprites
 * [Otamamori](https://github.com/Otamamori917) - Sprites
+* [Catana](https://github.com/Catana791) - Sprites

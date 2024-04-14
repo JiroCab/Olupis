@@ -175,6 +175,15 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         Draw.reset();
     }
 
+    public void drawItems(Unit unit){
+        if(drawAmmo){
+            //Jank otherwise it draw under the ammo
+            float z = !unit.isAdded() ? Draw.z() : unit.elevation > 0.5f ? (lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : groundLayer + Mathf.clamp(hitSize / 4000f, 0, 0.01f);
+            Draw.z(z + 0.001f);
+        }
+        super.drawItems(unit);
+    }
+
     public Color ammoColor(Unit unit){
         float f = Mathf.clamp(unit.ammof());
         return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, Math.max(f * 2.5f, 1f), 1f - f));

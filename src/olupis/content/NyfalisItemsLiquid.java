@@ -9,7 +9,7 @@ import static mindustry.Vars.content;
 
 public class NyfalisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, cryoRods, steel, silicatePowder;
+    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, cryoRods, steel, silicatePowder, powerAmmoItem;
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam, lubricant;
 
@@ -43,6 +43,12 @@ public class NyfalisItemsLiquid {
 
         alcoAlloy = new Item("alco-alloy", Color.valueOf("546295")){{
             hardness = 2;
+        }};
+
+        powerAmmoItem = new Item("power-ammo-item", Color.valueOf("f3e979")){{
+            //I only exits so constructs can have a lightning bolt as icon when making spirits
+            hidden = true;
+            charge = 1f;
         }};
 
 

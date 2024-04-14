@@ -11,24 +11,27 @@ Last updated on 20/03/2024 (+8utc) by Jirocab/RushieWashie
     + Added: Buttons to clear Nyfalis Sectors and research data
     + Added: Disclaimer system that warns the player if their sectors are outdated
     + Added: Toggleable weather effect for cloud shadows (still needs to be manually added as a weather)
-    ~ Balance: Reduced junction to better scale with other blocks
-    ~ Balance: Core health scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp
+    ~ Balance: Reduced Rusted Junction to better scale with other blocks
+    ~ Balance: Core health scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp, active units now scale to core teir
     ~ Balance: Relic & Vestige Weapon types swapped, stats unchanged
     ~ Balance: Taurus rework = 7% > heal 3%, 2 Tiles aoe, faster rotate speed & better consistency
-    ~ Balance: Blast pump (150 > 300) & Impact pump (200 > 400) doubled liquid capacity
+    ~ Balance: Blast pump (150 -> 300) & Impact pump (200 -> 400) liquid capacity
+    ~ Balance: reworked avenger, less attack speed fore more damage, synergies and ability to attack ground with great penalty
     ~ Bug Fix: Fix Regioner's Ai being stuck following a phantom when no other units are present & used in waves
     ~ Bug Fix: Colours of certain content not being set correctly
     ~ Bug Fix: Hit boxes of certain units being small/bigger than appropriate
     ~ Bug Fix: Double tapping on Nyfalian System will launch you in sector 0 of nyfalis
     ~ Bug Fix: Liquid Tank and Canister liquid layer are visible in corners
     ~ Bug Fix: Broiler now gets it production boosted with scrap and is functional
+    ~ Bug Fix: Constructs not properly using power while making spirits
     ~ Improved: Gnat and Phorid's attacking visual design to better indicate area of damage
     ~ Improved: Stats and general core database changes
     ~ Improved: Obliterator fully implemented
     ~ Improved: Broiler now gets
     ~ Sprites: Recoloured blocks to have new iron pallet
-    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item) quartz (ore), rustyIron (item), lubricant (liquid)
+    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item) quartz (ore), rustyIron (item), lubricant (liquid), aegis
     ~ Sprites Contributed by Ethanol10: acerodon, germanica, essex, serpent, avenger
+    ~ Sprites Contributed by Catana: spirit
 
     -- Music removed from content mod - https://github.com/JiroCab/Nyfalis-Music
 

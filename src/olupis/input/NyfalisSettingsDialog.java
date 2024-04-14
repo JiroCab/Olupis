@@ -72,8 +72,9 @@ public class NyfalisSettingsDialog {
                 subTable.button("@setting.nyfalis-resetresearch.name", Icon.trash, () -> {
                     ui.showConfirm("@confirm", "@setting.nyfalis-resetresearch.confirm", () -> {
                         content.each(c -> {
-                            for(TechTree.TechNode node : NyfalisPlanets.nyfalis.techTree.children){
-                                node.reset();
+                            for(Planet planet : NyfalisPlanets.planetList ){
+                                planet.techTree.reset();
+                                planet.techTree.each(TechTree.TechNode::reset);
                             }
                             if(c instanceof UnlockableContent u && u.name.contains("olupis-")){
                                 u.clearUnlock();

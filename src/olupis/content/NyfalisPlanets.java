@@ -19,6 +19,7 @@ import static mindustry.Vars.content;
 public class NyfalisPlanets {
     public static Planet nyfalis, arthin, spelta, system;
     private static final Seq<Sector> systemSector = new Seq<>();
+    public static final Seq<Planet> planetList = new Seq<>();
 
     public static Cons<Rules> commonRules = r ->{
         r.unitCrashDamageMultiplier = 0.25f;
@@ -124,6 +125,7 @@ public class NyfalisPlanets {
         systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
          finalSectors.add(systemSector);
         system.sectors.set(finalSectors);
+        planetList.add(nyfalis, arthin, spelta, system);
     }
 
     public static boolean isNyfalianPlanet (Planet planet){

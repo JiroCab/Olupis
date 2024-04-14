@@ -5,7 +5,6 @@ import arc.math.Mathf;
 import arc.struct.EnumSet;
 import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.entities.abilities.MoveEffectAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.WaveEffect;
@@ -25,6 +24,7 @@ import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.*;
 import olupis.world.blocks.defence.ItemUnitTurret;
 import olupis.world.consumer.ConsumeLubricant;
+import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.bullets.*;
 
 import static mindustry.Vars.tilesize;
@@ -119,9 +119,7 @@ public class NyfalisTurrets {
 
         }};
 
-        avenger = new ItemTurret("avenger"){
-            final float groundPenalty = 0.2f; //This is mess lmao
-            {
+        avenger = new ItemTurret("avenger"){{
                 targetAir = true;
                 size = 3;
                 reload = 42f;
@@ -134,6 +132,7 @@ public class NyfalisTurrets {
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.11f;
 
+                final float groundPenalty = 0.2f;
                 ammo(
                     lead, new AirEffectiveMissleType(4.6f, 80f){{
                         width = 6f;
@@ -201,8 +200,9 @@ public class NyfalisTurrets {
 
             @Override
             public void setStats() {
-                stats.add(new Stat("olupis-groundpenalty", StatCat.function), "[scarlet]-" + Math.round(Math.abs((1 - groundPenalty) * 100)) + "%");
                 super.setStats();
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
             }
         };
 
@@ -554,7 +554,7 @@ public class NyfalisTurrets {
                 targetGround = true;
                 size = 4;
                 reload = 400f;
-                range = 750f;
+                range = 70f * 8f;
                 shootY = shootX = 0f;
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.05f;
@@ -564,7 +564,7 @@ public class NyfalisTurrets {
                         lead, new BulletType(0f, 1) {{
                             instantDisappear = true;
                             shootEffect = Fx.shootBig;
-                            ammoMultiplier = 6f;
+                            ammoMultiplier = 3f;
                             fragBullets = 30;
                             fragSpread = 1;
                             fragRandomSpread = 2;
@@ -595,7 +595,7 @@ public class NyfalisTurrets {
                             height = 21f;
                             knockback = 0.8f;
                             splashDamage = 10f;
-                            ammoMultiplier = 10f;
+                            ammoMultiplier = 5;
                             statusDuration = 160f;
                             homingPower = 0.4f;
                             homingRange = 150f;
@@ -613,7 +613,7 @@ public class NyfalisTurrets {
                         quartz, new BulletType(0f, 1){{
                             reloadMultiplier = 0.5f;
                             shootEffect = Fx.shootBig;
-                            ammoMultiplier = 5f;
+                            ammoMultiplier = 3f;
 
                             spawnUnit = new MissileUnitType("aegis-quartz-missile"){{
                                 speed = 8f;
@@ -658,7 +658,7 @@ public class NyfalisTurrets {
                             }};
                         }}
                 );
-                drawer = new DrawTurret(""){{
+                drawer = new DrawTurret("iron-"){{
                     parts.add(new RegionPart("-core"){{
                         progress = PartProgress.recoil;
                         heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
@@ -716,7 +716,7 @@ public class NyfalisTurrets {
                                 }});
                     }});
                 }};
-                shoot = new ShootAlternate(){{
+                shoot = new ShootAlternate(){{ //don't forget to adjust the y of where the missle spawns! -Rushie
                     shots = barrels = 3;
                     spread = 15;
                     shotDelay = 20;
@@ -727,8 +727,16 @@ public class NyfalisTurrets {
                 shootEffect = Fx.shootSmallSmoke;
                 researchCost = with(lead, 1500, iron, 700, cobalt, 700);
                 coolant = consume(new ConsumeLubricant(30f / 60f));
-                requirements(Category.turret, with(iron, 20, lead, 40, cobalt, 20));
-            }};
+                requirements(Category.turret, with(iron, 100, lead, 200, cobalt, 60));
+            }
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
+            }
+        };
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)

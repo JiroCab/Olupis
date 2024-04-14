@@ -67,6 +67,7 @@ public class ItemUnitTurret extends ItemTurret {
     public boolean rallyAim = true;
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
+    public boolean setDynamicConsumer = true;
     public Block statArticulator;
 
     //For Shooting whatever is in payload as a bullet
@@ -84,9 +85,8 @@ public class ItemUnitTurret extends ItemTurret {
         range = 0f;
         config(UnitCommand.class, (ItemUnitTurretBuild build, UnitCommand command) -> build.command = command);
         configClear((ItemUnitTurretBuild build) -> build.command = null);
-
-        consume(new ConsumeItemDynamic((ItemUnitTurretBuild e) -> e.useAlternate ? requiredAlternate : requiredItems));
     }
+
 
     public void setBars(){
         super.setBars();
@@ -236,8 +236,9 @@ public class ItemUnitTurret extends ItemTurret {
 
     @Override
     public void init(){
-        consumeBuilder.each(c -> c.multiplier = b -> state.rules.unitCost(b.team));
+        if(setDynamicConsumer) consume(new ConsumeItemDynamic((ItemUnitTurretBuild e) -> e.useAlternate ? requiredAlternate : requiredItems));
 
+        consumeBuilder.each(c -> c.multiplier = b -> state.rules.unitCost(b.team));
         super.init();
     }
 
@@ -336,7 +337,6 @@ public class ItemUnitTurret extends ItemTurret {
         }
 
         public boolean hasReqItems(){
-
             for (ItemStack req : useAlternate ? requiredAlternate : requiredItems) {
                 if(items.get(req.item) >= req.amount) continue;
                 return false;
