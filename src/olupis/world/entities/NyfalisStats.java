@@ -56,7 +56,7 @@ public class NyfalisStats extends StatValues {
                         bt.row();
                     }
 
-                    if(Core.bundle.has(parent + "." + t.name)){
+                    if(parent != null && Core.bundle.has(parent + "." + t.name)){
                         bt.table(info -> {
                             info.add(Core.bundle.get(parent + "." + t.name)).padRight(10).left().top();
                         }).row();
@@ -129,20 +129,20 @@ public class NyfalisStats extends StatValues {
                     }
 
                     if(type.status != StatusEffects.none){
-                        sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + ((int)(type.statusDuration / 60f)) + "[lightgray] " + Core.bundle.get("unit.seconds")));
+                        sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + (Strings.autoFixed(type.statusDuration / 60f, 1)) + "[lightgray] " + Core.bundle.get("unit.seconds")));
                     }
 
                     if(type instanceof AirEffectiveMissleType m && m.groundDamageMultiplier != 1f){
 
-                        int val = (int)(m.groundDamageMultiplier * 100 - 100);
-                        sep(bt, Core.bundle.format("stat.olupis-groundpenalty", ammoStat(val)));
+                        int val = (int)(m.groundDamageMultiplier * 100 - 100  );
+                        sep(bt, Core.bundle.format("stat.olupis-groundpenalty", ammoStat(val), m.damage * m.groundDamageMultiplier, 2));
                     }
 
                     if(type.intervalBullet != null){
                         bt.row();
 
                         Table ic = new Table();
-                        ammo(ObjectMap.of(t, type.intervalBullet), indent + 1, false).display(ic);
+                        ammoWithInfo(ObjectMap.of(t, type.intervalBullet), indent + 1, false, null).display(ic);
                         Collapser coll = new Collapser(ic, true);
                         coll.setDuration(0.1f);
 
@@ -160,7 +160,7 @@ public class NyfalisStats extends StatValues {
                         bt.row();
 
                         Table fc = new Table();
-                        ammo(ObjectMap.of(t, type.fragBullet), indent + 1, false).display(fc);
+                        ammoWithInfo(ObjectMap.of(t, type.fragBullet), indent + 1, false, null).display(fc);
                         Collapser coll = new Collapser(fc, true);
                         coll.setDuration(0.1f);
 

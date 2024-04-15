@@ -23,6 +23,7 @@ import mindustry.world.Tile;
 import mindustry.world.meta.Env;
 import olupis.content.NyfalisFxs;
 import olupis.world.ai.NyfalisMiningAi;
+import olupis.world.entities.packets.NyfalisUnitTimedOutPacket;
 
 import static mindustry.Vars.*;
 
@@ -49,7 +50,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*Anti-spam to hard, aka setting a diminishing return for the sake of frames */
     public float penaltyMultiplier = 2f;
     /*Time out params */
-    public boolean drawAmmo = false;
+    public boolean drawAmmo = false, inoperable = false;
     public TextureRegion ammoRegion;
     public Sound timedOutSound = Sounds.explosion;
     public Effect timedOutFx = NyfalisFxs.unitBreakdown;
@@ -192,14 +193,15 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     @Override
     public void update(Unit unit){
         if (unit.ammo <= deathThreshold && killOnAmmoDepletion){
-            timedOut(unit);
+            callTimeOut(unit);
         }
 
-        boolean multiplier =(unit.count() > unit.cap() && unit.type.useUnitCap || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable);
+        inoperable = unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null);
+        boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap));
 
-        boolean shouldDeplete = (startTime+ ammoDepletionOffset) <= Time.time || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable;
-        if(ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap()))){
-            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier ? penaltyMultiplier : 1f));
+        boolean shouldDeplete = ((startTime+ ammoDepletionOffset) <= Time.time);
+        if(inoperable || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
+            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || inoperable ? penaltyMultiplier : 1f));
         }
 
         if(miningDepletesAmmo && unit.mining()){
@@ -229,10 +231,25 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         return unit;
     }
 
+    public void callTimeOut(Unit unit){
+        if (Vars.net.server()) {
+            NyfalisUnitTimedOutPacket packet = new NyfalisUnitTimedOutPacket();
+            packet.unit = unit;
+            Vars.net.send(packet, true);
+        }
+        timedOut(unit);
+    }
+
     public void timedOut(Unit unit){
-        //TODO: Net clients doesn't use right Fx (uses default despawn fx)
-        Call.unitDespawn(unit);
         timedOutFx.at(unit.x, unit.y, 0, unit);
         timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
+        unit.remove();
     }
+
+
+    @Override
+    public float partAmmo(Unit unit){
+        return (unit.ammo - deathThreshold ) / (ammoCapacity - deathThreshold);
+    }
+
 }

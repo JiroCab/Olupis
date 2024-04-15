@@ -199,9 +199,13 @@ public class NyfalisUnitType extends UnitType {
     @Override
     public void draw(Unit unit){
         if(parts.size > 0){
-            NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation());
+            NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit) );
         }
         super.draw(unit);
+    }
+
+    public float partAmmo(Unit unit){
+        return unit.ammo/ ammoCapacity;
     }
 
     @Override
@@ -255,7 +259,7 @@ public class NyfalisUnitType extends UnitType {
         @Override
         public void draw(Unit unit, WeaponMount mount){
             if(parts.size > 0){
-                NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation());
+                NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit));
             }
             super.draw(unit, mount);
         }

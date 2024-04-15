@@ -7,12 +7,14 @@ public class NyfPartParms {
 
     public static class NyfPartParams{
         public int team;
-        public float health,elevation;
+        public float health,elevation, ammo;
 
-        public NyfPartParams set(float health, int team, float elevation){
+        public NyfPartParams set(float health, int team, float elevation, float ammo){
             this.health = health;
             this.team = team;
             this.elevation = elevation;
+            this.ammo = ammo;
+
             return this;
         }
     }
@@ -21,7 +23,9 @@ public class NyfPartParms {
         NyfPartProgress
             health = p -> nyfparams.team,
             team = p -> nyfparams.team,
-            elevation = p -> nyfparams.elevation;
+            elevation = p -> nyfparams.elevation,
+            ammo = p -> nyfparams.ammo
+                ;
         ;
 
         DrawPart.PartProgress elevationP = p-> nyfparams.elevation;

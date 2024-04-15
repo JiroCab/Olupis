@@ -2,14 +2,13 @@ package olupis.world.ai;
 
 import arc.math.Mathf;
 import arc.math.geom.Position;
-import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.entities.units.AIController;
-import mindustry.gen.*;
-import mindustry.graphics.Layer;
+import mindustry.gen.Building;
+import mindustry.gen.Call;
 import mindustry.type.Item;
 import mindustry.world.Tile;
 import olupis.world.entities.units.AmmoLifeTimeUnitType;
@@ -26,7 +25,6 @@ public class NyfalisMiningAi extends AIController {
     public Seq<Item> dynamicMineItems = new Seq<>(), dynamicBlackList = new Seq<>();
     private int lastPathId = 0;
     private float lastMoveX, lastMoveY;
-    protected static final Vec2 vecOut = new Vec2();
 
     public void updateMineItems(){
         dynamicMineItems.clear();
@@ -132,7 +130,6 @@ public class NyfalisMiningAi extends AIController {
         move(target, nullDepletion, false);
     }
     public void move(Position target, boolean nullDepletion, boolean notCore){
-        WorldLabel.drawAt("nya", unit().x, unit().y + 5, Layer.overlayUI, WorldLabel.flagBackground, 1.5f);
         if(unit.within(target, unit.type.mineRange / 2f)) return;
 
         if (unit.type.flying) circle(target, unit.type.range / 1.8f);

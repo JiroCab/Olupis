@@ -27,7 +27,7 @@ public class AirEffectiveMissleType extends MissileBulletType {
         boolean wasDead = entity instanceof Unit u && u.dead;
 
         if(entity instanceof Healthc h){
-            float mul = entity instanceof  Unit u &&u.isGrounded() ? groundDamageMultiplier : 1f;
+            float mul = entity instanceof  Unit u && u.isGrounded() ? groundDamageMultiplier : 1f;
             if(pierceArmor){
                 h.damagePierce(b.damage * mul);
             }else{

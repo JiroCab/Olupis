@@ -76,7 +76,7 @@ public class NyfalisUnits {
     public static void LoadUnits(){
         LoadAmmoType();
 
-        //region Air Units
+        //region Air - Aero
         //Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
         aero = new NyfalisUnitType("aero"){{
             hitSize = 9f;
@@ -209,7 +209,8 @@ public class NyfalisUnits {
                 }};
             }});
         }};
-
+        //endregion
+        //region Air - Bats
         pteropus = new NyfalisUnitType("pteropus"){{
             hitSize = 10f;
             drag = 0.06f;
@@ -377,6 +378,8 @@ public class NyfalisUnits {
             );
         }};
 
+        //endregion
+        //region Air - Area / from naval
         zoner = new NyfalisUnitType("zoner"){{
             armor = 1f;
             speed = 3f;
@@ -460,10 +463,10 @@ public class NyfalisUnits {
             }});
         }};
 
-        //district -> a gun ship, light gun as primary and ammo limited secondary that resupplies from mother shi/maker
+        //district -> a gun ship, light gun as primary and ammo limited secondary that resupplies from mother ship/maker (excess)
 
         //endregion
-        //region Ground Units
+        //region Ground - Snek
         venom = new SnekUnitType("venom"){{
             constructor = CrawlUnit::create;
             armor = 2;
@@ -571,6 +574,8 @@ public class NyfalisUnits {
            );
         }};
 
+        //endregion
+        //region Ground - Roach
         supella = new NyfalisUnitType("supella"){{
             constructor = MechUnit::create;
 
@@ -683,10 +688,8 @@ public class NyfalisUnits {
             );
         }};
 
-        /*To be considered: crab tree, bulky and close range, legged naval*/
-
         //endregion
-        //region Naval Units
+        //region Naval - Carrier
         porter = new NyfalisUnitType("porter"){{
             armor = 6f;
             hitSize = 12f;
@@ -733,6 +736,7 @@ public class NyfalisUnits {
             }});
         }};
 
+        //T4, a slow gunship carrier (district), flies and can carry ground units /payload
         excess = new LeggedWaterUnit("excess"){{
             groundSpeed = 0.4f;
             navalSpeed = 2;
@@ -755,6 +759,8 @@ public class NyfalisUnits {
             }});
         }};
 
+        //endregion
+        //region Naval - Guard
         //Minigun turret mounted on the front, 10mm autocannon mounted on the back
         bay = new NyfalisUnitType("bay"){{
             armor = 4f;
@@ -990,11 +996,8 @@ public class NyfalisUnits {
             }});
         }};
 
-        //TODO: Test if a cargo carrying-booting naval is possible  (essex & nimitz)
-
-
-        //endregion Units
-        //region Nyfalis Limited LifeTime / Support Units
+        //endregion
+        //region Limited - Hive
         mite = new AmmoLifeTimeUnitType("mite"){{
             /*Rework: only no ammo deplete over time if with X of parent, once out, high  deplete amount*/
             hitSize = 8f;
@@ -1043,6 +1046,8 @@ public class NyfalisUnits {
             }});
         }};
 
+        //endregion
+        //region Limited - Support Construct
         spirit = new AmmoLifeTimeUnitType("spirit"){{
             range = 30f;
             health = 150f;
