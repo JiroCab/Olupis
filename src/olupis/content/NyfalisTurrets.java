@@ -565,16 +565,16 @@ public class NyfalisTurrets {
                             instantDisappear = true;
                             shootEffect = Fx.shootBig;
                             ammoMultiplier = 5f;
-                            fragBullets = 30;
+                            fragBullets = 10;
                             fragSpread = 1;
                             fragRandomSpread = 2;
-                            fragBullet = new AirEffectiveMissleType(4f, 40f) {{
+                            fragBullet = new AirEffectiveMissleType(4f, 5f) {{
                                 width = 6f;
                                 shrinkX = 0;
-                                lifetime = 180f;
+                                lifetime = 160f;
                                 height = 10.5f;
                                 knockback = 0.4f;
-                                splashDamage = 180f;
+                                splashDamage = 10f;
                                 homingPower = 0.4f;
                                 homingRange = 150f;
                                 homingDelay = 20;
@@ -588,11 +588,11 @@ public class NyfalisTurrets {
                             }};
                         }},
 
-                        rustyIron, new AirEffectiveMissleType(3f, 5f) {{
+                        rustyIron, new AirEffectiveMissleType(3f, 10f) {{
                             width = 12f;
                             reloadMultiplier = 1.5f;
                             shrinkX = 0;
-                            lifetime = 225f;
+                            lifetime = 180f;
                             height = 21f;
                             knockback = 0.8f;
                             splashDamage = 10f;
@@ -602,20 +602,20 @@ public class NyfalisTurrets {
                             homingDelay = 20;
                             splashDamageRadius = 25f * 0.75f;
                             backColor = trailColor = rustyIron.color;
-                            collidesAir = collideTerrain = collidesGround = true;
+                            collidesAir = collidesGround = true;
                             shootEffect = Fx.shootBigColor;
                             hitEffect = NyfalisFxs.hollowPointHit;
                             status = StatusEffects.corroded;
                             groundDamageMultiplier = 1.8f;
-                            buildingDamageMultiplier = 0.1f;
-                            intervalBullets = 2;
+                            buildingDamageMultiplier = 0.5f;
+                            intervalBullets = 4;
                             intervalSpread = -30;
-                            intervalRandomSpread = 0;
-                            bulletInterval = 6;
-                            intervalBullet = new AirEffectiveMissleType(3f, 10f) {{
+                            intervalRandomSpread = 60;
+                            bulletInterval = 20;
+                            intervalBullet = new AirEffectiveMissleType(3f, 5f) {{
                                 width = 6f;
                                 shrinkX = 0;
-                                lifetime = 50;
+                                lifetime = 25;
                                 height = 10.5f;
                                 knockback = 0.8f;
                                 splashDamage = 10f;
@@ -625,36 +625,12 @@ public class NyfalisTurrets {
                                 homingDelay = 20;
                                 splashDamageRadius = 25f * 0.75f;
                                 backColor = trailColor = rustyIron.color;
-                                collidesAir = collideTerrain =collidesGround = true;
+                                collidesAir = collidesGround = true;
                                 shootEffect = Fx.shootBigColor;
                                 hitEffect = NyfalisFxs.hollowPointHit;
                                 status = StatusEffects.corroded;
                                 groundDamageMultiplier = 1.8f;
-                                buildingDamageMultiplier = 0.1f;
-                                intervalBullets = 2;
-                                intervalSpread = -30;
-                                intervalRandomSpread = 0;
-                                bulletInterval = 4;
-                                intervalBullet = new AirEffectiveMissleType(3f, 15f) {{
-                                    width = 3f;
-                                    shrinkX = 0;
-                                    lifetime = 25;
-                                    height = 5.25f;
-                                    knockback = 0.8f;
-                                    splashDamage = 10f;
-                                    statusDuration = 160f;
-                                    homingPower = 0.4f;
-                                    homingRange = 150f;
-                                    homingDelay = 20;
-                                    splashDamageRadius = 25f * 0.75f;
-                                    backColor = trailColor = rustyIron.color;
-                                    collidesAir = collideTerrain = collidesGround = true;
-                                    shootEffect = Fx.shootBigColor;
-                                    hitEffect = NyfalisFxs.hollowPointHit;
-                                    status = StatusEffects.corroded;
-                                    groundDamageMultiplier = 1.8f;
-                                    buildingDamageMultiplier = 0.1f;
-                                }};
+                                buildingDamageMultiplier = 0.5f;
                             }};
                         }},
 
@@ -666,7 +642,7 @@ public class NyfalisTurrets {
                             spawnUnit = new MissileUnitType("aegis-quartz-missile"){{
                                 speed = 8f;
                                 maxRange = 6f;
-                                lifetime = 120;
+                                lifetime = 100;
                                 engineColor = trailColor = quartz.color;
                                 engineLayer = Layer.effect;
                                 engineSize = 3.1f;
@@ -691,7 +667,7 @@ public class NyfalisTurrets {
                                     deathExplosionEffect = Fx.massiveExplosion;
                                     shootOnDeath = true;
                                     shake = 10f;
-                                    bullet = new ExplosionBulletType(350f, 65f){{
+                                    bullet = new ExplosionBulletType(25f, 65f){{
                                         hitColor = quartz.color;
                                         shootEffect = new MultiEffect(Fx.massiveExplosion, Fx.scatheExplosion, Fx.scatheLight, new WaveEffect(){{
                                             lifetime = 10f;
@@ -785,7 +761,78 @@ public class NyfalisTurrets {
                 stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
             }
         };
-
+        //TODO: Shockwave - funi wave go brr
+        /*
+                        new AirEffectiveMissleType(3f, 5f) {{
+                            width = 12f;
+                            reloadMultiplier = 1.5f;
+                            shrinkX = 0;
+                            lifetime = 225f;
+                            height = 21f;
+                            knockback = 0.8f;
+                            splashDamage = 10f;
+                            statusDuration = 160f;
+                            homingPower = 0.4f;
+                            homingRange = 150f;
+                            homingDelay = 20;
+                            splashDamageRadius = 25f * 0.75f;
+                            backColor = trailColor = rustyIron.color;
+                            collidesAir = collideTerrain = collidesGround = true;
+                            shootEffect = Fx.shootBigColor;
+                            hitEffect = NyfalisFxs.hollowPointHit;
+                            status = StatusEffects.corroded;
+                            groundDamageMultiplier = 1.8f;
+                            buildingDamageMultiplier = 0.1f;
+                            intervalBullets = 2;
+                            intervalSpread = -30;
+                            intervalRandomSpread = 0;
+                            bulletInterval = 6;
+                            intervalBullet = new AirEffectiveMissleType(3f, 10f) {{
+                                width = 6f;
+                                shrinkX = 0;
+                                lifetime = 50;
+                                height = 10.5f;
+                                knockback = 0.8f;
+                                splashDamage = 10f;
+                                statusDuration = 160f;
+                                homingPower = 0.4f;
+                                homingRange = 150f;
+                                homingDelay = 20;
+                                splashDamageRadius = 25f * 0.75f;
+                                backColor = trailColor = rustyIron.color;
+                                collidesAir = collideTerrain =collidesGround = true;
+                                shootEffect = Fx.shootBigColor;
+                                hitEffect = NyfalisFxs.hollowPointHit;
+                                status = StatusEffects.corroded;
+                                groundDamageMultiplier = 1.8f;
+                                buildingDamageMultiplier = 0.1f;
+                                intervalBullets = 2;
+                                intervalSpread = -30;
+                                intervalRandomSpread = 0;
+                                bulletInterval = 4;
+                                intervalBullet = new AirEffectiveMissleType(3f, 15f) {{
+                                    width = 3f;
+                                    shrinkX = 0;
+                                    lifetime = 25;
+                                    height = 5.25f;
+                                    knockback = 0.8f;
+                                    splashDamage = 10f;
+                                    statusDuration = 160f;
+                                    homingPower = 0.4f;
+                                    homingRange = 150f;
+                                    homingDelay = 20;
+                                    splashDamageRadius = 25f * 0.75f;
+                                    backColor = trailColor = rustyIron.color;
+                                    collidesAir = collideTerrain = collidesGround = true;
+                                    shootEffect = Fx.shootBigColor;
+                                    hitEffect = NyfalisFxs.hollowPointHit;
+                                    status = StatusEffects.corroded;
+                                    groundDamageMultiplier = 1.8f;
+                                    buildingDamageMultiplier = 0.1f;
+                                }};
+                            }};
+                        }},
+         */
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 
