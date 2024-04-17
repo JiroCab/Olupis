@@ -9,7 +9,7 @@ import static mindustry.Vars.content;
 
 public class NyfalisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, cryoRods, steel, silicatePowder;
+    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, cryoRods, steel, silicatePowder, powerAmmoItem;
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam, lubricant;
 
@@ -21,23 +21,38 @@ public class NyfalisItemsLiquid {
 
             flammability = 1.2f;
         }};
-        rustyIron = new Item("rusty-iron", Color.valueOf("8E320A")) {{
+        rustyIron = new Item("rusty-iron", Color.valueOf("9B5534")) {{
             hardness = 1;
         }};
         iron = new Item("iron", Color.valueOf("989AA4")) {{
             hardness = 2;
             healthScaling = 0.25f;
         }};
-        cobalt = new Item("cobalt", Color.valueOf("0b6e87")) {{
+        cobalt = new Item("cobalt", Color.valueOf("5D5D74")) {{
             hardness = 2;
             charge = 0.5f;
             healthScaling = 0.25f;
         }};
-        quartz = new Item("quartz", Color.valueOf("E2D6D5")){{
+        quartz = new Item("quartz", Color.valueOf("494963")){{
             hardness = 2;
         }};
 
-        nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz);
+        aluminum = new Item("aluminum", Color.valueOf("6D6D6D")){{
+            hardness = 2;
+        }};
+
+        alcoAlloy = new Item("alco-alloy", Color.valueOf("546295")){{
+            hardness = 2;
+        }};
+
+        powerAmmoItem = new Item("power-ammo-item", Color.valueOf("f3e979")){{
+            //I only exits so constructs can have a lightning bolt as icon when making spirits
+            hidden = true;
+            charge = 1f;
+        }};
+
+
+        nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum);
         nyfalisItems.add(nyfalisOnlyItems);
         nyfalisItems.add(Items.serpuloItems);
 
@@ -58,5 +73,20 @@ public class NyfalisItemsLiquid {
             boilPoint = 0f;
             effect = StatusEffects.corroded;
         }};
+
+        lubricant = new Liquid("lubricant", Color.valueOf("C4AA90")){{
+            viscosity = 0.7f;
+            flammability = 1.2f;
+            explosiveness = 1.3f;
+            heatCapacity = 0.86f;
+            barColor = Color.valueOf("6b675f");
+            effect = NyfalisStatusEffects.lubed;
+            boilPoint = 0.65f;
+            gasColor = Color.grays(0.4f);
+            canStayOn.addAll(Liquids.water, Liquids.oil);
+        }};
+
+        Liquids.water.canStayOn.add(lubricant);
+        Liquids.oil.canStayOn.add(lubricant);
     }
 }

@@ -15,6 +15,9 @@ public class NyfalisGroundAi extends GroundAI {
 
     @Override
     public void updateUnit() {
+        if (unit.type instanceof NyfalisUnitType unt && unt.alwaysBoosts) {
+            unit.updateBoosting(true);
+        }
         if (unit.controller() instanceof CommandAI ai) {
             ai.defaultBehavior();
             if (unit.type instanceof NyfalisUnitType unt) {

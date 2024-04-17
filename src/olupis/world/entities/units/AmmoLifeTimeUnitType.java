@@ -16,12 +16,14 @@ import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
 import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Env;
 import olupis.content.NyfalisFxs;
 import olupis.world.ai.NyfalisMiningAi;
+import olupis.world.entities.packets.NyfalisUnitTimedOutPacket;
 
 import static mindustry.Vars.*;
 
@@ -48,7 +50,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*Anti-spam to hard, aka setting a diminishing return for the sake of frames */
     public float penaltyMultiplier = 2f;
     /*Time out params */
-    public boolean drawAmmo = false;
+    public boolean drawAmmo = false, inoperable = false;
     public TextureRegion ammoRegion;
     public Sound timedOutSound = Sounds.explosion;
     public Effect timedOutFx = NyfalisFxs.unitBreakdown;
@@ -119,16 +121,21 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
         }
 
-        if(unit.controller() instanceof NyfalisMiningAi ai && ai.targetItem != null && ai.ore != null && unit.closestCore() != null){
+        if(unit.controller() instanceof NyfalisMiningAi ai ){
             table.row();
             table.table().left().growX().update(i -> {
+                i.left().clear();
+                if(ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null){
+                    i.add(Core.bundle.get("nyfalis-ai-inoperable"));
+                    return;
+                }
                 TextureRegion icon = unit.closestCore().block.fullIcon;
                 if(ai.mineType >= 2 && ai.ore != null){
                     if(ai.mineType == 2) icon = ai.ore.floor().fullIcon;
                     else if(ai.mineType == 3) icon = ai.ore.block().fullIcon;
                     else if(ai.mineType == 4) icon = ai.ore.overlay().fullIcon;
                 }
-                i.left().clear();
+
                 i.image(icon).size(iconSmall).scaling(Scaling.bounded).left();
                 i.add(ai.mineType != 1 ? ai.targetItem.localizedName: unit.closestCore().block.localizedName).wrap().left();
             });
@@ -160,11 +167,22 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     }
 
     public void drawAmmo(Unit unit){
+        float z = !unit.isAdded() ? Draw.z() : unit.elevation > 0.5f ? (lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : groundLayer + Mathf.clamp(hitSize / 4000f, 0, 0.01f);
+        Draw.z(z);
         applyColor(unit);
 
         Draw.color(ammoColor(unit));
         Draw.rect(ammoRegion, unit.x, unit.y, unit.rotation - 90);
         Draw.reset();
+    }
+
+    public void drawItems(Unit unit){
+        if(drawAmmo){
+            //Jank otherwise it draw under the ammo
+            float z = !unit.isAdded() ? Draw.z() : unit.elevation > 0.5f ? (lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : groundLayer + Mathf.clamp(hitSize / 4000f, 0, 0.01f);
+            Draw.z(z + 0.001f);
+        }
+        super.drawItems(unit);
     }
 
     public Color ammoColor(Unit unit){
@@ -175,14 +193,15 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     @Override
     public void update(Unit unit){
         if (unit.ammo <= deathThreshold && killOnAmmoDepletion){
-            timedOut(unit);
+            callTimeOut(unit);
         }
 
-        boolean multiplier =(unit.count() > unit.cap() && unit.type.useUnitCap || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable);
+        inoperable = unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null);
+        boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap));
 
-        boolean shouldDeplete = (startTime+ ammoDepletionOffset) <= Time.time || unit.controller() instanceof  NyfalisMiningAi ai && ai.inoperable;
-        if(ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap()))){
-            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier ? penaltyMultiplier : 1f));
+        boolean shouldDeplete = ((startTime+ ammoDepletionOffset) <= Time.time);
+        if(inoperable || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
+            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || inoperable ? penaltyMultiplier : 1f));
         }
 
         if(miningDepletesAmmo && unit.mining()){
@@ -212,10 +231,25 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         return unit;
     }
 
+    public void callTimeOut(Unit unit){
+        if (Vars.net.server()) {
+            NyfalisUnitTimedOutPacket packet = new NyfalisUnitTimedOutPacket();
+            packet.unit = unit;
+            Vars.net.send(packet, true);
+        }
+        timedOut(unit);
+    }
+
     public void timedOut(Unit unit){
-        //TODO: Net clients doesn't use right Fx (uses default despawn fx)
-        Call.unitDespawn(unit);
         timedOutFx.at(unit.x, unit.y, 0, unit);
         timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
+        unit.remove();
     }
+
+
+    @Override
+    public float partAmmo(Unit unit){
+        return (unit.ammo - deathThreshold ) / (ammoCapacity - deathThreshold);
+    }
+
 }

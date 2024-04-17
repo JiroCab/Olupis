@@ -19,6 +19,7 @@ import static mindustry.Vars.content;
 public class NyfalisPlanets {
     public static Planet nyfalis, arthin, spelta, system;
     private static final Seq<Sector> systemSector = new Seq<>();
+    public static final Seq<Planet> planetList = new Seq<>();
 
     public static Cons<Rules> commonRules = r ->{
         r.unitCrashDamageMultiplier = 0.25f;
@@ -80,7 +81,7 @@ public class NyfalisPlanets {
         }};
 
         //1st moon
-        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.8f, 1){{
+        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 1.1f, 1){{
             accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics =  true;
 
             startSector = 2;
@@ -96,7 +97,7 @@ public class NyfalisPlanets {
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
 
-        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.8f, 2){{
+        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
             clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
 
@@ -115,9 +116,22 @@ public class NyfalisPlanets {
 
         //TODO: rework the planets generators
         //TODO: Caves, capture 1, get 2 sectors!
+        //TODO: LUMA THEMED ASTEROID
     }
 
     public  static void PostLoadPlanet(){
-        system.sectors.set(systemSector);
+         Seq<Sector> finalSectors = new Seq<>();
+         finalSectors.add(systemSector.find(t -> t.preset == NyfalisSectors.sanctuary)); //prevents launching at sector 0 of nyfalis if you double tap while system is selected
+        systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
+         finalSectors.add(systemSector);
+        system.sectors.set(finalSectors);
+        planetList.add(nyfalis, arthin, spelta, system);
+    }
+
+    public static boolean isNyfalianPlanet (Planet planet){
+        if (planet == null) return false;
+        if (planet == arthin) return true;
+        if (planet == spelta) return true;
+        return planet == nyfalis;
     }
 }

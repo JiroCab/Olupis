@@ -13,7 +13,7 @@ import mindustry.type.Item;
 import mindustry.world.Tile;
 import olupis.world.entities.units.AmmoLifeTimeUnitType;
 
-import static mindustry.Vars.indexer;
+import static mindustry.Vars.*;
 
 /*Custom mining Ai that Respects the ammo lifetime gimmick*/
 public class NyfalisMiningAi extends AIController {
@@ -42,7 +42,7 @@ public class NyfalisMiningAi extends AIController {
 
         if(dynamicItems)updateMineItems();
 
-        if(unit.type instanceof AmmoLifeTimeUnitType && unit.stack.amount > 0 && ((AmmoLifeTimeUnitType) unit.type).deathThreshold * unit.mineTimer >= unit.ammo){
+        if(unit.type instanceof AmmoLifeTimeUnitType al && unit.stack.amount > 0 && al.deathThreshold * unit.mineTimer >= unit.ammo){
             unit.mineTile = ore = null;
             if(unit.within(core, unit.type.range)){
                 if(core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
@@ -51,7 +51,7 @@ public class NyfalisMiningAi extends AIController {
 
                 mineType = 1;
                 unit.clearItem();
-                unit.ammo = ((AmmoLifeTimeUnitType) unit.type).deathThreshold / 2;
+                unit.ammo = al.deathThreshold / 2;
                 mining = false;
             }
 
@@ -91,8 +91,7 @@ public class NyfalisMiningAi extends AIController {
                 }
 
                 if(ore != null){
-
-                    move(ore, false, true);
+                    move(ore, unit.team != state.rules.waveTeam, true);
 
                     if(ore.block() == Blocks.air && unit.within(ore, unit.type.mineRange)){
                         unit.mineTile = ore;

@@ -16,8 +16,8 @@ public class PowerConveyor extends Conveyor {
     @Override
     public void setStats(){
         super.setStats();
-
-        stats.add(new Stat("olupis-powerforgiveness", StatCat.power), powerRequired * -60f , StatUnit.powerSecond);
+//TODO FIX
+        stats.add(new Stat("olupis-powerforgiveness", StatCat.power), powerRequired * -120f , StatUnit.powerSecond);
         stats.add(new Stat("olupis-itemsmovedpowered", StatCat.items), displayedSpeedPowered, StatUnit.itemsSecond);
     }
 

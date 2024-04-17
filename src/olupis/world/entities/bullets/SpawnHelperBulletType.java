@@ -6,6 +6,7 @@ import arc.util.Nullable;
 import mindustry.ai.types.MissileAI;
 import mindustry.entities.Mover;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.BulletType;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.*;
@@ -17,6 +18,7 @@ import static mindustry.Vars.*;
 
 public class SpawnHelperBulletType extends BasicBulletType {
     public boolean hasParent = false;
+    public BulletType alternateType;
 
     @Override
     public @Nullable Bullet create(@Nullable Entityc owner, @Nullable Entityc shooter, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data, @Nullable Mover mover, float aimX, float aimY) {

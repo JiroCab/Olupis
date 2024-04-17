@@ -2,22 +2,29 @@ package olupis.world.entities.bullets;
 
 import arc.math.Angles;
 import arc.util.Time;
-import mindustry.entities.Units;
+import mindustry.Vars;
+import mindustry.entities.*;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.*;
+import mindustry.world.blocks.ConstructBlock;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 public class HealOnlyBulletType extends BasicBulletType {
-    public HealOnlyBulletType(float speed, float damage, String bulletSprite){
+    public boolean fogVisible, alwaysSplashDamage = false, despawnHitEffect = false;
+
+    public HealOnlyBulletType(float speed, float damage, String bulletSprite, boolean fogVisible){
         super(speed, damage);
         this.sprite = bulletSprite;
         this.collidesAir = this.hittable = false;
         this.collidesTeam = true;
+        this.fogVisible = fogVisible;
     }
-
+    public HealOnlyBulletType(float speed, float damage, String bulletSprite){
+        this(speed, damage, bulletSprite, true);
+    }
     public HealOnlyBulletType(float speed, float damage){
-        this(speed, damage, "bullet");
+        this(speed, damage, "bullet", true);
     }
 
     @Override
@@ -44,8 +51,9 @@ public class HealOnlyBulletType extends BasicBulletType {
         /*If someone finds a better way to do this, please let us know -RushieWsahie*/
         if (!heals())return;
         /*heals only the target, passing over any damaged blocks is ignored, debating if this a feature or bug*/
+        float splash = Math.max(b.type.splashDamageRadius * 0.8f, 1f);
         if(target == null) this.collides = this.collidesGround = false;
-        else this.collides  = this.collidesGround = target.within(b.x(), b.y(), Math.max(tarSize.get() -3.5f, 1f));
+        else this.collides  = this.collidesGround = target.within(b.x(), b.y(), Math.max(tarSize.get() -3.5f, splash));
     }
 
     public Teamc findTarget(Bullet b, AtomicReference<Float> tarSize){
@@ -59,5 +67,56 @@ public class HealOnlyBulletType extends BasicBulletType {
                 return (t.team == b.team && t.damaged()) && !b.hasCollided(t.id);
             }
         );
+    }
+
+    /*Don't like how gnats/phorids interval bullets are a dead give away in fog, so only the diamond will be visible*/
+    @Override
+    public void draw(Bullet b){
+        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.draw(b);
+    }
+
+    @Override
+    public void despawned(Bullet b){
+        if(despawnHit) hit(b);
+        else createUnits(b, b.x, b.y);
+
+        if(!fragOnHit) createFrags(b, b.x, b.y);
+
+        if(b.inFogTo(Vars.player.team()) || !fogVisible) return;
+
+        despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        despawnSound.at(b);
+
+        Effect.shake(despawnShake, despawnShake, b);
+    }
+
+    @Override
+    public void drawTrail(Bullet b){
+        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.drawTrail(b);
+    }
+
+    @Override
+    public void removed(Bullet b){
+        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.removed(b);
+    }
+
+    @Override
+    /** If direct is false, this is an indirect hit and the tile was already damaged.
+     * TODO this is a mess. */
+    public void hitTile(Bullet b, Building build, float x, float y, float initialHealth, boolean direct){
+        if(makeFire && build.team != b.team){
+            Fires.create(build.tile);
+        }
+
+        if(heals() && build.team == b.team && !(build.block instanceof ConstructBlock)){
+            healEffect.at(build.x, build.y, 0f, healColor, build.block);
+            build.heal(healPercent / 100f * build.maxHealth + healAmount);
+            if(alwaysSplashDamage)createSplashDamage(b, x, y);
+            if(despawnHitEffect) despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        }else if(build.team != b.team && direct){
+            hit(b);
+        }
+
+        handlePierce(b, initialHealth, x, y);
     }
 }

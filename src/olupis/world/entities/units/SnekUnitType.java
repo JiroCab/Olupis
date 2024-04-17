@@ -12,7 +12,6 @@ import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Crawlc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
-import mindustry.type.Weapon;
 
 /*ehehe snek*/
 public class SnekUnitType extends NyfalisUnitType{
@@ -64,15 +63,33 @@ public class SnekUnitType extends NyfalisUnitType{
 
     }
     /*Very janky but gets the work done*/
-    public class SnekWeapon extends Weapon {
+    public class SnekWeapon extends NyfalisWeapon {
         /*Sets which segment the weapon is "mounted" to*/
         public float weaponSegmentParent = segments -1;
 
         public SnekWeapon(String name){
-            this.name = name;
+            super(name);
+        }
+        public SnekWeapon(String name, boolean boostShoot, boolean groundShoot ){
+            super(name, boostShoot, groundShoot);
         }
         public SnekWeapon(){
-            this("");
+            super("");
+        }
+
+        @Override
+        public void update(Unit unit, WeaponMount mount) {
+
+            if ( altWeaponPos &&unit instanceof Crawlc crawl) {
+                float trns = Mathf.sin(crawl.crawlTime() + weaponSegmentParent * segmentPhase, segmentScl, segmentMag),
+                        rot = Mathf.slerp(crawl.segmentRot(), unit.rotation, weaponSegmentParent / (segments - 1f)),
+                        tx = Angles.trnsx(rot, trns), ty = Angles.trnsy(rot, trns), rotation = rot - 90,
+                        mountX = unit.x + Angles.trnsx(rotation, x, y),
+                        mountY = unit.y + Angles.trnsy(rotation, x, y);
+                shootXf  = mountX + Angles.trnsx(rotation, this.shootX, this.shootY) + tx;
+                shootYf  = mountY + Angles.trnsy(rotation, this.shootX, this.shootY) + ty;
+            }
+            super.update(unit, mount);
         }
 
         @Override
@@ -88,8 +105,8 @@ public class SnekUnitType extends NyfalisUnitType{
                         tx = Angles.trnsx(rot, trns), ty = Angles.trnsy(rot, trns), rotation = rot - 90,
                         realRecoil = Mathf.pow(mount.recoil, recoilPow) * recoil,
                         weaponRotation = rotation + (rotate ? mount.rotation : baseRotation),
-                        wx = unit.x + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, -realRecoil) + tx,
-                        wy = unit.y + Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, -realRecoil) + ty;
+                        wx = (unit.x + Angles.trnsx(rotation, x, y)+ Angles.trnsx(weaponRotation, 0, -realRecoil)) + tx,
+                        wy = (unit.y + Angles.trnsy(rotation, x, y)+ Angles.trnsy(weaponRotation, 0, -realRecoil)) + ty;
 
                 if (shadow > 0) {
                     Drawf.shadow(wx, wy, shadow);
