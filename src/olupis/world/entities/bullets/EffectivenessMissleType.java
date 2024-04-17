@@ -6,19 +6,19 @@ import mindustry.entities.bullet.MissileBulletType;
 import mindustry.game.EventType;
 import mindustry.gen.*;
 
-public class AirEffectiveMissleType extends MissileBulletType {
+public class EffectivenessMissleType extends MissileBulletType {
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
     public float groundDamageMultiplier = 1f;
 
-    public AirEffectiveMissleType(float speed, float damge, String bulletSprite){
+    public EffectivenessMissleType(float speed, float damge, String bulletSprite){
         super(speed, damge, bulletSprite);
     }
 
-    public AirEffectiveMissleType(float speed, float damge){
+    public EffectivenessMissleType(float speed, float damge){
         super(speed, damge);
     }
 
-    public AirEffectiveMissleType(){
+    public EffectivenessMissleType(){
         super();
     }
 

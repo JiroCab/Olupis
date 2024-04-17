@@ -16,7 +16,7 @@ import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.meta.*;
-import olupis.world.entities.bullets.AirEffectiveMissleType;
+import olupis.world.entities.bullets.EffectivenessMissleType;
 
 import static mindustry.Vars.tilesize;
 
@@ -132,7 +132,7 @@ public class NyfalisStats extends StatValues {
                         sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + (Strings.autoFixed(type.statusDuration / 60f, 1)) + "[lightgray] " + Core.bundle.get("unit.seconds")));
                     }
 
-                    if(type instanceof AirEffectiveMissleType m && m.groundDamageMultiplier != 1f){
+                    if(type instanceof EffectivenessMissleType m && m.groundDamageMultiplier != 1f){
 
                         int val = (int)(m.groundDamageMultiplier * 100 - 100  );
                         sep(bt, Core.bundle.format("stat.olupis-groundpenalty", ammoStat(val), m.damage * m.groundDamageMultiplier, 2));

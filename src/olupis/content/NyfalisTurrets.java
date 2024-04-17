@@ -7,7 +7,6 @@ import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.entities.pattern.ShootSpread;
@@ -15,8 +14,6 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
-import mindustry.type.Weapon;
-import mindustry.type.unit.MissileUnitType;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.draw.DrawRegion;
@@ -123,7 +120,7 @@ public class NyfalisTurrets {
                 targetAir = true;
                 size = 3;
                 reload = 42f;
-                range = 250f;
+                range = 40 * 8;
                 health = 600;
                 minWarmup = 0.96f;
                 shootY = shootX= 0f;
@@ -132,16 +129,34 @@ public class NyfalisTurrets {
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.11f;
 
-                final float groundPenalty = 0.2f;
+                final float groundBonus = 2.5f;
                 ammo(
-                    lead, new AirEffectiveMissleType(4.6f, 80f){{
+                    copper, new EffectivenessMissleType(4.6f, 10f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
                         height = 10.5f;
                         knockback = 0.4f;
                         splashDamage = 10f;
-                        statusDuration = 5f;
+                        statusDuration = 120f;
+                        homingPower = 0.4f;
+                        homingRange = 150f;
+                        splashDamageRadius = 25f * 0.75f;
+                        backColor = trailColor = copper.color;
+                        collidesAir = collidesGround = true;
+                        shootEffect = Fx.shootBigColor;
+                        hitEffect = NyfalisFxs.hollowPointHit;
+                        status = StatusEffects.shocked;
+                        groundDamageMultiplier = groundBonus;
+                    }},
+                    lead, new EffectivenessMissleType(4.6f, 30f){{
+                        width = 6f;
+                        shrinkX = 0;
+                        lifetime = 60f;
+                        height = 10.5f;
+                        knockback = 0.4f;
+                        splashDamage = 10f;
+                        statusDuration = 60f;
                         homingPower = 0.4f;
                         homingRange = 150f;
                         splashDamageRadius = 25f * 0.75f;
@@ -149,17 +164,17 @@ public class NyfalisTurrets {
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
-                        status = StatusEffects.shocked;
-                        groundDamageMultiplier = groundPenalty;
+                        status = StatusEffects.sapped;
+                        groundDamageMultiplier = groundBonus;
                     }},
-                    iron, new AirEffectiveMissleType(5f, 95f){{
+                    iron, new EffectivenessMissleType(5f, 40f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
                         height = 10.5f;
                         knockback = 0.4f;
                         splashDamage = 10f;
-                        statusDuration = 25f;
+                        statusDuration = 60f;
                         homingPower = 0.4f;
                         homingRange = 150f;
                         splashDamageRadius = 25f * 0.75f;
@@ -168,16 +183,17 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.slow;
-                        groundDamageMultiplier = groundPenalty;
+                        groundDamageMultiplier = groundBonus;
                     }},
-                    cobalt, new AirEffectiveMissleType(4.6f, 80f){{
+                    cobalt, new EffectivenessMissleType(4.6f, 10f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
                         height = 10.5f;
                         knockback = 0.4f;
                         splashDamage = 10f;
-                        statusDuration = 25f;
+                        absorbable = false;
+                        statusDuration = 20f;
                         homingPower = 0.4f;
                         homingRange = 150f;
                         splashDamageRadius = 25f * 0.75f;
@@ -185,8 +201,8 @@ public class NyfalisTurrets {
                         collidesAir =  collidesGround = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
-                        status = StatusEffects.shocked;
-                        groundDamageMultiplier = groundPenalty;
+                        status = NyfalisStatusEffects.glitch;
+                        groundDamageMultiplier = groundBonus;
                     }}
                 );
                 limitRange(1.5f);
@@ -561,14 +577,14 @@ public class NyfalisTurrets {
                 minWarmup = 0.8f;
 
                 ammo(
-                        copper, new AirEffectiveMissleType(3f, 5f) {{
+                        copper, new EffectivenessMissleType(6f, 1f) {{
                             width = 6f;
-                            reloadMultiplier = 2f;
+                            reloadMultiplier = 1.6f;
                             shrinkX = 0;
-                            lifetime = 120f;
+                            lifetime = 70f;
                             height = 10.5f;
                             knockback = 0.8f;
-                            splashDamage = 5f;
+                            splashDamage = 2f;
                             statusDuration = 120f;
                             homingPower = 0.4f;
                             homingRange = 150f;
@@ -579,15 +595,34 @@ public class NyfalisTurrets {
                             shootEffect = Fx.shootBigColor;
                             hitEffect = NyfalisFxs.hollowPointHit;
                             status = StatusEffects.shocked;
+                        }},
+                        lead, new EffectivenessMissleType(3f, 5f) {{
+                            width = 6f;
+                            reloadMultiplier = 2f;
+                            shrinkX = 0;
+                            lifetime = 140f;
+                            height = 10.5f;
+                            knockback = 0.8f;
+                            splashDamage = 5f;
+                            statusDuration = 120f;
+                            homingPower = 0.4f;
+                            homingRange = 150f;
+                            homingDelay = 20;
+                            splashDamageRadius = 25f * 0.75f;
+                            backColor = trailColor = lead.color;
+                            collidesAir = collidesGround = true;
+                            shootEffect = Fx.shootBigColor;
+                            hitEffect = NyfalisFxs.hollowPointHit;
+                            status = StatusEffects.sapped;
                             groundDamageMultiplier = 0.5f;
                             buildingDamageMultiplier = 0.8f;
                         }},
 
-                        rustyIron, new AirEffectiveMissleType(3f, 2.5f) {{
+                        rustyIron, new EffectivenessMissleType(3f, 2.5f) {{
                             width = 6f;
                             reloadMultiplier = 2f;
                             shrinkX = 0;
-                            lifetime = 120f;
+                            lifetime = 140f;
                             height = 10.5f;
                             knockback = 0.8f;
                             splashDamage = 2.5f;
@@ -670,12 +705,12 @@ public class NyfalisTurrets {
                     shotDelay = 5;
                 }};
                 ammoPerShot = 20;
-                maxAmmo = 120;
+                maxAmmo = 220;
                 shootSound = Sounds.missile;
                 shootEffect = Fx.shootSmallSmoke;
                 researchCost = with(lead, 1500, iron, 700, alcoAlloy, 700);
                 coolant = consume(new ConsumeLubricant(30f / 60f));
-                coolantMultiplier = 2;
+                coolantMultiplier = 2.4f;
                 requirements(Category.turret, with(iron, 100, lead, 200, alcoAlloy, 60));
             }
 
@@ -688,7 +723,7 @@ public class NyfalisTurrets {
         };
         //TODO: Shockwave - funi wave go brr
         /*
-                        new AirEffectiveMissleType(3f, 5f) {{
+                        new EffectivenessMissleType(3f, 5f) {{
                             width = 12f;
                             reloadMultiplier = 1.5f;
                             shrinkX = 0;
@@ -712,7 +747,7 @@ public class NyfalisTurrets {
                             intervalSpread = -30;
                             intervalRandomSpread = 0;
                             bulletInterval = 6;
-                            intervalBullet = new AirEffectiveMissleType(3f, 10f) {{
+                            intervalBullet = new EffectivenessMissleType(3f, 10f) {{
                                 width = 6f;
                                 shrinkX = 0;
                                 lifetime = 50;
@@ -735,7 +770,7 @@ public class NyfalisTurrets {
                                 intervalSpread = -30;
                                 intervalRandomSpread = 0;
                                 bulletInterval = 4;
-                                intervalBullet = new AirEffectiveMissleType(3f, 15f) {{
+                                intervalBullet = new EffectivenessMissleType(3f, 15f) {{
                                     width = 3f;
                                     shrinkX = 0;
                                     lifetime = 25;
