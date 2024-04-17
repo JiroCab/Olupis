@@ -3,7 +3,6 @@ package olupis.content;
 import arc.Core;
 import arc.assets.AssetDescriptor;
 import arc.assets.loaders.SoundLoader;
-import arc.audio.Music;
 import arc.audio.Sound;
 import mindustry.content.Planets;
 import mindustry.type.Planet;
@@ -17,24 +16,18 @@ import static olupis.content.NyfalisPlanets.*;
 public class NyfalisSounds {
     /*Music has been moved to https://github.com/JiroCab/Nyfalis-Music */
     /*Not final, just wanted to see how custom sounds would work*/
-    public static Music
-            space = new Music()
-    ;
-
     public static Sound
             as2ArmorBreak = new Sound(),
             as2PlasmaShot = new Sound(),
-            cncZhBattleMasterWeapon = new Sound()
+            cncZhBattleMasterWeapon = new Sound(),
+            space = new Sound()
     ;
 
-    public static void LoadMusic() {
-        if (headless) return;
-        Core.assets.load("sounds/space.ogg", Music.class).loaded = (a) -> space = a;
-    }
     public static void  LoadSounds(){
         as2PlasmaShot = loadSound("sounds/as2_plasma_shot.wav");
         as2ArmorBreak = loadSound("sounds/as2_broke_armor.wav");
         cncZhBattleMasterWeapon = loadSound("sounds/cnc_zh_battlemaster_weapon.wav");
+        space = loadSound("sounds/space.ogg");
     }
 
 

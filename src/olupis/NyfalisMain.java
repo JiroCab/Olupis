@@ -45,7 +45,6 @@ public class NyfalisMain extends Mod{
         NyfalisAttributeWeather.loadWeather();
         NyfalisPlanets.LoadPlanets();
         NyfalisSectors.LoadSectors();
-        NyfalisSounds.LoadMusic();
         Net.registerPacket(NyfalisUnitTimedOutPacket::new); //If new packets are needed, turn this into a dedicated class
 
         NyfalisPlanets.PostLoadPlanet();
