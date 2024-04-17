@@ -76,8 +76,8 @@ public class NyfalisItemsLiquid {
 
         lubricant = new Liquid("lubricant", Color.valueOf("C4AA90")){{
             viscosity = 0.7f;
-            flammability = 1.3f;
-            explosiveness = 1.2f;
+            flammability = 1.2f;
+            explosiveness = 1.3f;
             heatCapacity = 0.86f;
             barColor = Color.valueOf("6b675f");
             effect = NyfalisStatusEffects.lubed;

@@ -358,10 +358,11 @@ public class NyfalisUnitType extends UnitType {
             // deploying units can shoot regardless of elevation && LogicAi 's shouldShoot checks for boosting and this is a work around
             if(unit.type instanceof NyfalisUnitType nyf && nyf.canDeploy && unit.controller() instanceof LogicAI ai && ai.shoot)mount.shoot = true;
 
-            boolean isDashing = !unit.isPlayer() && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDashCommand;
-            if(dashShoot && isDashing) mount.shoot =true;
-            else if(dashExclusive && !isDashing) mount.shoot =false;
-
+            if(!unit.isPlayer()) {
+                boolean isDashing = unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDashCommand;
+                if (dashShoot && isDashing) mount.shoot = true;
+                else if (dashExclusive && !isDashing) mount.shoot = false;
+            }
             //update continuous state
             if(continuous &&mount.bullet !=null) {
                 if (!mount.bullet.isAdded() || mount.bullet.time >= mount.bullet.lifetime || mount.bullet.type != bullet) {

@@ -217,7 +217,6 @@ public class NyfalisUnits {
             accel = 0.08f;
             health = 250f;
             speed = 2.20f;
-            fogRadius = 10f;
             engineSize = 1.7f;
             rotateSpeed = 19f;
             itemCapacity = 20;
@@ -288,13 +287,12 @@ public class NyfalisUnits {
             hitSize = 10f;
             drag = 0.06f;
             accel = 0.08f;
-            health = 250f;
+            health = 600f;
             speed = 2.20f;
-            fogRadius = 10f;
             engineSize = 4f;
+            engineOffset = 8f;
             rotateSpeed = 19f;
             itemCapacity = 20;
-            engineOffset = 8f;
 
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
@@ -532,18 +530,19 @@ public class NyfalisUnits {
                    x = 0f;
                    y = 11f;
                    recoil = 1f;
-                   shootY = 2f;
+                   shootY = 7f;
                    reload = 11f;
                    shootCone = 45f;
                    weaponSegmentParent = 0;
                    ejectEffect = Fx.none;
                    shootSound = Sounds.flame;
                    autoTarget = top = partialControl = true;
-                   rotate = alternate = mirror = controllable = strictAngle =false;
+                   rotate = alternate = mirror = controllable = strictAngle = true;
                    bullet = new BulletType(4.2f, 37f){{
                        ammoMultiplier = 3f;
                        hitSize = 7f;
                        lifetime = 12f;
+                       shootEffect = Fx.hitFlameSmall;
                        despawnEffect = Fx.none;
                        keepVelocity = hittable = false;
                    }};
@@ -556,7 +555,7 @@ public class NyfalisUnits {
                     baseRotation = 180f;
                     minShootVelocity = 0.1f;
                     weaponSegmentParent = 1;
-                    ignoreRotation = dashShoot = dashExclusive = true;
+                    ignoreRotation = dashShoot = dashExclusive = partialControl = true;
                     rotate = alternate = mirror = aiControllable = false;
                     ejectEffect = Fx.casing1;
                     bullet = new BasicBulletType(4.2f, 10f){{
@@ -691,9 +690,9 @@ public class NyfalisUnits {
         //endregion
         //region Naval - Carrier
         porter = new NyfalisUnitType("porter"){{
-            armor = 6f;
+            armor = 2f;
             hitSize = 12f;
-            health = 850;
+            health = 350;
             speed = 0.75f;
             itemCapacity = 0;
             treadPullOffset = 3;
@@ -1170,10 +1169,13 @@ public class NyfalisUnits {
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive =  targetAir = targetGround = singleTarget  = drawAmmo  = true;
         }};
 
+        //endregion
+        //region Limited - Sumoned
         embryo = new AmmoLifeTimeUnitType("embryo"){{
             /*(trans) Egg if chan-version is made >;3c */
             speed = 3f;
             fogRadius = 0f;
+            itemCapacity = 0;
             ammoCapacity = 150;
 
             flying = alwaysShootWhenMoving = drawAmmo = true;
