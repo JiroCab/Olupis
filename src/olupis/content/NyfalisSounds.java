@@ -56,6 +56,7 @@ public class NyfalisSounds {
     }
 
     public static void  LoadSounds(){
+        //Note: Vars.tree.loadSound only works with .mp3 and .ogg
         as2PlasmaShot = tree.loadSound("as2-plasma-shot");
         as2ArmorBreak = tree.loadSound("as2-broke-armor");
     }
