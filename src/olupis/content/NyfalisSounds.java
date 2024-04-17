@@ -56,8 +56,8 @@ public class NyfalisSounds {
     }
 
     public static void  LoadSounds(){
-        as2PlasmaShot = loadSound("sounds/as2_plasma_shot.wav");
-        as2ArmorBreak = loadSound("sounds/as2_broke_armor.wav");
+        as2PlasmaShot = tree.loadSound("as2-plasma-shot");
+        as2ArmorBreak = tree.loadSound("as2-broke-armor");
     }
 
     /*least invasive approach, hopefully a mod that changes music still has the Seqs public*/
@@ -119,14 +119,4 @@ public class NyfalisSounds {
         }
         return false;
     }
-
-    public static Sound loadSound(String path){
-        /*Stolen from: https://github.com/sk7725/BetaMindy/blob/erekir/src/betamindy/content/MindySounds.java*/
-        Sound sound = new Sound();
-        if(headless) return sound;
-        AssetDescriptor<?> a = Core.assets.load(path, Sound.class, new SoundLoader.SoundParameter(sound));
-        a.errored = Throwable::printStackTrace;
-        return sound;
-    }
-
 }

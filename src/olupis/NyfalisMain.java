@@ -9,7 +9,7 @@ import arc.util.*;
 import mindustry.Vars;
 import mindustry.content.Planets;
 import mindustry.game.EventType;
-import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.EventType.*;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
@@ -46,7 +46,6 @@ public class NyfalisMain extends Mod{
         NyfalisAttributeWeather.loadWeather();
         NyfalisPlanets.LoadPlanets();
         NyfalisSectors.LoadSectors();
-        NyfalisSounds.LoadMusic();
 
         NyfalisPlanets.PostLoadPlanet();
         NyfalisTechTree.load();
@@ -57,7 +56,12 @@ public class NyfalisMain extends Mod{
     }
 
     public NyfalisMain(){
-        NyfalisSounds.LoadSounds();
+        //Load sounds once they're added to the file tree
+        Events.on(FileTreeInitEvent.class, e -> Core.app.post(() -> {
+            NyfalisSounds.LoadSounds();
+            NyfalisSounds.LoadMusic();
+        }));
+
         Events.on(EventType.WorldLoadEvent.class, l ->{
             if(shouldAutoBan()) Time.run(0.5f * Time.toSeconds, () ->{ /*Delayed since custom games, for some reason needs it*/
                 /*Hiding blocks w/o banning them mainly for custom games */
