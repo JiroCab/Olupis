@@ -1,10 +1,13 @@
 package olupis.content;
 
+import arc.graphics.Blending;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
+import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
 import mindustry.gen.*;
 import mindustry.world.meta.Stat;
@@ -37,7 +40,20 @@ public class NyfalisStatusEffects {
                 if(unit.isShooting()) unit.damagePierce(dmg);
                 if(unit.type.canBoost && !unit.type.flying) unit.elevation = Math.max(unit.elevation - 0.1f * Time.delta, 0f);
             }
-
+            @Override
+            public void draw(Unit unit){
+                Draw.z(Layer.flyingUnit + 0.05f);
+                Draw.blend(Blending.additive);
+                float f = Mathf.sin(Time.time / 5f) * 3f;
+                float a = Mathf.random();
+                int c = (int)(Mathf.randomSeed(unit.id) * 3f);
+                Draw.color(c == 0 ? Color.valueOf("4f4b62") : c == 1 ? Color.valueOf("737383") : Color.valueOf("5d5d74"), a);
+                Draw.rect(unit.icon(), unit.x + f, unit.y, unit.rotation - 90f);
+                Draw.color(c == 0 ? Color.valueOf("5d5d74") : c == 1 ? Color.valueOf("4f4b62") : Color.valueOf("737383"), a);
+                Draw.rect(unit.icon(), unit.x - f, unit.y, unit.rotation - 90f);
+                Draw.blend();
+                Draw.color();
+            }
             @Override
             public void setStats(){
                 super.setStats();
@@ -50,16 +66,8 @@ public class NyfalisStatusEffects {
             {
                 color = NyfalisItemsLiquid.cobalt.color;
                 show = true;
-                transitionDamage = 80;
-                effect = NyfalisFxs.glitch;
+                effect = Fx.none;
                 speedMultiplier = -0.5f;
-                reactive = true;
-                init(() -> {
-                    affinity(StatusEffects.overclock, (unit, result, time) -> {
-                        unit.damagePierce(transitionDamage);
-                        Fx.coreBuildShockwave.at(unit.x + Mathf.range(unit.bounds() / 2f), unit.y + Mathf.range(unit.bounds() / 2f));
-                    });
-                });
             }
         };
     }

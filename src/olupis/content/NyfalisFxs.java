@@ -18,7 +18,6 @@ import static arc.math.Angles.randLenVectors;
 import static olupis.content.NyfalisItemsLiquid.rustyIron;
 
 public class NyfalisFxs extends Fx {
-    private static final int[] vgld = {0};
     public static final Effect
         hollowPointHit =  new Effect(30f, e -> {
             color(Pal.lightOrange, Color.lightGray, Pal.lightishGray, e.fin());
@@ -105,25 +104,6 @@ public class NyfalisFxs extends Fx {
             stroke(e.fout() * 2f);
             Lines.circle(e.x, e.y, 2f + e.finpow() * (Vars.tilesize * 2));
             Lines.square(e.x, e.y, 2f + e.finpow() * (Vars.tilesize * -2), 45);
-        }),
-        glitch = new Effect(65f, e -> {
-            e.scaled(30f, s -> {
-                z(Layer.flyingUnit);
-                blend(Blending.additive);
-                color(e.color, s.fout(0.7f));
-                vgld[0] = 0;
-                randLenVectors(e.id, e.id % 4 + 5, 2f + 16f * s.finpow(), (x, y) -> {
-                    vgld[0]++;
-                    Drawf.tri(e.x + x, e.y + y, 3f + Mathf.randomSeed(e.id + vgld[0], 6f), 4f * s.fout(), Mathf.angle(x, y));
-                    Drawf.tri(e.x + x, e.y + y, 3f + Mathf.randomSeed(e.id + vgld[0], 6f), 4f * s.fout(), Mathf.angle(x, y)+180f);
-                });
-                blend();
-                z(Layer.effect);
-            });
-            color(Color.white, e.color, e.fin());
-            randLenVectors(e.id + 1, 7, 3f + 9f * e.finpow(), (x, y) -> {
-                Fill.square(e.x + x, e.y + y, e.fout() * 0.8f, 45f);
-            });
         }),
 
         colouredShockwave =  new Effect(8f, 120f, e -> {
