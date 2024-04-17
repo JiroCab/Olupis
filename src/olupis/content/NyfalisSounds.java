@@ -45,14 +45,14 @@ public class NyfalisSounds {
 
      public static void LoadMusic(){
         if(headless) return;
-        Core.assets.load("music/reclaiming_the_wasteland.mp3", arc.audio.Music.class).loaded = a -> reclaiming_the_wasteland = a;
-        Core.assets.load("music/dusk.mp3", arc.audio.Music.class).loaded = a -> dusk = a;
-        Core.assets.load("music/blossom.mp3", arc.audio.Music.class).loaded = a -> blossom = a;
-        Core.assets.load("music/feu.mp3", arc.audio.Music.class).loaded = a -> feu = a;
-        Core.assets.load("music/main_title.mp3", arc.audio.Music.class).loaded = a -> main_title = a;
-        Core.assets.load("music/sparkles_of_hope.mp3", arc.audio.Music.class).loaded = a -> sparkles_of_hope = a;
+        reclaiming_the_wasteland = tree.loadMusic("reclaiming_the_wasteland");
+        dusk = tree.loadMusic("dusk");
+        blossom = tree.loadMusic("blossom");
+        feu = tree.loadMusic("feu");
+        main_title = tree.loadMusic("main_title");
+        sparkles_of_hope = tree.loadMusic("sparkles_of_hope");
 
-        Core.assets.load("sounds/space.ogg", Music.class).loaded = (a) -> space = a;
+        space = tree.loadMusic("space");
     }
 
     public static void  LoadSounds(){
