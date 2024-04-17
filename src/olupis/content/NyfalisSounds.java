@@ -14,8 +14,7 @@ import static mindustry.Vars.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisSounds {
-    /*Music has been moved to https://github.com/JiroCab/Nyfalis-Music */
-    /*Not final, just wanted to see how custom sounds would work*/
+    /*Music has been moved to https://github.com/JiroCab/Nyfalis-Music*/
     public static Sound
             as2ArmorBreak = new Sound(),
             as2PlasmaShot = new Sound(),
@@ -24,10 +23,11 @@ public class NyfalisSounds {
     ;
 
     public static void  LoadSounds(){
-        as2PlasmaShot = loadSound("sounds/as2_plasma_shot.wav");
-        as2ArmorBreak = loadSound("sounds/as2_broke_armor.wav");
-        cncZhBattleMasterWeapon = loadSound("sounds/cnc_zh_battlemaster_weapon.wav");
-        space = loadSound("sounds/space.ogg");
+        //Note: Vars.tree.loadSound only works with .mp3 and .ogg
+        as2PlasmaShot = tree.loadSound("as2-plasma-shot");
+        as2ArmorBreak = tree.loadSound("as2-broke-armor");
+        cncZhBattleMasterWeapon = tree.loadSound("cnc_zh_battlemaster_weapon");
+        space = tree.loadSound("space");
     }
 
 
@@ -63,14 +63,4 @@ public class NyfalisSounds {
         }
         return false;
     }
-
-    public static Sound loadSound(String path){
-        /*Stolen from: https://github.com/sk7725/BetaMindy/blob/erekir/src/betamindy/content/MindySounds.java*/
-        Sound sound = new Sound();
-        if(headless) return sound;
-        AssetDescriptor<?> a = Core.assets.load(path, Sound.class, new SoundLoader.SoundParameter(sound));
-        a.errored = Throwable::printStackTrace;
-        return sound;
-    }
-
 }
