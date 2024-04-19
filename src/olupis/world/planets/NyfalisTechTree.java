@@ -42,7 +42,7 @@ public class NyfalisTechTree {
                                         node(abandonedTrainStations,
                                             Seq.with(new Objectives.SectorComplete(kanwadolRuins), new Objectives.Research(steamAgitator)),
                                             () -> {
-                                                node(naturalParkOasis,
+                                                node(citadelOfOasis,
                                                     Seq.with(new Objectives.SectorComplete(abandonedTrainStations)),
                                                     () -> {
 
@@ -60,7 +60,7 @@ public class NyfalisTechTree {
                     });
                 });
                 node(nyfalis, Seq.with(
-                        new Objectives.SectorComplete(naturalParkOasis),
+                        new Objectives.SectorComplete(citadelOfOasis),
                         new Objectives.SectorComplete(lushyRiverComplex),
                         new Objectives.SectorComplete(snowPisos)
                 ),() ->{
@@ -166,8 +166,15 @@ public class NyfalisTechTree {
 
                                 });
                             });
-                            node(hydrochloricGraphitePress, ()->{
-                                node(siliconArcSmelter ,Seq.with(new Objectives.SectorComplete(vakinyaDesert)), ()->{
+                            node(siliconKiln, ()->{
+                                node(hydrochloricGraphitePress, Seq.with(new Objectives.SectorComplete(vakinyaDesert)), ()->{
+                                    node(siliconArcSmelter , ()->{
+
+                                    });
+                                });
+                            });
+                            node(inductionSmelter, () -> {
+                                node(rustEngraver, () ->{
 
                                 });
                             });
@@ -286,6 +293,9 @@ public class NyfalisTechTree {
                 node(corroder, Seq.with(new Objectives.Research(rustyPump)), ()-> {
                     node(avenger, () -> {
                         node(dissolver, ()->{
+
+                        });
+                        node(aegis, ()->{
 
                         });
                     });

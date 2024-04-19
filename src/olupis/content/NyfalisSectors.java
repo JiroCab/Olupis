@@ -13,7 +13,7 @@ public class NyfalisSectors {
 
     public static SectorPreset
         /*Arthin*/
-        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, naturalParkOasis, lushyRiverComplex, abandonedTrainStations, kanwadolRuins, snowPisos,
+        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, lushyRiverComplex, abandonedTrainStations, kanwadolRuins, snowPisos,
         /*Nyfalis*/
         conservatorium,
         /*Spelta*/
@@ -36,7 +36,7 @@ public class NyfalisSectors {
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
             difficulty = 2;
-            captureWave = 33;
+            captureWave = 23;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 150));
         }};
 
@@ -58,7 +58,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000, NyfalisItemsLiquid.iron, 200));
         }};
 
-        naturalParkOasis = new SectorPreset("natural-park-oasis", arthin, 11){{
+        citadelOfOasis = new SectorPreset("citadel-of-oasis", arthin, 11){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -81,12 +81,12 @@ public class NyfalisSectors {
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 5;
-            captureWave = 22;
+            captureWave = 26;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
         }};
 
         kanwadolRuins = new SectorPreset("kanwadol-ruins", arthin, 6){{
-            addStartingItems = overrideLaunchDefaults =  true;
+            addStartingItems = overrideLaunchDefaults = true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 3;
