@@ -1,25 +1,39 @@
 package olupis.content;
 
+import arc.Events;
+import arc.audio.Sound;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
+import arc.util.Time;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.*;
+import mindustry.entities.Damage;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.entities.pattern.ShootSpread;
+import mindustry.game.EventType;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.logic.LAccess;
 import mindustry.type.Category;
+import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.*;
+import olupis.world.blocks.defence.DrawUnstableTurret;
 import olupis.world.blocks.defence.ItemUnitTurret;
+import olupis.world.blocks.defence.UnstablePowerTurret;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.bullets.*;
@@ -129,9 +143,9 @@ public class NyfalisTurrets {
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.11f;
 
-                final float groundBonus = 2.5f;
+                final float groundBonus = 0.5f;
                 ammo(
-                    copper, new EffectivenessMissleType(4.6f, 10f){{
+                    copper, new EffectivenessMissleType(4.6f, 20f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -149,7 +163,7 @@ public class NyfalisTurrets {
                         status = StatusEffects.shocked;
                         groundDamageMultiplier = groundBonus;
                     }},
-                    lead, new EffectivenessMissleType(4.6f, 30f){{
+                    lead, new EffectivenessMissleType(4.6f, 60f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -167,7 +181,7 @@ public class NyfalisTurrets {
                         status = StatusEffects.sapped;
                         groundDamageMultiplier = groundBonus;
                     }},
-                    iron, new EffectivenessMissleType(5f, 40f){{
+                    iron, new EffectivenessMissleType(5f, 80f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -185,7 +199,7 @@ public class NyfalisTurrets {
                         status = StatusEffects.slow;
                         groundDamageMultiplier = groundBonus;
                     }},
-                    cobalt, new EffectivenessMissleType(4.6f, 10f){{
+                    cobalt, new EffectivenessMissleType(4.6f, 20f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -721,78 +735,209 @@ public class NyfalisTurrets {
                 stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
             }
         };
-        //TODO: Shockwave - funi wave go brr
-        /*
-                        new EffectivenessMissleType(3f, 5f) {{
-                            width = 12f;
-                            reloadMultiplier = 1.5f;
-                            shrinkX = 0;
-                            lifetime = 225f;
-                            height = 21f;
-                            knockback = 0.8f;
-                            splashDamage = 10f;
-                            statusDuration = 160f;
-                            homingPower = 0.4f;
-                            homingRange = 150f;
-                            homingDelay = 20;
-                            splashDamageRadius = 25f * 0.75f;
-                            backColor = trailColor = rustyIron.color;
-                            collidesAir = collideTerrain = collidesGround = true;
-                            shootEffect = Fx.shootBigColor;
-                            hitEffect = NyfalisFxs.hollowPointHit;
-                            status = StatusEffects.corroded;
-                            groundDamageMultiplier = 1.8f;
-                            buildingDamageMultiplier = 0.1f;
-                            intervalBullets = 2;
-                            intervalSpread = -30;
-                            intervalRandomSpread = 0;
-                            bulletInterval = 6;
-                            intervalBullet = new EffectivenessMissleType(3f, 10f) {{
-                                width = 6f;
-                                shrinkX = 0;
-                                lifetime = 50;
-                                height = 10.5f;
-                                knockback = 0.8f;
-                                splashDamage = 10f;
-                                statusDuration = 160f;
-                                homingPower = 0.4f;
-                                homingRange = 150f;
-                                homingDelay = 20;
-                                splashDamageRadius = 25f * 0.75f;
-                                backColor = trailColor = rustyIron.color;
-                                collidesAir = collideTerrain =collidesGround = true;
-                                shootEffect = Fx.shootBigColor;
-                                hitEffect = NyfalisFxs.hollowPointHit;
-                                status = StatusEffects.corroded;
-                                groundDamageMultiplier = 1.8f;
-                                buildingDamageMultiplier = 0.1f;
-                                intervalBullets = 2;
-                                intervalSpread = -30;
-                                intervalRandomSpread = 0;
-                                bulletInterval = 4;
-                                intervalBullet = new EffectivenessMissleType(3f, 15f) {{
-                                    width = 3f;
-                                    shrinkX = 0;
-                                    lifetime = 25;
-                                    height = 5.25f;
-                                    knockback = 0.8f;
-                                    splashDamage = 10f;
-                                    statusDuration = 160f;
-                                    homingPower = 0.4f;
-                                    homingRange = 150f;
-                                    homingDelay = 20;
-                                    splashDamageRadius = 25f * 0.75f;
-                                    backColor = trailColor = rustyIron.color;
-                                    collidesAir = collideTerrain = collidesGround = true;
-                                    shootEffect = Fx.shootBigColor;
-                                    hitEffect = NyfalisFxs.hollowPointHit;
-                                    status = StatusEffects.corroded;
-                                    groundDamageMultiplier = 1.8f;
-                                    buildingDamageMultiplier = 0.1f;
-                                }};
-                            }};
-                        }},
-         */
+        cascade = new UnstablePowerTurret("PH-cascade"){{
+            targetAir = true;
+            targetGround = true;
+            size = 4;
+            reload = 120;
+            range = 50f * 8f;
+            shootY = 2;
+            shootX = 0f;
+            fogRadiusMultiplier = 0.75f;
+            shootWarmupSpeed = 0.05f;
+            minWarmup = 0.8f;
+            explosionRadius = 25;
+            explosionDamage = 1000;
+            consumePower(17f);
+
+            shootType = new BasicBulletType(3f, 20f) {{
+                sprite = "large-orb";
+                width = 10f;
+                height = 20f;
+                hitSize = 8f;
+
+                shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
+                    colorFrom = colorTo = Pal.accent;
+                    lifetime = 6f;
+                    sizeTo = 10f;
+                    strokeFrom = 3f;
+                    strokeTo = 0.3f;
+                }});
+                smokeEffect = Fx.shootSmokeSmite;
+                pierceCap = 4;
+                pierce = true;
+                pierceBuilding = true;
+                hitColor = backColor = trailColor = Pal.accent;
+                frontColor = Color.white;
+                trailWidth = 2f;
+                trailLength = 8;
+                hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                    sizeTo = 15f;
+                    colorFrom = colorTo = Pal.accent;
+                    lifetime = 6f;
+                }});
+                trailRotation = true;
+                trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                trailInterval = 3f;
+                lifetime = 75f;
+                knockback = 0.8f;
+                collidesAir = collidesGround = true;
+                buildingDamageMultiplier = 0.1f;
+                intervalBullets = 2;
+                intervalSpread = -30;
+                intervalRandomSpread = 0;
+                bulletInterval = 6;
+                intervalBullet = new BasicBulletType(3f, 5f) {{
+                    sprite = "large-orb";
+                    width = 5f;
+                    height = 10f;
+                    hitSize = 4f;
+
+                    shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
+                        colorFrom = colorTo = Pal.accent;
+                        lifetime = 4f;
+                        sizeTo = 5f;
+                        strokeFrom = 3f;
+                        strokeTo = 0.3f;
+                    }});
+                    smokeEffect = Fx.shootSmokeSmite;
+                    pierceCap = 4;
+                    pierce = true;
+                    pierceBuilding = true;
+                    hitColor = backColor = trailColor = Pal.accent;
+                    frontColor = Color.white;
+                    trailWidth = 1.5f;
+                    trailLength = 6;
+                    hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                    despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                        sizeTo = 7.5f;
+                        colorFrom = colorTo = Pal.accent;
+                        lifetime = 4f;
+                    }});
+                    trailRotation = true;
+                    trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                    trailInterval = 3f;
+                    lifetime = 50f;
+                    knockback = 0.6f;
+                    collidesAir = collidesGround = true;
+                    buildingDamageMultiplier = 0.1f;
+                    intervalBullets = 2;
+                    intervalSpread = -30;
+                    intervalRandomSpread = 0;
+                    bulletInterval = 4;
+                    intervalBullet = new BasicBulletType(3f, 15f) {{
+                        sprite = "large-orb";
+                        width = 2.5f;
+                        height = 5f;
+                        hitSize = 2f;
+                        homingPower = 0.4f;
+                        homingRange = 150f;
+
+                        shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
+                            colorFrom = colorTo = Pal.accent;
+                            lifetime = 2f;
+                            sizeTo = 2.5f;
+                            strokeFrom = 3f;
+                            strokeTo = 0.3f;
+                        }});
+                        smokeEffect = Fx.shootSmokeSmite;
+                        pierceCap = 4;
+                        pierce = true;
+                        pierceBuilding = true;
+                        hitColor = backColor = trailColor = Pal.accent;
+                        frontColor = Color.white;
+                        trailWidth = 1f;
+                        trailLength = 4;
+                        hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                        despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                            sizeTo = 3.75f;
+                            colorFrom = colorTo = Pal.accent;
+                            lifetime = 2f;
+                        }});
+                        trailRotation = true;
+                        trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                        trailInterval = 3f;
+                        lifetime = 25f;
+                        knockback = 0.6f;
+                        collidesAir = collidesGround = true;
+                        buildingDamageMultiplier = 0.1f;
+                    }};
+                }};
+            }};
+
+            drawer = new DrawUnstableTurret("iron-"){{
+                parts.addAll(new RegionPart("-blade-l"){{
+                    mirror = false;
+                    moveRot = 25f;
+                    under = true;
+                    moves.add(new PartMove(PartProgress.reload, -1f, 0f, -5f));
+                    layerOffset  = -1;
+
+                    heatColor = Pal.accent;
+                    cooldownTime = 60f;
+                }},
+
+                new RegionPart("-blade-l"){{
+                    mirror = false;
+                    moveRot = 50f;
+                    moveY = -1f;
+                    moves.add(new PartMove(PartProgress.reload.shorten(0.5f), -2f, 0f, -15f));
+                    under = true;
+                    layerOffset  = -0.5f;
+
+
+                    heatColor = Pal.accent;
+                    cooldownTime = 60f;
+                }},
+                new RegionPart("-bladed-l"){{
+                    mirror = false;
+                    moveRot = -160f;
+                    moveY = 2f;
+                    moves.add(new PartMove(PartProgress.reload.shorten(0.5f), 1f, 2f, -135f));
+                    under = true;
+                }},
+                new RegionPart("-blade-r"){{
+                    mirror = false;
+                    moveRot = -25f;
+                    under = true;
+                    moves.add(new PartMove(PartProgress.reload, 1f, 0f, 5f));
+                    layerOffset  = -1;
+
+                    heatColor = Pal.accent;
+                    cooldownTime = 60f;
+                }},
+                new RegionPart("-blade-r"){{
+                    mirror = false;
+                    moveRot = -50f;
+                    moveY = -1f;
+                    moves.add(new PartMove(PartProgress.reload.shorten(0.5f), 2f, 0f, 15f));
+                    under = true;
+                    layerOffset  = -0.5f;
+
+                    heatColor = Pal.accent;
+                    cooldownTime = 60f;
+                }},
+                new RegionPart("-bladed-r"){{
+                    mirror = false;
+                    moveRot = 160f;
+                    moveY = 2f;
+                    moves.add(new PartMove(PartProgress.reload.shorten(0.5f), -1f, 2f, 135f));
+                    under = true;
+
+                }});
+            }};
+            shootSound = Sounds.shootSmite;
+            shootEffect = new MultiEffect(Fx.shootPayloadDriver, NyfalisFxs.fastSquareSmokeCloud);
+            researchCost = with(lead, 1500, iron, 700, alcoAlloy, 700);
+            coolant = consumeCoolant(2,true,true);
+            coolantMultiplier = 0.4f;
+            requirements(Category.turret, with(iron, 100, lead, 200, alcoAlloy, 60));
+            heatColor = Pal.accent;
+        }};
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 

@@ -79,7 +79,7 @@ public class NyfalisBlocks {
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, spruceTree,
 
         //Buildings, sorted by category
-        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,
+        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,cascade,blitzbuur,
 
         rustyDrill, steamDrill, hydroElectricDrill,
 
