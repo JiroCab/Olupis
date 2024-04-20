@@ -12,11 +12,11 @@ public class NyfalisSectors {
     public static final float sectorVersion = 1.1f;
 
     public static SectorPreset
-        /*Arthin*/
-        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, lushyRiverComplex, abandonedTrainStations, kanwadolRuins, snowPisos,
+        /*Arthin / Seredris*/
+        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, inundataDesert, abandonedTrainStations, conciditRuins, snowPisos,
         /*Nyfalis*/
         conservatorium,
-        /*Spelta*/
+        /*Spelta / Vorgin*/
          dormantCell, forestOfHope
     ;
 
@@ -64,16 +64,15 @@ public class NyfalisSectors {
 
             difficulty = 3.5f;
             captureWave = 26;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 2700, Items.lead, 2500, NyfalisItemsLiquid.iron, 400, Items.copper, 400));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 2000, Items.lead, 2000, NyfalisItemsLiquid.iron, 750, Items.copper, 500,  Items.graphite, 350, NyfalisItemsLiquid.quartz, 475));
         }};
 
-        lushyRiverComplex = new SectorPreset("lushy-river-complex", arthin, 7){{
+        inundataDesert = new SectorPreset("inundata-desert", arthin, 7){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 4;
-            captureWave = 22;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1200, Items.lead, 1200, NyfalisItemsLiquid.iron, 200, Items.copper, 300,  Items.graphite, 200));
         }};
 
         abandonedTrainStations = new SectorPreset("abandoned-train-station", arthin, 29){{
@@ -85,13 +84,12 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
         }};
 
-        kanwadolRuins = new SectorPreset("kanwadol-ruins", arthin, 6){{
+        conciditRuins = new SectorPreset("concidit-ruins", arthin, 6){{
             addStartingItems = overrideLaunchDefaults = true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 3;
-            captureWave = 22;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 200, NyfalisItemsLiquid.iron, 50));
         }};
 
         snowPisos = new SectorPreset("snow-pisos", arthin, 0){{
@@ -99,8 +97,8 @@ public class NyfalisSectors {
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 5;
-            captureWave = 22;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
+            captureWave = 46;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 100,Items.copper, 100));
         }};
 
         //endregion

@@ -29,18 +29,18 @@ public class NyfalisTechTree {
                                 node(muddyLakes,
                                     Seq.with(new Objectives.SectorComplete(vakinyaDesert)),
                                 () -> {
-                                    node(lushyRiverComplex,
+                                    node(inundataDesert,
                                             Seq.with(new Objectives.SectorComplete(muddyLakes)),
                                     () -> {
 
                                     });
                                 });
 
-                                node(kanwadolRuins,
+                                node(conciditRuins,
                                     Seq.with(new Objectives.SectorComplete(vakinyaDesert)),
                                     () -> {
                                         node(abandonedTrainStations,
-                                            Seq.with(new Objectives.SectorComplete(kanwadolRuins), new Objectives.Research(steamAgitator)),
+                                            Seq.with(new Objectives.SectorComplete(conciditRuins), new Objectives.Research(steamAgitator)),
                                             () -> {
                                                 node(citadelOfOasis,
                                                     Seq.with(new Objectives.SectorComplete(abandonedTrainStations)),
@@ -50,7 +50,7 @@ public class NyfalisTechTree {
                                         });
                                 });
                                 node(snowPisos,
-                                        Seq.with(new Objectives.SectorComplete(kanwadolRuins), new Objectives.SectorComplete(muddyLakes)),
+                                        Seq.with(new Objectives.SectorComplete(conciditRuins), new Objectives.SectorComplete(muddyLakes)),
                                         () -> {
 
                                         }
@@ -61,7 +61,7 @@ public class NyfalisTechTree {
                 });
                 node(nyfalis, Seq.with(
                         new Objectives.SectorComplete(citadelOfOasis),
-                        new Objectives.SectorComplete(lushyRiverComplex),
+                        new Objectives.SectorComplete(inundataDesert),
                         new Objectives.SectorComplete(snowPisos)
                 ),() ->{
                     node(conservatorium, Seq.with(
@@ -86,6 +86,15 @@ public class NyfalisTechTree {
                     new  Objectives.Research(arialConstruct)
                 ), () -> {
                     node(striker, Seq.with(
+                            new  Objectives.Research(alternateArticulator)
+                    ), () -> {
+
+                    });
+                });
+                node(pteropus, Seq.with(
+                    new  Objectives.Research(arialConstruct)
+                ), () -> {
+                    node(acerodon, Seq.with(
                             new  Objectives.Research(alternateArticulator)
                     ), () -> {
 
@@ -178,7 +187,7 @@ public class NyfalisTechTree {
 
                                 });
                             });
-                            node(discardDriver, Seq.with(new Objectives.SectorComplete(lushyRiverComplex)),() ->{
+                            node(discardDriver, Seq.with(new Objectives.SectorComplete(inundataDesert)),() ->{
 
                             });
                         });
@@ -387,5 +396,6 @@ public class NyfalisTechTree {
         arthin.techTree = nyfalis.techTree;
         spelta.techTree = nyfalis.techTree;
         system.techTree = nyfalis.techTree;
+
     }
 }

@@ -1157,7 +1157,7 @@ public class NyfalisBlocks {
             alwaysShooting = true;
             requiredItems = with(copper, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            researchCost = with(lead, 100, silicon, 600,  iron, 600);
+            researchCost = with(lead, 800, copper, 800,  iron, 600);
             requirements(Category.units, with(iron, 100, lead, 100, copper, 100));
         }};
 
@@ -1198,7 +1198,7 @@ public class NyfalisBlocks {
             requiredItems = with(copper, 10);
             alwaysShooting = hoverShowsSpawn = arrowShootPos = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            researchCost = with(rustyIron, 5000, silicon, 300,  iron, 300);
+            researchCost = with(rustyIron, 500, copper, 500,  iron, 300);
             requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
         }};
 
@@ -1240,7 +1240,7 @@ public class NyfalisBlocks {
             requiredItems = with(copper, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             alwaysShooting = hoverShowsSpawn = hasPower = floating = arrowShootPos = true;
-            researchCost = with(lead, 500, silicon, 300,  iron, 300);
+            researchCost = with(lead, 1500, silicon, 500,  iron, 800);
             requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
         }};
 

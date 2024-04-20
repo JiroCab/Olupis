@@ -6,11 +6,13 @@ import arc.struct.Seq;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Blocks;
+import mindustry.content.Items;
 import mindustry.entities.units.AIController;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
 import mindustry.type.Item;
 import mindustry.world.Tile;
+import olupis.content.NyfalisItemsLiquid;
 import olupis.world.entities.units.AmmoLifeTimeUnitType;
 
 import static mindustry.Vars.*;
@@ -22,16 +24,26 @@ public class NyfalisMiningAi extends AIController {
     public Tile ore, lastOre;
     /*0 = Cant mine, 1 = core, 2 = Floor, 3 = Wall, 4 = overlay*/
     public int mineType = 0;
-    public Seq<Item> dynamicMineItems = new Seq<>(), dynamicBlackList = new Seq<>();
+    public Seq<Item> dynamicMineItems = new Seq<>(), dynamicBlackList = new Seq<>(), priorityMineItems = Seq.with(NyfalisItemsLiquid.rustyIron, Items.lead, Items.copper);
+    public float priorityMin = 0.6f;
     private int lastPathId = 0;
     private float lastMoveX, lastMoveY;
 
-    public void updateMineItems(){
+    public void updateMineItems(Building core){
         dynamicMineItems.clear();
-        Vars.content.items().each(i -> {
-            if(unit.type.mineTier >= i.hardness && !dynamicBlackList.contains(i)) dynamicMineItems.addUnique(i);
+        priorityMineItems.forEach(i -> {
+            if (!dynamicBlackList.contains(i)) dynamicMineItems.addUnique(i);
         });
-        dynamicMineItems.sort(i -> i.hardness);
+        if(priorityMineItems.allMatch(i ->{
+            int max = Vars.state.rules.coreIncinerates ? core.getMaximumAccepted(i) / 20: core.getMaximumAccepted(i);
+            return core.items.get(i) >= max *priorityMin;
+        })){
+            Vars.content.items().each(i -> {
+                if(unit.type.mineTier >= i.hardness && !dynamicBlackList.contains(i)) dynamicMineItems.addUnique(i);
+            });
+        }
+
+        dynamicMineItems.sort(i -> i.hardness).reverse();
     }
 
     @Override
@@ -40,7 +52,7 @@ public class NyfalisMiningAi extends AIController {
 
         if(!(unit.canMine()) || core == null) return;
 
-        if(dynamicItems)updateMineItems();
+        if(dynamicItems)updateMineItems(core);
 
         if(unit.type instanceof AmmoLifeTimeUnitType al && unit.stack.amount > 0 && al.deathThreshold * unit.mineTimer >= unit.ammo){
             unit.mineTile = ore = null;
@@ -65,7 +77,9 @@ public class NyfalisMiningAi extends AIController {
 
         if(mining){
             if(timer.get(timerTarget2, 60 * 4) || targetItem == null){
-                if(dynamicItems) targetItem = dynamicMineItems.min(i -> indexer.hasOre(i) && unit.canMine(i), i -> core.items.get(i));
+                if(dynamicItems){
+                    targetItem = dynamicMineItems.min(i -> indexer.hasOre(i) && unit.canMine(i), i -> core.items.get(i));
+                }
                 else targetItem = unit.type.mineItems.min(i -> indexer.hasOre(i) && unit.canMine(i)  && !dynamicBlackList.contains(targetItem), i -> core.items.get(i));
             }
 

@@ -11,6 +11,7 @@ Last updated on 20/03/2024 (+8utc) by Jirocab/RushieWashie
     + Added: Buttons to clear Nyfalis Sectors and research data
     + Added: Disclaimer system that warns the player if their sectors are outdated
     + Added: Toggleable weather effect for cloud shadows (still needs to be manually added as a weather)
+    + Seredis is now flushed out in sectors!
     ~ Balance: Reduced Rusted Junction to better scale with other blocks
     ~ Balance: Core health scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp, active units now scale to core teir
     ~ Balance: Relic & Vestige Weapon types swapped, stats unchanged
