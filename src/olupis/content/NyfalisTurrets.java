@@ -1,39 +1,30 @@
 package olupis.content;
 
-import arc.Events;
-import arc.audio.Sound;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
-import arc.util.Time;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.entities.Damage;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.entities.pattern.ShootSpread;
-import mindustry.game.EventType;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.logic.LAccess;
 import mindustry.type.Category;
-import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.*;
-import olupis.world.blocks.defence.DrawUnstableTurret;
+import olupis.world.entities.parts.DrawUnstableTurret;
 import olupis.world.blocks.defence.ItemUnitTurret;
 import olupis.world.blocks.defence.UnstablePowerTurret;
+import olupis.world.entities.parts.UnstableRegionPart;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.bullets.*;
@@ -143,9 +134,9 @@ public class NyfalisTurrets {
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.11f;
 
-                final float groundBonus = 0.5f;
+                final float groundPentaly = 0.1f;
                 ammo(
-                    copper, new EffectivenessMissleType(4.6f, 20f){{
+                    copper, new EffectivenessMissleType(4.6f, 25f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -161,9 +152,9 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.shocked;
-                        groundDamageMultiplier = groundBonus;
+                        groundDamageMultiplier = groundPentaly;
                     }},
-                    lead, new EffectivenessMissleType(4.6f, 60f){{
+                    lead, new EffectivenessMissleType(4.6f, 65f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -179,9 +170,9 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.sapped;
-                        groundDamageMultiplier = groundBonus;
+                        groundDamageMultiplier = groundPentaly;
                     }},
-                    iron, new EffectivenessMissleType(5f, 80f){{
+                    iron, new EffectivenessMissleType(5f, 85f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -197,9 +188,9 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.slow;
-                        groundDamageMultiplier = groundBonus;
+                        groundDamageMultiplier = groundPentaly;
                     }},
-                    cobalt, new EffectivenessMissleType(4.6f, 20f){{
+                    cobalt, new EffectivenessMissleType(4.6f, 25f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -216,7 +207,7 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = NyfalisStatusEffects.glitch;
-                        groundDamageMultiplier = groundBonus;
+                        groundDamageMultiplier = groundPentaly;
                     }}
                 );
                 limitRange(1.5f);
@@ -870,64 +861,61 @@ public class NyfalisTurrets {
             }};
 
             drawer = new DrawUnstableTurret("iron-"){{
-                parts.addAll(new RegionPart("-blade-l"){{
+                parts.addAll(new UnstableRegionPart("-bladed-l"){{
                     mirror = false;
                     moveRot = 25f;
                     under = true;
-                    moves.add(new PartMove(PartProgress.reload, -1f, 0f, -5f));
+                    moves.add(new PartMove(UnstablePartProgress.reload, -1f, 0f, -5f));
                     layerOffset  = -1;
 
                     heatColor = Pal.accent;
                     cooldownTime = 60f;
                 }},
 
-                new RegionPart("-blade-l"){{
+                new UnstableRegionPart("-blade-l"){{
                     mirror = false;
                     moveRot = 50f;
                     moveY = -1f;
-                    moves.add(new PartMove(PartProgress.reload.shorten(0.5f), -2f, 0f, -15f));
+                    moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), -2f, 0f, -15f));
                     under = true;
-                    layerOffset  = -0.5f;
-
 
                     heatColor = Pal.accent;
                     cooldownTime = 60f;
                 }},
-                new RegionPart("-bladed-l"){{
+                new UnstableRegionPart("-bladed-l"){{
                     mirror = false;
-                    moveRot = -160f;
+                    moveRot = -175f;
                     moveY = 2f;
-                    moves.add(new PartMove(PartProgress.reload.shorten(0.5f), 1f, 2f, -135f));
+                    layerOffset  = -0.5f;
+                    moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), 1f, 2f, -120f));
                     under = true;
                 }},
-                new RegionPart("-blade-r"){{
+                new UnstableRegionPart("-bladed-r"){{
                     mirror = false;
                     moveRot = -25f;
                     under = true;
-                    moves.add(new PartMove(PartProgress.reload, 1f, 0f, 5f));
+                    moves.add(new PartMove(UnstablePartProgress.reload, 1f, 0f, 5f));
                     layerOffset  = -1;
 
                     heatColor = Pal.accent;
                     cooldownTime = 60f;
                 }},
-                new RegionPart("-blade-r"){{
+                new UnstableRegionPart("-blade-r"){{
                     mirror = false;
                     moveRot = -50f;
                     moveY = -1f;
-                    moves.add(new PartMove(PartProgress.reload.shorten(0.5f), 2f, 0f, 15f));
+                    moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), 2f, 0f, 15f));
                     under = true;
-                    layerOffset  = -0.5f;
-
                     heatColor = Pal.accent;
                     cooldownTime = 60f;
                 }},
-                new RegionPart("-bladed-r"){{
+                new UnstableRegionPart("-bladed-r"){{
                     mirror = false;
-                    moveRot = 160f;
+                    moveRot = 175f;
                     moveY = 2f;
-                    moves.add(new PartMove(PartProgress.reload.shorten(0.5f), -1f, 2f, 135f));
+                    layerOffset  = -0.5f;
+                    moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), -1f, 2f, 120f));
                     under = true;
-
                 }});
             }};
             shootSound = Sounds.shootSmite;
@@ -938,6 +926,171 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 100, lead, 200, alcoAlloy, 60));
             heatColor = Pal.accent;
         }};
+        slash = new PowerTurret("slash"){{
+            inaccuracy = 0f;
+            rotateSpeed = 3f;
+            reload = 6;
+            shootY = 12;
+            minWarmup = 0.9f;
+            smokeEffect = shootEffect =  Fx.none;
+
+            shootType = new ExplosionBulletType(50, 10){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = false;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 360;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 0.5f;
+                    speed = 3;
+                    lifetime = 10;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                    collidesAir = false;
+                    hitSound = NyfalisSounds.sawCollision;
+                }};
+            }};
+            drawer = new DrawTurret("iron-"){{
+                targetAir = false;
+
+                size = 2;
+                recoil = 0;
+                range = 20f;
+                health = 4000;
+                fogRadius = 13;
+                shootCone = 180f;
+                coolantMultiplier = 3f;
+                liquidCapacity = 5f;
+
+                parts.addAll(
+                        new RegionPart("-buzzsaw"){{
+                            mirror = false;
+                            under = true;
+                            progress = PartProgress.warmup;
+                            y = 4;
+                            moveY = 8;
+                            moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
+                        }}
+                );
+            }};
+            loopSound = NyfalisSounds.sawActiveLoop;
+            shootSound = Sounds.none;
+            outlineColor = nyfalisBlockOutlineColour;
+            coolant = consume(new ConsumeLubricant(15f / 60f));
+            consumePower(2.5f);
+            researchCost = with(rustyIron, 100, lead, 100);
+            requirements(Category.turret, with(rustyIron, 40, lead, 20));
+
+        }
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.remove(Stat.ammo);
+                stats.remove(Stat.inaccuracy);
+                stats.remove(Stat.reload);
+                stats.remove(Stat.booster);
+                stats.add(new Stat("olupis-dps", StatCat.function),50 * (60 / reload) , StatUnit.perSecond);
+                stats.add(Stat.booster, NyfalisStats.sawBoosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
+            }
+        };
+        laceration = new PowerTurret("laceration"){{
+            inaccuracy = 0f;
+            rotateSpeed = 3f;
+            reload = 8;
+            shootY = 20;
+            minWarmup = 0.9f;
+            smokeEffect = shootEffect =  Fx.none;
+            shoot = new ShootAlternate(){{
+                shots = barrels = 3;
+                spread = 12;
+                shotDelay = 0;
+            }};
+
+
+            shootType = new ExplosionBulletType(200, 10){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = false;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 360;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 0.5f;
+                    speed = 3;
+                    lifetime = 10;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                    collidesAir = false;
+                    hitSound = NyfalisSounds.sawCollision;
+                }};
+            }};
+            drawer = new DrawTurret("iron-"){{
+                targetAir = false;
+
+                size = 4;
+                recoil = 0;
+                range = 40f;
+                health = 6000;
+                fogRadius = 13;
+                shootCone = 180f;
+                coolantMultiplier = 3.5f;
+                liquidCapacity = 5f;
+
+                parts.addAll(
+                        new RegionPart("-buzzsaw"){{
+                            mirror = false;
+                            under = true;
+                            progress = PartProgress.warmup;
+                            layerOffset = -0.1f;
+                            x = -12;
+                            y = 6.5f;
+                            moveY = 13.5f;
+                            moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
+                        }},
+                        new RegionPart("-buzzsaw"){{
+                            mirror = false;
+                            under = true;
+                            progress = PartProgress.warmup;
+                            layerOffset = -0.001f;
+                            y = 8;
+                            moveY = 13;
+                            moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
+                        }},
+                        new RegionPart("-buzzsaw"){{
+                            mirror = false;
+                            under = true;
+                            progress = PartProgress.warmup;
+                            layerOffset = -0.1f;
+                            x = 12;
+                            y = 6.5f;
+                            moveY = 13.5f;
+                            moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
+                        }}
+
+                );
+            }};
+            loopSound = NyfalisSounds.sawActiveLoop;
+            shootSound = Sounds.none;
+            outlineColor = nyfalisBlockOutlineColour;
+            coolant = consume(new ConsumeLubricant(30f / 60f));
+            consumePower(7.5f);
+            researchCost = with(rustyIron, 100, lead, 100);
+            requirements(Category.turret, with(rustyIron, 40, lead, 20));
+
+        }
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.remove(Stat.ammo);
+                stats.remove(Stat.inaccuracy);
+                stats.remove(Stat.reload);
+                stats.remove(Stat.booster);
+                stats.add(new Stat("olupis-dps", StatCat.function),(200 * 3) * (60 / reload) , StatUnit.perSecond);
+                stats.add(Stat.booster, NyfalisStats.sawBoosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
+            }
+        };
+
+
+
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
 

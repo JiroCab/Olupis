@@ -1,22 +1,28 @@
 package olupis.world.entities;
 
 import arc.Core;
+import arc.func.Boolf;
+import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.util.*;
+import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Icon;
+import mindustry.type.Liquid;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.meta.*;
 import olupis.world.entities.bullets.EffectivenessMissleType;
+
+import java.util.Iterator;
 
 import static mindustry.Vars.tilesize;
 
@@ -188,6 +194,37 @@ public class NyfalisStats extends StatValues {
     //for AmmoListValue
     private static String ammoStat(float val){
         return (val > 0 ? "[stat]+" : "[negstat]") + Strings.autoFixed(val, 1);
+    }
+
+    public static StatValue sawBoosters(float reload, float maxUsed, float multiplier, boolean baseReload, Boolf<Liquid> filter) {
+        return (table) -> {
+            table.row();
+            table.table((c) -> {
+                Iterator var6 = Vars.content.liquids().iterator();
+
+                while(var6.hasNext()) {
+                    Liquid liquid = (Liquid)var6.next();
+                    if (filter.get(liquid)) {
+                        c.table(Styles.grayPanel, (b) -> {
+                            b.image(liquid.uiIcon).size(40.0F).pad(10.0F).left().scaling(Scaling.fit);
+                            b.table((info) -> {
+                                info.add(liquid.localizedName).left().row();
+                                info.add(Strings.autoFixed(maxUsed * 60.0F, 2) + StatUnit.perSecond.localized()).left().color(Color.lightGray);
+                            });
+                            b.table((bt) -> {
+                                bt.right().defaults().padRight(3.0F).left();
+                                float reloadRate = (baseReload ? 1.0F : 0.0F) + maxUsed * multiplier * liquid.heatCapacity;
+                                float standardReload = baseReload ? reload : reload / (maxUsed * multiplier * 0.4F);
+                                float result = standardReload / (reload / reloadRate);
+                                bt.add(Core.bundle.format("stat.olupis-spin-speed-bonus", new Object[]{Strings.autoFixed(result * 100.0F, 2)})).pad(5.0F);
+                            }).right().grow().pad(10.0F).padRight(15.0F);
+                        }).growX().pad(5.0F).row();
+                    }
+                }
+
+            }).growX().colspan(table.getColumns());
+            table.row();
+        };
     }
 
     private static TextureRegion icon(UnlockableContent t){

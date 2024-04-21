@@ -1,9 +1,7 @@
-package olupis.world.blocks.defence;
+package olupis.world.entities.parts;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.Rand;
@@ -12,16 +10,17 @@ import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import java.util.Iterator;
-import mindustry.entities.part.DrawPart;
+
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
+import olupis.world.blocks.defence.UnstablePowerTurret;
 
 public class DrawUnstableTurret extends DrawBlock {
     protected static final Rand rand = new Rand();
-    public Seq<DrawPart> parts = new Seq();
+    public Seq<UnstableDrawPart> parts = new Seq();
     public String basePrefix = "";
     @Nullable
     public Liquid liquidDraw;
@@ -44,8 +43,9 @@ public class DrawUnstableTurret extends DrawBlock {
     public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {
         Iterator var3 = this.parts.iterator();
 
+
         while(var3.hasNext()) {
-            DrawPart part = (DrawPart)var3.next();
+            UnstableDrawPart part = (UnstableDrawPart)var3.next();
             part.getOutlines(out);
         }
 
@@ -74,13 +74,13 @@ public class DrawUnstableTurret extends DrawBlock {
             }
 
             float progress = tb.progress();
-            DrawPart.PartParams params = DrawPart.params.set(build.warmup(), 1.0F - progress, 1.0F - progress, tb.heat, tb.curRecoil, tb.charge, tb.x + tb.recoilOffset.x, tb.y + tb.recoilOffset.y, tb.rotation);
+            UnstableDrawPart.UnstablePartParams Uparams = UnstableDrawPart.Uparams.set(build.warmup(), 1.0F - progress, 1.0F - progress, tb.heat, tb.curRecoil, tb.charge, tb.x + tb.recoilOffset.x, tb.y + tb.recoilOffset.y, tb.rotation);
             Iterator var6 = this.parts.iterator();
 
             while(var6.hasNext()) {
-                DrawPart part = (DrawPart)var6.next();
-                params.setRecoil(part.recoilIndex >= 0 && tb.curRecoils != null ? tb.curRecoils[part.recoilIndex] : tb.curRecoil);
-                part.draw(params);
+                UnstableDrawPart part = (UnstableDrawPart)var6.next();
+                Uparams.setRecoil(part.recoilIndex >= 0 && tb.curRecoils != null ? tb.curRecoils[part.recoilIndex] : tb.curRecoil);
+                part.draw(Uparams,build);
             }
         }
 
@@ -111,7 +111,7 @@ public class DrawUnstableTurret extends DrawBlock {
         }
         if(build.heatT > block.flashThreshold){
             build.flash += (1f + ((build.heatT - block.flashThreshold) / (1f - block.flashThreshold)) * 5.4f) * Time.delta;
-            Draw.color(block.flash1, block.flash2, Mathf.absin(build.flash, 9f, 1f));
+            Draw.color(block.flashColor1, block.flashColor2, Mathf.absin(build.flash, 9f, 1f));
             Draw.alpha(0.3f);
             Draw.rect(lights, build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.drawrot());
         }
@@ -132,7 +132,7 @@ public class DrawUnstableTurret extends DrawBlock {
             Iterator var2 = this.parts.iterator();
 
             while(var2.hasNext()) {
-                DrawPart part = (DrawPart)var2.next();
+                UnstableDrawPart part = (UnstableDrawPart)var2.next();
                 part.turretShading = true;
                 part.load(block.name);
             }

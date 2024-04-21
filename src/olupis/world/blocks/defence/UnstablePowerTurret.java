@@ -4,6 +4,7 @@ import arc.*;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.math.*;
+import arc.struct.ObjectMap;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.Damage;
@@ -19,6 +20,8 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
+import olupis.content.NyfalisSounds;
+import olupis.world.entities.parts.DrawUnstableTurret;
 
 import static mindustry.Vars.world;
 
@@ -26,6 +29,7 @@ public class UnstablePowerTurret extends PowerTurret {
 
     public Effect explodeEffect = Fx.titanExplosion;
     public Sound explodeSound = Sounds.boom;
+    public Sound warningSound = NyfalisSounds.cascadeDangerWarning;
 
     public float explosionDamage = 200, explosionRadius = 80;
     public Liquid explosionPuddleLiquid = null;
@@ -36,7 +40,7 @@ public class UnstablePowerTurret extends PowerTurret {
     public float coolantPower = 0.2f;
     public Color coolColor = new Color(1, 1, 1, 0f);
     public Color hotColor = Color.red;
-    public Color flash1 = Color.red, flash2 = Color.yellow;
+    public Color flashColor1 = Color.red, flashColor2 = Color.yellow;
 
 
     public UnstablePowerTurret(String name){
@@ -54,6 +58,8 @@ public class UnstablePowerTurret extends PowerTurret {
 
     public void setStats() {
         super.setStats();
+        this.stats.remove(Stat.ammo);
+        this.stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(new Object[]{this, this.shootType})));
         this.stats.remove(Stat.booster);
         this.stats.add(Stat.input, StatValues.boosters(this.reload, this.coolant.amount, this.coolantMultiplier, false, this::consumesLiquid));
     }
@@ -67,7 +73,7 @@ public class UnstablePowerTurret extends PowerTurret {
             super.updateTile();
 
             if(isShooting() && power.status > 0){
-                heatT = Mathf.clamp(heatT + 0.06f);
+                heatT = Mathf.clamp(heatT + 0.04f);
             }
 
             if(heatT > 0){
@@ -75,10 +81,13 @@ public class UnstablePowerTurret extends PowerTurret {
                 heatT -= maxUsed * coolantPower;
                 liquids.remove(liquids.current(), maxUsed);
                 if(!isShooting() && liquids.currentAmount() <= 0){
-                    heatT = Mathf.clamp(heatT - 0.001f);
+                    heatT = Mathf.clamp(heatT - 0.005f);
                 }
             }
+            if(heatT > flashThreshold){
 
+                warningSound.at(this);
+            }
             if(heatT > smokeThreshold){
                 float smoke = 1.0f + (heatT - smokeThreshold) / (1f - smokeThreshold); //ranges from 1.0 to 2.0
                 if(Mathf.chance(smoke / 20.0 * delta())){

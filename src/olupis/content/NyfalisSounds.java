@@ -1,8 +1,6 @@
 package olupis.content;
 
 import arc.Core;
-import arc.assets.AssetDescriptor;
-import arc.assets.loaders.SoundLoader;
 import arc.audio.Sound;
 import mindustry.content.Planets;
 import mindustry.type.Planet;
@@ -19,14 +17,22 @@ public class NyfalisSounds {
             as2ArmorBreak = new Sound(),
             as2PlasmaShot = new Sound(),
             cncZhBattleMasterWeapon = new Sound(),
+            sawActiveLoop = new Sound(),
+            sawCollision = new Sound(),
+
+            cascadeDangerWarning = new Sound(),
+
             space = new Sound()
     ;
 
-    public static void  LoadSounds(){
+    public static void  LoadSounds(){//Use - not _ rushie >:|
         //Note: Vars.tree.loadSound only works with .mp3 and .ogg
         as2PlasmaShot = tree.loadSound("as2-plasma-shot");
         as2ArmorBreak = tree.loadSound("as2-broke-armor");
-        cncZhBattleMasterWeapon = tree.loadSound("cnc_zh_battlemaster_weapon");
+        cncZhBattleMasterWeapon = tree.loadSound("cnc-zh-battlemaster-weapon");
+        sawActiveLoop = tree.loadSound("sawblade-active-loop");
+        sawCollision = tree.loadSound("sawlade-collision");
+        cascadeDangerWarning = tree.loadSound("cascade-danger-warning");
         space = tree.loadSound("space");
     }
 
