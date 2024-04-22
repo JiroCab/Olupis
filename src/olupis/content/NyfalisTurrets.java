@@ -15,19 +15,17 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.LiquidTurret;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.*;
-import olupis.world.entities.parts.DrawUnstableTurret;
 import olupis.world.blocks.defence.ItemUnitTurret;
 import olupis.world.blocks.defence.UnstablePowerTurret;
-import olupis.world.entities.parts.UnstableRegionPart;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.bullets.*;
+import olupis.world.entities.parts.DrawUnstableTurret;
+import olupis.world.entities.parts.UnstableRegionPart;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.content.Items.*;
@@ -408,8 +406,8 @@ public class NyfalisTurrets {
             outlineColor = nyfalisBlockOutlineColour;
             drawer = new DrawTurret("iron-");
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
-            researchCost = with(iron, 500, lead, 800, quartz, 500);
-            requirements(Category.turret, with(iron, 50, lead, 50, quartz, 25));
+            researchCost = with(iron, 500, lead, 800, quartz, 500, copper, 800);
+            requirements(Category.turret, with(iron, 50, lead, 50, quartz, 25, copper, 50));
         }};
 
         //A recursive mortar turret that shoots long ranged recursive shells at the enemy (Has Really low rate of fire, high range, shells explode into multiple more shells on impact)
@@ -434,8 +432,9 @@ public class NyfalisTurrets {
                     knockback = 0.8f;
                     splashDamage = 29f;
                     width = height = 14f;
-                    fragLifeMax = primaryMaxL;
                     fragLifeMin = primaryMinL;
+                    fragLifeMax = primaryMaxL;
+                    buildingDamageMultiplier = 0.7f;
                     splashDamageRadius = 25f * 0.75f;
 
                     collidesTiles = false;
@@ -480,8 +479,9 @@ public class NyfalisTurrets {
                     width = height = 11f;
                     homingPower = 0.08f;
                     reloadMultiplier = 1.2f;
-                    fragLifeMax = primaryMaxL;
                     fragLifeMin = primaryMinL;
+                    fragLifeMax = primaryMaxL;
+                    buildingDamageMultiplier = 0.7f;
                     splashDamageRadius = 25f * 0.75f;
 
                     collidesTiles = false;
@@ -523,8 +523,9 @@ public class NyfalisTurrets {
                     knockback = 0.8f;
                     splashDamage = 31f;
                     width = height = 14f;
-                    fragLifeMax = primaryMaxL;
                     fragLifeMin = primaryMinL;
+                    fragLifeMax = primaryMaxL;
+                    buildingDamageMultiplier = 0.7f;
                     splashDamageRadius = 25f * 0.75f;
 
                     collidesTiles = false;
@@ -926,6 +927,7 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 100, lead, 200, alcoAlloy, 60));
             heatColor = Pal.accent;
         }};
+
         slash = new PowerTurret("slash"){{
             inaccuracy = 0f;
             rotateSpeed = 3f;

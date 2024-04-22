@@ -1035,9 +1035,9 @@ public class NyfalisBlocks {
             );
             consumePower(35f /60f);
             consumeItem(condensedBiomatter, 1);
-            researchCost = with(iron, 250, lead, 500);
+            researchCost = with(iron, 250, lead, 500, copper, 250);
             outputLiquid = new LiquidStack(oil, 20f / 60f);
-            requirements(Category.crafting, with(iron, 25, lead, 25));
+            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
         ironSieve  = new Separator("iron-sieve"){{
@@ -1679,9 +1679,9 @@ public class NyfalisBlocks {
             size = 3;
             itemCapacity = 3000;
             buildCostMultiplier = 0.5f;
-            researchCostMultiplier = 0.5f;
             health = Math.round(coreBaseHp * 3.5f);
             unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap));
+            researchCost = with(lead, 13500, rustyIron, 13500, iron, 13500);
 
             unitType = gnat;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300, iron, 1000));

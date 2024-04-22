@@ -104,8 +104,17 @@ public class NyfalisTechTree {
                 node(spirit, Seq.with(
                     new  Objectives.Research(construct)
                 ), () ->{
-                    node(phantom, () ->{
-                        node(banshee, () -> {
+                    node(phantom,  Seq.with(
+                            new  Objectives.Produce(quartz)
+                    ), () ->{
+                        node(banshee, Seq.with(
+                                new  Objectives.Produce(graphite)
+                        ), () -> {
+                            node(revenant, Seq.with(
+                                    new  Objectives.Produce(silicon)
+                            ), () -> {
+
+                            });
                         });
                     });
                 });
@@ -133,7 +142,9 @@ public class NyfalisTechTree {
                     node(zoner, () -> {
 
                     });
-                    node(essex, () -> {
+                    node(essex, Seq.with(
+                            new  Objectives.Research(alternateArticulator)
+                    ), () -> {
                         node(regioner, () -> {
 
                         });
@@ -142,7 +153,9 @@ public class NyfalisTechTree {
                 node(bay, Seq.with(
                     new  Objectives.Research(navalConstruct)
                 ), () -> {
-                    node(blitz, () -> {
+                    node(blitz, Seq.with(
+                            new  Objectives.Research(alternateArticulator)
+                    ), () -> {
 
                     });
                 });
@@ -176,8 +189,10 @@ public class NyfalisTechTree {
                                 });
                             });
                             node(siliconKiln, ()->{
-                                node(hydrochloricGraphitePress, Seq.with(new Objectives.SectorComplete(vakinyaDesert)), ()->{
-                                    node(siliconArcSmelter , ()->{
+                                node(hydrochloricGraphitePress, Seq.with(new Objectives.OnSector(vakinyaDesert)), ()->{
+                                    node(siliconArcSmelter , Seq.with(
+                                            new  Objectives.Research(hydrochloricGraphitePress)
+                                    ), ()->{
 
                                     });
                                 });
@@ -202,7 +217,9 @@ public class NyfalisTechTree {
                             });
                         });
                         node(taurus ,Seq.with(new Objectives.Research(sanctuary)), ()->{
-                            node(ladar, () -> {
+                            node(ladar, Seq.with(
+                                    new  Objectives.Research(hydrochloricGraphitePress)
+                            ), () -> {
 
                             });
                         });
@@ -243,7 +260,9 @@ public class NyfalisTechTree {
                             node(ironPump,
                                 Seq.with(new Objectives.OnSector(muddyLakes)),
                             () -> {
-                                node(displacementPump, () -> {
+                                node(displacementPump, Seq.with(
+                                        new  Objectives.Research(hydrochloricGraphitePress)
+                                ), () -> {
                                     node(massDisplacementPump, () -> {
 
                                     });
@@ -291,7 +310,9 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(ironUnloader, () ->{
+                node(ironUnloader, Seq.with(
+                        new  Objectives.Research(hydrochloricGraphitePress)
+                ), () ->{
                     node(fortifiedContainer, () ->{
                         node(fortifiedVault, () ->{
 
@@ -312,6 +333,9 @@ public class NyfalisTechTree {
                         node(hive, ()->{
 
                         });
+                        node(obliterator, () -> {
+
+                        });
                     });
                     node(rustyWall, () ->{
                         node(rustyWallLarge, ()->{
@@ -321,7 +345,15 @@ public class NyfalisTechTree {
                         });
                         node(ironWall, ()->{
                             node(ironWallLarge, ()->{
+                                node(quartzWall, () -> {
+                                    node(quartzWallLarge, () -> {
+                                        node(cobaltWall, () -> {
+                                            node(cobaltWallLarge, () -> {
 
+                                            });
+                                        });
+                                    });
+                                });
                             });
                         });
                     });
@@ -347,6 +379,11 @@ public class NyfalisTechTree {
 
                         });
                     });
+                    node(alternateArticulator,  Seq.with(
+                            new  Objectives.SectorComplete(abandonedTrainStations)
+                    ), () -> {
+
+                    });
                 });
 
                 node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{
@@ -369,10 +406,15 @@ public class NyfalisTechTree {
                         });
                     });
                     nodeProduce(iron, () ->{
-                        nodeProduce(condensedBiomatter, () ->{
+                        node(alcoAlloy, ()->{
+                            node(aluminum, () -> {
 
+                            });
+                            nodeProduce(cobalt, ()->{
+
+                            });
                         });
-                        nodeProduce(cobalt, ()->{
+                        nodeProduce(condensedBiomatter, () ->{
 
                         });
                     });

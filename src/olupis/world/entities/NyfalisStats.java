@@ -10,6 +10,8 @@ import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.util.*;
 import mindustry.Vars;
+import arc.util.Scaling;
+import arc.util.Strings;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;

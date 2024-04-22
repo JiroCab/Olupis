@@ -81,7 +81,7 @@ public class NyfalisSectors {
 
             difficulty = 5;
             captureWave = 26;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500, Items.copper, 500));
         }};
 
         conciditRuins = new SectorPreset("concidit-ruins", arthin, 6){{
