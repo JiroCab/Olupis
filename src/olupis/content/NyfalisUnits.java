@@ -5,6 +5,7 @@ import arc.math.geom.Rect;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Interval;
+import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.content.*;
@@ -23,6 +24,7 @@ import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.BuildWeapon;
 import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.Env;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
 import olupis.world.entities.abilities.MicroWaveFieldAbility;
@@ -46,7 +48,7 @@ public class NyfalisUnits {
         pteropus, acerodon, nyctalus, mirimiri , vampyrum, //Bat Genus
 
         /*segmented units*/
-        venom, serpent, reaper, goliath, snek /*TODO: IDK*/,
+        venom, serpent, reaper, goliath, snek,
 
         /*Ground units*/
         supella, germanica , luridiblatta , vaga , parcoblatta, //smallest cockroaches
@@ -1519,6 +1521,12 @@ public class NyfalisUnits {
 
         zoner.displayFactory = Seq.with(porter);
         embryo.displayFactory = Seq.with(phorid);
+
+        for (UnitType u : Vars.content.units()) {
+            if(u.name.contains("olupis-")){
+                u.envEnabled = Env.terrestrial | NyfalisAttributeWeather.nyfalian;
+            }
+        }
     }
 
 

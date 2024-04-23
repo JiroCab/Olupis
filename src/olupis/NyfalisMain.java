@@ -7,7 +7,8 @@ import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Planets;
 import mindustry.game.EventType;
-import mindustry.game.EventType.*;
+import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.EventType.FileTreeInitEvent;
 import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
@@ -19,8 +20,6 @@ import olupis.content.*;
 import olupis.input.*;
 import olupis.world.entities.packets.NyfalisUnitTimedOutPacket;
 import olupis.world.planets.NyfalisTechTree;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static mindustry.Vars.*;
 import static olupis.content.NyfalisBlocks.*;
@@ -35,6 +34,8 @@ public class NyfalisMain extends Mod{
 
     @Override
     public void loadContent(){
+        NyfalisShaders.LoadShaders();
+        NyfalisShaders.LoadCacheLayer(); //idk when to load this so it 1st -Rushie
         NyfalisItemsLiquid.LoadItems();
         NyfalisStatusEffects.loadStatusEffects();
         NyfalisItemsLiquid.LoadLiquids();
@@ -62,12 +63,14 @@ public class NyfalisMain extends Mod{
         }));
 
         Events.on(EventType.WorldLoadEvent.class, l ->{
-            if(shouldAutoBan()) Time.run(0.5f * Time.toSeconds, () ->{ /*Delayed since custom games, for some reason needs it*/
-                /*Hiding blocks w/o banning them mainly for custom games */
-                state.rules.hiddenBuildItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
-            });
+            /*Delayed since custom games, for some reason needs it*/
+            Time.run(0.5f * Time.toSeconds, this::sandBoxCheck);
+
             unlockPlanets();
             NyfalisStartUpUis.rebuildDebugTable();
+            //Clean up of the old system of banning stuff
+
+            if(state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet()) && state.rules.blockWhitelist) state.rules.blockWhitelist = false;
             if(headless)return;
 
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
@@ -104,23 +107,19 @@ public class NyfalisMain extends Mod{
         });
     }
 
-    public boolean shouldAutoBan(){
-        if(net.client())return false;
-        if(!Core.settings.getBool("nyfalis-auto-ban")) return false;
+    public void sandBoxCheck(){ //for any sandbox maps
+        if(net.client())return;
+        if(!Core.settings.getBool("nyfalis-auto-ban")) return;
         if(state.isCampaign()){ Planet sector = state.getSector().planet;
-            if(sector == arthin) return false;
-            if(sector == spelta) return false;
-            return sector != nyfalis;
+            if(sector == arthin || sector == spelta || sector == nyfalis) state.rules.env = state.rules.env | NyfalisAttributeWeather.nyfalian;
         }
-        if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun) return false;
-        AtomicBoolean hasCore = new AtomicBoolean(false);
+        if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun) state.rules.env = state.rules.env | NyfalisAttributeWeather.nyfalian;
         for (Block c : NyfalisBlocks.nyfalisCores) {
             if (indexer.isBlockPresent(c)) {
-                hasCore.set(true);
+                state.rules.env |= NyfalisAttributeWeather.nyfalian;
                 break;
             }
         }
-        return !hasCore.get();
     }
 
     @Override

@@ -14,7 +14,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
 public class NyfalisStatusEffects {
-    public static StatusEffect lubed, mossed, deployed, glitch;
+    public static StatusEffect lubed, mossed, deployed, glitch, sloppy;
 
     public static void loadStatusEffects(){
 
@@ -70,5 +70,15 @@ public class NyfalisStatusEffects {
                 speedMultiplier = -0.5f;
             }
         };
+
+        sloppy = new StatusEffect("sloppy"){{
+            color = Color.valueOf("6b675f");
+            speedMultiplier = 1.15f;
+            effect = Fx.oily;
+
+            init(() -> this.affinities = StatusEffects.tarred.affinities);
+            init(() -> this.opposites = StatusEffects.tarred.opposites);
+        }};
+
     }
 }

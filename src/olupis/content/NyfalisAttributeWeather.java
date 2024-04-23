@@ -17,6 +17,8 @@ import static mindustry.content.Blocks.*;
 import static olupis.content.NyfalisBlocks.*;
 
 public class NyfalisAttributeWeather {
+    public static final int nyfalian = 1 << 910; //this is a random number from rushie keyboard smashing
+
     /*Used by the biomatter compressor */
     public static final Attribute bio = Attribute.add("bio");
     /*Used by hydroMill yield*/

@@ -727,6 +727,7 @@ public class NyfalisTurrets {
                 stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
             }
         };
+
         cascade = new UnstablePowerTurret("PH-cascade"){{
             targetAir = true;
             targetGround = true;

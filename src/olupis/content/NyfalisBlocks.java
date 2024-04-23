@@ -32,6 +32,7 @@ import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import olupis.input.NyfalisShaders;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
@@ -65,7 +66,7 @@ public class NyfalisBlocks {
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandvent, snowVent,
 
         /*Liquid floors*/
-        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater, coralReef,
+        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater, coralReef, slop,
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
@@ -86,7 +87,7 @@ public class NyfalisBlocks {
         rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader, rustedBridge,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
-        steamBoiler, steamAgitator, broiler, oilSeparator, lubricantMixer,
+        steamBoiler, steamAgitator, broiler, oilSeparator, lubricantMixer, demulsifier,
 
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine,
 
@@ -105,7 +106,6 @@ public class NyfalisBlocks {
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
     public static ObjectSet<Block> nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>();
 
-    //revamp early game
     public static void LoadWorldTiles(){
         //region Ores / Overlays
         oreIron = new OreBlock("ore-iron", rustyIron);
@@ -381,6 +381,18 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
+        slop = new Floor("slop"){{
+            isLiquid = supportsOverlay = true;
+
+            variants = 0;
+            albedo = 0.9f;
+            statusDuration = 50f;
+            speedMultiplier = 0.7f;
+            status = StatusEffects.wet;
+            liquidDrop = emulsiveSlop;
+            cacheLayer = NyfalisShaders.slopC;
+        }};
+
         //endregion
         //region Props
         yellowBush = new Prop("yellow-bush"){{
@@ -615,6 +627,7 @@ public class NyfalisBlocks {
         ironBridge = new BufferedItemBridge("iron-bridge"){{
             /*Same throughput as an iron conv*/
             fadeIn = moveArrows = false;
+            hasPower = true;
 
             range = 6;
             armor = 1f;
@@ -625,9 +638,10 @@ public class NyfalisBlocks {
             bufferCapacity = 8;
             buildCostMultiplier = 0.4f;
 
-            researchCost = with(iron, 100, rustyIron, 500, lead, 500);
+            consumePower(20f / 60f);
             ((PowerConveyor)ironConveyor).bridgeReplacement = this;
-            requirements(Category.distribution, with(iron, 5, rustyIron, 10, lead, 10));
+            researchCost = with(iron, 100, rustyIron, 500, lead, 500);
+            requirements(Category.distribution, with(iron, 35, rustyIron, 35, lead, 35));
         }};
 
         ironOverflow = new OverflowSorter("iron-overflow"){{
@@ -683,7 +697,7 @@ public class NyfalisBlocks {
 
 
             envEnabled ^= Env.space;
-            consumePower(25f/60f);
+            consumePower(50f/60f);
             consumeLiquid(steam, 0.05f);
             researchCost = with(iron, 300, lead, 700);
             consumeLiquid(Liquids.slag, 0.06f).boost();
@@ -728,7 +742,7 @@ public class NyfalisBlocks {
         }};
 
         //endregion
-        //region liquid
+        //region Liquid
         rustyPump = new Pump("rusty-pump"){{
             size = 1;
             liquidCapacity = 10f;
@@ -743,13 +757,14 @@ public class NyfalisBlocks {
             liquidCapacity = 20f;
             pumpAmount = 0.08f;
             buildCostMultiplier = 2.1f;
-            researchCost = with(lead, 500, iron, 100);
-            requirements(Category.liquid, with(iron, 12, lead, 12, copper, 12));
+            researchCost = with(lead, 500, iron, 100, copper, 500);
+            requirements(Category.liquid, with(iron, 20, lead, 20, copper, 20));
         }};
 
         displacementPump = new BurstPump("displacement-pump"){{
             size = 3;
             pumpTime = 310;
+            dumpScale = 1.3f;
             leakAmount = 0.02f;
             pumpAmount = 140f;
             liquidCapacity = 300f;
@@ -768,7 +783,6 @@ public class NyfalisBlocks {
             researchCost = with(iron, 500, lead, 1000, graphite, 250, silicon, 250);
             requirements(Category.liquid, with(iron, 30, graphite, 30, lead, 75, silicon, 30));
         }};
-
 
         leadPipe = new Conduit("lead-pipe"){{
             leaks = underBullets = true;
@@ -867,7 +881,7 @@ public class NyfalisBlocks {
         }};
 
         steamAgitator = new AttributeCrafter("steam-agitator"){{
-            outputsLiquid = solid = true;
+            outputsLiquid = solid = hasLiquids = true;
             displayEfficiency = rotate = false;
 
             size = 3;
@@ -887,7 +901,7 @@ public class NyfalisBlocks {
         }};
 
         broiler = new BoostableGenericCrafter("broiler"){{
-            hasLiquids = hasPower =  outputsLiquid = true;
+            hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
 
             size = 2;
             health = 600;
@@ -902,7 +916,7 @@ public class NyfalisBlocks {
         }};
 
         lubricantMixer = new GenericCrafter("lubricant-mixer"){{
-            hasLiquids = hasPower =  outputsLiquid = true;
+            hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
 
             size = 3;
 
@@ -911,6 +925,17 @@ public class NyfalisBlocks {
             consumePower(1f);
             consumeLiquid(Liquids.oil, 12f / 60f);
             outputLiquid = new LiquidStack(lubricant, 10/60f);
+            requirements(Category.liquid, with(quartz, 25, iron, 50, silicon, 40, cobalt, 10));
+        }};
+
+        demulsifier = new GenericCrafter("demulsifier"){{
+            hasLiquids = hasPower =  outputsLiquid = consumesPower = rotate = true;
+            size = 2;
+
+            consumePower(1f);
+            consumeLiquid(emulsiveSlop, 12f/ 60f);
+            liquidOutputDirections = new int[]{1, 3};
+            outputLiquids = LiquidStack.with(Liquids.water, 5f / 60f, Liquids.oil, 5f / 60f);
             requirements(Category.liquid, with(quartz, 25, iron, 50, silicon, 40, cobalt, 10));
         }};
 
@@ -1832,20 +1857,23 @@ public class NyfalisBlocks {
 
     public static void NyfalisBlocksPlacementFix(){
         nyfalisBuildBlockSet.clear();
+
+        sandBoxBlocks.addAll(
+                /*just to make it easier for testing and/or sandbox*/
+                itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid, powerSource, powerVoid, heatSource,
+                worldProcessor, worldMessage
+        );
+
         Vars.content.blocks().each(b->{
             if(b.name.startsWith("olupis-")){
                 if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 allNyfalisBlocks.add(b);
+                b.envEnabled = NyfalisAttributeWeather.nyfalian;
             }
         });
 
         nyfalisCores.addAll(coreRemnant, coreRelic, coreShrine, coreTemple, coreVestige);
 
-        sandBoxBlocks.addAll(
-            /*just to make it easier for testing and/or sandbox*/
-            itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid, powerSource, powerVoid, heatSource,
-            worldProcessor, worldMessage
-        );
 
         cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
         cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);

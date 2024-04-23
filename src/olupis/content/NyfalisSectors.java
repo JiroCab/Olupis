@@ -131,9 +131,6 @@ public class NyfalisSectors {
         else r.dropZoneRadius = dzRadius;
         r.enemyCoreBuildRadius = 650f;
 
-
-        NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
-        NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
         if(startItems.length >= 1)r.loadout.set(startItems);
     }
 

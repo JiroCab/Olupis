@@ -58,7 +58,7 @@ public class ItemUnitTurret extends ItemTurret {
     public int alternateCapacity = itemCapacity * 2;
     /*Parameters when failing to make a unit*/
     public Sound failedMakeSound = Sounds.dullExplosion;
-    public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 1f;
+    public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 0.6f;
     public Effect failedMakeFx = NyfalisFxs.failedMake;
     public TextureRegion bottomRegion, rotatorRegion;
     /*Hovering Shows the unit creation*/

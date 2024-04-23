@@ -24,7 +24,7 @@ import static mindustry.Vars.*;
 public class BurstPump extends Pump {
     public Interp speedCurve = Interp.pow2In;
     //public float invertedTime = 200f,
-    public float pumpTime = 400;
+    public float pumpTime = 400, dumpScale = 1.5f;
     public Sound drillSound = Sounds.pulseBlast;
     public float drillSoundVolume = 0.4f, drillSoundPitchRand = 0.3f, pumpEffectRnd = -1f, shake = 2f, leakAmount = 2f;
     public Effect pumpEffect = Fx.steam;
@@ -109,7 +109,7 @@ public class BurstPump extends Pump {
                 smoothProgress = Mathf.lerpDelta(smoothProgress, progress / (pumpTime - 20f), 0.1f);
 
                 if (timer(timerDump, dumpTime)){
-                    dumpLiquid(liquidDrop);
+                    dumpLiquid(liquidDrop, 1.5f);
                 }
 
                 float pumpTime = getPumpTime(liquidDrop);

@@ -28,11 +28,9 @@ public class NyfalisPlanets {
         r.waveTeam = Team.green;
 
         r.placeRangeCheck = r.disableOutsideArea = r.staticFog = false;
-        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear =  r.hideBannedBlocks = r.coreIncinerates = r.fog = r.blockWhitelist = true;
+        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = true;
 
-        //TODO: fix changing planets will add them but remove, move to sector presents maybe
-        NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
-        NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
+        r.env =  Env.oxygen | NyfalisAttributeWeather.nyfalian;
     };
 
     public  static void LoadPlanets(){
@@ -66,8 +64,8 @@ public class NyfalisPlanets {
             ruleSetter = commonRules;
             system.position = this.position;
             defaultCore = NyfalisBlocks.coreRemnant;
-            generator = new NyfalisPlanetGenerator();
-            defaultEnv = Env.terrestrial | Env.oxygen;
+            generator = new NyfalisPlanetGenerator() ;
+            defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             iconColor = NyfalisBlocks.redSand.mapColor;
             atmosphereColor = Color.valueOf("87CEEB");
             landCloudColor = new Color().set(Color.valueOf("C7E7F1").cpy().lerp(Color.valueOf("D7F5DC"), 0.55f));
@@ -91,7 +89,7 @@ public class NyfalisPlanets {
             systemSector.add(sectors);
             defaultCore = NyfalisBlocks.coreRemnant;
             generator = new ArthinPlanetGenerator();
-            defaultEnv = Env.terrestrial | Env.oxygen;
+            defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             iconColor = NyfalisItemsLiquid.condensedBiomatter.color;
             meshLoader = () -> new HexMesh(this, 5);
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
@@ -109,7 +107,7 @@ public class NyfalisPlanets {
             generator = new SpeltaPlanetGenerator();
             defaultCore = NyfalisBlocks.coreRemnant;
             iconColor = NyfalisBlocks.pinkTree.mapColor;
-            defaultEnv = Env.terrestrial | Env.oxygen;
+            defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             meshLoader = () -> new HexMesh(this, 5);
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};

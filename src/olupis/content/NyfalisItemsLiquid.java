@@ -11,7 +11,7 @@ public class NyfalisItemsLiquid {
 
     public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, cryoRods, steel, silicatePowder, powerAmmoItem;
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
-    public static Liquid heavyOil, lightOil, steam, lubricant;
+    public static Liquid heavyOil, lightOil, steam, lubricant, emulsiveSlop;
 
     public static  void LoadItems(){
         //region Items
@@ -86,7 +86,21 @@ public class NyfalisItemsLiquid {
             canStayOn.addAll(Liquids.water, Liquids.oil);
         }};
 
+        emulsiveSlop = new Liquid("emulsive-slop", Color.valueOf("C4AA90")){{
+            viscosity = 0.33f;
+            flammability = 0.6f;
+            explosiveness = 0.7f;
+            heatCapacity = 0.63f;
+            barColor = Color.valueOf("6b675f");
+            effect = NyfalisStatusEffects.lubed;
+            boilPoint = 0.65f;
+            gasColor = Color.grays(0.4f);
+            canStayOn.addAll(Liquids.water, Liquids.oil);
+        }};
+
         Liquids.water.canStayOn.add(lubricant);
         Liquids.oil.canStayOn.add(lubricant);
+        Liquids.water.canStayOn.add(emulsiveSlop);
+        Liquids.oil.canStayOn.add(emulsiveSlop);
     }
 }
