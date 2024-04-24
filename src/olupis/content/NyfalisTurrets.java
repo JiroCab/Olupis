@@ -40,8 +40,19 @@ public class NyfalisTurrets {
 
         //region Turrets
         corroder = new LiquidTurret("corroder"){{ //architronito
+            targetAir = true;
+
+            size = 2;
+            recoil = 1;
+            shootY = 7f;
+            range = 15 * 8f;
+            health = 1500;
+            fogRadius = 13;
+            shootCone = 50f;
             inaccuracy = 8.5f;
             rotateSpeed = 3f;
+            coolantMultiplier = 2.5f;
+            liquidCapacity = reload = 5f;
 
             ammo(
                 Liquids.water, new LiquidBulletType(Liquids.water){{
@@ -50,9 +61,10 @@ public class NyfalisTurrets {
                     trailColor = hitColor;
 
                     speed = 5.5f;
-                    damage = 7.8f;
                     drag = 0.008f;
-                    lifetime = 19.7f;
+                    damage = 10f;
+                    pierceCap = 1;
+                    lifetime = 9999f;
                     rangeChange = 15f;
                     ammoMultiplier = 1.5f;
                     trailInterval = trailParam = 1.5f;
@@ -67,28 +79,50 @@ public class NyfalisTurrets {
 
                         speed = 8f;
                         drag = 0.009f;
-                        lifetime = 12f;
-                        damage = 10.3f;
-                        pierceCap = 1;
+                        lifetime = 9999f;
+                        damage = 15f;
+                        pierceCap = 3;
                         ammoMultiplier = 2.5f;
                         statusDuration = 60f * 5;
                         trailInterval = trailParam = 1.5f;
                         buildingDamageMultiplier = 0.5f;
-                    }}
+                }},
+                Liquids.slag, new LiquidBulletType(Liquids.slag){{
+                    speed = 5.8f;
+                    damage = 17;
+                    pierceCap = 1;
+                    drag = 0.0009f;
+                    lifetime = 9999f;
+                    rangeChange = 20f;
+                    ammoMultiplier = 3f;
+                    statusDuration = 60f * 2;
+                    layer = Layer.bullet -2f;
+                    hitSize = puddleSize = 7f;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.4f;
+
+                    trailColor = hitColor;
+                    status = StatusEffects.melting;
+                }},
+                emulsiveSlop, new LiquidBulletType(emulsiveSlop){{
+                    speed = 5.8f;
+                    damage = 13;
+                    pierceCap = 1;
+                    drag = 0.0009f;
+                    lifetime = 9999f;
+                    rangeChange = 20f;
+                    ammoMultiplier = 3f;
+                    statusDuration = 60f * 2;
+                    layer = Layer.bullet -2f;
+                    hitSize = puddleSize = 7f;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.4f;
+
+                    trailColor = hitColor;
+                    status = NyfalisStatusEffects.sloppy;
+                }}
             );
             drawer = new DrawTurret("iron-"){{
-                targetAir = true;
-
-                size = 2;
-                recoil = 1;
-                shootY = 7f;
-                range = 90f;
-                health = 1500;
-                fogRadius = 13;
-                shootCone = 50f;
-                coolantMultiplier = 2.5f;
-                liquidCapacity = reload = 5f;
-
                 parts.addAll(
                     new RegionPart("-barrel"){{
                         mirror = false;
@@ -110,6 +144,7 @@ public class NyfalisTurrets {
                     }}
                 );
             }};
+            limitRange(0f);
             loopSound = Sounds.steam;
             consumePower(1f);
             outlineColor = nyfalisBlockOutlineColour;
@@ -117,7 +152,14 @@ public class NyfalisTurrets {
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
             requirements(Category.turret, with(rustyIron, 40, lead, 20));
 
-        }};
+        }
+
+            public void limitRange(float margin){
+                for(var entry : ammoTypes.entries()){
+                    limitRange(entry.value, margin);
+                }
+            }
+        };
 
         avenger = new ItemTurret("avenger"){{
                 targetAir = true;
@@ -132,7 +174,7 @@ public class NyfalisTurrets {
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.11f;
 
-                final float groundPentaly = 0.1f;
+                final float groundPenalty = 0.05f;
                 ammo(
                     copper, new EffectivenessMissleType(4.6f, 25f){{
                         width = 6f;
@@ -150,7 +192,7 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.shocked;
-                        groundDamageMultiplier = groundPentaly;
+                        groundDamageMultiplier = groundPenalty;
                     }},
                     lead, new EffectivenessMissleType(4.6f, 65f){{
                         width = 6f;
@@ -168,7 +210,7 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.sapped;
-                        groundDamageMultiplier = groundPentaly;
+                        groundDamageMultiplier = groundPenalty;
                     }},
                     iron, new EffectivenessMissleType(5f, 85f){{
                         width = 6f;
@@ -186,7 +228,7 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.slow;
-                        groundDamageMultiplier = groundPentaly;
+                        groundDamageMultiplier = groundPenalty;
                     }},
                     cobalt, new EffectivenessMissleType(4.6f, 25f){{
                         width = 6f;
@@ -205,7 +247,7 @@ public class NyfalisTurrets {
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = NyfalisStatusEffects.glitch;
-                        groundDamageMultiplier = groundPentaly;
+                        groundDamageMultiplier = groundPenalty;
                     }}
                 );
                 limitRange(1.5f);

@@ -15,7 +15,7 @@ public class NyfalisSectors {
         /*Arthin / Seredris*/
         sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, inundataDesert, abandonedTrainStations, conciditRuins, snowPisos,
         /*Nyfalis*/
-        conservatorium,
+        conservatorium, forestOfSerenity,
         /*Spelta / Vorgin*/
          dormantCell, forestOfHope
     ;
@@ -107,6 +107,11 @@ public class NyfalisSectors {
         conservatorium = new SectorPreset("conservatorium", nyfalis, 0){{
             captureWave = 20;
             difficulty = 3;
+            rules = commonRules(captureWave);
+        }};
+
+        forestOfSerenity  = new SectorPreset("forest-of-serenity", nyfalis, 43){{
+            difficulty = 4;
             rules = commonRules(captureWave);
         }};
 

@@ -582,6 +582,13 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
             tiles.getn(espawn.x, espawn.y).setOverlay(Blocks.spawn);
         }
 
+        if(sector.hasEnemyBase()){
+            basegen.generate(tiles, enemies.map(r -> tiles.getn(r.x, r.y)), tiles.get(spawn.x, spawn.y), state.rules.waveTeam, sector, difficulty);
+
+            state.rules.attackMode = sector.info.attack = true;
+        }else{
+            state.rules.winWave = sector.info.winWave = 10 + 5 * (int)Math.max(difficulty * 10, 1) +(int)Mathf.range(0 ,10) ;
+        }
 
         float waveTimeDec = 0.4f;
 

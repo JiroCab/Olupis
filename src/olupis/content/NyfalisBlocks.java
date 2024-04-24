@@ -624,7 +624,7 @@ public class NyfalisBlocks {
             requirements(Category.distribution, with(rustyIron, 6, lead, 6));
         }};
 
-        ironBridge = new BufferedItemBridge("iron-bridge"){{
+        ironBridge = new PoweredBufferItemBridge("iron-bridge"){{
             /*Same throughput as an iron conv*/
             fadeIn = moveArrows = false;
             hasPower = true;
@@ -936,7 +936,7 @@ public class NyfalisBlocks {
             consumeLiquid(emulsiveSlop, 12f/ 60f);
             liquidOutputDirections = new int[]{1, 3};
             outputLiquids = LiquidStack.with(Liquids.water, 5f / 60f, Liquids.oil, 5f / 60f);
-            requirements(Category.liquid, with(quartz, 25, iron, 50, silicon, 40, cobalt, 10));
+            requirements(Category.liquid, with(quartz, 40, iron, 25, lead, 50,copper, 50));
         }};
 
         //endregion

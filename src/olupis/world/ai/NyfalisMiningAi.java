@@ -31,9 +31,9 @@ public class NyfalisMiningAi extends AIController {
 
     public void updateMineItems(Building core){
         dynamicMineItems.clear();
-        priorityMineItems.forEach(i -> {
-            if (!dynamicBlackList.contains(i)) dynamicMineItems.addUnique(i);
-        });
+        for (Item priorityMineItem : priorityMineItems) {
+            if (!dynamicBlackList.contains(priorityMineItem)) dynamicMineItems.addUnique(priorityMineItem);
+        }
         if(priorityMineItems.allMatch(i ->{
             int max = Vars.state.rules.coreIncinerates ? core.getMaximumAccepted(i) / 20: core.getMaximumAccepted(i);
             return core.items.get(i) >= max *priorityMin;
