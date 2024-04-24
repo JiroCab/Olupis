@@ -1869,6 +1869,8 @@ public class NyfalisBlocks {
                 if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 allNyfalisBlocks.add(b);
                 b.envEnabled = NyfalisAttributeWeather.nyfalian;
+            } else if(!sandBoxBlocks.contains(b) || b.envEnabled == Env.any ){
+                b.envDisabled |= NyfalisAttributeWeather.nyfalian;
             }
         });
 

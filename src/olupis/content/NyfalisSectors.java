@@ -135,6 +135,7 @@ public class NyfalisSectors {
         if(dzRadius <= 0)r.dropZoneRadius = 400f;
         else r.dropZoneRadius = dzRadius;
         r.enemyCoreBuildRadius = 650f;
+        r.env = nyfalis.defaultEnv;
 
         if(startItems.length >= 1)r.loadout.set(startItems);
     }
