@@ -613,8 +613,8 @@ public class NyfalisBlocks {
             armor = 1f;
             health = 50;
             speed = 47.55f;
-            itemCapacity =5;
-            arrowSpacing = 6f;
+            itemCapacity = 5;
+            arrowSpacing = 5f;
             buildCostMultiplier = 0.3f;
             range = bufferCapacity = 3;
 
@@ -878,6 +878,14 @@ public class NyfalisBlocks {
             researchCost = with(rustyIron, 50, lead, 50, copper, 50);
             outputLiquid = new LiquidStack(steam, 12/60f);
             requirements(Category.liquid, with(rustyIron, 10, lead, 10, copper, 10));
+
+            drawer = new DrawMulti(
+                new DrawDefault(),
+                new DrawLiquidTile(Liquids.water),
+                new DrawLiquidTile(steam),
+                new DrawRegion("-mid"),
+                new DrawFlame()
+            );
         }};
 
         steamAgitator = new AttributeCrafter("steam-agitator"){{
@@ -1075,9 +1083,8 @@ public class NyfalisBlocks {
             itemCapacity = 20;
 
             results = with(
-                Items.copper, 3,
-                Items.lead, 1,
-                rustyIron, 2
+                rustyIron, 3,
+                quartz, 1
             );
             consumePower(2f);
             consumeItem(Items.sand, 3);
@@ -1085,6 +1092,14 @@ public class NyfalisBlocks {
             researchCost = with(lead, 700, rustyIron, 700);
             requirements(Category.crafting, with(rustyIron, 20, lead, 50));
 
+            drawer = new DrawMulti(
+                new DrawDefault(),
+                new DrawPistons(){{
+                    sides = 1;
+                    lenOffset = -2f;
+                    sinScl = 2.8f;
+                }}
+            );
         }};
 
         discardDriver = new DiscardDriver("discard-driver"){{
