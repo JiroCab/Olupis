@@ -17,6 +17,7 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.ShockMine;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
@@ -76,11 +77,16 @@ public class NyfalisBlocks {
         greenShrubsIrregular, greenShrubsCrooked, yellowShrubs, yellowShrubsIrregular, yellowShrubsCrooked,
         mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall,
 
+        /*Env Hazzard*/
+        atroposShroom,
+
         /*Trees*/
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, spruceTree,
 
         //Buildings, sorted by category
-        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,cascade, slash, laceration,
+
+        heavyMine,fragMine,glitchMine,mossMine,
+        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,cascade, slash, laceration,krayalnica,
 
         rustyDrill, steamDrill, hydroElectricDrill,
 
@@ -388,7 +394,7 @@ public class NyfalisBlocks {
             albedo = 0.9f;
             statusDuration = 50f;
             speedMultiplier = 0.7f;
-            status = StatusEffects.wet;
+            status = NyfalisStatusEffects.sloppy;
             liquidDrop = emulsiveSlop;
             cacheLayer = NyfalisShaders.slopC;
         }};
@@ -1374,6 +1380,114 @@ public class NyfalisBlocks {
         }};
 
         //endregion
+        //Mines
+        heavyMine = new ShockMine("heavy-mine"){{
+            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, iron, 12}));
+            hasShadow = false;
+            size = 1;
+            health = 50;
+            damage = tileDamage = tendrils = length = 0;
+            shots = 1;
+            rebuildable = false;
+            bullet = new ExplosionBulletType(200, 20*8){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 2f;
+                    speed = 3;
+                    lifetime = 20;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
+                    hitEffect =  Fx.none;
+                    collidesAir = false;
+                    status = StatusEffects.slow;
+                    statusDuration = 260;
+                }};
+            }};
+        }};
+        glitchMine = new ShockMine("glitch-mine"){{
+            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, cobalt, 12}));
+            hasShadow = false;
+            size = 1;
+            health = 30;
+            damage = tileDamage = tendrils = length = 0;
+            shots = 1;
+            rebuildable = false;
+            bullet = new ExplosionBulletType(80, 5*8){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 2f;
+                    speed = 3;
+                    lifetime = 10;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
+                    hitEffect =  Fx.none;
+                    collidesAir = false;
+                    status = NyfalisStatusEffects.glitch;
+                    statusDuration = 260;
+                }};
+            }};
+        }};
+        fragMine = new ShockMine("frag-mine"){{
+            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, quartz, 12}));
+            hasShadow = false;
+            size = 1;
+            health = 40;
+            damage = tileDamage = tendrils = length = 0;
+            shots = 1;
+            rebuildable = false;
+            bullet = new ExplosionBulletType(100, 10*8){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BasicBulletType(3.0F, 10.0F) {{
+                    width = 5.0F;
+                    height = 12.0F;
+                    shrinkY = 1.0F;
+                    lifetime = 30.0F;
+                    backColor = NyfalisItemsLiquid.quartz.color;
+                    frontColor = Color.white;
+                    despawnEffect = Fx.none;
+                }};
+            }};
+        }};
+        mossMine = new ShockMine("moss-mine"){{
+            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, condensedBiomatter, 12}));
+            hasShadow = false;
+            size = 1;
+            health = 20;
+            damage = tileDamage = tendrils = length = 0;
+            shots = 1;
+            rebuildable = false;
+            bullet = new ExplosionBulletType(50, 15*8){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 0.2f;
+                    speed = 3;
+                    lifetime = 10;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
+                    hitEffect =  Fx.none;
+                    collidesAir = false;
+                    status = NyfalisStatusEffects.mossed;
+                    statusDuration = 260;
+                }};
+            }};
+        }};
+        //endregion
         NyfalisTurrets.LoadTurrets();
         //region Power
         wire = new Wire("wire"){{
@@ -1876,7 +1990,7 @@ public class NyfalisBlocks {
         sandBoxBlocks.addAll(
                 /*just to make it easier for testing and/or sandbox*/
                 itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid, powerSource, powerVoid, heatSource,
-                worldProcessor, worldMessage
+                worldProcessor, worldMessage, atroposShroom
         );
 
         Vars.content.blocks().each(b->{
@@ -1884,7 +1998,7 @@ public class NyfalisBlocks {
                 if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 allNyfalisBlocks.add(b);
                 b.envEnabled = NyfalisAttributeWeather.nyfalian;
-            } else if(!sandBoxBlocks.contains(b) || b.envEnabled == Env.any ){
+            } else if(!sandBoxBlocks.contains(b) || b.envEnabled != Env.any ){
                 b.envDisabled |= NyfalisAttributeWeather.nyfalian;
             }
         });

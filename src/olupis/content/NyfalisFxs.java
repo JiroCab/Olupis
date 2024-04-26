@@ -13,6 +13,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.*;
 
 import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.lineAngle;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 import static olupis.content.NyfalisItemsLiquid.rustyIron;
@@ -105,6 +106,23 @@ public class NyfalisFxs extends Fx {
             Lines.circle(e.x, e.y, 2f + e.finpow() * (Vars.tilesize * 2));
             Lines.square(e.x, e.y, 2f + e.finpow() * (Vars.tilesize * -2), 45);
         }),
+        smolPorpolKaboom = new Effect(25, e -> {
+            color(Pal.sapBullet);
+            e.scaled(6, i -> {
+                stroke(i.fout());
+                Lines.circle(e.x, e.y, 3f + i.fin() * 26.66f);
+            });
+
+            color(Color.gray);
+
+            randLenVectors(e.id, 9, 2f + 23.33f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 1.33f + 0.5f));
+
+            color(Pal.sapBulletBack);
+            stroke(e.fout());
+
+            randLenVectors(e.id + 1, 8, 1f + 20f * e.finpow(), (x, y) -> lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout()));
+            Drawf.light(e.x, e.y, 30f, Pal.sapBulletBack, 0.8f * e.fout());
+        }),
 
         colouredShockwave =  new Effect(8f, 120f, e -> {
             z(Layer.blockProp);
@@ -123,6 +141,7 @@ public class NyfalisFxs extends Fx {
                 Fill.poly(e.x + (Math.max(Math.abs(x), fin + 0.7f) * Math.signum(x)), e.y + (Math.max(Math.abs(y), fin + 0.7f) * Math.signum(y)), 6, 2.4f + fout * 6f , rand.random(360f));
             });
         }),
+
 
 
         obliteratorShockwave = new MultiEffect(colouredShockwave, fastSquareSmokeCloud)

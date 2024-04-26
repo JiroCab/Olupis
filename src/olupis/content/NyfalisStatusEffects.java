@@ -11,8 +11,6 @@ import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
 import mindustry.gen.*;
 import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
-
 public class NyfalisStatusEffects {
     public static StatusEffect lubed, mossed, deployed, glitch, sloppy;
 
@@ -60,7 +58,7 @@ public class NyfalisStatusEffects {
                 stats.remove(Stat.speedMultiplier);
                 stats.add(new Stat("olupis-scram-m"),"");
                 stats.add(new Stat("olupis-scram-b"),"");
-                stats.add(new Stat("olupis-scram-s"),dmg * 60, StatUnit.perSecond);
+                stats.add(new Stat("olupis-scram-s"), "");
             }
 
             {
@@ -80,5 +78,16 @@ public class NyfalisStatusEffects {
             init(() -> this.opposites = StatusEffects.tarred.opposites);
         }};
 
+        mossed = new StatusEffect("mossed"){{
+            color = Color.valueOf("5a9e70");
+            speedMultiplier = reloadMultiplier = 0.9f;
+            transitionDamage = 80;
+            init(() -> {
+                affinity(StatusEffects.burning, (unit, result, time) -> {
+                    unit.damagePierce(transitionDamage);
+                    Fx.burning.at(unit.x + Mathf.range(unit.bounds() / 2f), unit.y + Mathf.range(unit.bounds() / 2f));
+                });
+            });
+        }};
     }
 }

@@ -5,10 +5,11 @@ import arc.func.Boolf;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.scene.ui.TextButton;
+import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
-import arc.util.*;
 import mindustry.Vars;
 import arc.util.Scaling;
 import arc.util.Strings;
@@ -20,13 +21,17 @@ import mindustry.type.Liquid;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.ShockMine;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.meta.*;
 import olupis.world.entities.bullets.EffectivenessMissleType;
+import olupis.world.entities.bullets.MineBulletType;
 
 import java.util.Iterator;
 
 import static mindustry.Vars.tilesize;
+import static mindustry.Vars.ui;
 
 public class NyfalisStats extends StatValues {
 
@@ -144,6 +149,44 @@ public class NyfalisStats extends StatValues {
 
                         int val = (int)(m.groundDamageMultiplier * 100 - 100  );
                         sep(bt, Core.bundle.format("stat.olupis-groundpenalty", ammoStat(val), m.damage * m.groundDamageMultiplier, 2));
+                    }
+                    if(type instanceof MineBulletType mb && mb.mine != null){
+                        sep(bt, (mb.mine.localizedName));
+                        sep(bt, (mb.mine.description));
+                        if(mb.createChance){
+                            int set;
+                            if(mb.createChancePercent > 99){
+                                set = 99;
+                            } else if (mb.createChancePercent < 1){
+                                set = 1;
+                            } else {
+                                set = mb.createChancePercent;
+                            }
+                            sep(bt, Core.bundle.format("stat.olupis-chancepercent", Strings.autoFixed(set, 2)));
+                        }
+                        if(mb.mine instanceof ShockMine sm){
+                            float mdmg = (sm.damage * sm.tendrils) + sm.tileDamage;
+                            if(mdmg != 0) {
+                                sep(bt, Core.bundle.format("bullet.damage", (sm.damage * sm.tendrils) + sm.tileDamage));
+                            }
+                            if(sm.bullet != null){
+                                bt.row();
+
+                                Table ic = new Table();
+                                ammoWithInfo(ObjectMap.of(t, sm.bullet), indent + 1, false, null).display(ic);
+                                Collapser coll = new Collapser(ic, true);
+                                coll.setDuration(0.1f);
+
+                                bt.table(it -> {
+                                    it.left().defaults().left();
+
+                                    it.add(Core.bundle.format("stat.olupis-bullet", Strings.autoFixed(sm.shots,2)));
+                                    it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
+                                });
+                                bt.row();
+                                bt.add(coll);
+                            }
+                        }
                     }
 
                     if(type.intervalBullet != null){

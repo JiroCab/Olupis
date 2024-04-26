@@ -1,8 +1,12 @@
 package olupis.content;
 
+import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -15,6 +19,7 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
@@ -964,10 +969,10 @@ public class NyfalisTurrets {
             }};
             shootSound = Sounds.shootSmite;
             shootEffect = new MultiEffect(Fx.shootPayloadDriver, NyfalisFxs.fastSquareSmokeCloud);
-            researchCost = with(lead, 1500, iron, 700, alcoAlloy, 700);
+            researchCost = with(iron, 500, copper, 500, cobalt, 350, quartz, 100);
             coolant = consumeCoolant(2,true,true);
             coolantMultiplier = 0.4f;
-            requirements(Category.turret, with(iron, 100, lead, 200, alcoAlloy, 60));
+            requirements(Category.turret, with(iron, 200, copper, 200, cobalt, 125, quartz, 30));
             heatColor = Pal.accent;
         }};
 
@@ -990,7 +995,8 @@ public class NyfalisTurrets {
                     knockback = 0.5f;
                     speed = 3;
                     lifetime = 10;
-                    trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect =  Fx.none;
+                    hitEffect =  Fx.hitFlameSmall;
                     collidesAir = false;
                     hitSound = NyfalisSounds.sawCollision;
                 }};
@@ -1022,9 +1028,9 @@ public class NyfalisTurrets {
             shootSound = Sounds.none;
             outlineColor = nyfalisBlockOutlineColour;
             coolant = consume(new ConsumeLubricant(15f / 60f));
-            consumePower(2.5f);
-            researchCost = with(rustyIron, 100, lead, 100);
-            requirements(Category.turret, with(rustyIron, 40, lead, 20));
+            consumePower(0.3f);
+            researchCost = with(rustyIron, 200, copper, 150);
+            requirements(Category.turret, with(rustyIron, 60, copper, 50));
 
         }
             @Override
@@ -1034,7 +1040,7 @@ public class NyfalisTurrets {
                 stats.remove(Stat.inaccuracy);
                 stats.remove(Stat.reload);
                 stats.remove(Stat.booster);
-                stats.add(new Stat("olupis-dps", StatCat.function),50 * (60 / reload) , StatUnit.perSecond);
+                stats.add(new Stat("bullet.damage", StatCat.function),50 * (60 / reload) , StatUnit.perSecond);
                 stats.add(Stat.booster, NyfalisStats.sawBoosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
             }
         };
@@ -1063,7 +1069,8 @@ public class NyfalisTurrets {
                     knockback = 0.5f;
                     speed = 3;
                     lifetime = 10;
-                    trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
+                    hitEffect =  Fx.hitFlameSmall;
                     collidesAir = false;
                     hitSound = NyfalisSounds.sawCollision;
                 }};
@@ -1117,9 +1124,9 @@ public class NyfalisTurrets {
             shootSound = Sounds.none;
             outlineColor = nyfalisBlockOutlineColour;
             coolant = consume(new ConsumeLubricant(30f / 60f));
-            consumePower(7.5f);
-            researchCost = with(rustyIron, 100, lead, 100);
-            requirements(Category.turret, with(rustyIron, 40, lead, 20));
+            consumePower(2.5f);
+            researchCost = with(iron, 400, copper, 300, quartz, 100);
+            requirements(Category.turret, with(iron, 230, copper, 160, quartz, 60));
 
         }
             @Override
@@ -1129,11 +1136,220 @@ public class NyfalisTurrets {
                 stats.remove(Stat.inaccuracy);
                 stats.remove(Stat.reload);
                 stats.remove(Stat.booster);
-                stats.add(new Stat("olupis-dps", StatCat.function),(200 * 3) * (60 / reload) , StatUnit.perSecond);
+                stats.add(new Stat("bullet.damage", StatCat.function),(200 * 3) * (60 / reload) , StatUnit.perSecond);
                 stats.add(Stat.booster, NyfalisStats.sawBoosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
             }
         };
 
+        krayalnica = new ItemTurret("krayalnica"){{
+
+            ammo(
+                    iron, new BasicBulletType(0,0){{
+                        lifetime = 0;
+                        fragBullets = 8;
+                        fragRandomSpread = 0;
+                        fragSpread = 45;
+                        fragBullet = new BulletType(){{
+                            damage = 0;
+                            lifetime = 250;
+                            scaleLife = true;
+                            collidesAir = collidesGround = false;
+                            hitColor = backColor = trailColor = iron.color;
+                            frontColor = Color.white;
+                            trailWidth = 1f;
+                            trailLength = 4;
+                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                            despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                                sizeTo = 3.75f;
+                                colorFrom = colorTo = iron.color;
+                                lifetime = 2f;
+                            }});
+                            trailRotation = true;
+                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                            fragBullets = 1;
+                            fragRandomSpread = 0;
+                            fragSpread = 360;
+                            fragBullet = new MineBulletType(NyfalisBlocks.heavyMine,Fx.ballfire, 82);
+                        }};
+                    }},
+                    cobalt, new BasicBulletType(0,0){{
+                        lifetime = 0;
+                        fragBullets = 12;
+                        fragRandomSpread = 0;
+                        fragSpread = 45;
+                        fragBullet = new BulletType(){{
+                            damage = 0;
+                            lifetime = 250;
+                            scaleLife = true;
+                            collidesAir = collidesGround = false;
+                            hitColor = backColor = trailColor = cobalt.color;
+                            frontColor = Color.white;
+                            trailWidth = 1f;
+                            trailLength = 4;
+                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                            despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                                sizeTo = 3.75f;
+                                colorFrom = colorTo = cobalt.color;
+                                lifetime = 2f;
+                            }});
+                            trailRotation = true;
+                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                            fragBullets = 1;
+                            fragRandomSpread = 0;
+                            fragSpread = 360;
+                            fragBullet = new MineBulletType(NyfalisBlocks.glitchMine,Fx.ballfire, 70);
+                        }};
+                    }},
+                    quartz, new BasicBulletType(0,0){{
+                        lifetime = 0;
+                        fragBullets = 10;
+                        fragRandomSpread = 0;
+                        fragSpread = 45;
+                        fragBullet = new BulletType(){{
+                            damage = 0;
+                            lifetime = 250;
+                            scaleLife = true;
+                            collidesAir = collidesGround = false;
+                            hitColor = backColor = trailColor = quartz.color;
+                            frontColor = Color.white;
+                            trailWidth = 1f;
+                            trailLength = 4;
+                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                            despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                                sizeTo = 3.75f;
+                                colorFrom = colorTo = quartz.color;
+                                lifetime = 2f;
+                            }});
+                            trailRotation = true;
+                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                            fragBullets = 1;
+                            fragRandomSpread = 0;
+                            fragSpread = 360;
+                            fragBullet = new MineBulletType(NyfalisBlocks.fragMine,Fx.ballfire, 75);
+                        }};
+                    }},
+                    condensedBiomatter, new BasicBulletType(0,0){{
+                        lifetime = 0;
+                        fragBullets = 20;
+                        fragRandomSpread = 0;
+                        fragSpread = 45;
+                        fragBullet = new BulletType(){{
+                            damage = 0;
+                            lifetime = 250;
+                            scaleLife = true;
+                            collidesAir = collidesGround = false;
+                            hitColor = backColor = trailColor = condensedBiomatter.color;
+                            frontColor = Color.white;
+                            trailWidth = 1f;
+                            trailLength = 4;
+                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                            despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                                sizeTo = 3.75f;
+                                colorFrom = colorTo = condensedBiomatter.color;
+                                lifetime = 2f;
+                            }});
+                            trailRotation = true;
+                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                            fragBullets = 1;
+                            fragRandomSpread = 0;
+                            fragSpread = 360;
+                            fragBullet = new MineBulletType(NyfalisBlocks.mossMine,Fx.ballfire, 40);
+                        }};
+                    }}
+            );
+            drawer = new DrawTurret("iron-"){{
+                targetAir = false;
+                shootCone = 360;
+                inaccuracy = 0;
+                size = 3;
+                recoil = 1;
+                shootY = 0;
+                range = 320f;
+                predictTarget = true;
+                health = 1500;
+                fogRadius = 13;
+                coolantMultiplier = 7.5f;
+                reload = 12*16;
+            }};
+            ammoPerShot = 24;
+            loopSound = Sounds.release;
+            outlineColor = nyfalisBlockOutlineColour;
+            researchCost = with(iron, 300, copper, 210, alcoAlloy, 130);
+            coolant = consume(new ConsumeLubricant(35f / 60f));
+            requirements(Category.turret, with(iron, 130, copper, 100, alcoAlloy, 50));
+
+        }
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
+            }
+        };
+
+        //region Env Hazzards
+        atroposShroom = new PowerTurret("atropos-shroom"){{
+            alwaysShooting = true;
+            inaccuracy =  360;
+            playerControllable = logicConfigurable = false;
+            var T = this;
+
+            shootType = new ExplosionBulletType(50,100){{
+                shootEffect = NyfalisFxs.smolPorpolKaboom;
+                killShooter = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 2f;
+                    speed = 3;
+                    lifetime = 10;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
+                    hitEffect =  Fx.none;
+                    collidesAir = true;
+                    status = StatusEffects.sapped;
+                    statusDuration = 240;
+                    fragBullets = 1;
+                    fragRandomSpread = 0;
+                    fragSpread = 45;
+                    fragBullet = new BulletType(3,0){{
+
+                        trailLength = 2;
+                        trailColor = Items.sporePod.color;
+                        trailEffect = Fx.sporeSlowed;
+                        despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                        lifetime = 100;
+                        collidesAir = collidesGround = false;
+                        fragBullets = 1;
+                        fragRandomSpread = fragSpread = 0;
+                        fragBullet = new MineBulletType(T,Fx.sporeSlowed,15);
+                    }};
+                }};
+            }};
+
+            solid = createRubble = rebuildable = false;
+
+            breakEffect = Fx.breakProp;
+            breakSound = Sounds.plantBreak;
+
+
+            drawer = new DrawRegion("");
+            hasShadow = false;
+            drawTeamOverlay = false;
+            size = 1;
+            shootY = 0;
+            range = 0;
+            health = 1;
+            reload = 60 * 20;
+            shootSound = Sounds.none;
+
+        }};
+        //endregion
 
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
