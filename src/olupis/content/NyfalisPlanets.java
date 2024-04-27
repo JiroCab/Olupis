@@ -28,7 +28,7 @@ public class NyfalisPlanets {
         r.waveTeam = Team.green;
 
         r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
-        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = true;
+        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = r.hideBannedBlocks = true;
 
         r.env =  Env.oxygen | NyfalisAttributeWeather.nyfalian;
     };
@@ -120,7 +120,7 @@ public class NyfalisPlanets {
     public  static void PostLoadPlanet(){
          Seq<Sector> finalSectors = new Seq<>();
          finalSectors.add(systemSector.find(t -> t.preset == NyfalisSectors.sanctuary)); //prevents launching at sector 0 of nyfalis if you double tap while system is selected
-        systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
+         systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
          finalSectors.add(systemSector);
         system.sectors.set(finalSectors);
         planetList.add(nyfalis, arthin, spelta, system);

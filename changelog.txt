@@ -30,10 +30,11 @@ Last updated on 20/03/2024 (+8utc) by Jirocab/RushieWashie
     ~ Improved: Obliterator fully implemented
     ~ Improved: Broiler now gets
     ~ Sprites: Recoloured blocks to have new iron pallet
-    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item) quartz (ore), rustyIron (item), lubricant (liquid), aegis
+    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item), quartz (ore), lubricant (liquid), aegis
     ~ Sprites Contributed by Ethanol10: acerodon, germanica, essex, serpent, avenger
     ~ Sprites Contributed by Catana: spirit
-
+    ~ Sprites Contributed by Lixie: spirit: rustyIron (item), rustedBridge, rustyConveyor, ironDistributor, ironJunction, ironRouter, steamBoiler, pipeCanister, ironSieve
+    -- Removed: e
     -- Music removed from content mod - https://github.com/JiroCab/Nyfalis-Music
 
 = Version 1-6 (9d343a0) = https://github.com/JiroCab/Olupis/tree/9d343a0e5fc3aab9c5efc5073e9b9d7e4edfb1e5

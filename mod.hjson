@@ -6,7 +6,7 @@ displayName: "Nyfalis (Olupis)"
 name: "olupis"
 
 #your name
-author: " ;3\nProgramming:\nRushieWashie, Siede, WMF Industries, Otamamori \n---------------------\nSprites:\nRushieWashie, Remington Thomas, Ethanol10, kapzduke, Otamamori, Catana\n---------------------\nMaps:\nRushieWashie, MrApple, Remington Thomas "
+author: " ;3\nProgramming:\nRushieWashie, Siede, WMF Industries, Otamamori \n---------------------\nSprites:\nRushieWashie, Remington Thomas, Ethanol10, kapzduke, Otamamori, Catana, Lixie\n---------------------\nMaps:\nRushieWashie, MrApple, Remington Thomas "
 
 #the fully qualified main class of the mod
 main: "olupis.NyfalisMain"
@@ -14,7 +14,7 @@ main: "olupis.NyfalisMain"
 #the mod description as seen in the mod dialog
 description: "(\u26A0Work in progress\u26A0)\n Yet another planet mod \nThat does it's best to give the player(s) a bit of something new,\n with a minor hint of what the base game has to offer, focus on RTS controls, and pain on top"
 
-subtitle: "Yet another planet mod, v1.7-b18"
+subtitle: "Yet another planet mod, v1.7-b19"
 
 #the mod version
 version: 1.7

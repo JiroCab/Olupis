@@ -6,6 +6,7 @@ import mindustry.content.*;
 import mindustry.type.*;
 
 import static mindustry.Vars.content;
+import static mindustry.content.Items.*;
 
 public class NyfalisItemsLiquid {
 
@@ -54,7 +55,7 @@ public class NyfalisItemsLiquid {
 
         nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum);
         nyfalisItems.add(nyfalisOnlyItems);
-        nyfalisItems.add(Items.serpuloItems);
+        nyfalisItems.add(copper, lead, silicon, graphite);
 
         /*.forEach() Crashes mobile*/
         for (Planet p : content.planets()) {

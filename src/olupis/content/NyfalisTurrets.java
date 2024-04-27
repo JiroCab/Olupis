@@ -1,12 +1,8 @@
 package olupis.content;
 
-import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
-import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -19,7 +15,6 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
-import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
@@ -1287,7 +1282,7 @@ public class NyfalisTurrets {
             public void setStats() {
                 super.setStats();
                 stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
+                stats.add(Stat.ammo, NyfalisStats.ammoBlocksOnly(ammoTypes, this));
             }
         };
 

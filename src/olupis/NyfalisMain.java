@@ -5,6 +5,7 @@ import arc.Events;
 import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.content.Planets;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
@@ -111,13 +112,23 @@ public class NyfalisMain extends Mod{
         if(net.client())return;
         if(!Core.settings.getBool("nyfalis-auto-ban")) return;
         if(state.isCampaign()){ Planet sector = state.getSector().planet;
-            if(sector == arthin || sector == spelta || sector == nyfalis) state.rules.env = state.rules.env | NyfalisAttributeWeather.nyfalian;
+            if(NyfalisPlanets.isNyfalianPlanet(sector)) state.rules.env = state.rules.env | NyfalisAttributeWeather.nyfalian;
         }
         if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun) state.rules.env = state.rules.env | NyfalisAttributeWeather.nyfalian;
         for (Block c : NyfalisBlocks.nyfalisCores) {
             if (indexer.isBlockPresent(c)) {
                 state.rules.env |= NyfalisAttributeWeather.nyfalian;
                 break;
+            }
+        }
+        /*this is here so A)Hotkeys aren't broken even if blocks are hidden due to env B)Prevent Serpulo cores to be built here*/
+        if(state.rules.hasEnv(NyfalisAttributeWeather.nyfalian) && state.rules.isBanned(Blocks.coreShard)){
+            for (Block b : hiddenNyfalisBlocks) {
+                if (state.rules.bannedBlocks.contains(b) && b != Blocks.coreShard) { //shard core shouldn't be built anyway and will be our check
+                    state.rules.bannedBlocks.remove(b);
+                    continue;
+                }
+                if(!sandBoxBlocks.contains(b))state.rules.bannedBlocks.add(b);
             }
         }
     }

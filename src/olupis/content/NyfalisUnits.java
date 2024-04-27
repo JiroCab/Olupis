@@ -1228,9 +1228,8 @@ public class NyfalisUnits {
             groundLayer = Layer.legUnit - 1f;
 
             legPhysicsLayer = false;
-            canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi = true;
+            canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi = weaponsStartEmpty = true;
             constructor = LegsUnit::create;
-            spawnStatus = StatusEffects.disarmed;
             pathCost = NyfalisPathfind.costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
 
@@ -1249,7 +1248,7 @@ public class NyfalisUnits {
             }});
 
             weapons.add(
-                new Weapon() {{
+                new NyfalisWeapon() {{
                     reload = 60*10;
                     x = y = shootX = shootY = 0;
                     shootStatus = StatusEffects.unmoving;
@@ -1299,19 +1298,130 @@ public class NyfalisUnits {
                 }}
             );
         }};
+        pedicia = new NyfalisUnitType("pedicia"){{
+            armor = 2f;
+            hitSize = 10f;
+            speed = 2.5f;
+            drag = 0.11f;
+            health = 560;
+            mineTier = 1;
+            legCount = 0;
+            fogRadius = 0f;
+            /*Corner Engines only*/
+            engineSize = -1;
+            mineSpeed = 9f;
+            buildSpeed = 0.6f;
+            itemCapacity = 75;
+            rotateSpeed = 5.5f;
+            //range = mineRange;
+            legMoveSpace = 1.2f; //Limits world tiles movement
+            boostMultiplier = 0.75f;
+            buildBeamOffset = 4.2f;
+            shadowElevation = 0.1f;
+            researchCostMultiplier = 0f;
+            groundLayer = Layer.legUnit - 1f;
+
+            legPhysicsLayer = false;
+            canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi =  weaponsStartEmpty = true;
+            constructor = LegsUnit::create;
+            pathCost = NyfalisPathfind.costLeggedNaval;
+            ammoType = new PowerAmmoType(1000);
+
+            defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
+            mineItems = Seq.with(rustyIron, lead, scrap);
+            setEnginesMirror(
+                new UnitEngine(20.5f / 4f, 22 / 4f, 2.2f, 65f), //front
+                new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
+            );
+            parts.add(new HoverPart(){{
+                mirror = false;
+                radius = 13f;
+                phase = 320f;
+                layerOffset = -0.001f;
+                color = Color.valueOf("5C9F62");
+            }});
+
+            weapons.add(
+                new NyfalisWeapon() {{
+                    reload = 60*10;
+                    x = y = shootX = shootY = 0;
+                    shootStatus = StatusEffects.unmoving;
+                    shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
+                    /*3 bullets deep, just so everything shoot at the same time, as being separate weapons causes early/late shooting*/
+                    bullet = new BulletType() {{
+                        collides = hittable = collidesTiles = false;
+                        instantDisappear = collidesAir = true;
+                        hitSound = Sounds.explosion;
+                        hitEffect = NyfalisFxs.unitDischarge;
+
+                        splashDamage = 65f;
+                        rangeOverride = 30f;
+                        splashDamageRadius = 55f;
+                        buildingDamageMultiplier = speed = 0f;
+                        intervalBullet = new HealOnlyBulletType(0,0) {{
+                            spin = 3.6f;
+                            drag = 0.9f;
+                            lifetime = 10*60;
+                            shrinkX = 25f/60f;
+                            shrinkY = 35f/60f;
+                            bulletInterval = 25;
+                            intervalBullets = 2;
+                            intervalSpread = 180;
+                            intervalRandomSpread = 90;
+                            height = width = healAmount = 20;
+
+                            collidesTeam = true;
+                            keepVelocity = false;
+                            hitEffect = despawnEffect = Fx.heal;
+                            backColor = frontColor = trailColor = lightColor = Pal.heal;
+
+                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet", false) {{
+                                lifetime = 60;
+                                trailLength = 10;
+                                trailWidth = 1.5f;
+                                healAmount = 20;
+                                bulletInterval = 10;
+                                homingPower = 0.09f;
+
+                                collidesTeam = true;
+                                keepVelocity = false;
+                                hitEffect = despawnEffect = Fx.heal;
+                                backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
+                            }};
+                        }};
+                    }};
+                }},
+                new Weapon(){{
+                    top = false;
+                    reload = 50f;
+                    shootCone = 30f;
+                    shootSound = Sounds.lasershoot;
+                    x = y = shootX = inaccuracy = 0f;
+                    bullet = new LaserBoltBulletType(6f, 5){{
+                        lifetime = 15f;
+                        healPercent = 1f;
+                        homingPower = 0.03f;
+                        buildingDamageMultiplier = 0.01f;
+                        collidesTeam = true;
+                        backColor = Pal.heal;
+                        frontColor = Color.white;
+                    }};
+                }}
+            );
+        }};
 
         phorid = new NyfalisUnitType("phorid"){{
             armor = 3f;
             hitSize = 10.5f;
             speed = 2.6f;
             drag = 0.11f;
-            health = 560;
+            health = 720;
             mineTier = 2;
             legCount = 0;
             fogRadius = 0f;
             /*Corner Engines only*/
             engineSize = -1;
-            rotateSpeed = 6f;
+            rotateSpeed = 6.5f;
             mineSpeed = 9.5f;
             buildSpeed = 0.7f;
             itemCapacity = 80;
@@ -1324,9 +1434,8 @@ public class NyfalisUnits {
             groundLayer = Layer.legUnit - 1f;
 
             legPhysicsLayer = false;
-            canBoost = allowLegStep = hovering = alwaysBoostOnSolid = customMineAi = true;
+            canBoost = allowLegStep = hovering = alwaysBoostOnSolid = customMineAi = weaponsStartEmpty =  true;
             constructor = LegsUnit::create;
-            spawnStatus = StatusEffects.disarmed;
             mineItems = Seq.with(rustyIron, lead, scrap);
             pathCost = NyfalisPathfind.costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
@@ -1345,7 +1454,7 @@ public class NyfalisUnits {
             }});
 
             weapons.addAll(
-                new Weapon() {{
+                new NyfalisWeapon() {{
                     reload = 60*10;
                     x = y = shootX = shootY = 0;
                     shootStatus = StatusEffects.unmoving;
@@ -1371,7 +1480,7 @@ public class NyfalisUnits {
                                 lifetime = 10*60;
                                 shrinkX = 25f/60f;
                                 shrinkY = 35f/60f;
-                                bulletInterval = 25;
+                                bulletInterval = 30;
                                 intervalBullets = 2;
                                 intervalSpread = 180;
                                 intervalRandomSpread = 90;

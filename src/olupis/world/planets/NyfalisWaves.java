@@ -4,7 +4,6 @@ import arc.func.Intc;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Structs;
 import mindustry.content.StatusEffects;
 import mindustry.game.SpawnGroup;
@@ -271,7 +270,6 @@ public class NyfalisWaves {
             group.end -= shift;
         }
 
-        Log.err("nya gen waves \n" +  out);
         return out;
     }
 }

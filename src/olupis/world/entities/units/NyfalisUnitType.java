@@ -30,6 +30,7 @@ import mindustry.world.Block;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 import olupis.content.NyfalisItemsLiquid;
+import olupis.content.NyfalisStatusEffects;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
@@ -51,6 +52,8 @@ public class NyfalisUnitType extends UnitType {
     public boolean deployLands = false, alwaysBoosts = false, deployHasEffect = false;
     public StatusEffect deployEffect = StatusEffects.none;
     public float deployEffectTime = 20f;
+    /*Reload cooldown on spawn (gant cheese fix)*/
+    public boolean weaponsStartEmpty = false;
     /*Effects that a unit spawns with, gnat cheese fix*/
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
@@ -193,6 +196,7 @@ public class NyfalisUnitType extends UnitType {
             u.lifetime(lifetime);
         }
         unit.apply(spawnStatus, spawnStatusDuration);
+        if(weaponsStartEmpty)unit.apply(NyfalisStatusEffects.unloaded, 60f * 0.05f);
         return unit;
     }
 
@@ -254,7 +258,9 @@ public class NyfalisUnitType extends UnitType {
             this.boostShoot = boostShoot;
             this.groundShoot = groundShoot;
         }
-        NyfalisWeapon(){}
+        public NyfalisWeapon(){
+            super();
+        }
 
         @Override
         public void draw(Unit unit, WeaponMount mount){
@@ -267,6 +273,10 @@ public class NyfalisUnitType extends UnitType {
 
         @Override
         public void update(Unit unit, WeaponMount mount){
+
+            if(unit.hasEffect(NyfalisStatusEffects.unloaded)){
+                mount.reload = reload;
+            }
 
             boolean can = (!unit.disarmed
                     && (!unit.type.canBoost ||

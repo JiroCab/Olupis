@@ -43,6 +43,7 @@ public class MineBulletType extends BulletType{
         this.createChancePercent = createChancePercent;
 
         absorbable = hittable = false;
+        damage = 0;
         speed = 0;
         collides = false;
         hitEffect = despawnEffect = shootEffect = smokeEffect = Fx.none;
@@ -71,7 +72,7 @@ public class MineBulletType extends BulletType{
             if(createChanceRan <= set){
                 if(tile.block() == Blocks.air && !tile.floor().isLiquid){
                     if(!occupied){
-                        tile.setBlock(mine, b.team, (int) b.rotation()/90);
+                        tile.setNet(mine, b.team, (int) b.rotation()/90);
                         placeEffect.at(b.x, b.y, mine.size);
                         creationSound.at(b.x, b.y, Mathf.random(1.2f,3f), soundsVolume);
                     }
@@ -82,7 +83,7 @@ public class MineBulletType extends BulletType{
         } else {
             if(tile.block() == Blocks.air && !tile.floor().isLiquid){
                 if(!occupied){
-                    tile.setBlock(mine, b.team, (int) b.rotation()/90);
+                    tile.setNet(mine, b.team, (int) b.rotation()/90);
                     placeEffect.at(b.x, b.y, mine.size);
                     creationSound.at(b.x, b.y, Mathf.random(0.8f, 1.2f), soundsVolume);
                 }

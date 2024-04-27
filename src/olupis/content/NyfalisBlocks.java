@@ -101,7 +101,7 @@ public class NyfalisBlocks {
 
         garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
 
-        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall, repairPin,
+        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall, repairPin, scoutPad,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal,
         mendFieldProjector, taurus, ladar,
@@ -110,7 +110,7 @@ public class NyfalisBlocks {
     ; //endregion
 
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
-    public static ObjectSet<Block> nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>();
+    public static ObjectSet<Block> nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>();
 
     public static void LoadWorldTiles(){
         //region Ores / Overlays
@@ -1363,6 +1363,11 @@ public class NyfalisBlocks {
             size = 4;
         }};
 
+        scoutPad = new MechPad("scout-pad"){{
+            //proof of concept
+            requirements(Category.units, BuildVisibility.hidden, with(Items.graphite, 15, iron, 10));
+            size = 4;
+        }};
         //TODO: payloadLifter -> payload into a air unit to drop off at configured location, air unit can be killed
 
         unitReplicator = new Replicator("unit-replicator"){{
@@ -1837,7 +1842,7 @@ public class NyfalisBlocks {
             unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap));
             researchCost = with(lead, 13500, rustyIron, 13500, iron, 13500);
 
-            unitType = gnat;
+            unitType = pedicia;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300, iron, 1000));
         }};
 
@@ -2005,6 +2010,9 @@ public class NyfalisBlocks {
 
         nyfalisCores.addAll(coreRemnant, coreRelic, coreShrine, coreTemple, coreVestige);
 
+        Planets.serpulo.techTree.each(n ->{
+            if(n.content instanceof Block b) hiddenNyfalisBlocks.add(b);
+        });
 
         cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
         cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);
