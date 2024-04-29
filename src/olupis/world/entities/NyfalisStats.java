@@ -217,13 +217,13 @@ public class NyfalisStats extends StatValues {
                                 sepLeft(bt, (mb.mine.localizedName));
                                 sepLeft(bt, (mb.mine.description));
                                 if (mb.createChance) {
-                                    int set;
-                                    if (mb.createChancePercent > 99) {
+                                    float set;
+                                    if (mb.createChancePercent > 0.99) {
                                         set = 99;
-                                    } else if (mb.createChancePercent < 1) {
+                                    } else if (mb.createChancePercent < 0.01) {
                                         set = 1;
                                     } else {
-                                        set = mb.createChancePercent;
+                                        set = (mb.createChancePercent * 100);
                                     }
                                     sep(bt, Core.bundle.format("stat.olupis-chancepercent", Strings.autoFixed(set, 2)));
                                 }

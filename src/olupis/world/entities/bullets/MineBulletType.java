@@ -2,6 +2,7 @@ package olupis.world.entities.bullets;
 
 import arc.audio.*;
 import arc.math.*;
+import arc.util.Log;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -13,10 +14,10 @@ import static mindustry.Vars.world;
 
 public class MineBulletType extends BulletType{
     public Block mine;
-    public Sound creationSound = Sounds.build,creationFailureSound = Sounds.breaks;
+    public Sound creationSound = Sounds.mineDeploy,creationFailureSound = Sounds.boom;
 
     public boolean createChance;
-    public int createChancePercent;
+    public float createChancePercent;
     public float soundsVolume = 0.75f;
 
     public Effect placeEffect;
@@ -35,7 +36,7 @@ public class MineBulletType extends BulletType{
         displayAmmoMultiplier = false;
     }
 
-    public MineBulletType(Block mine, Effect placeEffect,Integer createChancePercent){
+    public MineBulletType(Block mine, Effect placeEffect,Float createChancePercent){
         super();
         this.mine = mine;
         this.placeEffect = placeEffect;
@@ -48,7 +49,7 @@ public class MineBulletType extends BulletType{
         collides = false;
         hitEffect = despawnEffect = shootEffect = smokeEffect = Fx.none;
         layer = Layer.debris;
-        displayAmmoMultiplier = false;
+        displayAmmoMultiplier = false; 
     }
 
     @Override
@@ -60,12 +61,12 @@ public class MineBulletType extends BulletType{
         if(tile == null) return;
         boolean occupied = Groups.unit.intersect(b.x, b.y, 1, 1).contains(Flyingc::isGrounded);
         if (createChance){
-            int createChanceRan = (int)Mathf.range(1,99);
-            int set;
-            if(createChancePercent > 99){
-                set = 99;
-            } else if (createChancePercent < 1){
-                set = 1;
+            float createChanceRan = Mathf.random(0.01f,0.99f);
+            float set;
+            if(createChancePercent > 0.99f){
+                set = 0.99f;
+            } else if (createChancePercent < 0.01f){
+                set = 0.01f;
             } else {
                 set = createChancePercent;
             }
@@ -74,11 +75,11 @@ public class MineBulletType extends BulletType{
                     if(!occupied){
                         tile.setNet(mine, b.team, (int) b.rotation()/90);
                         placeEffect.at(b.x, b.y, mine.size);
-                        creationSound.at(b.x, b.y, Mathf.random(1.2f,3f), soundsVolume);
+                        creationSound.at(b.x, b.y, 1.2f, soundsVolume);
                     }
                 }
             } else {
-                creationFailureSound.at(b.x, b.y, Mathf.random(1.2f,3f), soundsVolume);
+                creationFailureSound.at(b.x, b.y, 1.2f, soundsVolume);
             }
         } else {
             if(tile.block() == Blocks.air && !tile.floor().isLiquid){
@@ -89,5 +90,6 @@ public class MineBulletType extends BulletType{
                 }
             }
         }
+        b.remove();
     }
 }

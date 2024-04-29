@@ -1149,8 +1149,7 @@ public class NyfalisTurrets {
                             lifetime = 250;
                             scaleLife = true;
                             collidesAir = collidesGround = false;
-                            hitColor = backColor = trailColor = iron.color;
-                            frontColor = Color.white;
+                            hitColor = trailColor = iron.color;
                             trailWidth = 1f;
                             trailLength = 4;
                             hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
@@ -1165,7 +1164,7 @@ public class NyfalisTurrets {
                             fragBullets = 1;
                             fragRandomSpread = 0;
                             fragSpread = 360;
-                            fragBullet = new MineBulletType(NyfalisBlocks.heavyMine,Fx.ballfire, 82);
+                            fragBullet = new MineBulletType(NyfalisBlocks.heavyMine,Fx.ballfire, 0.80f);
                         }};
                     }},
                     cobalt, new BasicBulletType(0,0){{
@@ -1178,8 +1177,7 @@ public class NyfalisTurrets {
                             lifetime = 250;
                             scaleLife = true;
                             collidesAir = collidesGround = false;
-                            hitColor = backColor = trailColor = cobalt.color;
-                            frontColor = Color.white;
+                            hitColor = trailColor = cobalt.color;
                             trailWidth = 1f;
                             trailLength = 4;
                             hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
@@ -1194,7 +1192,7 @@ public class NyfalisTurrets {
                             fragBullets = 1;
                             fragRandomSpread = 0;
                             fragSpread = 360;
-                            fragBullet = new MineBulletType(NyfalisBlocks.glitchMine,Fx.ballfire, 70);
+                            fragBullet = new MineBulletType(NyfalisBlocks.glitchMine,Fx.ballfire, 0.55f);
                         }};
                     }},
                     quartz, new BasicBulletType(0,0){{
@@ -1207,8 +1205,7 @@ public class NyfalisTurrets {
                             lifetime = 250;
                             scaleLife = true;
                             collidesAir = collidesGround = false;
-                            hitColor = backColor = trailColor = quartz.color;
-                            frontColor = Color.white;
+                            hitColor = trailColor = quartz.color;
                             trailWidth = 1f;
                             trailLength = 4;
                             hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
@@ -1223,7 +1220,7 @@ public class NyfalisTurrets {
                             fragBullets = 1;
                             fragRandomSpread = 0;
                             fragSpread = 360;
-                            fragBullet = new MineBulletType(NyfalisBlocks.fragMine,Fx.ballfire, 75);
+                            fragBullet = new MineBulletType(NyfalisBlocks.fragMine,Fx.ballfire, 0.65f);
                         }};
                     }},
                     condensedBiomatter, new BasicBulletType(0,0){{
@@ -1236,8 +1233,7 @@ public class NyfalisTurrets {
                             lifetime = 250;
                             scaleLife = true;
                             collidesAir = collidesGround = false;
-                            hitColor = backColor = trailColor = condensedBiomatter.color;
-                            frontColor = Color.white;
+                            hitColor = trailColor = condensedBiomatter.color;
                             trailWidth = 1f;
                             trailLength = 4;
                             hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
@@ -1252,17 +1248,17 @@ public class NyfalisTurrets {
                             fragBullets = 1;
                             fragRandomSpread = 0;
                             fragSpread = 360;
-                            fragBullet = new MineBulletType(NyfalisBlocks.mossMine,Fx.ballfire, 40);
+                            fragBullet = new MineBulletType(NyfalisBlocks.mossMine,Fx.ballfire, 0.50f);
                         }};
                     }}
             );
-            drawer = new DrawTurret("iron-"){{
+            drawer = new DrawRegion(""){{
                 targetAir = false;
                 shootCone = 360;
                 inaccuracy = 0;
                 size = 3;
                 recoil = 1;
-                shootY = 0;
+                shootY = 2;
                 range = 320f;
                 predictTarget = true;
                 health = 1500;
@@ -1322,7 +1318,7 @@ public class NyfalisTurrets {
                         collidesAir = collidesGround = false;
                         fragBullets = 1;
                         fragRandomSpread = fragSpread = 0;
-                        fragBullet = new MineBulletType(T,Fx.sporeSlowed,15);
+                        fragBullet = new MineBulletType(T,Fx.sporeSlowed,0.40f);
                     }};
                 }};
             }};
