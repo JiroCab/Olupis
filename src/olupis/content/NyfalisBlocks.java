@@ -17,6 +17,7 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Radar;
 import mindustry.world.blocks.defense.ShockMine;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
@@ -106,7 +107,10 @@ public class NyfalisBlocks {
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal,
         mendFieldProjector, taurus, ladar,
 
-        fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry
+        fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
+
+        /*special*/
+        scarabRadar
     ; //endregion
 
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
@@ -1987,6 +1991,16 @@ public class NyfalisBlocks {
 
 
         //endregion
+        //special
+        scarabRadar = new Radar("scarab-block-radar"){{
+            underBullets = true;
+            health = 10;
+            size = 1;
+            discoveryTime = 3400;
+            requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.with(new Object[]{Items.silicon, 1}));
+            fogRadius = 40;
+        }};
+
     }
 
     public static void NyfalisBlocksPlacementFix(){

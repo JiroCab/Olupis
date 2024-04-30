@@ -1142,8 +1142,8 @@ public class NyfalisTurrets {
                     iron, new BasicBulletType(0,0){{
                         lifetime = 0;
                         fragBullets = 8;
-                        fragRandomSpread = 0;
-                        fragSpread = 45;
+                        fragRandomSpread = 10;
+                        fragSpread = 40;
                         fragBullet = new BulletType(){{
                             damage = 0;
                             lifetime = 250;
@@ -1170,8 +1170,8 @@ public class NyfalisTurrets {
                     cobalt, new BasicBulletType(0,0){{
                         lifetime = 0;
                         fragBullets = 12;
-                        fragRandomSpread = 0;
-                        fragSpread = 45;
+                        fragRandomSpread = 10;
+                        fragSpread = 40;
                         fragBullet = new BulletType(){{
                             damage = 0;
                             lifetime = 250;
@@ -1198,8 +1198,8 @@ public class NyfalisTurrets {
                     quartz, new BasicBulletType(0,0){{
                         lifetime = 0;
                         fragBullets = 10;
-                        fragRandomSpread = 0;
-                        fragSpread = 45;
+                        fragRandomSpread = 10;
+                        fragSpread = 40;
                         fragBullet = new BulletType(){{
                             damage = 0;
                             lifetime = 250;
@@ -1226,8 +1226,8 @@ public class NyfalisTurrets {
                     condensedBiomatter, new BasicBulletType(0,0){{
                         lifetime = 0;
                         fragBullets = 20;
-                        fragRandomSpread = 0;
-                        fragSpread = 45;
+                        fragRandomSpread = 10;
+                        fragSpread = 40;
                         fragBullet = new BulletType(){{
                             damage = 0;
                             lifetime = 250;
@@ -1252,20 +1252,33 @@ public class NyfalisTurrets {
                         }};
                     }}
             );
-            drawer = new DrawRegion(""){{
+            drawer = new DrawTurret(){{
                 targetAir = false;
                 shootCone = 360;
                 inaccuracy = 0;
                 size = 3;
-                recoil = 1;
-                shootY = 2;
+                recoil = 0;
+                lockRotation = true;
+                rotateSpeed = 0;
+                rotateDraw = false;
+                shootY = 0;
                 range = 320f;
                 predictTarget = true;
                 health = 1500;
                 fogRadius = 13;
                 coolantMultiplier = 7.5f;
                 reload = 12*16;
+                parts.addAll(
+                        new RegionPart("-piston"){{
+                            layerOffset = 3;
+                            mirror = false;
+                            under = true;
+                            growProgress = PartProgress.reload.inv();
+                            growX = growY = 0.2f;
+                        }}
+                );
             }};
+
             ammoPerShot = 24;
             loopSound = Sounds.release;
             outlineColor = nyfalisBlockOutlineColour;

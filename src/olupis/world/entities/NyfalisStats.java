@@ -17,6 +17,7 @@ import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.type.UnitType;
+import mindustry.type.Weapon;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ShockMine;
@@ -257,6 +258,30 @@ public class NyfalisStats extends StatValues {
                     table.row();
                 }
             }
+        };
+    }
+
+    public static StatValue weaponsB(UnitType unit, Seq<Weapon> weapons) {
+        return (table) -> {
+            table.row();
+
+            for(int i = 0; i < weapons.size; ++i) {
+                Weapon weapon = (Weapon)weapons.get(i);
+                if (!weapon.flipSprite && weapon.hasStats(unit)) {
+                    TextureRegion region = !weapon.name.isEmpty() ? Core.atlas.find(weapon.name + "-preview", weapon.region) : null;
+                    table.table(Styles.grayPanel, (w) -> {
+                        w.left().top().defaults().padRight(3.0F).left();
+                        if (region != null && region.found() && weapon.showStatSprite) {
+                            w.image(region).size(60.0F).scaling(Scaling.bounded).left().top();
+                        }
+
+                        w.row();
+                        weapon.addStats(unit, w);
+                    }).growX().pad(5.0F).margin(10.0F);
+                    table.row();
+                }
+            }
+
         };
     }
 
