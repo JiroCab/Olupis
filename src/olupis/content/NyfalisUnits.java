@@ -3,12 +3,9 @@ package olupis.content;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.geom.Rect;
-import arc.scene.ui.layout.Table;
-import arc.struct.ObjectMap;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Interval;
-import arc.util.Strings;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
@@ -28,10 +25,10 @@ import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.BuildWeapon;
 import mindustry.type.weapons.PointDefenseWeapon;
-import mindustry.world.meta.*;
+import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.Env;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.*;
-import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.abilities.MicroWaveFieldAbility;
 import olupis.world.entities.abilities.UnitRallySpawnAblity;
 import olupis.world.entities.bullets.*;
@@ -1212,6 +1209,71 @@ public class NyfalisUnits {
         }};
 
         //endregion
+        //region scout
+        scarab = new NyfalisUnitType("scarab"){{
+            hitSize = 9f;
+            speed = 3.6f;
+            health = 50;
+            engineSize = 3f;
+            engineOffset = 7f;
+            rotateSpeed = 30f;
+            itemCapacity = 40;
+            drag = accel = 0.08f;
+            constructor = UnitEntity::create;
+            defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
+            range = 32;
+            flying = true;
+            useUnitCap = false;
+            parts.addAll(
+                    new RegionPart("-radar"){{
+                        mirror = false;
+                        under = false;
+                        layerOffset = 2;
+
+                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
+                        heatColor = Color.valueOf("3ed09a");
+                        y = -3.5f;
+                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+                    }}
+            );
+            weapons.add(new NyfalisWeapon(""){{
+                top = mirror = false;
+                shake = 0f;
+                shootY = -9.1f;
+                y = x = recoil = 0f;
+                reload = shootCone = 360f;
+                noAttack = shootOnDeath = statsBlocksOnly = true;
+                ejectEffect = Fx.none;
+                shootSound = Sounds.none;
+                bullet = new BasicBulletType(){{
+                    sprite = "large-bomb";
+                    width = height = 60/4f;
+                    maxRange = 30f;
+                    ignoreRotation = true;
+                    shootEffect = smokeEffect = Fx.none;
+                    backColor = Color.valueOf("3ed09a");
+                    frontColor = Color.white;
+                    hitSound = Sounds.mineDeploy;
+                    shootCone = 180f;
+                    ejectEffect = Fx.none;
+
+                    collidesAir = false;
+
+                    lifetime = 45f;
+                    despawnEffect = Fx.none;
+                    hitEffect = Fx.explosion;
+                    keepVelocity = false;
+                    spin = 2f;
+                    shrinkX = shrinkY = 0.7f;
+                    speed = 0f;
+                    collides = false;
+                    splashDamage = 0;
+                    splashDamageRadius = 0;
+                    fragBullets = 1;
+                }};
+            }});
+        }};
+        //endregion
         //region Nyfalis Core Units
         gnat = new NyfalisUnitType("gnat"){{
             armor = 1f;
@@ -1548,33 +1610,6 @@ public class NyfalisUnits {
             }
         };
         //endregion
-        //scout
-        scarab = new NyfalisUnitType("scarab"){{
-            hitSize = 9f;
-            speed = 3.6f;
-            health = 50;
-            engineSize = 3f;
-            engineOffset = 7f;
-            rotateSpeed = 30f;
-            itemCapacity = 40;
-            drag = accel = 0.08f;
-            constructor = UnitEntity::create;
-            defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
-            range = 32;
-            flying = true;
-            parts.addAll(
-                    new RegionPart("-radar"){{
-                        mirror = false;
-                        under = false;
-                        layerOffset = 2;
-
-                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
-                        heatColor = Color.valueOf("3ed09a");
-                        y = -3.5f;
-                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
-                    }}
-            );
-        }};
     }
 
     /*Common custom ammo types for the lifetime units*/
@@ -1664,48 +1699,10 @@ public class NyfalisUnits {
         porter.displayFactory = Seq.with(zoner, NyfalisBlocks.navalConstruct);
         bay.displayFactory = Seq.with(zoner, NyfalisBlocks.navalConstruct);
 
-        scarab.weapons.add(new Weapon(""){
-
-            {
-            top = mirror = false;
-            shake = 0f;
-            shootY = -9.1f;
-            y = x = recoil = 0f;
-            reload = shootCone = 360f;
-            noAttack = shootOnDeath = true;
-            ejectEffect = Fx.none;
-            shootSound = Sounds.none;
-            bullet = new BasicBulletType(){{
-                sprite = "large-bomb";
-                width = height = 60/4f;
-                maxRange = 30f;
-                ignoreRotation = true;
-                shootEffect = smokeEffect = Fx.none;
-                backColor = Color.valueOf("3ed09a");
-                frontColor = Color.white;
-                hitSound = Sounds.mineDeploy;
-                shootCone = 180f;
-                ejectEffect = Fx.none;
-
-                collidesAir = false;
-
-                lifetime = 45f;
-                despawnEffect = Fx.none;
-                hitEffect = Fx.explosion;
-                keepVelocity = false;
-                spin = 2f;
-                shrinkX = shrinkY = 0.7f;
-                speed = 0f;
-                collides = false;
-                splashDamage = 0;
-                splashDamageRadius = 0;
-                fragBullets = 1;
-                fragBullet = new MineBulletType(NyfalisBlocks.scarabRadar,Fx.placeBlock);
-            }};
-        }});
-
         zoner.displayFactory = Seq.with(porter);
         embryo.displayFactory = Seq.with(phorid);
+
+        scarab.weapons.get(0).bullet.fragBullet = new MineBulletType(NyfalisBlocks.scarabRadar,Fx.placeBlock);
 
         for (UnitType u : Vars.content.units()) {
             if(u.name.contains("olupis-")){

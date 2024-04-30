@@ -9,7 +9,7 @@ import mindustry.world.blocks.ControlBlock;
 import olupis.content.NyfalisUnits;
 
 public class MechPad extends Block {
-    UnitType type = NyfalisUnits.aero;
+    UnitType type = NyfalisUnits.scarab;
     public  MechPad(String name){
         super(name);
         update = true;

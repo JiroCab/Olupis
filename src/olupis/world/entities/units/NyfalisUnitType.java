@@ -28,12 +28,12 @@ import mindustry.type.*;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatValues;
+import mindustry.world.meta.*;
 import olupis.content.NyfalisItemsLiquid;
 import olupis.content.NyfalisStatusEffects;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
+import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.parts.NyfPartParms;
 
@@ -42,7 +42,7 @@ import static mindustry.Vars.*;
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
     public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false,
-                            constructHideDefault = false, customMineAi = false;
+                           constructHideDefault = false, customMineAi = false;
     /*Makes (legged) units boost automatically regardless of Ai*/
     public boolean alwaysBoostOnSolid = false;
     /*Replace Move Command to a custom one*/
@@ -55,7 +55,7 @@ public class NyfalisUnitType extends UnitType {
     public float deployEffectTime = 20f;
     /*Reload cooldown on spawn (gant cheese fix)*/
     public boolean weaponsStartEmpty = false;
-    /*Effects that a unit spawns with, gnat cheese fix*/
+    /*Effects that a unit spawns with*/
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
     public Seq<UnlockableContent> displayFactory = new Seq<>();
@@ -262,7 +262,9 @@ public class NyfalisUnitType extends UnitType {
         /*Shoot while dash command is selected*/
         dashShoot = false, dashExclusive = false,
         /*Check for angle to target before shooting */
-        strictAngle = true;
+        strictAngle = true,
+        /*Stats*/
+        statsBlocksOnly = false;
         /*Margin where when a weapon can fire while transition from ground to air*/
         float boostedEvaluation = 0.95f, groundedEvaluation = 0.05f;
         /*Snek weapon helper so I don't have to override anything else there*/
@@ -286,7 +288,6 @@ public class NyfalisUnitType extends UnitType {
             }
             super.draw(unit, mount);
         }
-
 
         @Override
         public void update(Unit unit, WeaponMount mount){
@@ -449,6 +450,24 @@ public class NyfalisUnitType extends UnitType {
                 }
             }
         }
+
+        @Override
+        public void addStats(UnitType u, Table t){
+            if(inaccuracy > 0){
+                t.row();
+                t.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + (int)inaccuracy + " " + StatUnit.degrees.localized());
+            }
+            if(!alwaysContinuous && reload > 0){
+                t.row();
+                t.add("[lightgray]" + Stat.reload.localized() + ": " + (mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / reload * shoot.shots, 2) + " " + StatUnit.perSecond.localized());
+            }
+            if(statsBlocksOnly){
+                NyfalisStats.ammoBlocksOnly(ObjectMap.of(u, bullet), null).display(t);
+                return;
+            }
+            NyfalisStats.ammo(ObjectMap.of(u, bullet)).display(t);
+        }
+
     }
 
 }

@@ -18,6 +18,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ShockMine;
@@ -32,7 +33,7 @@ import static mindustry.Vars.*;
 public class NyfalisStats extends StatValues {
 
     public static <T extends UnlockableContent> StatValue ammoWithInfo(ObjectMap<T, BulletType> map, Block parent){
-        return ammoWithInfo(map, 0, false, parent.name);
+        return ammoWithInfo(map, 0, false, parent != null ? parent.name : null);
     }
 
     public static <T extends UnlockableContent> StatValue ammoBlocksOnly(ObjectMap<T, BulletType> map, Block parent){
