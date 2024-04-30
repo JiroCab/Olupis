@@ -87,7 +87,7 @@ public class NyfalisItemsLiquid {
             canStayOn.addAll(Liquids.water, Liquids.oil);
         }};
 
-        emulsiveSlop = new Liquid("emulsive-slop", Color.valueOf("C4AA90")){{
+        emulsiveSlop = new Liquid("emulsive-slop", Color.valueOf("39436D")){{
             viscosity = 0.33f;
             flammability = 0.6f;
             explosiveness = 0.7f;

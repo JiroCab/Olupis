@@ -2,6 +2,7 @@ package olupis.world.entities.units;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -59,6 +60,7 @@ public class NyfalisUnitType extends UnitType {
     public float spawnStatusDuration = 60f * 5f;
     public Seq<UnlockableContent> displayFactory = new Seq<>();
     public Color unitOutLine = Color.valueOf("371404");
+    public TextureRegion bossRegion;
 
     public NyfalisUnitType(String name){
         super(name);
@@ -206,6 +208,21 @@ public class NyfalisUnitType extends UnitType {
             NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit) );
         }
         super.draw(unit);
+    }
+
+    @Override
+    public void drawBody(Unit unit){
+        applyColor(unit);
+        TextureRegion e = !unit.hasEffect(StatusEffects.boss) || bossRegion == null ? region : bossRegion;
+        Draw.rect(e, unit.x, unit.y, unit.rotation - 90);
+
+        Draw.reset();
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        bossRegion = Core.atlas.find(name + "-boss", name);
     }
 
     public float partAmmo(Unit unit){

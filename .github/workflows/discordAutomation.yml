@@ -20,7 +20,7 @@ jobs:
           workflow: deploy.yml
           branch: experimental
 
-      - name: Send file Olupis-but-a-jar.jar to discord channel
+      - name: Send file Jar to the nyfalis-beta-files channel of the discord
         uses: sinshutu/upload-to-discord@master
         env:
             DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}

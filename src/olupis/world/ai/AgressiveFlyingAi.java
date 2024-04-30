@@ -34,6 +34,10 @@ public class AgressiveFlyingAi extends FlyingAI {
     public AgressiveFlyingAi(){
 
     }
+    public AgressiveFlyingAi(boolean hunt, boolean shouldCircle){
+        if (hunt)fallback = new SearchAndDestroyFlyingAi();
+        this.shouldCircle = shouldCircle;
+    }
 
     @Override
     public void updateMovement(){

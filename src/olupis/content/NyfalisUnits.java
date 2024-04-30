@@ -91,7 +91,7 @@ public class NyfalisUnits {
             drag = accel = 0.08f;
             strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
 
-            lowAltitude = flying = canCircleTarget = alwaysShootWhenMoving = circleTarget = true;
+            lowAltitude = flying = canCircleTarget = alwaysShootWhenMoving = true;
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
             defaultCommand = NyfalisUnitCommands.circleCommand;
@@ -147,7 +147,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             aiController = AgressiveFlyingAi::new;
             defaultCommand = NyfalisUnitCommands.circleCommand;
-            flying = canCircleTarget = circleTarget = true;
+            flying = canCircleTarget = alwaysCreateOutline = true;
             weapons.add(new Weapon(""){{
                 x = 0;
                 y = 1.5f;
@@ -930,6 +930,7 @@ public class NyfalisUnits {
                 mirror = false;
                 rotate= top = true;
                 shoot = new ShootAlternate(2.7f);
+                shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
                 for(int i = 0; i < 3; i ++){ int f = i;
                     parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : i == 1 ? "m" : "r")){{
                         x = (f == 0) ? 3.8f : (f == 1) ? 0f : -3.8f;

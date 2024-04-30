@@ -13,7 +13,7 @@ public class NyfalisSectors {
 
     public static SectorPreset
         /*Arthin / Seredris*/
-        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, inundataDesert, abandonedTrainStations, conciditRuins, snowPisos,
+        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, inundataDesert, abandonedTrainStations, conciditRuins, frostbiteBasin,
         /*Nyfalis*/
         conservatorium, forestOfSerenity,
         /*Spelta / Vorgin*/
@@ -75,7 +75,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1200, Items.lead, 1200, NyfalisItemsLiquid.iron, 200, Items.copper, 300,  Items.graphite, 200));
         }};
 
-        abandonedTrainStations = new SectorPreset("abandoned-train-station", arthin, 29){{
+        abandonedTrainStations = new SectorPreset("abandoned-train-station", arthin, 0){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -92,13 +92,13 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 200, NyfalisItemsLiquid.iron, 50));
         }};
 
-        snowPisos = new SectorPreset("snow-pisos", arthin, 0){{
+        frostbiteBasin = new SectorPreset("frostbite-basin", arthin, 29){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 5;
             captureWave = 46;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 100,Items.copper, 100));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000,Items.copper, 500, Items.graphite, 250, NyfalisItemsLiquid.iron, 550));
         }};
 
         //endregion

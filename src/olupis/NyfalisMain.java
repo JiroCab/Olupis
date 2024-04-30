@@ -65,7 +65,7 @@ public class NyfalisMain extends Mod{
 
         Events.on(EventType.WorldLoadEvent.class, l ->{
             /*Delayed since custom games, for some reason needs it*/
-            Time.run(0.5f * Time.toSeconds, this::sandBoxCheck);
+            Time.run(0.5f * Time.toSeconds, NyfalisMain::sandBoxCheck);
 
             unlockPlanets();
             NyfalisStartUpUis.rebuildDebugTable();
@@ -108,21 +108,40 @@ public class NyfalisMain extends Mod{
         });
     }
 
-    public void sandBoxCheck(){ //for any sandbox maps
+    public static void sandBoxCheck(){ //for any sandbox maps
         if(net.client())return;
         if(!Core.settings.getBool("nyfalis-auto-ban")) return;
+        boolean changed = false, anyPlanet = false;
+        int prevEnv = state.rules.env;
         if(state.isCampaign()){ Planet sector = state.getSector().planet;
-            if(NyfalisPlanets.isNyfalianPlanet(sector)) state.rules.env = state.rules.env | NyfalisAttributeWeather.nyfalian;
-        }
-        if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun) state.rules.env = state.rules.env | NyfalisAttributeWeather.nyfalian;
-        for (Block c : NyfalisBlocks.nyfalisCores) {
-            if (indexer.isBlockPresent(c)) {
-                state.rules.env |= NyfalisAttributeWeather.nyfalian;
-                break;
+            if(NyfalisPlanets.isNyfalianPlanet(sector)){
+                changed = true;
             }
         }
+        if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun){
+            anyPlanet = changed = true;
+        }
+        if(state.rules.hiddenBuildItems.isEmpty()){
+            anyPlanet = changed = true;
+        }
+
+        if(!changed){
+            for (Block c : NyfalisBlocks.nyfalisCores) {
+                if (indexer.isBlockPresent(c)) {
+                    changed = true;
+                    break;
+                }
+            }
+        }
+        if(changed){
+            state.rules.env = prevEnv | NyfalisAttributeWeather.nyfalian;
+        }
+
+        Log.err(changed + " " + anyPlanet);
+        if(anyPlanet) return;
+        Log.err("mya");
         /*this is here so A)Hotkeys aren't broken even if blocks are hidden due to env B)Prevent Serpulo cores to be built here*/
-        if(state.rules.hasEnv(NyfalisAttributeWeather.nyfalian) && state.rules.isBanned(Blocks.coreShard)){
+        if(state.rules.hasEnv(NyfalisAttributeWeather.nyfalian) && !state.rules.isBanned(Blocks.coreShard)){
             for (Block b : hiddenNyfalisBlocks) {
                 if (state.rules.bannedBlocks.contains(b) && b != Blocks.coreShard) { //shard core shouldn't be built anyway and will be our check
                     state.rules.bannedBlocks.remove(b);

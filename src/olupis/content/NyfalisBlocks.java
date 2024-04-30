@@ -1129,7 +1129,7 @@ public class NyfalisBlocks {
             shootY = 0f;
             reload = 1200f;
             maxAmmo = 16;
-            itemCapacity = 20;
+            itemCapacity = 40;
             alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
             ammo(
@@ -1161,7 +1161,7 @@ public class NyfalisBlocks {
             alwaysShooting = true;
             consumePower(80f / 60f);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            requiredItems = with(lead, 10, copper, 10);
+            requiredItems = with(lead, 20, copper, 20);
             researchCost = with(lead, 1000, iron, 600, rustyIron, 1000);
             requirements(Category.units, with(iron, 50, lead, 50, rustyIron, 50));
         }};
@@ -1172,8 +1172,8 @@ public class NyfalisBlocks {
             shootY = 0f;
             reload = 1200f;
             maxAmmo = 15;
-            itemCapacity = 20;
-            alternateCapacity = 40;
+            itemCapacity = 80;
+            alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
 
             ammo(
@@ -1201,7 +1201,7 @@ public class NyfalisBlocks {
                 }}
             );
             alwaysShooting = true;
-            requiredItems = with(copper, 10);
+            requiredItems = with(copper, 40);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(lead, 800, copper, 800,  iron, 600);
             requirements(Category.units, with(iron, 100, lead, 100, copper, 100));
@@ -1212,8 +1212,8 @@ public class NyfalisBlocks {
             size = 4;
             reload = 1200f;
             maxAmmo = 15;
-            itemCapacity = 20;
-            alternateCapacity = 40;
+            itemCapacity = 80;
+            alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
             shootY = 2.5f * Vars.tilesize;
 
@@ -1241,7 +1241,7 @@ public class NyfalisBlocks {
                         }};
                 }}
             );
-            requiredItems = with(copper, 10);
+            requiredItems = with(copper, 40);
             alwaysShooting = hoverShowsSpawn = arrowShootPos = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(rustyIron, 500, copper, 500,  iron, 300);
@@ -1253,8 +1253,8 @@ public class NyfalisBlocks {
             size = 4;
             reload = 1200f;
             maxAmmo = 15;
-            itemCapacity = 20;
-            alternateCapacity = 40;
+            itemCapacity = 80;
+            alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
             shootY = 2.5f * Vars.tilesize;
 
@@ -1283,7 +1283,7 @@ public class NyfalisBlocks {
                 }}
             );
             consumePower(80f / 60f);
-            requiredItems = with(copper, 10);
+            requiredItems = with(copper, 40);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             alwaysShooting = hoverShowsSpawn = hasPower = floating = arrowShootPos = true;
             researchCost = with(lead, 1500, silicon, 500,  iron, 800);
@@ -2003,8 +2003,6 @@ public class NyfalisBlocks {
                 if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 allNyfalisBlocks.add(b);
                 b.envEnabled = NyfalisAttributeWeather.nyfalian;
-            } else if(!sandBoxBlocks.contains(b) || b.envEnabled != Env.any ){
-                b.envDisabled |= NyfalisAttributeWeather.nyfalian;
             }
         });
 

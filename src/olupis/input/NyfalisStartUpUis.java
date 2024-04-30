@@ -18,6 +18,7 @@ import mindustry.type.Sector;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.CustomRulesDialog;
+import olupis.NyfalisMain;
 import olupis.content.NyfalisPlanets;
 import olupis.content.NyfalisSectors;
 
@@ -124,6 +125,7 @@ public class NyfalisStartUpUis {
         debugTable.button("Export w/ Nyf", Icon.file, Styles.squareTogglet, () -> {
             state.rules.blockWhitelist = true;
             NyfalisPlanets.nyfalis.applyRules(state.rules);
+            NyfalisMain.sandBoxCheck();
             ui.paused.show();
         }).width(155f).height(40f).margin(12f).checked(false).row();
         debugTable.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{

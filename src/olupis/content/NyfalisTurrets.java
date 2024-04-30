@@ -285,7 +285,7 @@ public class NyfalisTurrets {
             outlineColor = nyfalisBlockOutlineColour;
 
             limitRange(1f);
-            shootSound = Sounds.shootBig;
+            shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
             drawer = new DrawTurret("iron-");
             shoot = new ShootSpread(3, 15);
             smokeEffect = Fx.shootSmokeSquareSparse;

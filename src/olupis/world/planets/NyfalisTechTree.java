@@ -49,7 +49,7 @@ public class NyfalisTechTree {
                                                 });
                                         });
                                 });
-                                node(snowPisos,
+                                node(frostbiteBasin,
                                         Seq.with(new Objectives.SectorComplete(conciditRuins), new Objectives.SectorComplete(muddyLakes)),
                                         () -> {
 
@@ -62,7 +62,7 @@ public class NyfalisTechTree {
                 node(nyfalis, Seq.with(
                         new Objectives.SectorComplete(citadelOfOasis),
                         new Objectives.SectorComplete(inundataDesert),
-                        new Objectives.SectorComplete(snowPisos)
+                        new Objectives.SectorComplete(frostbiteBasin)
                 ),() ->{
                     node(conservatorium, Seq.with(
                             new Objectives.SectorComplete(sanctuary)

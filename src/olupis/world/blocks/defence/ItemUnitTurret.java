@@ -54,7 +54,7 @@ Now with hints of UnitAssembler for extra spice */
 public class ItemUnitTurret extends ItemTurret {
     /*common required items for all unit types*/
     public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20);
-    public ItemStack[] requiredAlternate = ItemStack.with(NyfalisItemsLiquid.aluminum, 15, Items.copper, 25);
+    public ItemStack[] requiredAlternate = ItemStack.with(NyfalisItemsLiquid.aluminum, 30, Items.copper, 60);
     public int alternateCapacity = itemCapacity * 2;
     /*Parameters when failing to make a unit*/
     public Sound failedMakeSound = Sounds.dullExplosion;
@@ -299,6 +299,16 @@ public class ItemUnitTurret extends ItemTurret {
             }
         }
 
+        public int getMaximumAccepted(Item item) {
+            if(useAlternate){
+                if(Arrays.stream(requiredAlternate).anyMatch(i -> item == i.item)) return Math.round(itemCapacity * state.rules.unitCost(team));
+            } else {
+                if(Arrays.stream(requiredItems).anyMatch(i -> item == i.item)) return Math.round(alternateCapacity * state.rules.unitCost(team));
+            }
+
+            return this.block.itemCapacity;
+        }
+
         @Override
         public void updateTile(){
             speedScl = Mathf.lerpDelta(speedScl, 1f, 0.05f);
@@ -338,7 +348,7 @@ public class ItemUnitTurret extends ItemTurret {
 
         public boolean hasReqItems(){
             for (ItemStack req : useAlternate ? requiredAlternate : requiredItems) {
-                if(items.get(req.item) >= req.amount) continue;
+                if(items.get(req.item) >= req.amount *  state.rules.unitCost(team)) continue;
                 return false;
             }
             return true;
