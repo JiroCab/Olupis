@@ -1,13 +1,18 @@
 package olupis.world.blocks.power;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Nullable;
 import mindustry.entities.TargetPriority;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Sounds;
 import mindustry.world.Block;
+import mindustry.world.Tile;
+import mindustry.world.blocks.Autotiler;
 import mindustry.world.blocks.power.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
@@ -15,8 +20,11 @@ import mindustry.world.meta.BlockStatus;
 import olupis.content.NyfalisBlocks;
 import olupis.input.NyfalisPlacement;
 
-public class Wire extends Battery {
+import static mindustry.Vars.headless;
+
+public class Wire extends Battery implements Autotiler {
     public @Nullable Block  bridgeReplacement;
+    public TextureRegion edgeRegion;
 
     public Wire(String name){
         super(name);
@@ -36,6 +44,7 @@ public class Wire extends Battery {
         addBar("batteries", PowerNode.makeBatteryBalance());
     }
 
+
     @Override
     public void init(){
         super.init();
@@ -52,6 +61,7 @@ public class Wire extends Battery {
 
     @Override
     public void load(){
+        edgeRegion = Core.atlas.find(name + "-edge");
         checkNewDrawDefault();
 
         super.load();
@@ -65,13 +75,45 @@ public class Wire extends Battery {
         NyfalisPlacement.calculateBridges(plans, (BeamNode) bridgeReplacement);
     }
 
+    @Override
+    public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
+        Log.err((tile.build instanceof WireBuild) +" " );
+        return tile.build instanceof WireBuild;
+    }
+
 
     public  class  WireBuild extends BatteryBuild{
+        public int blendprox;
+
         @Override
         public void draw(){
             Draw.rect(this.block.region, this.x, this.y, this.drawrot());
+
+            for(int i = 0; i < 4; i++){
+                if((blendprox & (1 << i)) == 0){
+                    Draw.rect(edgeRegion, x, y, (rotation - i) * 90);
+                }
+            }
+
             drawTeamTop();
         }
+
+
+        @Override
+        public void onProximityUpdate() {
+            super.onProximityUpdate();
+
+            if(!headless){
+                blendprox = 0;
+
+                for(int i = 0; i < 4; i++){
+                    if(blends(tile, rotation, i) && (i == 0 || nearby(Mathf.mod(rotation - i, 4)) instanceof WireBuild)){
+                        blendprox |= (1 << i);
+                    }
+                }
+            }
+        }
+
 
         @Override
         public BlockStatus status(){
