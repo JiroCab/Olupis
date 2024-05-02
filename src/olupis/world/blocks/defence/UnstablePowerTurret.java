@@ -37,7 +37,7 @@ public class UnstablePowerTurret extends PowerTurret {
     public float explosionShake = 3, explosionShakeDuration = 30;
     public float explosionPuddleRange = 80, explosionPuddleAmount = 10;
     public float smokeThreshold = 0.3f, flashThreshold = 0.6f;
-    public float coolantPower = 0.2f;
+    public float coolantPower = 0.1f;
     public Color coolColor = new Color(1, 1, 1, 0f);
     public Color hotColor = Color.red;
     public Color flashColor1 = Color.red, flashColor2 = Color.yellow;
@@ -73,7 +73,7 @@ public class UnstablePowerTurret extends PowerTurret {
             super.updateTile();
 
             if(isShooting() && power.status > 0){
-                heatT = Mathf.clamp(heatT + 0.04f);
+                heatT = Mathf.clamp(heatT + 0.1f);
             }
 
             if(heatT > 0){
@@ -81,12 +81,14 @@ public class UnstablePowerTurret extends PowerTurret {
                 heatT -= maxUsed * coolantPower;
                 liquids.remove(liquids.current(), maxUsed);
                 if(!isShooting() && liquids.currentAmount() <= 0){
-                    heatT = Mathf.clamp(heatT - 0.005f);
+                    heatT = Mathf.clamp(heatT - 0.0005f);
                 }
             }
             if(heatT > flashThreshold){
-
-                warningSound.at(this);
+                float sound = 1.0f + (heatT - flashThreshold) / (1f - flashThreshold); //ranges from 1.0 to 2.0
+                if(Mathf.chance(sound / 20.0 * delta())){
+                    warningSound.at(this);
+                }
             }
             if(heatT > smokeThreshold){
                 float smoke = 1.0f + (heatT - smokeThreshold) / (1f - smokeThreshold); //ranges from 1.0 to 2.0

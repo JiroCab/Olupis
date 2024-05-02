@@ -1997,6 +1997,8 @@ public class NyfalisBlocks {
             health = 10;
             size = 1;
             discoveryTime = 3400;
+            glowColor = Color.valueOf("3ed09a");
+            outlineColor = Color.valueOf("371404");
             requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.with(new Object[]{Items.silicon, 1}));
             fogRadius = 40;
         }};

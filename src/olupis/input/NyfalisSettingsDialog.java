@@ -30,6 +30,7 @@ public class NyfalisSettingsDialog {
         musicModPresent =  mods.locateMod("nyfalis-music") != null;
 
         ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
+            table.checkPref("nyfalis-bread-gun", false);
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
             /* uncomment when name/icon is final

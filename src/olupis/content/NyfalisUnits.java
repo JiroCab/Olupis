@@ -1224,6 +1224,7 @@ public class NyfalisUnits {
             range = 32;
             flying = true;
             useUnitCap = false;
+            fogRadius = 35;
             parts.addAll(
                     new RegionPart("-radar"){{
                         mirror = false;
