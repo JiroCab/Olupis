@@ -63,9 +63,10 @@ public class NyfalisBlocks {
         glowSprouts, lumaSprouts, redCorals, blueCorals, greenCorals, kelp,
 
         /*Floors*/
-        redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass, mossyDirt, frozenDirt, frozenMud, hardenMud, mossyhardenMud, crackedIce,
+        redSand, lumaGrass, yellowGrass, pinkGrass, mossyDirt,  hardenMud, mossyhardenMud,
+        frozenGrass, frozenDirt, frozenMud, crackedIce, redSandSnow, snowySand, frozenTar, frozenSlop,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandvent, snowVent,
+        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater, coralReef, slop,
@@ -179,6 +180,12 @@ public class NyfalisBlocks {
             attributes.set(Attribute.oil, 1.5f);
         }};
 
+        redSandSnow = new Floor("red-sand-snow"){{
+            itemDrop = Items.sand;
+            playerUnmineable = true;
+            attributes.set(Attribute.oil, 1.5f);
+        }};
+
         lumaGrass = new Floor("luma-grass"){{
             variants = 3;
             attributes.set(bio, 0.08f);
@@ -266,6 +273,28 @@ public class NyfalisBlocks {
             variants = 3;
         }};
 
+        frozenTar = new Floor("frozen-tar"){{
+            attributes.set(Attribute.water, 0.3f);
+            attributes.set(Attribute.oil, 1.2f);
+            variants = 3;
+        }};
+
+        frozenSlop = new Floor("frozen-slop"){{
+            attributes.set(Attribute.water, 0.6f);
+            attributes.set(Attribute.oil, 0.6f);
+            variants = 3;
+        }};
+
+        snowySand = new Floor("snowy-sand"){{
+            attributes.set(Attribute.water, 0.1f);
+            variants = 3;
+        }};
+
+        crackedIce = new Floor("cracked-ice"){{
+            attributes.set(Attribute.water, 0.3f);
+            variants = 3;
+        }};
+
         mossyhardenMud = new Floor("mossy-harden-mud"){{
             attributes.set(bio, 0.2f);
             attributes.set(Attribute.water, 0.1f);
@@ -300,6 +329,21 @@ public class NyfalisBlocks {
             parent = blendGroup = basalt;
             attributes.set(Attribute.steam, 1f);
         }};
+
+        snowVent = new SteamVent("snow-vent"){{
+            effectColor = Color.white;
+            parent = blendGroup = snow;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
+        redSandVent = new SteamVent("red-sand-vent"){{
+            effectColor = Color.white;
+            parent = blendGroup = redSand;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
+
+
         //endregion
         //region Liquid floor
 
@@ -950,10 +994,11 @@ public class NyfalisBlocks {
             hasLiquids = hasPower =  outputsLiquid = consumesPower = rotate = true;
             size = 2;
 
+            craftTime = 2f / 60f;
             consumePower(1f);
-            consumeLiquid(emulsiveSlop, 12f/ 60f);
+            consumeLiquid(emulsiveSlop, 15f/ 60f);
             liquidOutputDirections = new int[]{1, 3};
-            outputLiquids = LiquidStack.with(Liquids.water, 5f / 60f, Liquids.oil, 5f / 60f);
+            outputLiquids = LiquidStack.with(Liquids.water, 13f / 60f, Liquids.oil, 10f / 60f);
             requirements(Category.liquid, with(quartz, 40, iron, 25, lead, 50,copper, 50));
         }};
 
