@@ -1113,7 +1113,6 @@ public class NyfalisTurrets {
                 new UnstableRegionPart(finalC +"-l"){{
                     outlineLayerOffset = -2.99f;
                     layerOffset = 2;
-                    heatLayerOffset = 5f;
                     mirror = false;
                     moveRot = 10f;
                     moveY = -0.8f;
@@ -1147,7 +1146,6 @@ public class NyfalisTurrets {
                 new UnstableRegionPart(finalC+"-r"){{
                     outlineLayerOffset = -2.99f;
                     layerOffset = 2;
-                    heatLayerOffset = 5f;
                     mirror = false;
                     moveRot = -10f;
                     moveY = -0.8f;
