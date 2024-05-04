@@ -11,6 +11,8 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
+import mindustry.entities.pattern.ShootBarrel;
+import mindustry.entities.pattern.ShootMulti;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
@@ -619,7 +621,7 @@ public class NyfalisTurrets {
                 size = 3;
                 reload = 120;
                 range = 50f * 8f;
-                shootY = 2;
+                shootY = 5;
                 shootX = 0f;
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.05f;
@@ -691,71 +693,141 @@ public class NyfalisTurrets {
                 );
                 drawer = new DrawTurret("iron-"){{
                     parts.add(new RegionPart("-core"){{
-                        progress = PartProgress.recoil;
-                        heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                        heatProgress = PartProgress.recoil;
+                        recoilIndex = 1;
                         mirror = false;
                         under = true;
-                        children.add(new RegionPart("-core-barrel"){{
-                                         progress = PartProgress.recoil.delay(0.5f);
-                                         heatProgress = PartProgress.recoil;
-                                         heatColor = NyfalisItemsLiquid.alcoAlloy.color;
-                                         mirror = false;
-                                         under = false;
-                                         moveY = -1f;
-                                         moveX = 0f;
-                                     }},
+                        layerOffset = 1;
+                        outlineLayerOffset = -1;
+                        children.addAll(
+                                new RegionPart("-core-barrel"){{
+                                    progress = PartProgress.recoil;
+                                    recoilIndex = 1;
+                                    mirror = false;
+                                    under = false;
+                                    moveY = -1f;
+                                    moveX = 0f;
+                                    layerOffset = 0.5f;
+                                    heatLayerOffset = 3f;
+                                }},
+                                new RegionPart("-frame"){{
+                                    mirror = false;
+                                    under = true;
+                                    growProgress = PartProgress.warmup.delay(0.3f);
+                                    growX = 0.5f;
+                                    layerOffset = 0.5f;
+                                    heatLayerOffset = 3f;
+                                    moveY = 0f;
+                                    moveX = 0f;
+                                }},
                                 new RegionPart("-side-l"){{
+                                    recoilIndex = 0;
                                     progress = PartProgress.warmup.delay(0.6f);
-                                    heatProgress = PartProgress.recoil;
-                                    heatColor = NyfalisItemsLiquid.alcoAlloy.color;
                                     mirror = false;
                                     under = false;
                                     moveY = 0f;
                                     moveRot = -2.5f;
-                                    moveX = 2f;
+                                    layerOffset = 0.5f;
+                                    heatLayerOffset = 3f;
+                                    outlineLayerOffset = -0.4f;
+                                    moveX = 3f;
 
                                     moves.add(new PartMove(PartProgress.recoil, 0.25f, -0.5f, 0f));
                                     children.add(new RegionPart("-side-barrel-l"){{
-                                        progress = PartProgress.recoil.delay(0.8f);
-                                        heatProgress = PartProgress.recoil;
-                                        heatColor = NyfalisItemsLiquid.alcoAlloy.color;
+                                        recoilIndex = 0;
+                                        progress = PartProgress.recoil;
                                         mirror = false;
                                         under = false;
+                                        layerOffset = 0.5f;
+                                        heatLayerOffset = 3f;
                                         moveY = -1f;
+                                    }},
+                                    new RegionPart("-side-heatsink-l"){{
+                                        recoilIndex = 0;
+                                        progress = PartProgress.warmup.delay(0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                                        mirror = false;
+                                        under = false;
+                                        layerOffset = 0.3f;
+                                        heatLayerOffset = 3f;
+                                        moveY = -0.9f;
+                                        moveX = 0.9f;
+                                        moveRot = 0;
                                     }});
                                 }},
                                 new RegionPart("-side-r"){{
+                                    recoilIndex = 2;
                                     progress = PartProgress.warmup.delay(0.6f);
-                                    heatProgress = PartProgress.recoil;
-                                    heatColor = NyfalisItemsLiquid.alcoAlloy.color;
                                     mirror = false;
                                     under = false;
                                     moveY = 0f;
                                     moveRot = 2.5f;
-                                    moveX = -2f;
+                                    layerOffset = 0.5f;
+                                    heatLayerOffset = 3f;
+                                    outlineLayerOffset = -0.4f;
+                                    moveX = -3f;
 
                                     moves.add(new PartMove(PartProgress.recoil, -0.25f, -0.5f, 0f));
                                     children.add(new RegionPart("-side-barrel-r"){{
-                                        progress = PartProgress.recoil.delay(0.2f);
-                                        heatProgress = PartProgress.recoil;
-                                        heatColor = NyfalisItemsLiquid.alcoAlloy.color;
+                                        recoilIndex = 2;
+                                        recoilIndex = 1;
+                                        progress = PartProgress.recoil;
                                         mirror = false;
                                         under = false;
+                                        layerOffset = 0.5f;
+                                        heatLayerOffset = 3f;
                                         moveY = -1f;
                                         moveRot = 0;
+                                    }},
+                                    new RegionPart("-side-heatsink-r"){{
+                                        recoilIndex = 2;
+                                        progress = PartProgress.warmup.delay(0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                                        mirror = false;
+                                        under = false;
+                                        layerOffset = 0.3f;
+                                        heatLayerOffset = 3f;
+                                        moveY = -0.9f;
+                                        moveX = -0.9f;
+                                        moveRot = 0;
                                     }});
+                                }},
+                                new RegionPart("-core-heatsink-l"){{
+                                    recoilIndex = 1;
+                                    progress = PartProgress.warmup.delay(0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                                    mirror = false;
+                                    under = false;
+                                    layerOffset = 0.5f;
+                                    heatLayerOffset = 3f;
+                                    moveY = -0.75f;
+                                    moveX = -0.75f;
+                                    moveRot = 0;
+                                }},
+                                new RegionPart("-core-heatsink-r"){{
+                                    recoilIndex = 1;
+                                    progress = PartProgress.warmup.delay(0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                                    mirror = false;
+                                    under = false;
+                                    layerOffset = 0.5f;
+                                    heatLayerOffset = 3f;
+                                    moveY = -0.75f;
+                                    moveX = 0.75f;
+                                    moveRot = 0;
                                 }});
                     }});
                 }};
-                shoot = new ShootAlternate(){{ //don't forget to adjust the y of where the missle spawns! -Rushie
+                recoils = 3;
+                shoot = new ShootBarrel(){{
                     shots = 6;
-                    barrels = 3;
-                    spread = 7.5f;
                     shotDelay = 5;
+                    barrels = new float[]{
+                            -9, 1, 0,
+                            0, 3, 0,
+                            9, 1, 0
+                    };
                 }};
                 ammoPerShot = 20;
                 maxAmmo = 220;
                 shootSound = Sounds.missile;
+                outlineColor = nyfalisBlockOutlineColour;
                 shootEffect = Fx.shootSmallSmoke;
                 researchCost = with(lead, 1500, iron, 700, alcoAlloy, 700);
                 coolant = consume(new ConsumeLubricant(30f / 60f));
