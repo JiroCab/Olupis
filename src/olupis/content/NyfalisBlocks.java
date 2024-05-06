@@ -692,10 +692,10 @@ public class NyfalisBlocks {
             bufferCapacity = 8;
             buildCostMultiplier = 0.4f;
 
-            consumePower(20f / 60f);
+            consumePower(10f / 60f); 
             ((PowerConveyor)ironConveyor).bridgeReplacement = this;
             researchCost = with(iron, 100, rustyIron, 500, lead, 500);
-            requirements(Category.distribution, with(iron, 35, rustyIron, 35, lead, 35));
+            requirements(Category.distribution, with(iron, 12, rustyIron, 35, lead, 8));
         }};
 
         ironOverflow = new OverflowSorter("iron-overflow"){{
@@ -731,6 +731,7 @@ public class NyfalisBlocks {
         rustyDrill = new BoostableBurstDrill("rusty-drill"){{
             hasPower = true;
             squareSprite = false;
+            itemCapacity = 25;
 
             tier = 1;
             size = 3;
@@ -1589,8 +1590,8 @@ public class NyfalisBlocks {
             displayEfficiencyScale = 1.1f;
             attribute = Attribute.steam;
             consumeLiquid(oil, 10f / 60f).boost();
-            researchCost = with(rustyIron, 20);
-            requirements(Category.power, with(rustyIron, 35));
+            researchCost = with(rustyIron, 20, Items.lead, 2);
+            requirements(Category.power, with(rustyIron, 35, Items.lead, 1));
         }};
 
         hydroMill = new ThermalGeneratorNoLight("hydro-mill"){{
