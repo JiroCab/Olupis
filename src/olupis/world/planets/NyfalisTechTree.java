@@ -322,19 +322,18 @@ public class NyfalisTechTree {
 
                 node(corroder, Seq.with(new Objectives.Research(rustyPump)), ()-> {
                     node(avenger, () -> {
-                        node(dissolver, ()->{
-
-                        });
                         node(aegis, ()->{
 
                         });
                     });
-                    node(shredder, ()->{
-                        node(hive, ()->{
+                    node(slash, ()->{
+                        node(shredder, ()->{
+                            node(hive, ()->{
 
-                        });
-                        node(obliterator, () -> {
+                            });
+                            node(laceration, () -> {
 
+                            });
                         });
                     });
                     node(rustyWall, () ->{
@@ -365,7 +364,9 @@ public class NyfalisTechTree {
                     , () ->{
                         node(arialConstruct, () ->{
                             node(navalConstruct, () ->{
+                                node(alternateArticulator, () ->{
 
+                                });
                             });
                         });
                     });

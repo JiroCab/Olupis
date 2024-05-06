@@ -91,7 +91,7 @@ public class NyfalisSettingsDialog {
                         Core.settings.put("nyf-lastver", 0.1f);
                         Sounds.respawn.play();
                         float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
-                        Log.err("" + lVer);
+                        Log.info("" + lVer);
                     }).margin(14).width(260f).height(50f).pad(6);
                     debugTable.button("Save Disclaimer", Icon.chat, NyfalisStartUpUis::showSaveDisclaimerDialog).margin(14).width(260f).height(50f).pad(6);
                     t.add(debugTable);

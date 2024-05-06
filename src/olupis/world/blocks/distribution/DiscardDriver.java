@@ -1,4 +1,4 @@
-package olupis.world.blocks.misc;
+package olupis.world.blocks.distribution;
 
 import arc.Core;
 import arc.graphics.Color;

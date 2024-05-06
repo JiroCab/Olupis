@@ -30,6 +30,7 @@ public class NyfalisMain extends Mod{
 
     public static NyfalisSounds soundHandler = new NyfalisSounds();
     public static NyfalisUnitTimedOutPacket unitTimedOut = new NyfalisUnitTimedOutPacket();
+    public static LimitedLauncherSelect sectorSelect;
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
 
@@ -71,7 +72,14 @@ public class NyfalisMain extends Mod{
             NyfalisStartUpUis.rebuildDebugTable();
             //Clean up of the old system of banning stuff
 
-            if(state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet()) && state.rules.blockWhitelist) state.rules.blockWhitelist = false;
+            if(state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet())){
+                if(state.rules.blockWhitelist) state.rules.blockWhitelist = false;
+                //When launching, prevents exporting to items to where you launched from if its out of range
+                Time.run(0.5f * Time.toSeconds, () -> {
+                    if(!state.rules.sector.near().contains(state.rules.sector.info.destination)) state.rules.sector.info.destination = state.rules.sector;
+                });
+
+            }
             if(headless)return;
 
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
@@ -90,14 +98,16 @@ public class NyfalisMain extends Mod{
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
 
             Vars.ui.planet.shown(() -> {
-                if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 0, 0, false);
+                if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 1, 0, false);
             });
 
             arthin.uiIcon = bush.fullIcon;
             nyfalis.uiIcon = redSandBoulder.fullIcon;
             spelta.uiIcon = pinkTree.fullIcon;
             system.uiIcon = Icon.planet.getRegion();
-            Vars.renderer.maxZoom  = 100; //just going to leave this here so aligning, screenshot are easier
+            if(Core.settings.getBool("nyfalis-debug")){
+                Vars.renderer.maxZoom  = 100; //just going to leave this here so aligning, screenshot are easier
+            }
 
             /*For those people who don't like the name/icon or overwrites in general*/
             if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";
@@ -137,9 +147,7 @@ public class NyfalisMain extends Mod{
             state.rules.env = prevEnv | NyfalisAttributeWeather.nyfalian;
         }
 
-        Log.err(changed + " " + anyPlanet);
         if(anyPlanet) return;
-        Log.err("mya");
         /*this is here so A)Hotkeys aren't broken even if blocks are hidden due to env B)Prevent Serpulo cores to be built here*/
         if(state.rules.hasEnv(NyfalisAttributeWeather.nyfalian) && !state.rules.isBanned(Blocks.coreShard)){
             for (Block b : hiddenNyfalisBlocks) {
@@ -156,6 +164,7 @@ public class NyfalisMain extends Mod{
     public void init() {
         nyfalisSettings = new NyfalisSettingsDialog();
         logicDialog = new NyfalisLogicDialog();
+        sectorSelect = new LimitedLauncherSelect();
         unlockPlanets();
     }
 

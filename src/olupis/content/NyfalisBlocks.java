@@ -36,6 +36,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.input.NyfalisShaders;
 import olupis.world.blocks.defence.*;
+import olupis.world.blocks.distribution.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
@@ -1208,7 +1209,7 @@ public class NyfalisBlocks {
                     spawnUnit = revenant;
                 }}
             );
-            alwaysShooting = true;
+            alwaysShooting = unitFactory = true;
             consumePower(80f / 60f);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             requiredItems = with(lead, 20, copper, 20);
@@ -1250,7 +1251,7 @@ public class NyfalisBlocks {
                     }};
                 }}
             );
-            alwaysShooting = true;
+            alwaysShooting = unitFactory = true;
             requiredItems = with(copper, 40);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(lead, 800, copper, 800,  iron, 600);
@@ -1292,7 +1293,7 @@ public class NyfalisBlocks {
                 }}
             );
             requiredItems = with(copper, 40);
-            alwaysShooting = hoverShowsSpawn = arrowShootPos = true;
+            alwaysShooting = hoverShowsSpawn = arrowShootPos = unitFactory = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(rustyIron, 500, copper, 500,  iron, 300);
             requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
@@ -1332,12 +1333,11 @@ public class NyfalisBlocks {
                     }};
                 }}
             );
-            consumePower(80f / 60f);
             requiredItems = with(copper, 40);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            alwaysShooting = hoverShowsSpawn = hasPower = floating = arrowShootPos = true;
-            researchCost = with(lead, 1500, silicon, 500,  iron, 800);
-            requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
+            alwaysShooting = hoverShowsSpawn = hasPower = floating = arrowShootPos = unitFactory = true;
+            researchCost = with(lead, 1500, graphite, 500,  iron, 800);
+            requirements(Category.units, with(iron, 100, lead, 100, graphite, 50));
         }};
 
         alternateArticulator = new Articulator("alternate-articulator"){{
@@ -1435,7 +1435,7 @@ public class NyfalisBlocks {
         }};
 
         //endregion
-        //Mines
+        //region Mines
         heavyMine = new ShockMine("heavy-mine"){{
             requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, iron, 12}));
             hasShadow = false;
@@ -1567,7 +1567,7 @@ public class NyfalisBlocks {
             requirements(Category.power, with(cobalt, 10, iron, 5, copper, 10));
         }};
 
-        wireBridge = new BeamNode("wire-bridge"){{
+        wireBridge = new WireBridge("wire-bridge"){{
             consumesPower = outputsPower = floating = true;
             range = 5;
             armor = 3;
@@ -1866,9 +1866,6 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 75, iron, 50, silicon, 50));
         }};
 
-//        deliveryCannon == payload cannon
-//         deliveryTerminal == redirects all cannons in a planet to this sector (since only 1 sector can be played)
-//        Vars.state.getPlanet().sectors.forEach(a -> {a.info.destination = Vars.state.getSector();});
 
         int coreBaseHp = 600, coreUnitCap = 2;
 
@@ -1997,6 +1994,13 @@ public class NyfalisBlocks {
                     });
                 });
             }};
+        }};
+
+        deliveryCannon = new LimitedLaunchPad("delivery-cannon"){{
+            size = 4;
+            itemCapacity = 100;
+            launchTime = 60f * 20;
+            requirements(Category.effect, with(rustyIron, 75, iron, 50, silicon, 50));
         }};
 
         lightWall = new PrivilegedLightBlock("light-wall"){{

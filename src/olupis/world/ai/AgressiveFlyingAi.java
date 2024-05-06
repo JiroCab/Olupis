@@ -50,7 +50,7 @@ public class AgressiveFlyingAi extends FlyingAI {
         }else if(unit.type instanceof AmmoLifeTimeUnitType unt && hasParent){
             unit.ammo = unt.deathThreshold * 0.5f;
         }else if(target != null && unit.hasWeapons()){
-            if(unit.type.circleTarget){
+            if(unit.type.circleTarget || shouldCircle){
                 circleAttack(circleDistance);
             }else{
                 moveTo(target, unit.type.range * 0.8f);

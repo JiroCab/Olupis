@@ -1,10 +1,12 @@
 package olupis.world.blocks.defence;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Scl;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.content.Fx;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -12,9 +14,18 @@ import mindustry.world.blocks.storage.CoreBlock;
 import static mindustry.Vars.*;
 
 public class PropellerCoreBlock extends CoreBlock {
+     public TextureRegion blur;
+     public boolean singleBlade = false;
+    public float rotateSpeed = 1f, offset = 10f;
 
     public PropellerCoreBlock(String name){
         super(name);
+    }
+
+    @Override
+    public void load(){
+        blur = Core.atlas.find(name + "-blur");
+        super.load();
     }
 
     @Override
@@ -55,7 +66,10 @@ public class PropellerCoreBlock extends CoreBlock {
 
         Drawf.spinSprite(teamRegions[build.team.id], x, y, rotation);
 
+
         Draw.color();
+
+        drawProbs(x, y, rotation, thrusterFrame);
         Draw.scl();
         Draw.reset();
     }
@@ -86,6 +100,26 @@ public class PropellerCoreBlock extends CoreBlock {
             }
         }
         Draw.alpha(1f);
+    }
+
+    protected void drawProbs(float x, float y, float rotation, float frame){
+        /*Renders thrusters/propellers in flight*/
+        float length = thrusterLength * (frame - 1f) - 1f/4f;
+        Tmp.v1.trns(90, length * Draw.xscl);
+
+        for(int j = 0; j < 2; j++){
+            for(int i = 0; i < 4; i++){
+                float rot = (i * 90) + rotation % 90f;
+                Tmp.v1.trns(rot, length * Draw.xscl);
+
+                Draw.alpha(1f);
+                float yf = i /2 == 0 ? offset : offset * -1, xf = i /2 != 0 ? offset * -1: offset;
+                Log.err(i + " x:" + xf + " y:" + yf);
+                Drawf.spinSprite(blur,  x + Tmp.v1.x + xf, y + Tmp.v1.y + yf, Time.time * rotateSpeed);
+
+            }
+        }
+
     }
 
 

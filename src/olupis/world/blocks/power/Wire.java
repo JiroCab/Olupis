@@ -5,7 +5,6 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Nullable;
 import mindustry.entities.TargetPriority;
 import mindustry.entities.units.BuildPlan;
@@ -77,7 +76,6 @@ public class Wire extends Battery implements Autotiler {
 
     @Override
     public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
-        Log.err((tile.build instanceof WireBuild) +" " );
         return tile.build instanceof WireBuild;
     }
 
@@ -107,7 +105,7 @@ public class Wire extends Battery implements Autotiler {
                 blendprox = 0;
 
                 for(int i = 0; i < 4; i++){
-                    if(blends(tile, rotation, i) && (i == 0 || nearby(Mathf.mod(rotation - i, 4)) instanceof WireBuild)){
+                    if(nearby(Mathf.mod(rotation - i, 4)) instanceof WireBuild || nearby(Mathf.mod(rotation - i, 4)) instanceof BeamNode.BeamNodeBuild){
                         blendprox |= (1 << i);
                     }
                 }

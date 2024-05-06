@@ -48,8 +48,7 @@ public class NyfalisLogicBlock extends LogicBlock {
                 LStatements.SetRateStatement::new,
                 LStatements.FetchStatement::new,
                 LStatements.GetFlagStatement::new,
-                LStatements.SetFlagStatement::new,
-                LStatements.CommentStatement::new
+                LStatements.SetFlagStatement::new
         });
     }
     public class NyfalisLogicBuild extends LogicBuild {

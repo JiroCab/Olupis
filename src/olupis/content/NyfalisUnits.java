@@ -98,7 +98,12 @@ public class NyfalisUnits {
 
             lowAltitude = flying = canCircleTarget = alwaysShootWhenMoving = true;
             constructor = UnitEntity::create;
-            aiController = AgressiveFlyingAi::new;
+
+            aiController = () -> {
+                var ai = new AgressiveFlyingAi();
+                ai.shouldCircle = true;
+                return ai;
+            };
             defaultCommand = NyfalisUnitCommands.circleCommand;
             weapons.add(new Weapon(""){{
                 top = mirror = false;
@@ -150,7 +155,11 @@ public class NyfalisUnits {
             rotateSpeed = baseRotateSpeed = 30f;
 
             constructor = UnitEntity::create;
-            aiController = AgressiveFlyingAi::new;
+            aiController = () -> {
+                var ai = new AgressiveFlyingAi();
+                ai.shouldCircle = true;
+                return ai;
+            };
             defaultCommand = NyfalisUnitCommands.circleCommand;
             flying = canCircleTarget = alwaysCreateOutline = true;
             weapons.add(new Weapon(""){{

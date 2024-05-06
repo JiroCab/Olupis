@@ -62,7 +62,7 @@ public class ItemUnitTurret extends ItemTurret {
     public Effect failedMakeFx = NyfalisFxs.failedMake;
     public TextureRegion bottomRegion, rotatorRegion;
     /*Hovering Shows the unit creation*/
-    public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false;
+    public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false, unitFactory = false;
     /*Aim at the rally point*/
     public boolean rallyAim = true;
     /*Aim for closest liquid*/
@@ -238,7 +238,7 @@ public class ItemUnitTurret extends ItemTurret {
     public void init(){
         if(setDynamicConsumer) consume(new ConsumeItemDynamic((ItemUnitTurretBuild e) -> e.useAlternate ? requiredAlternate : requiredItems));
 
-        consumeBuilder.each(c -> c.multiplier = b -> state.rules.unitCost(b.team));
+        consumeBuilder.each(c -> c.multiplier = b -> unitFactory ? state.rules.unitCost(b.team) : 1f);
         super.init();
     }
 
@@ -312,7 +312,7 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public void updateTile(){
             speedScl = Mathf.lerpDelta(speedScl, 1f, 0.05f);
-            time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
+            time += edelta() * speedScl * (unitFactory ? Vars.state.rules.unitBuildSpeed(team) : 1f);
 
             moveOutPayload();
             super.updateTile();
@@ -495,6 +495,16 @@ public class ItemUnitTurret extends ItemTurret {
             if(payload != null) payload.set(x + payVector.x, y + payVector.y, (direction + 1) * 90);
         }
 
+        protected void updateReload(){
+            float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
+            multiplier *= unitFactory ? state.rules.unitBuildSpeed(team) : 1f;
+            reloadCounter += delta() * multiplier * baseReloadSpeed();
+
+            //cap reload for visual reasons
+            reloadCounter = Math.min(reloadCounter, reload);
+        }
+
+
         @Override
         public void draw(){
             if(!(drawer instanceof DrawDefault)){
@@ -507,7 +517,7 @@ public class ItemUnitTurret extends ItemTurret {
                 if (peekAmmo() != null) {
                     UnitType unt = useAlternate && peekAmmo() instanceof SpawnHelperBulletType spw && spw.alternateType != null ? spw.alternateType.spawnUnit : peekAmmo().spawnUnit;
                     if (unt != null) { Draw.draw(Layer.blockOver, () ->{
-                        if (shootCreatable(peekAmmo())) { Drawf.construct(this, unt.fullIcon != null ? unt.fullIcon : unt.region, rot, reloadCounter / reload, speedScl, time);}
+                        if (shootCreatable(peekAmmo())) { Drawf.construct(this, unt.fullIcon != null ? unt.fullIcon : unt.region, rot, this.reloadCounter / reload, speedScl, time);}
                         else {
                             Draw.alpha(reloadCounter / reload);
                             Draw.rect(unt.fullIcon, x, y, rot);

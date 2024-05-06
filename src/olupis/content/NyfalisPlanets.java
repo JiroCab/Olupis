@@ -80,7 +80,7 @@ public class NyfalisPlanets {
 
         //1st moon
         arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 1.1f, 1){{
-            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics =  true;
+            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = allowWaveSimulation = true;
 
             startSector = 2;
             enemyBuildSpeedMultiplier = 0.4f;
@@ -97,7 +97,7 @@ public class NyfalisPlanets {
 
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
-            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
+            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= allowWaveSimulation = true;
 
             startSector = 1;
             enemyBuildSpeedMultiplier = 0.4f;
