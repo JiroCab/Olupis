@@ -1447,7 +1447,7 @@ public class NyfalisTurrets {
             }
         };
 
-        krayalnica = new ItemTurret("krayalnica"){{
+        strata = new ItemTurret("strata"){{
 
             ammo(
                     iron, new BasicBulletType(0,0){{

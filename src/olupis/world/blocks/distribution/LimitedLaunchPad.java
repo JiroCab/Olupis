@@ -1,21 +1,43 @@
 package olupis.world.blocks.distribution;
 
+import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
+import arc.util.Eachable;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Icon;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.campaign.LaunchPad;
+import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.draw.DrawBlock;
+import mindustry.world.draw.DrawDefault;
 import olupis.NyfalisMain;
 
 import static mindustry.Vars.*;
 
 public class LimitedLaunchPad extends LaunchPad {
+    public DrawBlock drawer;
     public  LimitedLaunchPad(String name){
         super(name);
+        drawer = new DrawDefault();
+    }
+
+    public void load() {
+        super.load();
+        this.drawer.load(this);
     }
 
 
     public class LimitedLaunchPadBuild extends  LaunchPadBuild{
 
+        public void draw() {
+            drawer.draw(this);
+        }
+
+        public void drawLight() {
+            super.drawLight();
+            drawer.drawLight(this);
+        }
 
         @Override
         public void buildConfiguration(Table table){

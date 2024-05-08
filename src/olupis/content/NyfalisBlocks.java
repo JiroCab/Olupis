@@ -89,7 +89,7 @@ public class NyfalisBlocks {
         //Buildings, sorted by category
 
         heavyMine,fragMine,glitchMine,mossMine,
-        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,cascade, slash, laceration,krayalnica,
+        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,cascade, slash, laceration,strata,
 
         rustyDrill, steamDrill, hydroElectricDrill,
 
@@ -2000,7 +2000,9 @@ public class NyfalisBlocks {
             size = 4;
             itemCapacity = 100;
             launchTime = 60f * 20;
-            requirements(Category.effect, with(rustyIron, 75, iron, 50, silicon, 50));
+            alwaysUnlocked = true;
+            requirements(Category.effect, with(rustyIron, 7/*5, iron, 50, silicon, 50, cobalt, 10*/));
+            drawer = new DrawPistons();
         }};
 
         lightWall = new PrivilegedLightBlock("light-wall"){{
