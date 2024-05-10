@@ -10,11 +10,11 @@ import arc.scene.ui.layout.Table;
 import arc.util.Align;
 import arc.util.Scaling;
 import mindustry.Vars;
+import mindustry.core.Logic;
 import mindustry.editor.WaveInfoDialog;
 import mindustry.game.Rules;
 import mindustry.gen.Icon;
-import mindustry.type.Planet;
-import mindustry.type.Sector;
+import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.CustomRulesDialog;
@@ -122,11 +122,19 @@ public class NyfalisStartUpUis {
         CustomRulesDialog ruleInfo = new CustomRulesDialog();
         WaveInfoDialog waveInfo = new WaveInfoDialog();
 
-        debugTable.button("Export w/ Nyf", Icon.file, Styles.squareTogglet, () -> {
-            state.rules.blockWhitelist = true;
-            NyfalisPlanets.nyfalis.applyRules(state.rules);
-            NyfalisMain.sandBoxCheck();
-            ui.paused.show();
+        debugTable.table( z -> {
+            z.button("E", Icon.export, Styles.squareTogglet, () -> {
+                state.rules.blockWhitelist = true;
+                NyfalisPlanets.nyfalis.applyRules(state.rules);
+                NyfalisMain.sandBoxCheck();
+                ui.paused.show();
+            }).width(77.5f).height(40f).checked(false);
+            z.button("C", Icon.down, Styles.squareTogglet, () -> {
+                if(state.isCampaign()) Logic.sectorCapture();
+                state.wave += 100;
+                for (Item i : content.items())
+                    if (i.unlocked()) player.team().core().items.set(i, player.team().core().storageCapacity);
+            }).width(77.5f).height(40f).checked(false);
         }).width(155f).height(40f).margin(12f).checked(false).row();
         debugTable.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
             ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());

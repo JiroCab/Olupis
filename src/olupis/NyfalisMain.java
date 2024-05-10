@@ -74,14 +74,32 @@ public class NyfalisMain extends Mod{
 
             if(state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet())){
                 if(state.rules.blockWhitelist) state.rules.blockWhitelist = false;
-                //When launching, prevents exporting to items to where you launched from if its out of range
-                Time.run(0.5f * Time.toSeconds, () -> {
-                    if(!state.rules.sector.near().contains(state.rules.sector.info.destination)) state.rules.sector.info.destination = state.rules.sector;
-                });
-
             }
+            Events.on(EventType.SectorLaunchEvent.class, e -> {
+                //When launching, prevents exporting to items to where you launched from if it's out of range
+               if(NyfalisPlanets.isNyfalianPlanet(e.sector.planet) && !e.sector.near().contains(e.sector.info.destination)) e.sector.info.destination = e.sector;
+            });
             if(headless)return;
 
+            Events.on(EventType.TurnEvent.class, e -> {
+                for (Sector sec : system.sectors) { //Guaranteed lost, if a base is left alone in 3 turns (6 minutes)
+                    if(sec.hasBase() && !sec.isBeingPlayed() && !sec.isCaptured()){
+                        sec.info.damage = Math.min(sec.info.damage + 0.33f, 1f);
+
+                        if(sec.info.damage >= 0.999){
+                            Log.info("(Nyfalis) " + sec + " was lost from being left alone for too long!");
+                            if(sec.info.wave < sec.info.winWave && sec.info.hasCore){
+                                Events.fire(new EventType.SectorLoseEvent(sec));
+
+                                sec.info.items.clear();
+                                sec.info.damage = 1f;
+                                sec.info.hasCore = false;
+                                sec.info.production.clear();
+                            }
+                        }
+                    }
+                }
+            });
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
             if( Core.settings.getBool("nyfalis-debug")) NyfalisStartUpUis.buildDebugUI(Vars.ui.hudGroup);
             soundHandler.replaceSoundHandler();

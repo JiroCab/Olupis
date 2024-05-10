@@ -711,6 +711,13 @@ public class ItemUnitTurret extends ItemTurret {
         public byte version(){
             return 5;
         }
+
+        @Override
+        public float estimateDps(){
+            if(unitFactory) return 0f;
+            return super.estimateDps();
+        }
+
     }
 
 }

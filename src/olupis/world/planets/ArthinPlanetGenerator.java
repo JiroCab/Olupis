@@ -587,7 +587,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
             state.rules.attackMode = sector.info.attack = true;
         }else{
-            state.rules.winWave = sector.info.winWave = 10 + 5 * (int)Math.max(difficulty * 10, 1) +(int)Mathf.range(0 ,10) ;
+            state.rules.winWave = sector.info.winWave = 10 + 5 * (int)Math.max(difficulty * 10, 1) +Mathf.randomSeed(sector.id, 0 ,10);
         }
 
         float waveTimeDec = 0.4f;

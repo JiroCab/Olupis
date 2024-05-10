@@ -182,8 +182,8 @@ public class NyfalisTechTree {
 
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
-                        node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder)), () -> {
-                            node(garden, Seq.with(new Objectives.Research(sanctuary)),()->{
+                        node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder), new Objectives.SectorComplete(sanctuary)), () -> {
+                            node(garden, Seq.with(new Objectives.Research(vakinyaDesert)),()->{
                                 node(bioMatterPress, () ->{
 
                                 });
@@ -315,7 +315,9 @@ public class NyfalisTechTree {
                 ), () ->{
                     node(fortifiedContainer, () ->{
                         node(fortifiedVault, () ->{
+                            node(deliveryCannon, () ->{
 
+                            });
                         });
                     });
                 });

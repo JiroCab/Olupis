@@ -49,56 +49,9 @@ public class NyfalisSettingsDialog {
 
             table.button("@nyfalis-disclaimer.name", Icon.chat, NyfalisStartUpUis::disclaimerDialog).margin(14).width(260f).pad(6).row();
 
-            boolean[] showData = {false};
-            table.button("@setting.nyfalis-data-category", Icon.trash, Styles.togglet, () -> showData[0] = !showData[0]).margin(14f).padLeft(5f).padRight(5f).growX().height(60f).checked(a -> showData[0]).pad(5f).center().row();
-            table.collapser(t -> {
-                SettingsMenuDialog.SettingsTable subTable = new SettingsMenuDialog.SettingsTable();
-                subTable.button("@setting.nyfalis-resetsector.name", Icon.trash, () -> {
-                    ui.showConfirm("@confirm", "@setting.nyfalis-resetsector.confirm", () -> {
-                        for (Planet p : content.planets()) {
-                            if (!p.name.contains("olupis-")) continue;
-                            for (Sector s : p.sectors) {
-                                s.clearInfo();
-                                if (s.save == null) continue;
-                                s.save.delete();
-                                s.save = null;
-                            }
-                        }
+            table.pref(new CollapserSetting("data-buttons", true));
+            table.pref(new CollapserSetting("discord-button"));
 
-                        for (Saves.SaveSlot s : control.saves.getSaveSlots()) {
-                            if (s.isSector() && NyfalisPlanets.isNyfalianPlanet(s.getSector().planet)) s.delete();;
-                        }
-                    });
-                }).margin(14).width(260f).pad(6);
-                subTable.button("@setting.nyfalis-resetresearch.name", Icon.trash, () -> {
-                    ui.showConfirm("@confirm", "@setting.nyfalis-resetresearch.confirm", () -> {
-                        content.each(c -> {
-                            for(Planet planet : NyfalisPlanets.planetList ){
-                                planet.techTree.reset();
-                                planet.techTree.each(TechTree.TechNode::reset);
-                            }
-                            if(c instanceof UnlockableContent u && u.name.contains("olupis-")){
-                                u.clearUnlock();
-                            }
-                        });
-                    });
-                }).margin(14).width(260f).pad(6);
-                t.add(subTable);
-                if(Core.settings.getBool("nyfalis-debug")){
-                    t.row();
-                    Table debugTable = new Table();
-                    debugTable.button("test save disclaimer",  Icon.save, () -> {
-                        Core.settings.put("nyf-lastver", 0.1f);
-                        Sounds.respawn.play();
-                        float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
-                        Log.info("" + lVer);
-                    }).margin(14).width(260f).height(50f).pad(6);
-                    debugTable.button("Save Disclaimer", Icon.chat, NyfalisStartUpUis::showSaveDisclaimerDialog).margin(14).width(260f).height(50f).pad(6);
-                    t.add(debugTable);
-                }
-            }, true, () -> showData[0]).growX().center().row();
-
-            table.button("@nyfalis-discord", Icon.discord, NyfalisSettingsDialog::nyfalisDiscordDialog).margin(14).width(260f).pad(6).row();
         });
     }
 
@@ -170,6 +123,84 @@ public class NyfalisSettingsDialog {
         });
         dialog.closeOnBack();
         dialog.show();
+    }
+
+
+    //Foo's workaround
+    public static class CollapserSetting extends SettingsMenuDialog.SettingsTable.Setting{
+        boolean type = false;
+        public CollapserSetting (String name){
+            super(name);
+        }
+        public CollapserSetting (String name, boolean type){
+            super(name);
+            this.type = type;
+        }
+
+        public void add(SettingsMenuDialog.SettingsTable table) {
+            if(type){
+                addDataButtons(table);
+            }else {
+                addDiscordButton(table);
+            }
+        }
+
+        public void addDiscordButton(SettingsMenuDialog.SettingsTable table) {
+            table.button("@nyfalis-discord", Icon.discord, NyfalisSettingsDialog::nyfalisDiscordDialog).margin(14).width(260f).pad(6).row();
+        }
+
+        public void addDataButtons(SettingsMenuDialog.SettingsTable table) {
+            boolean[] showData = {false};
+            table.button("@setting.nyfalis-data-category", Icon.trash, Styles.togglet, () -> showData[0] = !showData[0]).margin(14f).padLeft(5f).padRight(5f).growX().height(60f).checked(a -> showData[0]).pad(5f).center().row();
+            table.collapser(t -> {
+                Table subTable = new Table();
+                subTable.button("@setting.nyfalis-resetsector.name", Icon.trash, () -> {
+                    ui.showConfirm("@confirm", "@setting.nyfalis-resetsector.confirm", () -> {
+                        for (Planet p : content.planets()) {
+                            if (!p.name.contains("olupis-")) continue;
+                            for (Sector s : p.sectors) {
+                                s.clearInfo();
+                                if (s.save == null) continue;
+                                s.save.delete();
+                                s.save = null;
+                            }
+                        }
+
+                        for (Saves.SaveSlot s : control.saves.getSaveSlots()) {
+                            if (s.isSector() && NyfalisPlanets.isNyfalianPlanet(s.getSector().planet)) s.delete();;
+                        }
+                    });
+                }).margin(14).width(260f).pad(6);
+                subTable.button("@setting.nyfalis-resetresearch.name", Icon.trash, () -> {
+                    ui.showConfirm("@confirm", "@setting.nyfalis-resetresearch.confirm", () -> {
+                        content.each(c -> {
+                            for(Planet planet : NyfalisPlanets.planetList ){
+                                planet.techTree.reset();
+                                planet.techTree.each(TechTree.TechNode::reset);
+                            }
+                            if(c instanceof UnlockableContent u && u.name.contains("olupis-")){
+                                u.clearUnlock();
+                            }
+                        });
+                    });
+                }).margin(14).width(260f).pad(6);
+                t.add(subTable);
+                if(Core.settings.getBool("nyfalis-debug")){
+                    t.row();
+                    Table debugTable = new Table();
+                    debugTable.button("test save disclaimer",  Icon.save, () -> {
+                        Core.settings.put("nyf-lastver", 0.1f);
+                        Sounds.respawn.play();
+                        float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
+                        Log.info("" + lVer);
+                    }).margin(14).width(260f).height(50f).pad(6);
+                    debugTable.button("Save Disclaimer", Icon.chat, NyfalisStartUpUis::showSaveDisclaimerDialog).margin(14).width(260f).height(50f).pad(6);
+                    t.add(debugTable);
+                }
+            }, true, () -> showData[0]).growX().center().row();
+
+        }
+
     }
 
 

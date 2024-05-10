@@ -16,7 +16,7 @@ import static mindustry.Vars.*;
 public class PropellerCoreBlock extends CoreBlock {
      public TextureRegion blur;
      public boolean singleBlade = false;
-    public float rotateSpeed = 1f, offset = 10f;
+    public float rotateSpeed = 3f, offset = 10f;
 
     public PropellerCoreBlock(String name){
         super(name);
@@ -33,7 +33,6 @@ public class PropellerCoreBlock extends CoreBlock {
         float fout = renderer.getLandTime() / coreLandDuration;
 
         if(renderer.isLaunching()) fout = 1f - fout;
-
         float fin = 1f - fout;
 
         float scl = Scl.scl(4f) / renderer.getDisplayScale();
@@ -104,21 +103,19 @@ public class PropellerCoreBlock extends CoreBlock {
 
     protected void drawProbs(float x, float y, float rotation, float frame){
         /*Renders thrusters/propellers in flight*/
-        float length = thrusterLength * (frame - 1f) - 1f/4f;
-        Tmp.v1.trns(90, length * Draw.xscl);
+        float length = 1- (thrusterLength * (frame - 1f) - 1f/4f);
+        Tmp.v1.trns(45, length * Draw.xscl);
 
-        for(int j = 0; j < 2; j++){
-            for(int i = 0; i < 4; i++){
-                float rot = (i * 90) + rotation % 90f;
-                Tmp.v1.trns(rot, length * Draw.xscl);
+        for(int i = 0; i < 4; i++){
+            float rot = ((i * 90) + (rotation -45f) % 90f);
+            Tmp.v1.trns(rot, length * Draw.xscl);
 
-                Draw.alpha(1f);
-                float yf = i /2 == 0 ? offset : offset * -1, xf = i /2 != 0 ? offset * -1: offset;
-                Log.err(i + " x:" + xf + " y:" + yf);
-                Drawf.spinSprite(blur,  x + Tmp.v1.x + xf, y + Tmp.v1.y + yf, Time.time * rotateSpeed);
-
-            }
+            Draw.alpha(1f);
+            float yf = i == 0 || i == 2 ? offset * -1: offset,
+                    xf = i == 2 || i == 3 ? offset* -1: offset;
+            Drawf.spinSprite(blur,  x + xf + Tmp.v1.x, y + yf + Tmp.v1.x, Time.time * rotateSpeed);
         }
+
 
     }
 
@@ -131,8 +128,8 @@ public class PropellerCoreBlock extends CoreBlock {
                 tile.getLinkedTiles(t -> {
                     if(Mathf.chance(0.65f)){
                         float rotation = Interp.pow2In.apply(renderer.getLandTime() / coreLandDuration ) * 540f;
-                        /*  -50 so it doesn't end at the corner and align with the propellers*/
-                        Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx(), t.worldy()) + rotation - 50, Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
+                        /*  -45 so it doesn't end at the corner and align with the propellers*/
+                        Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx(), t.worldy()) + rotation - 45, Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
                     }
                 });
 

@@ -10,10 +10,7 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.RegionPart;
-import mindustry.entities.pattern.ShootAlternate;
-import mindustry.entities.pattern.ShootBarrel;
-import mindustry.entities.pattern.ShootMulti;
-import mindustry.entities.pattern.ShootSpread;
+import mindustry.entities.pattern.*;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -156,7 +153,6 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(rustyIron, 40, lead, 20));
 
         }
-
             public void limitRange(float margin){
                 for(var entry : ammoTypes.entries()){
                     limitRange(entry.value, margin);
