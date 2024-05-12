@@ -19,8 +19,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.*;
-import olupis.world.blocks.defence.ItemUnitTurret;
-import olupis.world.blocks.defence.UnstablePowerTurret;
+import olupis.world.blocks.defence.*;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.bullets.*;
@@ -160,7 +159,7 @@ public class NyfalisTurrets {
             }
         };
 
-        avenger = new ItemTurret("avenger"){{
+        avenger = new AirPriorityItemTurret("avenger"){{
                 targetAir = true;
                 size = 3;
                 reload = 42f;
@@ -176,7 +175,7 @@ public class NyfalisTurrets {
                 rotateSpeed = 0;
                 inaccuracy = 360;
 
-                final float groundPenalty = 0.1f;
+                final float groundPenalty = 0.05f;
                 ammo(
                     copper, new EffectivenessMissleType(4.6f, 20f){{
                         width = 6f;
@@ -190,7 +189,7 @@ public class NyfalisTurrets {
                         homingRange = 34 * 8;
                         splashDamageRadius = 25f * 0.75f;
                         backColor = trailColor = copper.color;
-                        collidesAir = collidesGround = true;
+                        collidesAir = collidesGround = flatDamage = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.shocked;
@@ -208,10 +207,10 @@ public class NyfalisTurrets {
                         homingRange = 34 * 8;
                         splashDamageRadius = 25f * 0.75f;
                         backColor = trailColor = lead.color;
-                        collidesAir = collidesGround = true;
+                        collidesAir = collidesGround = flatDamage = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
-                        status = StatusEffects.sapped;
+                        status = NyfalisStatusEffects.drained;
                         groundDamageMultiplier = groundPenalty;
                     }},
                     iron, new EffectivenessMissleType(5f, 80f){{
@@ -226,7 +225,7 @@ public class NyfalisTurrets {
                         homingRange = 34 * 8;
                         splashDamageRadius = 25f * 0.75f;
                         backColor = trailColor = lead.color;
-                        collidesAir = collidesGround = true;
+                        collidesAir = collidesGround = flatDamage = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.slow;
@@ -245,7 +244,7 @@ public class NyfalisTurrets {
                         homingRange = 34 * 8;
                         splashDamageRadius = 25f * 0.75f;
                         backColor = trailColor = cobalt.color;
-                        collidesAir =  collidesGround = true;
+                        collidesAir =  collidesGround = flatDamage = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = NyfalisStatusEffects.glitch;

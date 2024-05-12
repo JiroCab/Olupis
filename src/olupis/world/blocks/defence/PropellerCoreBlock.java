@@ -16,7 +16,7 @@ import static mindustry.Vars.*;
 public class PropellerCoreBlock extends CoreBlock {
      public TextureRegion blur;
      public boolean singleBlade = false;
-    public float rotateSpeed = 3f, offset = 10f;
+    public float rotateSpeed = 7f, offset = 10f;
 
     public PropellerCoreBlock(String name){
         super(name);
@@ -68,14 +68,14 @@ public class PropellerCoreBlock extends CoreBlock {
 
         Draw.color();
 
-        drawProbs(x, y, rotation, thrusterFrame);
+        drawProbs(x, y, rotation, thrusterFrame, scl);
         Draw.scl();
         Draw.reset();
     }
 
     @Override
     protected void drawLandingThrusters(float x, float y, float rotation, float frame){
-        /*Renders thrusters/propellers in flight*/
+        /*Renders propeller base in flight*/
         float length = thrusterLength * (frame - 1f) - 1f/4f;
         float alpha = Draw.getColor().a;
 
@@ -101,19 +101,21 @@ public class PropellerCoreBlock extends CoreBlock {
         Draw.alpha(1f);
     }
 
-    protected void drawProbs(float x, float y, float rotation, float frame){
-        /*Renders thrusters/propellers in flight*/
+    protected void drawProbs(float x, float y, float rotation, float frame, float scl){
+        if(!blur.found()) return;
+        /*Renders spinny propellers in flight*/
         float length = 1- (thrusterLength * (frame - 1f) - 1f/4f);
-        Tmp.v1.trns(45, length * Draw.xscl);
 
         for(int i = 0; i < 4; i++){
-            float rot = ((i * 90) + (rotation -45f) % 90f);
+            float rot =  (i * 90 + 45) + rotation % 90f;
             Tmp.v1.trns(rot, length * Draw.xscl);
 
             Draw.alpha(1f);
             float yf = i == 0 || i == 2 ? offset * -1: offset,
                     xf = i == 2 || i == 3 ? offset* -1: offset;
-            Drawf.spinSprite(blur,  x + xf + Tmp.v1.x, y + yf + Tmp.v1.x, Time.time * rotateSpeed);
+            if(i == 2 || i == 3)  Tmp.v1.rotate(-90f);
+            Log.err((Math.max(rotateSpeed, scl * 2 ) *  Time.time) + "");
+            Drawf.spinSprite(blur,  x + (xf * scl) + Tmp.v1.x, y + (yf * scl) + Tmp.v1.x, Math.max(rotateSpeed, scl * 2 ) *  Time.time);
         }
 
 

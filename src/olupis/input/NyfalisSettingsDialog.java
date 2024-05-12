@@ -47,9 +47,8 @@ public class NyfalisSettingsDialog {
             else table.checkPref("nyfalis-space-sfx", false);
             table.row();
 
-            table.button("@nyfalis-disclaimer.name", Icon.chat, NyfalisStartUpUis::disclaimerDialog).margin(14).width(260f).pad(6).row();
-
-            table.pref(new CollapserSetting("data-buttons", true));
+            table.pref(new CollapserSetting("data-buttons", 1));
+            table.pref(new CollapserSetting("disclaimer-button", 2));
             table.pref(new CollapserSetting("discord-button"));
 
         });
@@ -128,21 +127,20 @@ public class NyfalisSettingsDialog {
 
     //Foo's workaround
     public static class CollapserSetting extends SettingsMenuDialog.SettingsTable.Setting{
-        boolean type = false;
+        int type = 0;
         public CollapserSetting (String name){
             super(name);
         }
-        public CollapserSetting (String name, boolean type){
+        public CollapserSetting (String name, int type){
             super(name);
             this.type = type;
         }
 
         public void add(SettingsMenuDialog.SettingsTable table) {
-            if(type){
-                addDataButtons(table);
-            }else {
-                addDiscordButton(table);
-            }
+            if(type == 1) addDiscordButton(table);
+            else if(type == 2) addDisclaimerButton(table);
+            else addDataButtons(table);
+
         }
 
         public void addDiscordButton(SettingsMenuDialog.SettingsTable table) {
@@ -201,6 +199,9 @@ public class NyfalisSettingsDialog {
 
         }
 
+        public void addDisclaimerButton(SettingsMenuDialog.SettingsTable table){
+            table.button("@nyfalis-disclaimer.name", Icon.chat, NyfalisStartUpUis::disclaimerDialog).margin(14).width(260f).pad(6).row();
+        }
     }
 
 

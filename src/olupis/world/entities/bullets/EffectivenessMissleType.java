@@ -9,6 +9,7 @@ import mindustry.gen.*;
 public class EffectivenessMissleType extends MissileBulletType {
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
     public float groundDamageMultiplier = 1f;
+    public boolean flatDamage = false;
 
     public EffectivenessMissleType(float speed, float damge, String bulletSprite){
         super(speed, damge, bulletSprite);
@@ -27,11 +28,12 @@ public class EffectivenessMissleType extends MissileBulletType {
         boolean wasDead = entity instanceof Unit u && u.dead;
 
         if(entity instanceof Healthc h){
-            float mul = entity instanceof  Unit u && u.isGrounded() ? groundDamageMultiplier : 1f;
+            float dmg = entity instanceof  Unit u && u.isGrounded() ? flatDamage ? groundDamageMultiplier :   groundDamageMultiplier * damage : damage;
+
             if(pierceArmor){
-                h.damagePierce(b.damage * mul);
+                h.damagePierce(dmg);
             }else{
-                h.damage(b.damage * mul);
+                h.damage(dmg);
             }
         }
 

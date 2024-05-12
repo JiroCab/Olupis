@@ -8,23 +8,22 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Table;
 import arc.struct.*;
-import arc.util.*;
+import arc.util.Scaling;
+import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
-import mindustry.type.Liquid;
-import mindustry.type.UnitType;
-import mindustry.type.Weapon;
 import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.ShockMine;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.meta.*;
-import olupis.world.entities.bullets.*;
+import olupis.world.entities.bullets.EffectivenessMissleType;
+import olupis.world.entities.bullets.MineBulletType;
 
 import java.util.Iterator;
 
@@ -162,9 +161,8 @@ public class NyfalisStats extends StatValues {
                         }
 
                         if (type instanceof EffectivenessMissleType m && m.groundDamageMultiplier != 1f) {
-
-                            int val = (int) (m.groundDamageMultiplier * 100 - 100);
-                            sep(bt, Core.bundle.format("stat.olupis-groundpenalty", ammoStat(val), m.damage * m.groundDamageMultiplier, 2));
+                            float val = (m.flatDamage ? (m.groundDamageMultiplier / m.damage) * 100 -100 : m.groundDamageMultiplier * 100 - 100);
+                            sep(bt, Core.bundle.format("stat.olupis-groundpenalty", ammoStat(val), m.flatDamage ? m.groundDamageMultiplier : m.damage * m.groundDamageMultiplier, 2));
                         }
 
 

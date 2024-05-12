@@ -116,7 +116,7 @@ public class NyfalisMain extends Mod{
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
 
             Vars.ui.planet.shown(() -> {
-                if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.space, Core.settings.getInt("ambientvol", 100) / 100f, 1, 0, false);
+                if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.spaces.random(), Core.settings.getInt("ambientvol", 100) / 100f, 1, 0, false);
             });
 
             arthin.uiIcon = bush.fullIcon;

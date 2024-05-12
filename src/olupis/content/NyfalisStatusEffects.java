@@ -12,7 +12,7 @@ import mindustry.type.StatusEffect;
 import mindustry.gen.*;
 import mindustry.world.meta.Stat;
 public class NyfalisStatusEffects {
-    public static StatusEffect lubed, mossed, deployed, glitch, sloppy, unloaded;
+    public static StatusEffect lubed, mossed, deployed, glitch, sloppy, unloaded, drained;
 
     public static void loadStatusEffects(){
 
@@ -93,6 +93,12 @@ public class NyfalisStatusEffects {
         unloaded = new StatusEffect("unloaded"){{
             color = Color.valueOf("6b675f");
             effect = Fx.oily;
+            show = false;
+        }};
+
+        drained = new StatusEffect("drained"){{
+            color = Color.valueOf("A258A3");
+            speedMultiplier = healthMultiplier = 0.9f;
         }};
     }
 }

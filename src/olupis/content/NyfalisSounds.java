@@ -2,6 +2,7 @@ package olupis.content;
 
 import arc.Core;
 import arc.audio.Sound;
+import arc.struct.Seq;
 import mindustry.content.Planets;
 import mindustry.type.Planet;
 import mindustry.world.Block;
@@ -22,10 +23,12 @@ public class NyfalisSounds {
 
             cascadeDangerWarning = new Sound(),
 
-            space = new Sound()
+            space = new Sound(),
+            space2 = new Sound()
     ;
+    public static Seq<Sound> spaces;
 
-    public static void  LoadSounds(){//Use - not _ rushie >:|
+    public static void  LoadSounds(){
         //Note: Vars.tree.loadSound only works with .mp3 and .ogg
         as2PlasmaShot = tree.loadSound("as2-plasma-shot");
         as2ArmorBreak = tree.loadSound("as2-broke-armor");
@@ -34,6 +37,9 @@ public class NyfalisSounds {
         sawCollision = tree.loadSound("sawlade-collision");
         cascadeDangerWarning = tree.loadSound("cascade-danger-warning");
         space = tree.loadSound("space");
+        space2 = tree.loadSound("space2");
+
+        spaces = Seq.with(space, space2);
     }
 
 
