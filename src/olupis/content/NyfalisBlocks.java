@@ -2000,8 +2000,7 @@ public class NyfalisBlocks {
             size = 4;
             itemCapacity = 100;
             launchTime = 60f * 20;
-            alwaysUnlocked = true;
-            requirements(Category.effect, with(rustyIron, 7/*5, iron, 50, silicon, 50, cobalt, 10*/));
+            requirements(Category.effect, with(rustyIron, 75, iron, 50, silicon, 50, cobalt, 10));
             drawer = new DrawPistons();
         }};
 
