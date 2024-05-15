@@ -25,7 +25,9 @@ public class NyfalisSounds {
 
             space = new Sound(),
             space2 = new Sound(),
-            rainbow = new Sound()
+            rainbow1 = new Sound(),
+            rainbow2 = new Sound()
+
     ;
     public static Seq<Sound> spaces;
 
@@ -37,7 +39,8 @@ public class NyfalisSounds {
         sawActiveLoop = tree.loadSound("sawblade-active-loop");
         sawCollision = tree.loadSound("sawlade-collision");
         cascadeDangerWarning = tree.loadSound("cascade-danger-warning");
-        rainbow = tree.loadSound("rainbow-stat-music");
+        rainbow1 = tree.loadSound("rainbow-stat-music1");
+        rainbow2 = tree.loadSound("rainbow-stat-music2");
         space = tree.loadSound("space");
         space2 = tree.loadSound("space2");
 

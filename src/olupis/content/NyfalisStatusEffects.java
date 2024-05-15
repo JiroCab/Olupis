@@ -45,8 +45,8 @@ public class NyfalisStatusEffects {
                     unit.unapply(this);
                     unit.unapply(malfuct);
                     if(Core.settings.getBool("nyfalis-rainbow-music")){
-                        unit.apply(glitch,12 * 60);
-                        NyfalisSounds.rainbow.at(unit.x, unit.y);
+                        unit.apply(glitch,12.711f * 60);
+                        NyfalisSounds.rainbow2.at(unit.x, unit.y);
                     } else {
                         unit.apply(glitch,180);
                     }
@@ -70,9 +70,6 @@ public class NyfalisStatusEffects {
             public void setStats(){
                 super.setStats();
                 stats.remove(Stat.speedMultiplier);
-                stats.add(new Stat("olupis-scram-m"),"");
-                stats.add(new Stat("olupis-scram-b"),"");
-                stats.add(new Stat("olupis-scram-s"), "");
             }
 
             {
@@ -92,8 +89,8 @@ public class NyfalisStatusEffects {
                     unit.unapply(this);
                     unit.unapply(corupt);
                     if(Core.settings.getBool("nyfalis-rainbow-music")){
-                        unit.apply(glitch,12 * 60);
-                        NyfalisSounds.rainbow.at(unit.x, unit.y);
+                        unit.apply(glitch,12.904f * 60);
+                        NyfalisSounds.rainbow1.at(unit.x, unit.y);
                     } else {
                         unit.apply(glitch,180);
                     }
@@ -122,14 +119,23 @@ public class NyfalisStatusEffects {
                 show = true;
             }
         };
-        glitch = new StatusEffect("glitch"){
+        var name = "";
+        if(Core.settings.getBool("nyfalis-rainbow-music")){
+            name = "RAVE";
+        } else {
+            name = "glitch";
+        }
+        glitch = new StatusEffect(name){
             {
              buildSpeedMultiplier = 0;
+             show = true;
+             if(Core.settings.getBool("nyfalis-rainbow-music")){
+                 reloadMultiplier = 10;
+             }
             }
             public HashMap<Unit, Integer> U = new HashMap<>();
             public HashMap<Unit, Float> unitTime = new HashMap<>();
             public HashMap<Unit, Team> unitTeam = new HashMap<>();
-
             public void start(Unit unit,float time)
             {
                 if (!U.containsKey(unit))
@@ -156,8 +162,11 @@ public class NyfalisStatusEffects {
                     start(unit,time);
                 unitTime.replace(unit,time);
 
+                unit.unapply(malfuct);
+                unit.unapply(corupt);
 
-                unit.team(Team.get(Mathf.random(0,250)));
+                    unit.team(Team.get(Mathf.random(0,255)));
+
 
                 if (U.containsKey(unit) && (time <= Time.delta * 2f || !unit.isValid()))
                 {{
