@@ -1113,7 +1113,6 @@ public class NyfalisBlocks {
             size = 2;
             health = 320;
             craftTime = 20f;
-            liquidCapacity = 60f;
 
             craftEffect = Fx.none;
             drawer = new DrawMulti(

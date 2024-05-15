@@ -248,7 +248,7 @@ public class NyfalisTurrets {
                         collidesAir =  collidesGround = flatDamage = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
-                        status = NyfalisStatusEffects.glitch;
+                        status = NyfalisStatusEffects.corupt;
                         groundDamageMultiplier = groundPenalty;
                     }}
                 );

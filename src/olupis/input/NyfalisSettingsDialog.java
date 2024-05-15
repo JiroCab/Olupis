@@ -31,6 +31,7 @@ public class NyfalisSettingsDialog {
 
         ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
             table.checkPref("nyfalis-bread-gun", false);
+            table.checkPref("nyfalis-rainbow-music", false);
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
             /* uncomment when name/icon is final
