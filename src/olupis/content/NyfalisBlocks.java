@@ -116,7 +116,9 @@ public class NyfalisBlocks {
     ; //endregion
 
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
-    public static ObjectSet<Block> nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>();
+    public static ObjectSet<Block>
+            nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
+            rainRegrowables = new ObjectSet<>();
 
     public static void LoadWorldTiles(){
         //region Ores / Overlays
@@ -2000,8 +2002,11 @@ public class NyfalisBlocks {
             size = 4;
             itemCapacity = 100;
             launchTime = 60f * 20;
-            requirements(Category.effect, with(rustyIron, 75, iron, 50, silicon, 50, cobalt, 10));
-            drawer = new DrawPistons();
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawPistons()
+            );
+            requirements(Category.effect, BuildVisibility.campaignOnly, with(rustyIron, 75, iron, 50, silicon, 50, cobalt, 10));
         }};
 
         lightWall = new PrivilegedLightBlock("light-wall"){{
@@ -2078,6 +2083,8 @@ public class NyfalisBlocks {
         Planets.serpulo.techTree.each(n ->{
             if(n.content instanceof Block b) hiddenNyfalisBlocks.add(b);
         });
+
+        rainRegrowables.addAll(grass, moss, mossierStone, mossyStone, yellowGrass, cinderBloomGrass, cinderBloomiest, cinderBloomiest, mossyDirt, frozenDirt, frozenGrass, frozenSlop);
 
         cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
         cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);

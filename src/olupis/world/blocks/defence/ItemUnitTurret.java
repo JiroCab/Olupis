@@ -300,11 +300,14 @@ public class ItemUnitTurret extends ItemTurret {
         }
 
         public int getMaximumAccepted(Item item) {
-            if(useAlternate){
-                if(Arrays.stream(requiredAlternate).anyMatch(i -> item == i.item)) return Math.round(itemCapacity * state.rules.unitCost(team));
-            } else {
-                if(Arrays.stream(requiredItems).anyMatch(i -> item == i.item)) return Math.round(alternateCapacity * state.rules.unitCost(team));
+            if(unitFactory){
+                if(useAlternate){
+                    if(Arrays.stream(requiredAlternate).anyMatch(i -> item == i.item)) return Math.round(itemCapacity * state.rules.unitCost(team));
+                } else {
+                    if(Arrays.stream(requiredItems).anyMatch(i -> item == i.item)) return Math.round(alternateCapacity * state.rules.unitCost(team));
+                }
             }
+
 
             return this.block.itemCapacity;
         }
@@ -685,6 +688,10 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         protected float baseReloadSpeed(){
             return hasReqItems() ? efficiency : 0f;
+        }
+
+        public boolean isUnitFactory(){
+            return unitFactory;
         }
 
         @Override

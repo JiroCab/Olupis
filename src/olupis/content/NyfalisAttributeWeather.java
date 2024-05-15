@@ -158,8 +158,9 @@ public class NyfalisAttributeWeather {
     }
 
     public static class AcidRainWeather extends RainWeather{
-        public float damageDelay = 1.5f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f;
-        boolean coolDown = false;
+        public float damageDelay = 1.5f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f,
+                          regrowPercent = 0.1f;
+        boolean coolDown = false, coolDownRegrow = false;
 
         public AcidRainWeather(String name){
             super(name);
@@ -176,6 +177,19 @@ public class NyfalisAttributeWeather {
                 });
                 /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
                 if(damageUnits > 0)Groups.unit.each(u -> u.damage(damageUnits));
+//                if(!coolDownRegrow){
+//                    int range = Math.round((Vars.world.height() + Vars.world.height()) * regrowPercent);
+//                    Log.err("nya");
+//                    for(int r = range ; r > 0 ; r-- ){
+//                        int x = (int) Mathf.range(0, Vars.world.width()), y = (int) Mathf.range(0, Vars.world.height());
+//
+//                        Tile t = Vars.world.tiles.get(x, y);
+//                        if(t.block() == air && rainRegrowables.contains(t.floor())){
+//                            t.setNet(t.floor().decoration);
+//                        }
+//                    }
+//                }
+//                coolDownRegrow = !coolDownRegrow;
                 coolDown = false;
             });
         }

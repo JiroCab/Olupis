@@ -36,7 +36,7 @@ import olupis.world.entities.parts.CellPart;
 import olupis.world.entities.parts.NyfPartParms;
 import olupis.world.entities.units.*;
 
-import static mindustry.Vars.tilePayload;
+import static mindustry.Vars.*;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 
@@ -75,7 +75,7 @@ public class NyfalisUnits {
 
 
     public static AmmoLifeTimeUnitType
-        mite, ticks,
+        mite, tick, flea, lice,
         //support - yes, its just Phasmophobia ghost types
         spirit, phantom, banshee, revenant, poltergeist
     ;
@@ -1014,6 +1014,52 @@ public class NyfalisUnits {
 
         //endregion
         //region Limited - Hive
+        flea = new AmmoLifeTimeUnitType("flea"){{
+            hitSize = 8f;
+            range = 4f;
+            armor = 10f;
+            speed = 2.7f;
+            drag = 0.04f;
+            accel = 0.08f;
+            health = 100;
+            fogRadius = 0;
+            lightRadius = 15f;
+            itemCapacity = 0;
+            penaltyMultiplier = 1f;
+            ammoDepletionAmount = 0.6f;
+            maxRange = 15f * Vars.tilesize;
+            ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
+
+            flying = targetGround = targetAir = drawAmmo = true;
+            playerControllable  = logicControllable = useUnitCap = false;
+            constructor = UnitEntity::create;
+            controller = u -> new SearchAndDestroyFlyingAi();
+            weapons.add(new NyfalisWeapon(){{
+                y = x = 0f;
+                reload = 30f;
+                inaccuracy = 12f;
+                shootCone = 15f;
+                targetInterval = 30f;
+                targetSwitchInterval = 60f;
+                ammoPerShot = (float) ammoCapacity / 4f;
+
+                shootSound = Sounds.pew;
+                ammoType = lifeTimeWeapon;
+                bullet = new FlakBulletType(6f, 3){{
+                    width = 6f;
+                    height = 8f;
+                    lifetime = 30f;
+                    ammoMultiplier = 5f;
+                    reloadMultiplier = 0.5f;
+                    splashDamage = 22f * 1.5f;
+                    splashDamageRadius = 18f;
+                    collidesGround = true;
+                    shootEffect = Fx.shootSmall;
+                    hitEffect = Fx.flakExplosion;
+                }};
+            }});
+        }};
+
         mite = new AmmoLifeTimeUnitType("mite"){{
             /*Rework: only no ammo deplete over time if with X of parent, once out, high  deplete amount*/
             hitSize = 8f;
@@ -1034,7 +1080,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
             controller = u -> new SearchAndDestroyFlyingAi(true);
-            weapons.add(new Weapon(){{
+            weapons.add(new NyfalisWeapon(){{
                 y = x = 0f;
                 reload = 10f;
                 shootCone = 15f;
@@ -1044,7 +1090,7 @@ public class NyfalisUnits {
                 shootSound = Sounds.pew;
                 ammoType = lifeTimeWeapon;
                 /*Gave up using LiquidBulletType*/
-                bullet = new NoBoilLiquidBulletType(steam){{
+                bullet = new NoBoilLiquidBulletType(NyfalisItemsLiquid.steam){{
                     useAmmo = true;
                     pierce = true;
 
@@ -1052,12 +1098,111 @@ public class NyfalisUnits {
                     lifetime = 18f;
                     damage = 10f;
                     pierceCap = 1;
+                    ammoPerShot = 0;
                     ammoMultiplier = 1.5f;
                     statusDuration = 1.5f *60f;
                     buildingDamageMultiplier = 0f;
                     status = StatusEffects.corroded;
                     shootEffect = Fx.shootLiquid;
                     despawnEffect = hitEffect = Fx.steam;
+                }};
+            }});
+        }};
+
+        //fires 2 roll bullets in quick succession
+        lice = new AmmoLifeTimeUnitType("lice"){{
+            hitSize = 8f;
+            armor = 10f;
+            speed = 2.7f;
+            drag = 0.04f;
+            accel = 0.08f;
+            health = 100;
+            fogRadius = 0;
+            lightRadius = 15f;
+            itemCapacity = 0;
+            penaltyMultiplier = 1f;
+            ammoDepletionAmount = 0.6f;
+            maxRange = 15f * Vars.tilesize;
+            ammoCapacity = (int) (600f/(speed / ammoDepletionAmount));
+
+            flying = targetGround = targetAir = drawAmmo = true;
+            playerControllable  = logicControllable = useUnitCap = false;
+            constructor = UnitEntity::create;
+            controller = u -> new SearchAndDestroyFlyingAi();
+            weapons.add(new NyfalisWeapon(){{
+                y = x = 0f;
+                reload = 10f;
+                shootCone = 15f;
+                targetInterval = 30f;
+                targetSwitchInterval = 60f;
+                ammoPerShot = (float) ammoCapacity / 2f;
+
+                fireOverSolids = targetAir = false;
+                shootSound = Sounds.pew;
+                ammoType = lifeTimeWeapon;
+                /*Gave up using LiquidBulletType*/
+                bullet = new RollBulletType(3.5f, 38){{
+                    status = StatusEffects.slow;
+                    collidesAir = false;
+                    width = 40f;
+                    height = 11f;
+                    lifetime = 50f;
+                    pierceCap = 4;
+                    knockback = 5f;
+                    ammoMultiplier = 2;
+                    homingPower = 0.2f;
+                    homingRange = 100f;
+                    statusDuration = 60f * 2f;
+                    buildingDamageMultiplier = 0.4f;
+                    shootEffect = smokeEffect = Fx.none;
+                    frontColor = new Color().set(iron.color).lerp(Pal.bulletYellowBack, 0.1f);
+                    backColor = new Color().set(iron.color).lerp(Pal.bulletYellow, 0.2f);
+                }};
+            }});
+        }};
+
+        //Explodes and gives glitched effect
+        tick = new AmmoLifeTimeUnitType("tick"){{
+            range = 5;
+            hitSize = 8f;
+            armor = 10f;
+            speed = 2.7f;
+            drag = 0.04f;
+            accel = 0.08f;
+            health = 100;
+            fogRadius = 0;
+            lightRadius = 15f;
+            itemCapacity = 0;
+            penaltyMultiplier = 1f;
+            ammoDepletionAmount = 0.6f;
+            ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
+
+            flying = targetGround = targetAir = drawAmmo = true;
+            playerControllable  = logicControllable = useUnitCap = false;
+            constructor = UnitEntity::create;
+            controller = u -> new SearchAndDestroyFlyingAi(true);
+            weapons.add(new NyfalisWeapon(){{
+                shootOnDeath = true;
+                reload = 24f;
+                shootCone = 180f;
+                ejectEffect = Fx.none;
+                shootSound = Sounds.explosion;
+                x = shootY = 0f;
+                mirror = false;
+                ammoPerShot = ammoCapacity ;
+                bullet = new BulletType(){{
+
+                    speed = 0f;
+                    splashDamage = 90f;
+                    statusDuration = 20f;
+                    splashDamageRadius = 55f;
+
+                    hitSound = Sounds.explosion;
+                    status = NyfalisStatusEffects.glitch;
+
+                    hitEffect = NyfalisFxs.obliteratorShockwave;
+                    instantDisappear = collidesAir = killShooter = true;
+                    collides = hittable = collidesTiles = false;
                 }};
             }});
         }};
@@ -1218,7 +1363,7 @@ public class NyfalisUnits {
         }};
 
         //endregion
-        //region scout
+        //region Scout
         scarab = new NyfalisUnitType("scarab"){{
             hitSize = 9f;
             speed = 3.6f;

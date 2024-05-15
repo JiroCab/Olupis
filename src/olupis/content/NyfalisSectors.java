@@ -13,7 +13,7 @@ public class NyfalisSectors {
 
     public static SectorPreset
         /*Arthin / Seredris*/
-        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, inundataDesert, abandonedTrainStations, conciditRuins, frostbiteBasin,
+        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, glasierSea, abandonedTrainStations, conciditRuins, frostbiteBasin,
         /*Nyfalis*/
         conservatorium, forestOfSerenity,
         /*Spelta / Vorgin*/
@@ -67,7 +67,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 2000, Items.lead, 2000, NyfalisItemsLiquid.iron, 750, Items.copper, 500,  Items.graphite, 350, NyfalisItemsLiquid.quartz, 475));
         }};
 
-        inundataDesert = new SectorPreset("inundata-desert", arthin, 7){{
+        glasierSea = new SectorPreset("glasier-sea", arthin, 7){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 

@@ -6,8 +6,7 @@
  import mindustry.ai.types.FlyingAI;
  import mindustry.entities.Predict;
  import mindustry.entities.Units;
- import mindustry.gen.Teamc;
- import mindustry.gen.Unit;
+ import mindustry.gen.*;
  import mindustry.type.Weapon;
  import mindustry.world.meta.BlockFlag;
 

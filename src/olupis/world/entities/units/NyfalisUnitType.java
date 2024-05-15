@@ -263,6 +263,8 @@ public class NyfalisUnitType extends UnitType {
         dashShoot = false, dashExclusive = false,
         /*Check for angle to target before shooting */
         strictAngle = true,
+        /*Solid check*/
+        fireOverSolids = false,
         /*Stats*/
         statsBlocksOnly = false;
         /*Margin where when a weapon can fire while transition from ground to air*/
@@ -270,6 +272,7 @@ public class NyfalisUnitType extends UnitType {
         /*Snek weapon helper so I don't have to override anything else there*/
         float shootXf = shootX, shootYf = shootY;
         boolean altWeaponPos = false;
+        public float ammoPerShot = -1;
 
         public NyfalisWeapon(String name){super(name);}
         public NyfalisWeapon(String name, boolean boostShoot, boolean groundShoot ){
@@ -296,9 +299,9 @@ public class NyfalisUnitType extends UnitType {
                 mount.reload = reload;
             }
 
-            boolean can = (!unit.disarmed
-                    && (!unit.type.canBoost ||
-                    (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation)));
+            boolean can = !unit.disarmed
+                    && (unit.onSolid() && fireOverSolids) && (!unit.type.canBoost ||
+                    (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation) && (unit.onSolid() && fireOverSolids));
             float lastReload = mount.reload;
             mount.reload =Math.max(mount.reload -Time.delta *unit.reloadMultiplier,0);
             mount.recoil =Mathf.approachDelta(mount.recoil,0,unit.reloadMultiplier /recoilTime);
@@ -445,7 +448,8 @@ public class NyfalisUnitType extends UnitType {
                 mount.reload = reload;
 
                 if (useAmmo) {
-                    unit.ammo--;
+                    if(ammoPerShot == -1)unit.ammo--;
+                    else if (ammoPerShot > 0) unit.ammo -= ammoPerShot;
                     if (unit.ammo < 0) unit.ammo = 0;
                 }
             }

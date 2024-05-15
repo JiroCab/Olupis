@@ -44,7 +44,7 @@ public class SpawnHelperBulletType extends BasicBulletType {
                     if(u.command != null){
                         spawned.command().command(u.command);
                     }
-                    Events.fire(new EventType.UnitCreateEvent(spawned, u));
+                    if(u.isUnitFactory())Events.fire(new EventType.UnitCreateEvent(spawned, u));
                 }
                 if(spawned.controller() instanceof AgressiveFlyingAi ai && hasParent) {
                     ai.hasParent = true;

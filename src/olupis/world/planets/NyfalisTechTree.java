@@ -26,17 +26,17 @@ public class NyfalisTechTree {
                                 new Objectives.SectorComplete(mossyCaverns),
                                 new Objectives.Produce(iron)
                             ),() ->{
-                                node(muddyLakes,
+                                node(conciditRuins,
                                     Seq.with(new Objectives.SectorComplete(vakinyaDesert)),
                                 () -> {
-                                    node(inundataDesert,
+                                    node(glasierSea,
                                             Seq.with(new Objectives.SectorComplete(muddyLakes)),
                                     () -> {
 
                                     });
                                 });
 
-                                node(conciditRuins,
+                                node(muddyLakes,
                                     Seq.with(new Objectives.SectorComplete(vakinyaDesert)),
                                     () -> {
                                         node(abandonedTrainStations,
@@ -52,7 +52,9 @@ public class NyfalisTechTree {
                                 node(frostbiteBasin,
                                         Seq.with(new Objectives.SectorComplete(conciditRuins), new Objectives.SectorComplete(muddyLakes)),
                                         () -> {
+                                            node(frostbiteBasin, () -> {
 
+                                            });
                                         }
                                 );
                             });
@@ -61,7 +63,7 @@ public class NyfalisTechTree {
                 });
                 node(nyfalis, Seq.with(
                         new Objectives.SectorComplete(citadelOfOasis),
-                        new Objectives.SectorComplete(inundataDesert),
+                        new Objectives.SectorComplete(glasierSea),
                         new Objectives.SectorComplete(frostbiteBasin)
                 ),() ->{
                     node(conservatorium, Seq.with(
@@ -202,7 +204,7 @@ public class NyfalisTechTree {
 
                                 });
                             });
-                            node(discardDriver, Seq.with(new Objectives.SectorComplete(inundataDesert)),() ->{
+                            node(discardDriver, Seq.with(new Objectives.SectorComplete(glasierSea)),() ->{
 
                             });
                         });

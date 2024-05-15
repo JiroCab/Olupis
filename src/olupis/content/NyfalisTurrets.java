@@ -31,7 +31,7 @@ import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisItemsLiquid.*;
-import static olupis.content.NyfalisUnits.mite;
+import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisTurrets {
 
@@ -159,21 +159,22 @@ public class NyfalisTurrets {
             }
         };
 
-        avenger = new AirPriorityItemTurret("avenger"){{
+        avenger = new AirPriorityItemTurret("avenger"){
+            {
                 targetAir = true;
                 size = 3;
+                recoil = 0;
                 reload = 42f;
-                range = 34 * 8;
                 health = 300;
+                range = 34 * 8;
+                rotateSpeed = 0;
                 minWarmup = 0.96f;
                 shootY = shootX= 0f;
                 coolantMultiplier = 2.5f;
                 warmupMaintainTime = 1f;
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.11f;
-                shootCone = 360;
-                rotateSpeed = 0;
-                inaccuracy = 360;
+                shootCone =inaccuracy = 360;
 
                 final float groundPenalty = 0.05f;
                 ammo(
@@ -254,7 +255,7 @@ public class NyfalisTurrets {
                 limitRange(1.5f);
                 shootSound = Sounds.missile;
                 shootEffect = Fx.blastsmoke;
-                recoil = 0;
+
                 drawer = new DrawTurret(){{
                     parts.add(
                         new RegionPart("-door-bl"){{
@@ -395,22 +396,39 @@ public class NyfalisTurrets {
             range = 650;
             reload = 600f;
             maxAmmo  = 20;
+            itemCapacity = 60;
             fogRadiusMultiplier = 0.5f;
             shootSound = Sounds.respawn;
 
             ammo(
-                silicon, new SpawnHelperBulletType(){{
+                lead, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    spawnUnit = flea;
+                }},
+                iron, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     spawnUnit = mite;
+                }},
+                silicon, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    spawnUnit = lice;
+                }},
+                cobalt, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    spawnUnit = tick;
                 }}
-                    //TODO: CRAWER THAT FLIES
             );
-            requiredItems = requiredAlternate = with();
-            commandable = configurable = rallyAim = false;
             playerControllable = drawOnTarget = true;
-            researchCost = with(lead, 1500, silicon, 1500,  iron, 1500);
-            requirements(Category.turret, with(iron, 100, lead, 30, silicon, 30));
+            commandable = configurable = rallyAim = false;
+            requiredAlternate = with();
+            buildingFilter = b -> false; //dont
+            requiredItems = with(copper, 10);
+            researchCost = with(lead, 1500, silicon, 1500,  iron, 1500, copper, 1500);
+            requirements(Category.turret, with(iron, 100, lead, 40, silicon, 40, copper, 40));
         }};
 
         dissolver = new LiquidTurret("dissolver"){{ //architonnerre
@@ -1599,7 +1617,7 @@ public class NyfalisTurrets {
                 stats.add(Stat.ammo, NyfalisStats.ammoBlocksOnly(ammoTypes, this));
             }
         };
-
+        //endregion
         //region Env Hazzards
         atroposShroom = new PowerTurret("atropos-shroom"){{
             alwaysShooting = true;
@@ -1663,7 +1681,5 @@ public class NyfalisTurrets {
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
-
-        //endregion
     }
 }
