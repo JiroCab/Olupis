@@ -11,8 +11,12 @@ import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.part.FlarePart;
+import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
+import mindustry.entities.pattern.ShootHelix;
+import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -1782,8 +1786,8 @@ public class NyfalisBlocks {
         taurus = new PowerTurret("taurus"){{
             size = 3;
             recoils = 2;
-            reload = 10f;
-            shootCone =12f;
+            reload = 120f;
+            shootCone = 12f;
             rotateSpeed = 3;
             inaccuracy = 15f;
             coolantMultiplier = 1.6f;
@@ -1797,7 +1801,7 @@ public class NyfalisBlocks {
                 width = 10f;
                 height = 16f;
                 lifetime = 30f;
-                healPercent = 2.6f;
+                healPercent = 3f;
                 splashDamage = 0f;
                 /*added slight homing, so it can hit 1x1 blocks better or at all*/
                 homingRange = 5f;
@@ -1813,8 +1817,9 @@ public class NyfalisBlocks {
             group = BlockGroup.projectors;
             outlineColor = nyfalisBlockOutlineColour;
             shoot = new ShootAlternate(9f);
+            shoot.shotDelay = 20;
             consumePower(100f / 60f);
-            researchCost = with(iron, 100, lead, 200);
+            researchCost = with(iron, 100, lead, 200, alcoAlloy, 50);
             drawer = new DrawTurret("iron-"){{
                 for(int i = 0; i < 2; i ++){
                     int f = i;
@@ -1828,8 +1833,9 @@ public class NyfalisBlocks {
             }};
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             coolant = consume(new ConsumeLubricant(45f / 60f));
-            requirements(Category.effect, with(iron, 25, Items.lead, 30));
+            requirements(Category.effect, with(iron, 40, Items.lead, 30, alcoAlloy, 10));
         }};
+
 
         ladar = new Ladar("ladar"){{
             size = 2;
