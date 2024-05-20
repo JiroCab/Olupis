@@ -45,7 +45,7 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
             float speed = target instanceof Unit tar ? unit().speed() + tar.speed() : unit.speed();
             Vec2 tarVec = Predict.intercept(unit, target, speed);
             /*screw crawlers in particular*/
-            float range =  (suicideOnSuicideUnits && suicideOnTarget) ? 0f : unit.range();
+            float range = (suicideOnSuicideUnits && suicideOnTarget) ? 0f : Math.min(unit.range() -5f, 5f) ;
 
             if(unit.type.circleTarget){
                 circleAttack(120f);

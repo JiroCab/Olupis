@@ -8,7 +8,7 @@ import mindustry.gen.Teamc;
 import olupis.world.entities.units.NyfalisUnitType;
 
 public class NyfalisGroundAi extends GroundAI {
-    public boolean shouldCircle = false;
+    public boolean shouldCircle = false, shouldCharge = false;
     public float circleDistance = 75f;
     private int lastPathId = 0;
     private float lastMoveX, lastMoveY;
@@ -32,6 +32,9 @@ public class NyfalisGroundAi extends GroundAI {
                         }
                     }
                 }
+            }
+            if(shouldCharge){
+                moveTo(ai.targetPos, 0f, 0f);
             }
             if(shouldCircle) {
                 if (ai.attackTarget != null) {

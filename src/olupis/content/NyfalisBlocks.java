@@ -11,19 +11,12 @@ import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.part.FlarePart;
-import mindustry.entities.part.HaloPart;
 import mindustry.entities.part.RegionPart;
-import mindustry.entities.pattern.ShootAlternate;
-import mindustry.entities.pattern.ShootHelix;
-import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.Sounds;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.Radar;
-import mindustry.world.blocks.defense.ShockMine;
-import mindustry.world.blocks.defense.Wall;
+import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
@@ -32,7 +25,8 @@ import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.payloads.PayloadRouter;
-import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.power.Battery;
+import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumePower;
@@ -47,6 +41,7 @@ import olupis.world.blocks.processing.*;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
+import olupis.world.entities.pattern.ShootAlternateAlt;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -74,7 +69,7 @@ public class NyfalisBlocks {
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent,
 
         /*Liquid floors*/
-        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater, coralReef, slop,
+        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, shallowMossyWater, pinkGrassWater, yellowMossyWater, coralReef, slop,
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
@@ -1785,11 +1780,10 @@ public class NyfalisBlocks {
 
         taurus = new PowerTurret("taurus"){{
             size = 3;
-            recoils = 2;
-            reload = 120f;
-            shootCone = 12f;
+            reload = 100f;
             rotateSpeed = 3;
             inaccuracy = 15f;
+            shootCone = 12f;
             coolantMultiplier = 1.6f;
             shootY = (size * tilesize / 2f) -2f;
 
@@ -1798,10 +1792,9 @@ public class NyfalisBlocks {
             shootType = new HealOnlyBulletType(5.2f, -5, "olupis-diamond-bullet"){{
                 collidesTeam = despawnHit = splashDamagePierce = alwaysSplashDamage = despawnHitEffect = true;
                 collidesAir = absorbable = false;
-                width = 10f;
-                height = 16f;
-                lifetime = 30f;
-                healPercent = 3f;
+                width = 8f;
+                height = 13f;
+                healPercent = 0.75f;
                 splashDamage = 0f;
                 /*added slight homing, so it can hit 1x1 blocks better or at all*/
                 homingRange = 5f;
@@ -1812,28 +1805,33 @@ public class NyfalisBlocks {
                 frontColor = Color.white;
                 shootSound = Sounds.sap;
             }};
-            limitRange(3f);
-            shootEffect = Fx.shootHeal;
+            shootEffect = NyfalisFxs.shootTaurus;
+            smokeEffect = Fx.none;
             group = BlockGroup.projectors;
             outlineColor = nyfalisBlockOutlineColour;
-            shoot = new ShootAlternate(9f);
-            shoot.shotDelay = 20;
             consumePower(100f / 60f);
-            researchCost = with(iron, 100, lead, 200, alcoAlloy, 50);
+            researchCost = with(iron, 100, lead, 200);
+            shoot = new ShootAlternateAlt(9f);
+            shoot.shots = 4;
+            shoot.shotDelay = 11f;
+
+            recoils = 2;
+            recoil = 0.5f;
             drawer = new DrawTurret("iron-"){{
                 for(int i = 0; i < 2; i ++){
                     int f = i;
                     parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
-                        under = true;
-                        moveY = -1.5f;
-                        recoilIndex = f;
                         progress = PartProgress.recoil;
+                        recoilIndex = f;
+                        under = true;
+                        moveY = -3;
                     }});
                 }
             }};
+            limitRange(-23f);
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
             coolant = consume(new ConsumeLubricant(45f / 60f));
-            requirements(Category.effect, with(iron, 40, Items.lead, 30, alcoAlloy, 10));
+            requirements(Category.effect, with(iron, 40, Items.lead, 30));
         }};
 
 

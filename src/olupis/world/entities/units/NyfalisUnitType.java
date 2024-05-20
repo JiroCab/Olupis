@@ -28,20 +28,20 @@ import mindustry.type.*;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import mindustry.world.meta.*;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import olupis.content.NyfalisItemsLiquid;
 import olupis.content.NyfalisStatusEffects;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
 import olupis.world.entities.NyfalisStats;
-import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.parts.NyfPartParms;
 
 import static mindustry.Vars.*;
 
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
-    public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false,
+    public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false, canCharge = false,
                            constructHideDefault = false, customMineAi = false;
     /*Makes (legged) units boost automatically regardless of Ai*/
     public boolean alwaysBoostOnSolid = false;
@@ -87,6 +87,7 @@ public class NyfalisUnitType extends UnitType {
             if (customMineAi) cmds.add(NyfalisUnitCommands.nyfalisMineCommand);
             if (canGuardUnits) cmds.add(NyfalisUnitCommands.nyfalisGuardCommand);
             if (canDash)cmds.add(NyfalisUnitCommands.nyfalisDashCommand);
+            if (canCharge) cmds.add(NyfalisUnitCommands.nyfalisChargeCommand);
             if (canBoost && alwaysBoosts) cmds.remove(UnitCommand.boostCommand);
         commands = cmds.toArray();
     }
@@ -136,52 +137,7 @@ public class NyfalisUnitType extends UnitType {
 
         if(weapons.any()){
             stats.remove(Stat.weapons);
-            stats.add(Stat.weapons, table -> {
-                for(Weapon w : weapons) {
-                    if(!w.hasStats(this) || w.flipSprite) continue;
-
-                    if (w.bullet instanceof SpawnHelperBulletType) {
-                        UnitType spawn = w.bullet.spawnUnit;
-                        table.row();
-                        table.table(Styles.grayPanel, t -> {
-                            boolean show = !spawn.isBanned();
-                            if (!spawn.unlocked() && (Vars.state.isCampaign() || !Vars.state.isPlaying()))
-                                t.image(Icon.lock.getRegion()).tooltip(spawn.localizedName).size(25).pad(10f).left().scaling(Scaling.fit);
-                            else {
-                                if (show) t.image(spawn.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                                else
-                                    t.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
-                                t.table(info -> {
-                                    info.add(spawn.localizedName).left();
-                                    if (Core.settings.getBool("console")) {
-                                        info.row();
-                                        info.add(spawn.name).left().color(Color.lightGray);
-                                    }
-                                });
-                                t.button("?", Styles.flatBordert, () -> ui.content.show(spawn)).size(40f).pad(10).right().grow().visible(spawn::unlockedNow);
-                            }
-                        }).growX().pad(5).row();
-                        if(w.bullet.intervalBullet != null){
-                            table.row();
-                            table.table(Styles.grayPanel, t -> {
-                                t.left().top().defaults().padRight(3).left();
-                                StatValues.ammo(ObjectMap.of(this, w.bullet.intervalBullet)).display(t);
-                            }).growX().pad(5).margin(10);
-                        }
-                    } else {
-                        table.row();
-                        TextureRegion region = !w.name.isEmpty() ? Core.atlas.find(w.name + "-preview", w.region) : null;
-                        table.table(Styles.grayPanel, wt -> {
-                            wt.left().top().defaults().padRight(3).left();
-                            if (region != null && region.found() && w.showStatSprite)
-                                wt.image(region).size(60).scaling(Scaling.bounded).left().top();
-                            wt.row();
-                            w.addStats(this, wt);
-                        }).growX().pad(5).margin(10);
-                        table.row();
-                    }
-                }
-            });
+            stats.add(Stat.weapons, NyfalisStats.weapons(this, weapons));
         }
 
     }
@@ -198,7 +154,7 @@ public class NyfalisUnitType extends UnitType {
             u.lifetime(lifetime);
         }
         unit.apply(spawnStatus, spawnStatusDuration);
-        if(weaponsStartEmpty)unit.apply(NyfalisStatusEffects.unloaded, 60f * 0.05f);
+        if(weaponsStartEmpty)unit.apply(NyfalisStatusEffects.unloaded, 60f * 0.03f);
         return unit;
     }
 
@@ -264,7 +220,7 @@ public class NyfalisUnitType extends UnitType {
         /*Check for angle to target before shooting */
         strictAngle = true,
         /*Solid check*/
-        fireOverSolids = false,
+        fireOverSolids = true,
         /*Stats*/
         statsBlocksOnly = false;
         /*Margin where when a weapon can fire while transition from ground to air*/
@@ -300,8 +256,8 @@ public class NyfalisUnitType extends UnitType {
             }
 
             boolean can = !unit.disarmed
-                    && (unit.onSolid() && fireOverSolids) && (!unit.type.canBoost ||
-                    (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation) && (unit.onSolid() && fireOverSolids));
+                    && (unit.onSolid() && fireOverSolids || !unit.onSolid()) && (!unit.type.canBoost ||
+                    (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation));
             float lastReload = mount.reload;
             mount.reload =Math.max(mount.reload -Time.delta *unit.reloadMultiplier,0);
             mount.recoil =Mathf.approachDelta(mount.recoil,0,unit.reloadMultiplier /recoilTime);

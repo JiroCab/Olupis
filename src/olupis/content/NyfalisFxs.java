@@ -1,6 +1,5 @@
 package olupis.content;
 
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Interp;
@@ -12,9 +11,9 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 
+import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.lineAngle;
-import static arc.graphics.g2d.Lines.stroke;
+import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 import static olupis.content.NyfalisItemsLiquid.rustyIron;
 
@@ -142,7 +141,14 @@ public class NyfalisFxs extends Fx {
             });
         }),
 
-
+        shootTaurus = new Effect(14, e -> {
+            color(Pal.heal);
+            float w = 1f + 5 * e.fout();
+            Drawf.tri(e.x, e.y, w, 8f * e.fout(), e.rotation + 45f);
+            Drawf.tri(e.x, e.y, w, 8f * e.fout(), e.rotation - 45f);
+            Drawf.tri(e.x, e.y, w, 17f * e.fout(), e.rotation);
+            Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+        }),
 
         obliteratorShockwave = new MultiEffect(colouredShockwave, fastSquareSmokeCloud)
 

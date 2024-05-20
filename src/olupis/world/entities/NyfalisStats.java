@@ -18,12 +18,11 @@ import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.ui.Styles;
-import mindustry.world.Block;
 import mindustry.world.blocks.defense.ShockMine;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.meta.*;
-import olupis.world.entities.bullets.EffectivenessMissleType;
-import olupis.world.entities.bullets.MineBulletType;
+import olupis.world.entities.bullets.*;
+import olupis.world.entities.units.NyfalisUnitType;
 
 import java.util.Iterator;
 
@@ -31,11 +30,11 @@ import static mindustry.Vars.*;
 
 public class NyfalisStats extends StatValues {
 
-    public static <T extends UnlockableContent> StatValue ammoWithInfo(ObjectMap<T, BulletType> map, Block parent){
+    public static <T extends UnlockableContent> StatValue ammoWithInfo(ObjectMap<T, BulletType> map, UnlockableContent parent){
         return ammoWithInfo(map, 0, false, parent != null ? parent.name : null);
     }
 
-    public static <T extends UnlockableContent> StatValue ammoBlocksOnly(ObjectMap<T, BulletType> map, Block parent){
+    public static <T extends UnlockableContent> StatValue ammoBlocksOnly(ObjectMap<T, BulletType> map, UnlockableContent parent){
         ObjectMap<T, BulletType> children = new OrderedMap<>();
         for (ObjectMap.Entry<T, BulletType> b : map) {
             children.put(b.key, checkChildren(b.value));
@@ -66,12 +65,105 @@ public class NyfalisStats extends StatValues {
 
                 BulletType type = map.get(t);
 
-                if (!(type instanceof MineBulletType)) {
-                    if (type.spawnUnit != null && type.spawnUnit.weapons.size > 0) {
-                        ammoWithInfo(ObjectMap.of(t, type.spawnUnit.weapons.first().bullet), indent, false, parent).display(table);
-                        continue;
-                    }
+                if(type instanceof  MineBulletType){
+                    table.table(Styles.grayPanel, in -> {
+                        in.left().top().defaults().padRight(3).left();
 
+                        MineBulletType mb = (MineBulletType) type;
+                        if (mb.mine != null) {
+                            if(mb.mine.canBeBuilt() && mb.mine.fullIcon != null) in.image(mb.mine.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                            else in.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                            in.table(bt -> {
+                                bt.left().top().defaults().padRight(3).left();
+                                title(bt, (t.localizedName), t.fullIcon);
+                                sepLeft(bt, (mb.mine.localizedName));
+                                if(Core.settings.getBool("console"))sepLeft(bt, (mb.mine.name));
+                                sepLeft(bt, (mb.mine.description));
+                                if (mb.createChance) {
+                                    float set;
+                                    if (mb.createChancePercent > 0.99) {
+                                        set = 99;
+                                    } else if (mb.createChancePercent < 0.01) {
+                                        set = 1;
+                                    } else {
+                                        set = (mb.createChancePercent * 100);
+                                    }
+                                    sep(bt, Core.bundle.format("stat.olupis-chancepercent", Strings.autoFixed(set, 2)));
+                                }
+                                if (mb.mine instanceof ShockMine sm) {
+                                    float mdmg = (sm.damage * sm.tendrils) + sm.tileDamage;
+                                    if (mdmg != 0) {
+                                        sep(bt, Core.bundle.format("bullet.damage", (sm.damage * sm.tendrils) + sm.tileDamage));
+                                    }
+                                    if (sm.bullet != null) {
+                                        bt.row();
+
+                                        Table ic = new Table();
+                                        ammoWithInfo(ObjectMap.of(t, sm.bullet), indent + 1, false, null).display(ic);
+                                        Collapser coll = new Collapser(ic, true);
+                                        coll.setDuration(0.1f);
+
+                                        bt.table(it -> {
+                                            it.left().defaults().left();
+
+                                            it.add(Core.bundle.format("stat.olupis-bullet", Strings.autoFixed(sm.shots, 2)));
+                                            it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
+                                        });
+                                        bt.row();
+                                        bt.add(coll);
+                                    }
+                                }
+                            }).left().growX().pad(5);
+                            in.button("?", Styles.flatBordert, () -> ui.content.show(mb.mine)).size(40f).pad(10).right().grow().visible(mb.mine::unlockedNow).row();
+                        }
+                    }).padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).growX().margin(compact ? 0 : 10);
+                    table.row();
+                }
+                else if (type instanceof SpawnHelperBulletType || type.spawnUnit != null ) { //TODO Icon broken
+                    UnitType spawn = type.spawnUnit;
+                    table.table(Styles.grayPanel, in -> {
+                        in.left().top().defaults().padRight(3).left();
+
+                        in.table(bt -> {
+                            boolean show = !spawn.isBanned();
+                            if(show)in.image(spawn.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                            else in.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+                            bt.row();
+
+                            bt.table(info -> {
+                                if (!spawn.unlocked() && (Vars.state.isCampaign() || !Vars.state.isPlaying())) info.image(Icon.lock.getRegion()).tooltip(spawn.localizedName).size(25).pad(10f).left().scaling(Scaling.fit);
+                                else {
+                                    info.add(spawn.localizedName).left().row();
+                                    if (Core.settings.getBool("console"))
+                                        info.add(spawn.name).left().color(Color.lightGray);
+                                }
+
+                                if (type.intervalBullet != null) {
+                                    info.row();
+                                    int subIndent = indent + 1;
+                                    info.table(ib ->{
+                                        Table ic = new Table();
+                                        ammoWithInfo(ObjectMap.of(t, type.intervalBullet), subIndent + 1, false, null).display(ic);
+                                        Collapser coll = new Collapser(ic, true);
+                                        coll.setDuration(0.1f);
+
+                                        ib.table(it -> {
+                                            it.left().defaults().left();
+
+                                            it.add(Core.bundle.format("bullet.interval", Strings.autoFixed(type.intervalBullets / type.bulletInterval * 60, 2)));
+                                            it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
+                                        });
+                                        ib.row();
+                                        ib.add(coll);
+                                    }).growX().left();
+                                }
+                            }).growX().left();
+                        });
+                        in.button("?", Styles.flatBordert, () -> ui.content.show(spawn)).size(40f).pad(10).padLeft(4).right().grow().visible(spawn::unlockedNow);
+                    }).padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).growX().margin(compact ? 0 : 10);
+                }
+                else {
                     table.table(Styles.grayPanel, bt -> {
                         bt.left().top().defaults().padRight(3).left();
                         //no point in displaying unit icon twice
@@ -165,6 +257,9 @@ public class NyfalisStats extends StatValues {
                             sep(bt, Core.bundle.format("stat.olupis-groundpenalty", ammoStat(val), m.flatDamage ? m.groundDamageMultiplier : m.damage * m.groundDamageMultiplier, 2));
                         }
 
+                        if (t instanceof  NyfalisUnitType nu && nu.weaponsStartEmpty){
+                            sep(bt,"@stat.olupis-unloaded");
+                        }
 
                         if (type.intervalBullet != null) {
                             bt.row();
@@ -203,69 +298,17 @@ public class NyfalisStats extends StatValues {
                         }
                     }).padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).growX().margin(compact ? 0 : 10);
                     table.row();
-                } else {
-                    table.table(Styles.grayPanel, in -> {
-                        in.left().top().defaults().padRight(3).left();
-
-                        if (type instanceof MineBulletType mb && mb.mine != null) {
-                            if(mb.mine.canBeBuilt() && mb.mine.fullIcon != null) in.image(mb.mine.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                            else in.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
-
-                            in.table(bt -> {
-                                bt.left().top().defaults().padRight(3).left();
-                                title(bt, (t.localizedName), t.fullIcon);
-                                sepLeft(bt, (mb.mine.localizedName));
-                                sepLeft(bt, (mb.mine.description));
-                                if (mb.createChance) {
-                                    float set;
-                                    if (mb.createChancePercent > 0.99) {
-                                        set = 99;
-                                    } else if (mb.createChancePercent < 0.01) {
-                                        set = 1;
-                                    } else {
-                                        set = (mb.createChancePercent * 100);
-                                    }
-                                    sep(bt, Core.bundle.format("stat.olupis-chancepercent", Strings.autoFixed(set, 2)));
-                                }
-                                if (mb.mine instanceof ShockMine sm) {
-                                    float mdmg = (sm.damage * sm.tendrils) + sm.tileDamage;
-                                    if (mdmg != 0) {
-                                        sep(bt, Core.bundle.format("bullet.damage", (sm.damage * sm.tendrils) + sm.tileDamage));
-                                    }
-                                    if (sm.bullet != null) {
-                                        bt.row();
-
-                                        Table ic = new Table();
-                                        ammoWithInfo(ObjectMap.of(t, sm.bullet), indent + 1, false, null).display(ic);
-                                        Collapser coll = new Collapser(ic, true);
-                                        coll.setDuration(0.1f);
-
-                                        bt.table(it -> {
-                                            it.left().defaults().left();
-
-                                            it.add(Core.bundle.format("stat.olupis-bullet", Strings.autoFixed(sm.shots, 2)));
-                                            it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
-                                        });
-                                        bt.row();
-                                        bt.add(coll);
-                                    }
-                                }
-                            }).left().growX().pad(5);
-                            in.button("?", Styles.flatBordert, () -> ui.content.show(mb.mine)).size(40f).pad(10).right().grow().visible(mb.mine::unlockedNow).row();
-                        }
-                    }).padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).growX().margin(compact ? 0 : 10);
-                    table.row();
                 }
             }
         };
     }
 
-    public static StatValue weaponsB(UnitType unit, Seq<Weapon> weapons) {
+    public static StatValue weapons(UnitType unit, Seq<Weapon> weapons) {
         return (table) -> {
             table.row();
 
             for(int i = 0; i < weapons.size; ++i) {
-                Weapon weapon = (Weapon)weapons.get(i);
+                Weapon weapon = weapons.get(i);
                 if (!weapon.flipSprite && weapon.hasStats(unit)) {
                     TextureRegion region = !weapon.name.isEmpty() ? Core.atlas.find(weapon.name + "-preview", weapon.region) : null;
                     table.table(Styles.grayPanel, (w) -> {
@@ -275,7 +318,7 @@ public class NyfalisStats extends StatValues {
                         }
 
                         w.row();
-                        weapon.addStats(unit, w);
+                        ammoWithInfo(ObjectMap.of(unit, weapon.bullet), unit).display(w);
                     }).growX().pad(5.0F).margin(10.0F);
                     table.row();
                 }
@@ -299,6 +342,13 @@ public class NyfalisStats extends StatValues {
     private static void title(Table table, String text, TextureRegion icon){
         table.table(te -> {
             te.image(icon).size(3 * 8).left().scaling(Scaling.fit).top();
+            te.add(text).left().top();
+        }).left().row();
+    }
+
+    private static void title(Table table, String text, TextureRegion icon, Color colour){
+        table.table(te -> {
+            te.image(icon).size(3 * 8).left().scaling(Scaling.fit).color(colour).top();
             te.add(text).left().top();
         }).left().row();
     }

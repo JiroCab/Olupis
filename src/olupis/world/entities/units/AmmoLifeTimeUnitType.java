@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.util.*;
@@ -30,7 +31,7 @@ import static mindustry.Vars.*;
 /*Unit that dies when it runs out of ammo, ammo Depletes over time*/
 public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*Custom logic to remove ammo over time*/
-    public  boolean ammoDepletesOverTime = true;
+    public  boolean ammoDepletesOverTime = true, ammoDepletesInRange = false;
     /*Custom logic to kill unit on no ammo*/
     public  boolean killOnAmmoDepletion = true;
     /*Amount to deplete per tick*/
@@ -41,7 +42,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     /*mining depletes ammo*/
     public boolean miningDepletesAmmo = false;
     /*Time before depleting ammo*/
-    public float ammoDepletionOffset = 0f;
+    public float ammoDepletionOffset = Time.toMinutes;
     float startTime;
     /*Being player controlled depletes ammo*/
     public boolean depleteOnInteraction = true, depleteOnInteractionUsesPassive = false;
@@ -54,7 +55,8 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     public TextureRegion ammoRegion;
     public Sound timedOutSound = Sounds.explosion;
     public Effect timedOutFx = NyfalisFxs.unitBreakdown;
-    public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f;
+    public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f, maxRange = -1;
+    public Vec2 startPos;
 
 
     //TODO: Range limit them, deplete ammo when N tiles away from X & Y
@@ -186,6 +188,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     }
 
     public Color ammoColor(Unit unit){
+        if(ammoDepletesInRange && !inRange(unit)) return Color.black;
         float f = Mathf.clamp(unit.ammof());
         return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, Math.max(f * 2.5f, 1f), 1f - f));
     }
@@ -196,10 +199,11 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             callTimeOut(unit);
         }
 
-        inoperable = unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null);
+        inoperable = ((unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null))
+                            || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding()));
         boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap));
 
-        boolean shouldDeplete = ((startTime+ ammoDepletionOffset) <= Time.time);
+        boolean shouldDeplete = ( (startTime+ ammoDepletionOffset) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
         if(inoperable || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
             unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || inoperable ? penaltyMultiplier : 1f));
         }
@@ -229,6 +233,29 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         startTime = Time.time;
         unit.apply(spawnStatus, spawnStatusDuration);
         return unit;
+    }
+
+    public Unit create(Team team, float unitRange, float startX, float startY ){
+        Unit unit = constructor.get();
+        unit.team = team;
+        unit.setType(this);
+        unit.ammo = ammoCapacity; //fill up on ammo upon creation
+        unit.elevation = flying ? 1f : 0;
+        unit.heal();
+        if(unit instanceof TimedKillc u){
+            u.lifetime(lifetime);
+        }
+        this.maxRange = unitRange;
+        startPos = new Vec2(startX /8f, startY /8f);
+
+        startTime = Time.time;
+        unit.apply(spawnStatus, spawnStatusDuration);
+        return unit;
+    }
+
+    public boolean inRange(Unit unit){
+        if(startPos != null && maxRange != -1) return true;
+        return unit.within(startPos.x * 8, startPos.y * 8, maxRange);
     }
 
     public void callTimeOut(Unit unit){

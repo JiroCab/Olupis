@@ -405,21 +405,25 @@ public class NyfalisTurrets {
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     spawnUnit = flea;
+                    unitRange = 650;
                 }},
                 iron, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     spawnUnit = mite;
+                    unitRange = 650;
                 }},
                 silicon, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
+                    unitRange = 650;
                     spawnUnit = lice;
                 }},
                 cobalt, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     spawnUnit = tick;
+                    unitRange = 650;
                 }}
             );
             playerControllable = drawOnTarget = true;

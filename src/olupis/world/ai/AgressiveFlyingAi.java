@@ -98,4 +98,8 @@ public class AgressiveFlyingAi extends FlyingAI {
     public boolean useFallback(){ /*allowed to be used in waves*/
         return parent == null && (unit.team.isAI() || unit.team == state.rules.waveTeam);
     }
+
+    public boolean hasTarget (){
+        return target != null && !invalid(target);
+    }
 }

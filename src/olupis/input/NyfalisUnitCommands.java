@@ -52,6 +52,14 @@ public class NyfalisUnitCommands {
             switchToMove = resetTarget = false;
             drawTarget = true;
         }},
+        nyfalisChargeCommand = new UnitCommand("nyfalis-charge", "production", u ->{
+                var ai = new  NyfalisGroundAi();
+                ai.shouldCharge = true;
+                return ai;
+        }){{
+            switchToMove = resetTarget = false;
+            drawTarget = true;
+        }},
         nyfalisDeployCommand = new UnitCommand ("nyfalis-deploy", "down", u ->  new DeployedAi()){{
             switchToMove = resetTarget = false;
             drawTarget = true;

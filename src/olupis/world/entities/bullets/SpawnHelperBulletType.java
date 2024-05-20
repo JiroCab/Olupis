@@ -13,19 +13,21 @@ import mindustry.gen.*;
 import mindustry.world.blocks.ControlBlock;
 import olupis.world.ai.AgressiveFlyingAi;
 import olupis.world.blocks.defence.ItemUnitTurret;
+import olupis.world.entities.units.AmmoLifeTimeUnitType;
 
 import static mindustry.Vars.*;
 
 public class SpawnHelperBulletType extends BasicBulletType {
     public boolean hasParent = false;
     public BulletType alternateType;
+    public float unitRange = -1;
 
     @Override
     public @Nullable Bullet create(@Nullable Entityc owner, @Nullable Entityc shooter, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data, @Nullable Mover mover, float aimX, float aimY) {
         if (spawnUnit != null) {
             //don't spawn units clientside!
             if (!net.client()) {
-                Unit spawned = spawnUnit.create(team);
+                Unit spawned =  spawnUnit instanceof AmmoLifeTimeUnitType al ? al.create(team, unitRange, x, y) : spawnUnit.create(team);
                 spawned.set(x, y);
                 spawned.rotation = angle;
                 //immediately spawn at top speed, since it was launched
