@@ -13,7 +13,7 @@ public class NyfalisSectors {
 
     public static SectorPreset
         /*Arthin / Seredris*/
-        sanctuary, vakinyaDesert, mossyCaverns, muddyLakes, citadelOfOasis, glasierSea, abandonedTrainStations, conciditRuins, frostbiteBasin,
+        sanctuary, dyingForest, mossyCaverns, muddyLakes, citadelOfOasis, glasierSea, abandonedTrainStations, conciditRuins, coldFlats,
         /*Nyfalis*/
         conservatorium, forestOfSerenity,
         /*Spelta / Vorgin*/
@@ -36,7 +36,7 @@ public class NyfalisSectors {
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
             difficulty = 2;
-            captureWave = 23;
+            captureWave = 14;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 150));
         }};
 
@@ -44,18 +44,18 @@ public class NyfalisSectors {
             addStartingItems  = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics = false;
 
-            captureWave = 38;
+            captureWave = 17;
             difficulty = 2;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 500, Items.lead, 500));
         }};
 
-        vakinyaDesert = new SectorPreset("vakinya-desert", arthin, 10){{
+        dyingForest = new SectorPreset("dying-forest", arthin, 10){{
             overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics  = false;
 
             captureWave = 16;
             difficulty = 2;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000, NyfalisItemsLiquid.iron, 200));
+            rules = commonRules(captureWave, ItemStack.with(Items.copper, 75, NyfalisItemsLiquid.rustyIron,300, Items.lead, 300, NyfalisItemsLiquid.iron, 250));
         }};
 
         citadelOfOasis = new SectorPreset("citadel-of-oasis", arthin, 11){{
@@ -80,7 +80,7 @@ public class NyfalisSectors {
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 5;
-            captureWave = 26;
+            captureWave = 21;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500, Items.copper, 500));
         }};
 
@@ -92,13 +92,13 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 200, NyfalisItemsLiquid.iron, 50));
         }};
 
-        frostbiteBasin = new SectorPreset("frostbite-basin", arthin, 29){{
+        coldFlats = new SectorPreset("cold-flats", arthin, 29){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 5;
-            captureWave = 46;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000,Items.copper, 500, Items.graphite, 250, NyfalisItemsLiquid.iron, 550));
+            captureWave = 13;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000,Items.copper, 500, NyfalisItemsLiquid.iron, 550));
         }};
 
         //endregion

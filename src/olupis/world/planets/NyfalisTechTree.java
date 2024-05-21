@@ -22,41 +22,22 @@ public class NyfalisTechTree {
                         node(mossyCaverns,
                                 Seq.with(new Objectives.SectorComplete(sanctuary)),
                         () -> {
-                            node(vakinyaDesert, Seq.with(
-                                new Objectives.SectorComplete(mossyCaverns),
-                                new Objectives.Produce(iron)
-                            ),() ->{
-                                node(conciditRuins,
-                                    Seq.with(new Objectives.SectorComplete(vakinyaDesert)),
-                                () -> {
-                                    node(glasierSea,
-                                            Seq.with(new Objectives.SectorComplete(muddyLakes)),
-                                    () -> {
+                            node(dyingForest, () -> {
+                                node(coldFlats, Seq.with(new Objectives.SectorComplete(conciditRuins)),  () -> {
+                                    node(glasierSea, () -> {
 
                                     });
                                 });
+                                node(muddyLakes, () -> {
+                                    node(abandonedTrainStations, () -> {
+                                        node(citadelOfOasis, () -> {
 
-                                node(muddyLakes,
-                                    Seq.with(new Objectives.SectorComplete(vakinyaDesert)),
-                                    () -> {
-                                        node(abandonedTrainStations,
-                                            Seq.with(new Objectives.SectorComplete(conciditRuins), new Objectives.Research(steamAgitator)),
-                                            () -> {
-                                                node(citadelOfOasis,
-                                                    Seq.with(new Objectives.SectorComplete(abandonedTrainStations)),
-                                                    () -> {
-
-                                                });
                                         });
+                                    });
                                 });
-                                node(frostbiteBasin,
-                                        Seq.with(new Objectives.SectorComplete(conciditRuins), new Objectives.SectorComplete(muddyLakes)),
-                                        () -> {
-                                            node(frostbiteBasin, () -> {
+                                node(conciditRuins, Seq.with(new Objectives.Research(groundConstruct)), () -> {
 
-                                            });
-                                        }
-                                );
+                                });
                             });
                         });
                     });
@@ -64,7 +45,7 @@ public class NyfalisTechTree {
                 node(nyfalis, Seq.with(
                         new Objectives.SectorComplete(citadelOfOasis),
                         new Objectives.SectorComplete(glasierSea),
-                        new Objectives.SectorComplete(frostbiteBasin)
+                        new Objectives.SectorComplete(coldFlats)
                 ),() ->{
                     node(conservatorium, Seq.with(
                             new Objectives.SectorComplete(sanctuary)
@@ -185,13 +166,13 @@ public class NyfalisTechTree {
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
                         node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder), new Objectives.SectorComplete(sanctuary)), () -> {
-                            node(garden, Seq.with(new Objectives.Research(vakinyaDesert)),()->{
+                            node(garden, Seq.with(new Objectives.Research(dyingForest)),()->{
                                 node(bioMatterPress, () ->{
 
                                 });
                             });
                             node(siliconKiln, ()->{
-                                node(hydrochloricGraphitePress, Seq.with(new Objectives.OnSector(vakinyaDesert)), ()->{
+                                node(hydrochloricGraphitePress, Seq.with(new Objectives.OnSector(dyingForest)), ()->{
                                     node(siliconArcSmelter , Seq.with(
                                             new  Objectives.Research(hydrochloricGraphitePress)
                                     ), ()->{
@@ -306,7 +287,7 @@ public class NyfalisTechTree {
 
                             });
                         });
-                        node(ironSieve, Seq.with(new Objectives.SectorComplete(vakinyaDesert), new Objectives.Produce(sand)),() ->{
+                        node(ironSieve, Seq.with(new Objectives.SectorComplete(dyingForest), new Objectives.Produce(sand)),() ->{
 
                         });
                     });
@@ -362,7 +343,7 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(construct, Seq.with(new Objectives.Research(ironRouter), new Objectives.SectorComplete(vakinyaDesert)), ()->{
+                node(construct, Seq.with(new Objectives.Research(ironRouter), new Objectives.SectorComplete(dyingForest)), ()->{
                     node(groundConstruct,
                         Seq.with(new Objectives.Research(silicon))
                     , () ->{
