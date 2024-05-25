@@ -1300,24 +1300,25 @@ public class NyfalisTurrets {
         }};
 
         slash = new PowerTurret("slash"){{
-            inaccuracy = 0f;
-            rotateSpeed = 3f;
             reload = 6;
-            shootY = 12;
+            shootY = 11;
+            inaccuracy = 0.5f;
+            rotateSpeed = 3f;
             minWarmup = 0.9f;
             smokeEffect = shootEffect =  Fx.none;
 
-            shootType = new ExplosionBulletType(50, 10){{
+            shootType = new ExplosionBulletType(35, 10){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = false;
                 fragBullets = 8;
-                fragRandomSpread = 0;
                 fragSpread = 360;
+                fragRandomSpread = 0;
                 fragBullet = new BulletType(){{
-                    damage = 0;
-                    knockback = 0.5f;
                     speed = 3;
-                    lifetime = 10;
+                    damage = 0;
+                    lifetime = 2;
+                    knockback = 0.5f;
+                    hitSoundVolume = 0.5f;
                     trailEffect = despawnEffect = smokeEffect = shootEffect =  Fx.none;
                     hitEffect =  Fx.hitFlameSmall;
                     collidesAir = false;
@@ -1333,11 +1334,12 @@ public class NyfalisTurrets {
                 health = 4000;
                 fogRadius = 13;
                 shootCone = 180f;
-                coolantMultiplier = 3f;
                 liquidCapacity = 5f;
+                coolantMultiplier = 3f;
 
                 parts.addAll(
                         new RegionPart("-buzzsaw"){{
+                            layer = Layer.legUnit + 0.1f;
                             mirror = false;
                             under = true;
                             progress = PartProgress.warmup;
@@ -1347,9 +1349,9 @@ public class NyfalisTurrets {
                         }}
                 );
             }};
-            loopSound = NyfalisSounds.sawActiveLoop;
             shootSound = Sounds.none;
             outlineColor = nyfalisBlockOutlineColour;
+            loopSound = NyfalisSounds.sawActiveLoop;
             coolant = consume(new ConsumeLubricant(15f / 60f));
             consumePower(0.3f);
             researchCost = with(rustyIron, 200, copper, 150);
@@ -1363,15 +1365,16 @@ public class NyfalisTurrets {
                 stats.remove(Stat.inaccuracy);
                 stats.remove(Stat.reload);
                 stats.remove(Stat.booster);
-                stats.add(new Stat("bullet.damage", StatCat.function),50 * (60 / reload) , StatUnit.perSecond);
+                stats.add(new Stat("olupis-damage", StatCat.function),shootType.splashDamage * (60 / reload) , StatUnit.perSecond);
                 stats.add(Stat.booster, NyfalisStats.sawBoosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
             }
         };
+
         laceration = new PowerTurret("laceration"){{
-            inaccuracy = 0f;
+            inaccuracy = 0.5f;
             rotateSpeed = 3f;
             reload = 8;
-            shootY = 20;
+            shootY = 18;
             minWarmup = 0.9f;
             smokeEffect = shootEffect =  Fx.none;
             shoot = new ShootAlternate(){{
@@ -1385,13 +1388,14 @@ public class NyfalisTurrets {
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = false;
                 fragBullets = 8;
-                fragRandomSpread = 0;
                 fragSpread = 360;
-                fragBullet = new BulletType(){{
-                    damage = 0;
-                    knockback = 0.5f;
+                fragRandomSpread = 0;
+                fragBullet = new BasicBulletType(){{
                     speed = 3;
-                    lifetime = 10;
+                    damage = 0;
+                    lifetime = 8.5f;
+                    knockback = 0.5f;
+                    hitSoundVolume = 0.5f;
                     trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
                     hitEffect =  Fx.hitFlameSmall;
                     collidesAir = false;
@@ -1403,7 +1407,7 @@ public class NyfalisTurrets {
 
                 size = 4;
                 recoil = 0;
-                range = 40f;
+                range = 45f;
                 health = 6000;
                 fogRadius = 13;
                 shootCone = 180f;
@@ -1419,6 +1423,7 @@ public class NyfalisTurrets {
                             x = -12;
                             y = 6.5f;
                             moveY = 13.5f;
+                            layer = Layer.legUnit + 0.1f;
                             moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
                         }},
                         new RegionPart("-buzzsaw"){{
@@ -1428,6 +1433,7 @@ public class NyfalisTurrets {
                             layerOffset = -0.001f;
                             y = 8;
                             moveY = 13;
+                            layer = Layer.legUnit + 0.1f;
                             moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
                         }},
                         new RegionPart("-buzzsaw"){{
@@ -1438,6 +1444,7 @@ public class NyfalisTurrets {
                             x = 12;
                             y = 6.5f;
                             moveY = 13.5f;
+                            layer = Layer.legUnit + 0.1f;
                             moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
                         }}
 
@@ -1459,7 +1466,7 @@ public class NyfalisTurrets {
                 stats.remove(Stat.inaccuracy);
                 stats.remove(Stat.reload);
                 stats.remove(Stat.booster);
-                stats.add(new Stat("bullet.damage", StatCat.function),(200 * 3) * (60 / reload) , StatUnit.perSecond);
+                stats.add(new Stat("olupis-damage", StatCat.function),(shootType.splashDamage * 3) * (60 / reload) , StatUnit.perSecond);
                 stats.add(Stat.booster, NyfalisStats.sawBoosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
             }
         };

@@ -144,6 +144,7 @@ public class NyfalisStartUpUis {
             debugTable.row();
             debugTable.add(new Element()).width(155f).height(50f).margin(12f).touchable( Touchable.disabled);
         }
+        debugTable.marginBottom(200f);
     }
 
 

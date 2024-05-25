@@ -6,13 +6,12 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.util.Time;
-import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.game.Team;
+import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
-import mindustry.gen.*;
 import mindustry.world.meta.Stat;
 
 import java.util.HashMap;
@@ -44,12 +43,8 @@ public class NyfalisStatusEffects {
                 if(unit.hasEffect(malfuct)){
                     unit.unapply(this);
                     unit.unapply(malfuct);
-                    if(Core.settings.getBool("nyfalis-rainbow-music")){
-                        unit.apply(glitch,12.711f * 60);
-                        NyfalisSounds.rainbow2.at(unit.x, unit.y);
-                    } else {
-                        unit.apply(glitch,180);
-                    }
+                    unit.apply(glitch,12.711f * 60); //Time is now constant regardless of setting to avoid desync
+                    if(Core.settings.getBool("nyfalis-rainbow-music")) NyfalisSounds.rainbow2.at(unit.x, unit.y);
                 }
             }
             @Override
@@ -88,12 +83,8 @@ public class NyfalisStatusEffects {
                 if(unit.hasEffect(corupt)){
                     unit.unapply(this);
                     unit.unapply(corupt);
-                    if(Core.settings.getBool("nyfalis-rainbow-music")){
-                        unit.apply(glitch,12.904f * 60);
-                        NyfalisSounds.rainbow1.at(unit.x, unit.y);
-                    } else {
-                        unit.apply(glitch,180);
-                    }
+                    unit.apply(glitch,12.904f * 60);
+                    if(Core.settings.getBool("nyfalis-rainbow-music"))NyfalisSounds.rainbow1.at(unit.x, unit.y);
                 }
             }
             @Override
@@ -119,12 +110,7 @@ public class NyfalisStatusEffects {
                 show = true;
             }
         };
-        var name = "";
-        if(Core.settings.getBool("nyfalis-rainbow-music")){
-            name = "RAVE";
-        } else {
-            name = "glitch";
-        }
+        var name = Core.settings.getBool("nyfalis-rainbow-music") ? "RAVE" : "glitch" ;
         glitch = new StatusEffect(name){
             {
              buildSpeedMultiplier = 0;
@@ -165,7 +151,7 @@ public class NyfalisStatusEffects {
                 unit.unapply(malfuct);
                 unit.unapply(corupt);
 
-                    unit.team(Team.get(Mathf.random(0,255)));
+                unit.team(Team.get(Mathf.random(0,255)));
 
 
                 if (U.containsKey(unit) && (time <= Time.delta * 2f || !unit.isValid()))

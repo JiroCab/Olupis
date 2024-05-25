@@ -45,13 +45,14 @@ import olupis.world.entities.pattern.ShootAlternateAlt;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.oil;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisAttributeWeather.*;
 import static olupis.content.NyfalisItemsLiquid.*;
+import static olupis.content.NyfalisItemsLiquid.steam;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisBlocks {
@@ -645,7 +646,9 @@ public class NyfalisBlocks {
             size = 2;
             health = 200;
             buildCostMultiplier = 2f;
+            hasPower = conductivePower = consumesPower = true;
             researchCost = with(rustyIron, 300, lead, 300, iron, 10);
+            consumePower (6f/60);
             requirements(Category.distribution, with(rustyIron, 3, lead, 3, iron, 1));
         }};
 
@@ -1060,7 +1063,7 @@ public class NyfalisBlocks {
             researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             outputItem = new ItemStack(Items.graphite, 1);
             requirements(Category.crafting, with(iron, 10, lead, 50, rustyIron, 40));
-            consumeLiquids(LiquidStack.with(Liquids.oil, 10f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
+            consumeLiquids(LiquidStack.with(Liquids.oil, 10f / 60f, steam, 10f/60f));
         }};
 
         siliconKiln = new GenericCrafter("silicon-kiln"){{

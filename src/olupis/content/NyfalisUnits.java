@@ -36,7 +36,7 @@ import olupis.world.entities.parts.CellPart;
 import olupis.world.entities.parts.NyfPartParms;
 import olupis.world.entities.units.*;
 
-import static mindustry.Vars.tilePayload;
+import static mindustry.Vars.*;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 
@@ -511,7 +511,7 @@ public class NyfalisUnits {
                 mirror = false;
                 rotate = true;
                 ejectEffect = Fx.casing1;
-                bullet = new BasicBulletType(2.5f, 10f){{
+                bullet = new BasicBulletType(2.5f, 9f){{
                     width = 7f;
                     height = 9f;
                     shrinkX = 25f /60;
@@ -546,46 +546,63 @@ public class NyfalisUnits {
            weapons.addAll(
                new SnekWeapon(""){{
                    x = 0f;
-                   y = 11f;
+                   y = 13f;
                    recoil = 1f;
-                   shootY = 7f;
+                   shootY = 0f;
                    reload = 11f;
                    shootCone = 45f;
-                   weaponSegmentParent = 0;
+                   weaponSegmentParent = 7;
                    ejectEffect = Fx.none;
-                   shootSound = Sounds.flame;
-                   autoTarget = top = partialControl = true;
-                   rotate = alternate = mirror = controllable = strictAngle = true;
-                   bullet = new BulletType(4.2f, 37f){{
-                       ammoMultiplier = 3f;
-                       hitSize = 7f;
-                       lifetime = 12f;
-                       shootEffect = Fx.hitFlameSmall;
-                       despawnEffect = Fx.none;
-                       keepVelocity = hittable = false;
+                   shootSound = Sounds.none;
+                   top = false;
+                   autoTarget = partialControl = rotate = alternate = mirror = controllable = strictAngle = true;
+                   bullet = new ExplosionBulletType(35, 10){{
+                       trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                       killShooter = collidesAir = false;
+                       fragBullets = 8;
+                       fragSpread = 360;
+                       fragRandomSpread = 0;
+                       fragBullet = new BulletType(){{
+                           speed = 3;
+                           damage = 0;
+                           lifetime = 1.5f;
+                           knockback = 0.5f;
+                           trailEffect = despawnEffect = smokeEffect = shootEffect =  Fx.none;
+                           hitEffect =  Fx.hitFlameSmall;
+                           collidesAir = false;
+                           hitSoundVolume = 0.5f;
+                           hitSound = NyfalisSounds.sawCollision;
+                       }};
                    }};
+                   parts.addAll(
+                       new RegionPart("olupis-serpent-blade"){{
+                           layerOffset = -0.01f;
+                           mirror = false;
+                           under = true;
+                           progress = PartProgress.warmup;
+                           moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
+                       }}
+                   );
                }},
-               new SnekWeapon("olupis-dark-pew"){{
+               new SnekWeapon(""){{
                     x = 0f;
-                    y = -11f;
+                    y = -13f;
                     reload = 35f;
                     shootCone = 360f;
                     baseRotation = 180f;
-                    minShootVelocity = 0.1f;
+                    minShootVelocity = 0.1f; //So they don't dash while on the target or something
                     weaponSegmentParent = 1;
                     ignoreRotation = dashShoot = dashExclusive = partialControl = true;
                     rotate = alternate = mirror = aiControllable = false;
                     ejectEffect = Fx.casing1;
-                    bullet = new BasicBulletType(4.2f, 10f){{
+                    bullet = new BasicBulletType(5f, 10f){{
                         width = 7f;
                         height = 9f;
                         recoil = 10f;
-                        shrinkX = 25f /60;
-                        shrinkY = 35f /60;
+                        shrinkX = 45f /60;
+                        shrinkY = 65f /60;
                         lifetime = 13f;
-                        fragBullets = 1;
-                        fragVelocityMin = 1f;
-                        fragRandomSpread = 0f;
+                        smokeEffect = Fx.shootSmokeSquare;
                     }};
                 }}
            );
@@ -1469,8 +1486,8 @@ public class NyfalisUnits {
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             mineItems = Seq.with(rustyIron, lead, scrap);
             setEnginesMirror(
-                new UnitEngine(20.5f / 4f, 22 / 4f, 2.2f, 65f), //front
-                new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
+                new UnitEngine(24.5f / 4f, 18 / 4f, 2f, 45f), //front
+                new UnitEngine(22 / 4f, -20 / 4f, 2.2f, 315f)
             );
             parts.add(new HoverPart(){{
                 mirror = false;
@@ -1541,8 +1558,8 @@ public class NyfalisUnits {
             mineTier = 1;
             legCount = 0;
             fogRadius = 0f;
-            /*Corner Engines only*/
-            engineSize = -1;
+            engineOffset = 6f;
+            engineSize = 2.85f;
             mineSpeed = 9f;
             buildSpeed = 0.6f;
             itemCapacity = 75;
@@ -1564,8 +1581,8 @@ public class NyfalisUnits {
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             mineItems = Seq.with(rustyIron, lead, scrap);
             setEnginesMirror(
-                new UnitEngine(20.5f / 4f, 22 / 4f, 2.2f, 65f), //front
-                new UnitEngine(23 / 4f, -22 / 4f, 2.2f, 315f)
+                new UnitEngine(26.5f / 4f, 24 / 4f, 2f, 45f), //front
+                new UnitEngine(24 / 4f, -30 / 4f, 2.2f, 315f)
             );
             parts.add(new HoverPart(){{
                 mirror = false;
@@ -1646,7 +1663,7 @@ public class NyfalisUnits {
 
         phorid = new NyfalisUnitType("phorid"){{
             armor = 3f;
-            hitSize = 10.5f;
+            hitSize = 12.5f;
             speed = 2.6f;
             drag = 0.11f;
             health = 720;
@@ -1654,7 +1671,8 @@ public class NyfalisUnits {
             legCount = 0;
             fogRadius = 0f;
             /*Corner Engines only*/
-            engineSize = -1;
+            engineOffset = 10f;
+            engineSize = 2.85f;
             rotateSpeed = 6.5f;
             mineSpeed = 9.5f;
             buildSpeed = 0.7f;
@@ -1675,8 +1693,8 @@ public class NyfalisUnits {
             ammoType = new PowerAmmoType(1000);
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             setEnginesMirror(
-                    new UnitEngine(23.5f / 4f, 15 / 4f, 2.3f, 45f), //front
-                    new UnitEngine(23 / 4f, -22 / 4f, 2.3f, 315f)
+                    new UnitEngine(26.5f / 4f, 30 / 4f, 2f, 45f), //front
+                    new UnitEngine(24 / 4f, -40 / 4f, 2.2f, 315f)
             );
             parts.add(new HoverPart(){{
                 mirror = false;
@@ -1843,6 +1861,9 @@ public class NyfalisUnits {
     public static void PostLoadUnits(){
         /*Blocks are null while loading units, so this exists for as a work around*/
         mite.displayFactory = Seq.with(NyfalisBlocks.hive);
+        flea.displayFactory = Seq.with(NyfalisBlocks.hive);
+        tick.displayFactory = Seq.with(NyfalisBlocks.hive);
+        lice.displayFactory = Seq.with(NyfalisBlocks.hive);
 
         spirit.displayFactory = Seq.with(NyfalisBlocks.construct);
         phantom.displayFactory = Seq.with(NyfalisBlocks.construct);
@@ -1850,17 +1871,19 @@ public class NyfalisUnits {
         revenant.displayFactory = Seq.with(NyfalisBlocks.construct);
 
         aero.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
-        striker.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
+        striker.displayFactory = Seq.with(NyfalisBlocks.arialConstruct, NyfalisBlocks.alternateArticulator);
         pteropus.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
-        acerodon.displayFactory = Seq.with(NyfalisBlocks.arialConstruct);
+        acerodon.displayFactory = Seq.with(NyfalisBlocks.arialConstruct, NyfalisBlocks.alternateArticulator);
 
         venom.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
-        serpent.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+        serpent.displayFactory = Seq.with(NyfalisBlocks.groundConstruct, NyfalisBlocks.alternateArticulator);
         supella.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
-        germanica.displayFactory = Seq.with(NyfalisBlocks.groundConstruct);
+        germanica.displayFactory = Seq.with(NyfalisBlocks.groundConstruct, NyfalisBlocks.alternateArticulator);
 
-        porter.displayFactory = Seq.with(zoner, NyfalisBlocks.navalConstruct);
-        bay.displayFactory = Seq.with(zoner, NyfalisBlocks.navalConstruct);
+        porter.displayFactory = Seq.with(NyfalisBlocks.navalConstruct);
+        essex.displayFactory = Seq.with(NyfalisBlocks.navalConstruct, NyfalisBlocks.alternateArticulator);
+        bay.displayFactory = Seq.with(NyfalisBlocks.navalConstruct);
+        blitz.displayFactory = Seq.with(NyfalisBlocks.navalConstruct, NyfalisBlocks.alternateArticulator);
 
         zoner.displayFactory = Seq.with(porter);
         embryo.displayFactory = Seq.with(phorid);

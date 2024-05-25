@@ -37,7 +37,7 @@ public class NyfalisSounds {
         as2ArmorBreak = tree.loadSound("as2-broke-armor");
         cncZhBattleMasterWeapon = tree.loadSound("cnc-zh-battlemaster-weapon");
         sawActiveLoop = tree.loadSound("sawblade-active-loop");
-        sawCollision = tree.loadSound("sawlade-collision");
+        sawCollision = tree.loadSound("sawblade-collision");
         cascadeDangerWarning = tree.loadSound("cascade-danger-warning");
         rainbow1 = tree.loadSound("rainbow-stat-music1");
         rainbow2 = tree.loadSound("rainbow-stat-music2");
