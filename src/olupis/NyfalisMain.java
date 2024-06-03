@@ -19,6 +19,7 @@ import mindustry.type.Sector;
 import mindustry.world.Block;
 import olupis.content.*;
 import olupis.input.*;
+import olupis.world.FloorUpdater;
 import olupis.world.entities.packets.NyfalisUnitTimedOutPacket;
 import olupis.world.planets.NyfalisTechTree;
 
@@ -59,10 +60,10 @@ public class NyfalisMain extends Mod{
     }
 
     public NyfalisMain(){
+        FloorUpdater.load();
+
         //Load sounds once they're added to the file tree
-        Events.on(FileTreeInitEvent.class, e -> Core.app.post(() -> {
-            NyfalisSounds.LoadSounds();
-        }));
+        Events.on(FileTreeInitEvent.class, e -> Core.app.post(NyfalisSounds::LoadSounds));
 
         Events.on(EventType.WorldLoadEvent.class, l ->{
             /*Delayed since custom games, for some reason needs it*/

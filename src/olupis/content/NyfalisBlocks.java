@@ -42,6 +42,7 @@ import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.pattern.ShootAlternateAlt;
+import olupis.world.environment.SpreadingFloor;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -67,7 +68,7 @@ public class NyfalisBlocks {
         redSand, lumaGrass, yellowGrass, pinkGrass, mossyDirt,  hardenMud, mossyhardenMud,
         frozenGrass, frozenDirt, frozenMud, crackedIce, redSandSnow, snowySand, frozenTar, frozenSlop,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent,
+        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent, spreadFloorTest,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, shallowMossyWater, pinkGrassWater, yellowMossyWater, coralReef, slop,
@@ -345,7 +346,10 @@ public class NyfalisBlocks {
             attributes.set(Attribute.steam, 1f);
         }};
 
-
+        spreadFloorTest = new SpreadingFloor("testtest"){{
+           blacklist = ObjectSet.with(arc, duo);
+           variants = 0;
+        }};
 
         //endregion
         //region Liquid floor
