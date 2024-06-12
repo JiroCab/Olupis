@@ -65,6 +65,10 @@ public class NyfalisMain extends Mod{
         //Load sounds once they're added to the file tree
         Events.on(FileTreeInitEvent.class, e -> Core.app.post(NyfalisSounds::LoadSounds));
 
+        Events.on(EventType.WorldLoadBeginEvent.class, I -> {
+            NyfalisTurrets.dynamicTurretContent();
+        });
+
         Events.on(EventType.WorldLoadEvent.class, l ->{
             /*Delayed since custom games, for some reason needs it*/
             Time.run(0.5f * Time.toSeconds, NyfalisMain::sandBoxCheck);

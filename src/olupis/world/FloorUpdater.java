@@ -31,7 +31,8 @@ public class FloorUpdater{
                     tiles.put(t, 0);
             });
 
-            Log.info("FloorUpdater setup complete, " + tiles.size + " tiles to update");
+            if(Core.settings.getBool("nyfalis-debug"))Log.info("FloorUpdater setup complete, " + tiles.size + " tiles to update");
+            else Log.debug("FloorUpdater setup complete, " + tiles.size + " tiles to update");
 
             validator = Timer.schedule(FloorUpdater::updateSpread, 0, 1);
             dormantValidator = Timer.schedule(FloorUpdater::updateDormant, 0, 10);
@@ -83,6 +84,7 @@ public class FloorUpdater{
     private static void updateDormant(){
         if(state.isGame()){
             if(state.isPaused()) return;
+            //TODO, make the check slower if there ar 0 tiles total in the map, but not stop since map makers can add them after the fact w/ world logic
             Log.info("Total tiles: " + (tiles.size + dormantTiles.size) + ", Of which: " + tiles.size + " active, " + dormantTiles.size + " dormant");
 
             dormantTiles.each(t -> {

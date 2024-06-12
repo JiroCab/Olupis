@@ -52,7 +52,7 @@ public class NyfalisUnitCommands {
             switchToMove = resetTarget = false;
             drawTarget = true;
         }},
-        nyfalisChargeCommand = new UnitCommand("nyfalis-charge", "production", u ->{
+        nyfalisChargeCommand = new UnitCommand("nyfalis-charge", "commandAttack", u ->{
                 var ai = new  NyfalisGroundAi();
                 ai.shouldCharge = true;
                 return ai;

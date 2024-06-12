@@ -1,15 +1,14 @@
 package olupis.world.entities.parts;
 
 import arc.Core;
+import arc.func.Boolf;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Time;
-import arc.util.Tmp;
+import arc.util.*;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
@@ -25,16 +24,18 @@ public class UnstableRegionPart extends UnstableDrawPart {
     public Color hotColor = Color.red;
     public Color flashColor1 = Color.red, flashColor2 = Color.yellow;
     protected UnstableDrawPart.UnstablePartParams childParam = new UnstableDrawPart.UnstablePartParams();
-    public String suffix = "";
+    public String suffix = "", alt = "";
     @Nullable
     public String name;
     public TextureRegion heat;
     public TextureRegion[] regions = new TextureRegion[0];
+    public TextureRegion[] altRegions = new TextureRegion[0];
     public TextureRegion[] outlines = new TextureRegion[0];
     public boolean mirror = false;
     public boolean outline = true;
     public boolean drawRegion = true;
     public boolean heatLight = false;
+    public Boolf<Building> cond = b -> false;
     public UnstablePartProgress progress;
     public UnstablePartProgress growProgress;
     public UnstablePartProgress heatProgress;
@@ -85,6 +86,27 @@ public class UnstableRegionPart extends UnstableDrawPart {
         this.children = new Seq();
         this.moves = new Seq();
         this.suffix = region;
+    }
+
+    public UnstableRegionPart(String region, String alt, Boolf<Building> cond) {
+        this.progress = UnstablePartProgress.warmup;
+        this.growProgress = UnstablePartProgress.warmup;
+        this.heatProgress = UnstablePartProgress.heat;
+        this.blending = Blending.normal;
+        this.layer = -1.0F;
+        this.layerOffset = 0.0F;
+        this.heatLayerOffset = 1.0F;
+        this.turretHeatLayer = 50.1F;
+        this.outlineLayerOffset = -0.001F;
+        this.xScl = 1.0F;
+        this.yScl = 1.0F;
+        this.heatLightOpacity = 0.3F;
+        this.heatColor = Pal.turretHeat.cpy();
+        this.children = new Seq();
+        this.moves = new Seq();
+        this.suffix = region;
+        this.alt = alt;
+        this.cond = cond;
     }
 
     public UnstableRegionPart(String region, Blending blending, Color color) {
@@ -169,7 +191,7 @@ public class UnstableRegionPart extends UnstableDrawPart {
         int i;
         for(s = 0; s < len; ++s) {
             i = Uparams.sideOverride == -1 ? s : Uparams.sideOverride;
-            TextureRegion region = this.drawRegion ? this.regions[Math.min(i, this.regions.length - 1)] : null;
+            TextureRegion region = this.drawRegion ? cond.get(build) ? this.altRegions[Math.min(i, this.altRegions.length - 1)] : this.regions[Math.min(i, this.regions.length - 1)] : null;
             float sign = (float)((i == 0 ? 1 : -1) * Uparams.sideMultiplier);
             Tmp.v1.set((this.x + mx) * sign, this.y + my).rotateRadExact((Uparams.rotation - 90.0F) * 0.017453292F);
             float rx = Uparams.x + Tmp.v1.x;
@@ -178,7 +200,7 @@ public class UnstableRegionPart extends UnstableDrawPart {
             Draw.xscl *= sign;
             if (this.outline && this.drawRegion) {
                 Draw.z(prevZ + this.outlineLayerOffset);
-                Draw.rect(this.outlines[Math.min(i, this.regions.length - 1)], rx, ry, rot);
+                Draw.rect(cond.get(build) ? this.outlines[Math.min(i, this.altRegions.length - 1)] : this.outlines[Math.min(i, this.regions.length - 1)], rx, ry, rot);
                 Draw.z(prevZ);
             }
 
@@ -241,16 +263,19 @@ public class UnstableRegionPart extends UnstableDrawPart {
         }
 
         Draw.scl(preXscl, preYscl);
+        Draw.reset();
     }
     @Override
     public void load(String name) {
-        String realName = this.name == null ? name + this.suffix : this.name;
+        String realName = this.name == null ? name + this.suffix : this.name, altName = this.name == null ? name + this.alt : this.name;
         if (this.drawRegion) {
             if (this.mirror && this.turretShading) {
                 this.regions = new TextureRegion[]{Core.atlas.find(realName + "-r"), Core.atlas.find(realName + "-l")};
+                this.altRegions = new TextureRegion[]{Core.atlas.find(realName + "-r"), Core.atlas.find(altName + "-l")};
                 this.outlines = new TextureRegion[]{Core.atlas.find(realName + "-r-outline"), Core.atlas.find(realName + "-l-outline")};
             } else {
                 this.regions = new TextureRegion[]{Core.atlas.find(realName)};
+                this.altRegions = new TextureRegion[]{Core.atlas.find(altName)};
                 this.outlines = new TextureRegion[]{Core.atlas.find(realName + "-outline")};
             }
         }
@@ -283,7 +308,7 @@ public class UnstableRegionPart extends UnstableDrawPart {
     }
     public void getOutlines(Seq<TextureRegion> out) {
         if (this.outline && this.drawRegion) {
-            out.addAll(this.regions);
+            out.addAll(this.cond.get(null) ? this.altRegions :this.regions);
         }
 
         Iterator var2 = this.children.iterator();

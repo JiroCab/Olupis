@@ -280,6 +280,16 @@ public class NyfalisUnits {
                             x = -2.3f;
                             moveX = 1f;
                             progress = NyfPartParms.NyfPartProgress.elevationP.inv();
+                            parts.addAll(
+                            );
+                        }},
+                        new RegionPart("olupis-pteropus-weapon"){{
+                            mirror = under = true;
+                            x = -2.3f;
+                            moveX = 1f;
+                            progress = NyfPartParms.NyfPartProgress.elevationP.inv();
+                            color = Color.valueOf("00000000");
+                            colorTo = Color.valueOf("000000");
                         }}
                     );
 
@@ -392,6 +402,7 @@ public class NyfalisUnits {
             );
         }};
 
+        //nyctalus -> deployed = fires a swarm of long range small missles (10) | air = short-medium range  shell that burst into mini swarm of missles (4)
         //endregion
         //region Air - Area / from naval
         zoner = new NyfalisUnitType("zoner"){{
@@ -722,6 +733,7 @@ public class NyfalisUnits {
             );
         }};
 
+        //luridiblatta -> long range shell launcher, only fires at target +/- 5 tiles of max range (has min range)
         //endregion
         //region Naval - Carrier
         porter = new NyfalisUnitType("porter"){{

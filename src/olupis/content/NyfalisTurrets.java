@@ -2,8 +2,10 @@ package olupis.content;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -34,6 +36,10 @@ import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisTurrets {
+    /*Rushie wanted dynamic content with this settings so this the pain she has made*/
+    public static boolean cascadeAlt;
+    public static Color cascadeColor = updateColor();
+    public static TextureRegion cascadeBackBullet = Core.atlas.find("large-orb-back"), cascadeFrontBullet = Core.atlas.find("large-orb");
 
     public static void LoadTurrets(){
 
@@ -819,7 +825,6 @@ public class NyfalisTurrets {
 
                                     moves.add(new PartMove(PartProgress.recoil, -0.25f, -0.5f, 0f));
                                     children.add(new RegionPart("-side-barrel-r"){{
-                                        recoilIndex = 2;
                                         recoilIndex = 1;
                                         progress = PartProgress.recoil;
                                         mirror = false;
@@ -893,86 +898,26 @@ public class NyfalisTurrets {
                 stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
             }
         };
-        var a = "";
-        var b = "";
-        var c = "";
-        var d = "";
-        var color = Color.blue;
-        var m = 0f;
-        var details = "";
-        if(Core.settings.getBool("nyfalis-bread-gun")){
-            a = "PH-cascade";
-            b = "-bladed";
-            c = "-blade";
-            d = "-bladed";
-            color = Color.brown;
-            m = 4f;
-            details = """
-            Bullet Math
-            Main
-                amount created per shot: [stat]1[]
-            2cds
-                amount created per shot: [stat]96[]
-            3rds
-                amount created per shot: [stat]2304[]
-            4ths
-                amount created per shot: [stat]55296[]
-            5ths
-                amount created per shot: [stat]1327104[]
-            6ths
-                amount created per shot: [stat]31850496[]
-                
-            Total Bullets per shot: [stat]33235297[]
-            
-            Max Damage Possible: [stat]497975540[]
-             
-            """;
 
-        } else {
-            a = "cascade";
-            b = "-crest";
-            c = "-blade";
-            d = "-clask";
-            color = Color.valueOf("8ca9e8");
-            m = 1f;
-            details = """
-            Bullet Math
-            Main
-                amount created per shot: [stat]1[]
-            2cds
-                amount created per shot: [stat]24[]
-            3rds
-                amount created per shot: [stat]576[]
-                
-            Total Bullets per shot: [stat]601[]
-            
-            Max Damage Possible: [stat]8780[]
-             
-            """;
-        }
-        String finalB = b;
-        String finalC = c;
-        String finalD = d;
-        Color finalColor = color;
-        Float finalM = m;
-        String finalDetails = details;
-        cascade = new UnstablePowerTurret(a){{
+        cascade = new UnstablePowerTurret("cascade"){{
+            String visName = (Core.settings.getBool("nyfalis-bread-gun") ? "PH-cascade" : "cascade");
+            localizedName = Core.bundle.get(getContentType() + ".olupis-" + visName + ".name");
             outlineColor = Color.valueOf("371404");
-            details = finalDetails;
+            details = Core.bundle.getOrNull(getContentType() + "." + visName + ".details");
             hideDetails = false;
             targetAir = true;
             targetGround = true;
             size = 4;
             reload = 120;
-            range = (50f * 8f) * finalM;
+            range = (50f * 8f) * (cascadeAlt ? 4f : 1f);
             shootY = 2;
             shootX = 0f;
             fogRadiusMultiplier = 0.75f;
             shootWarmupSpeed = 0.05f;
             minWarmup = 0.8f;
-            explosionRadius = 25 * finalM;
-            explosionDamage = 1000 * finalM;
-            consumePower(17f * finalM);
+            explosionRadius = 25 * (cascadeAlt ? 4f : 1f);
+            explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
+            consumePower(17f * (cascadeAlt ? 4f : 1f));
 
             shootType = new BasicBulletType(3f, 20f) {{
                 sprite = "large-orb";
@@ -981,7 +926,7 @@ public class NyfalisTurrets {
                 hitSize = 8f;
 
                 shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
-                    colorFrom = colorTo = finalColor;
+                    colorFrom = colorTo = outlineColor;
                     lifetime = 6f;
                     sizeTo = 10f;
                     strokeFrom = 3f;
@@ -991,7 +936,7 @@ public class NyfalisTurrets {
                 pierceCap = 4;
                 pierce = true;
                 pierceBuilding = true;
-                hitColor = backColor = trailColor = finalColor;
+                hitColor = backColor = trailColor = cascadeColor;
                 frontColor = Color.white;
                 trailWidth = 2f;
                 trailLength = 8;
@@ -999,13 +944,13 @@ public class NyfalisTurrets {
 
                 despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                     sizeTo = 15f;
-                    colorFrom = colorTo = finalColor;
+                    colorFrom = colorTo = cascadeColor;
                     lifetime = 6f;
                 }});
                 trailRotation = true;
                 trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
                 trailInterval = 3f;
-                lifetime = 75f * finalM;
+                lifetime = 75f * (cascadeAlt ? 4f : 1f);
                 knockback = 0.8f;
                 collidesAir = collidesGround = true;
                 buildingDamageMultiplier = 0.1f;
@@ -1015,12 +960,13 @@ public class NyfalisTurrets {
                 bulletInterval = 6;
                 intervalBullet = new BasicBulletType(3f, 5f) {{
                     sprite = "large-orb";
+
                     width = 5f;
                     height = 10f;
                     hitSize = 4f;
 
                     shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
-                        colorFrom = colorTo = finalColor;
+                        colorFrom = colorTo = cascadeColor;
                         lifetime = 4f;
                         sizeTo = 5f;
                         strokeFrom = 3f;
@@ -1030,7 +976,7 @@ public class NyfalisTurrets {
                     pierceCap = 4;
                     pierce = true;
                     pierceBuilding = true;
-                    hitColor = backColor = trailColor = finalColor;
+                    hitColor = backColor = trailColor = cascadeColor;
                     frontColor = Color.white;
                     trailWidth = 1.5f;
                     trailLength = 6;
@@ -1038,7 +984,7 @@ public class NyfalisTurrets {
 
                     despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                         sizeTo = 7.5f;
-                        colorFrom = colorTo = finalColor;
+                        colorFrom = colorTo = cascadeColor;
                         lifetime = 4f;
                     }});
                     trailRotation = true;
@@ -1061,7 +1007,7 @@ public class NyfalisTurrets {
                         homingRange = 150f;
 
                         shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
-                            colorFrom = colorTo = finalColor;
+                            colorFrom = colorTo = cascadeColor;
                             lifetime = 2f;
                             sizeTo = 2.5f;
                             strokeFrom = 3f;
@@ -1071,7 +1017,7 @@ public class NyfalisTurrets {
                         pierceCap = 4;
                         pierce = true;
                         pierceBuilding = true;
-                        hitColor = backColor = trailColor = finalColor;
+                        hitColor = backColor = trailColor = cascadeColor;
                         frontColor = Color.white;
                         trailWidth = 1f;
                         trailLength = 4;
@@ -1079,7 +1025,7 @@ public class NyfalisTurrets {
 
                         despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                             sizeTo = 3.75f;
-                            colorFrom = colorTo = finalColor;
+                            colorFrom = colorTo = cascadeColor;
                             lifetime = 2f;
                         }});
                         trailRotation = true;
@@ -1089,213 +1035,95 @@ public class NyfalisTurrets {
                         knockback = 0.6f;
                         collidesAir = collidesGround = true;
                         buildingDamageMultiplier = 0.1f;
-                        if(Core.settings.getBool("nyfalis-bread-gun")){
-                            intervalBullets = 2;
-                            intervalSpread = -30;
-                            intervalRandomSpread = 0;
-                            bulletInterval = 6;
-                            intervalBullet = new BasicBulletType(3f, 5f) {{
-                                sprite = "large-orb";
-                                width = 5f;
-                                height = 10f;
-                                hitSize = 4f;
-
-                                shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
-                                    colorFrom = colorTo = finalColor;
-                                    lifetime = 4f;
-                                    sizeTo = 5f;
-                                    strokeFrom = 3f;
-                                    strokeTo = 0.3f;
-                                }});
-                                smokeEffect = Fx.shootSmokeSmite;
-                                pierceCap = 4;
-                                pierce = true;
-                                pierceBuilding = true;
-                                hitColor = backColor = trailColor = finalColor;
-                                frontColor = Color.white;
-                                trailWidth = 1.5f;
-                                trailLength = 6;
-                                hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
-
-                                despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
-                                    sizeTo = 7.5f;
-                                    colorFrom = colorTo = finalColor;
-                                    lifetime = 4f;
-                                }});
-                                trailRotation = true;
-                                trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                                trailInterval = 3f;
-                                lifetime = 50f;
-                                knockback = 0.6f;
-                                collidesAir = collidesGround = true;
-                                buildingDamageMultiplier = 0.1f;
-                                intervalBullets = 2;
-                                intervalSpread = -30;
-                                intervalRandomSpread = 0;
-                                bulletInterval = 4;
-                                intervalBullet = new BasicBulletType(3f, 15f) {{
-                                    sprite = "large-orb";
-                                    width = 2.5f;
-                                    height = 5f;
-                                    hitSize = 2f;
-                                    homingPower = 0.4f;
-                                    homingRange = 150f;
-
-                                    shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
-                                        colorFrom = colorTo = finalColor;
-                                        lifetime = 2f;
-                                        sizeTo = 2.5f;
-                                        strokeFrom = 3f;
-                                        strokeTo = 0.3f;
-                                    }});
-                                    smokeEffect = Fx.shootSmokeSmite;
-                                    pierceCap = 4;
-                                    pierce = true;
-                                    pierceBuilding = true;
-                                    hitColor = backColor = trailColor = finalColor;
-                                    frontColor = Color.white;
-                                    trailWidth = 1f;
-                                    trailLength = 4;
-                                    hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
-
-                                    despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
-                                        sizeTo = 3.75f;
-                                        colorFrom = colorTo = finalColor;
-                                        lifetime = 2f;
-                                    }});
-                                    trailRotation = true;
-                                    trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                                    trailInterval = 3f;
-                                    lifetime = 25f;
-                                    knockback = 0.6f;
-                                    collidesAir = collidesGround = true;
-                                    buildingDamageMultiplier = 0.1f;
-                                    intervalBullets = 2;
-                                    intervalSpread = -30;
-                                    intervalRandomSpread = 0;
-                                    bulletInterval = 4;
-                                    intervalBullet = new BasicBulletType(3f, 15f) {{
-                                        sprite = "large-orb";
-                                        width = 2.5f;
-                                        height = 5f;
-                                        hitSize = 2f;
-                                        homingPower = 0.4f;
-                                        homingRange = 150f;
-
-                                        shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
-                                            colorFrom = colorTo = finalColor;
-                                            lifetime = 2f;
-                                            sizeTo = 2.5f;
-                                            strokeFrom = 3f;
-                                            strokeTo = 0.3f;
-                                        }});
-                                        smokeEffect = Fx.shootSmokeSmite;
-                                        pierceCap = 4;
-                                        pierce = true;
-                                        pierceBuilding = true;
-                                        hitColor = backColor = trailColor = finalColor;
-                                        frontColor = Color.white;
-                                        trailWidth = 1f;
-                                        trailLength = 4;
-                                        hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
-
-                                        despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
-                                            sizeTo = 3.75f;
-                                            colorFrom = colorTo = finalColor;
-                                            lifetime = 2f;
-                                        }});
-                                        trailRotation = true;
-                                        trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                                        trailInterval = 3f;
-                                        lifetime = 25f;
-                                        knockback = 0.6f;
-                                        collidesAir = collidesGround = true;
-                                        buildingDamageMultiplier = 0.1f;
-                                    }};
-                                }};
-                            }};
-                        }
+                        intervalBullets = 2;
+                        intervalSpread = -30;
+                        intervalRandomSpread = 0;
+                        bulletInterval = 6;
                     }};
                 }};
             }};
 
             drawer = new DrawUnstableTurret("iron-"){{
-                parts.addAll(new UnstableRegionPart(""),
-                new UnstableRegionPart(finalB + "-l"){{
-                    mirror = false;
-                    moveRot = 25f;
-                    moveX = -6;
-                    under = true;
-                    moves.add(new PartMove(UnstablePartProgress.reload, 8f, 0f, -5f));
-                    layerOffset  = -1;
-                    heatLayerOffset = -0.95f;
+                parts.addAll(
+                new UnstableRegionPart(""),
 
-                    heatColor = finalColor;
-                }},
+                    new UnstableRegionPart("-crest" +  "-l",  "-bread", b -> cascadeAlt){{
+                        mirror = false;
+                        moveRot = 25f;
+                        moveX = -6;
+                        under = true;
+                        moves.add(new PartMove(UnstablePartProgress.reload, 8f, 0f, -5f));
+                        layerOffset  = -1;
+                        heatLayerOffset = -0.95f;
 
-                new UnstableRegionPart(finalC +"-l"){{
-                    outlineLayerOffset = -2.99f;
-                    layerOffset = 2;
-                    mirror = false;
-                    moveRot = 10f;
-                    moveY = -0.8f;
-                    moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), -1f, 0f, -7f));
-                    under = true;
+                        heatColor = cascadeColor;
+                    }},
 
-                    heatColor = finalColor;
-                }},
-                new UnstableRegionPart(finalD +"-l"){{
-                    mirror = false;
-                    moveRot = -175f;
-                    moveX = 2;
-                    moveY = 2f;
-                    x = -1.5f;
-                    layerOffset  = -0.5f;
-                    moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), 0.5f, 2f, -120f));
-                    under = true;
-                    heatColor = finalColor;
-                }},
-                new UnstableRegionPart(finalB + "-r"){{
-                    mirror = false;
-                    moveRot = -25f;
-                    moveX = 6;
-                    under = true;
-                    moves.add(new PartMove(UnstablePartProgress.reload, -8f, 0f, 5f));
-                    layerOffset  = -1;
-                    heatLayerOffset = -0.95f;
+                    new UnstableRegionPart("-blade" + "-l", "-bread", b -> cascadeAlt){{
+                        outlineLayerOffset = -2.99f;
+                        layerOffset = 2;
+                        mirror = false;
+                        moveRot = 10f;
+                        moveY = -0.8f;
+                        moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), -1f, 0f, -7f));
+                        under = true;
 
-                    heatColor = finalColor;
-                }},
-                new UnstableRegionPart(finalC+"-r"){{
-                    outlineLayerOffset = -2.99f;
-                    layerOffset = 2;
-                    mirror = false;
-                    moveRot = -10f;
-                    moveY = -0.8f;
-                    moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), 1f, 0f, 7));
-                    under = true;
-                    heatColor = finalColor;
-                }},
-                new UnstableRegionPart(finalD + "-r"){{
-                    mirror = false;
-                    moveRot = 175f;
-                    moveY = 2f;
-                    moveX = -2;
-                    x = 1.5f;
-                    layerOffset  = -0.5f;
-                    moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), -0.5f, 2f, 120f));
-                    under = true;
-                    heatColor = finalColor;
-                }});
+                        heatColor = cascadeColor;
+                    }},
+                    new UnstableRegionPart("-crest" + "-l", "-bread", b -> cascadeAlt){{
+                        mirror = false;
+                        moveRot = -175f;
+                        moveX = 2;
+                        moveY = 2f;
+                        x = -1.5f;
+                        layerOffset  = -0.5f;
+                        moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), 0.5f, 2f, -120f));
+                        under = true;
+                        heatColor = cascadeColor;
+                    }},
+                    new UnstableRegionPart("-crest" +  "-r", "-bread", b -> cascadeAlt){{
+                        mirror = false;
+                        moveRot = -25f;
+                        moveX = 6;
+                        under = true;
+                        moves.add(new PartMove(UnstablePartProgress.reload, -8f, 0f, 5f));
+                        layerOffset  = -1;
+                        heatLayerOffset = -0.95f;
+
+                        heatColor = cascadeColor;
+                    }},
+                    new UnstableRegionPart("-blade"+ "-r", "-bread", b -> cascadeAlt){{
+                        outlineLayerOffset = -2.99f;
+                        layerOffset = 2;
+                        mirror = false;
+                        moveRot = -10f;
+                        moveY = -0.8f;
+                        moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), 1f, 0f, 7));
+                        under = true;
+                        heatColor = cascadeColor;
+                    }},
+                    new UnstableRegionPart("-crest"  +  "-r", "-bread", b -> cascadeAlt){{
+                            mirror = false;
+                            moveRot = 175f;
+                            moveY = 2f;
+                            moveX = -2;
+                            x = 1.5f;
+                            layerOffset  = -0.5f;
+                            moves.add(new PartMove(UnstablePartProgress.reload.shorten(0.5f), -0.5f, 2f, 120f));
+                            under = true;
+                            heatColor = cascadeColor;
+                        }}
+                );
+
             }};
             shootSound = Sounds.shootSmite;
             shootEffect = new MultiEffect(Fx.shootPayloadDriver, NyfalisFxs.fastSquareSmokeCloud);
-            researchCost = with(iron, 500 * finalM, copper, 500 * finalM, cobalt, 350 * finalM, quartz, 100 * finalM);
+            researchCost = with(iron, 500 * (cascadeAlt ? 4f : 1f), copper, 500 * (cascadeAlt ? 4f : 1f), cobalt, 350 * (cascadeAlt ? 4f : 1f), quartz, 100 * (cascadeAlt ? 4f : 1f));
             coolant = consumeCoolant(2 ,true,true);
             liquidCapacity = 120;
             coolantMultiplier = 0.4f;
-            requirements(Category.turret, with(iron, 200 * finalM, copper, 200 * finalM, cobalt, 125 * finalM, quartz, 30 * finalM));
-            heatColor = finalColor;
+            requirements(Category.turret, with(iron, 200 * (cascadeAlt ? 4f : 1f), copper, 200 * (cascadeAlt ? 4f : 1f), cobalt, 125 * (cascadeAlt ? 4f : 1f), quartz, 30 * (cascadeAlt ? 4f : 1f)));
+            heatColor = cascadeColor;
             cooldownTime = 240;
         }};
 
@@ -1692,5 +1520,148 @@ public class NyfalisTurrets {
 
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
+    }
+
+    public static void dynamicTurretContent(){
+        cascadeAlt = Core.settings.getBool("nyfalis-bread-gun") ;
+        Log.err(cascadeAlt + "");
+        String cascadeName = cascadeAlt ? "PH-cascade" : "cascade";
+        cascadeColor = updateColor();
+
+        cascade.localizedName = Core.bundle.get(cascade.getContentType() + ".olupis-"  + cascadeName + ".name");
+        cascade.details = Core.bundle.getOrNull(cascade.getContentType() + ".olupis-" + cascadeName + ".details");
+        cascade.consumePower(17 * (cascadeAlt ? 4f : 1f));
+        cascade.range = (50f * 8f) * (cascadeAlt ? 4f : 1f);
+        cascade.explosionRadius = 25 * (cascadeAlt ? 4f : 1f);
+        cascade.explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
+        cascade.shootType.intervalBullet.intervalBullet.intervalBullet = !cascadeAlt ? null : new BasicBulletType(3f, 5f, "large-orb") {{
+            backRegion = cascadeBackBullet;
+            frontRegion = cascadeFrontBullet;
+            width = 5f;
+            height = 10f;
+            hitSize = 4f;
+
+            shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
+                colorFrom = colorTo = cascadeColor;
+                lifetime = 4f;
+                sizeTo = 5f;
+                strokeFrom = 3f;
+                strokeTo = 0.3f;
+            }});
+            smokeEffect = Fx.shootSmokeSmite;
+            pierceCap = 4;
+            pierce = true;
+            pierceBuilding = true;
+            hitColor = backColor = trailColor = cascadeColor;
+            frontColor = Color.white;
+            trailWidth = 1.5f;
+            trailLength = 6;
+            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+            despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                sizeTo = 7.5f;
+                colorFrom = colorTo = cascadeColor;
+                lifetime = 4f;
+            }});
+            trailRotation = true;
+            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+            trailInterval = 3f;
+            lifetime = 50f;
+            knockback = 0.6f;
+            collidesAir = collidesGround = true;
+            buildingDamageMultiplier = 0.1f;
+            intervalBullets = 2;
+            intervalSpread = -30;
+            intervalRandomSpread = 0;
+            bulletInterval = 4;
+            intervalBullet = new BasicBulletType(3f, 15f, "large-orb") {{
+                backRegion = cascadeBackBullet;
+                frontRegion = cascadeFrontBullet;
+                width = 2.5f;
+                height = 5f;
+                hitSize = 2f;
+                homingPower = 0.4f;
+                homingRange = 150f;
+
+                shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
+                    colorFrom = colorTo = cascadeColor;
+                    lifetime = 2f;
+                    sizeTo = 2.5f;
+                    strokeFrom = 3f;
+                    strokeTo = 0.3f;
+                }});
+                smokeEffect = Fx.shootSmokeSmite;
+                pierceCap = 4;
+                pierce = true;
+                pierceBuilding = true;
+                hitColor = backColor = trailColor = cascadeColor;
+                frontColor = Color.white;
+                trailWidth = 1f;
+                trailLength = 4;
+                hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                    sizeTo = 3.75f;
+                    colorFrom = colorTo = cascadeColor;
+                    lifetime = 2f;
+                }});
+                trailRotation = true;
+                trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                trailInterval = 3f;
+                lifetime = 25f;
+                knockback = 0.6f;
+                collidesAir = collidesGround = true;
+                buildingDamageMultiplier = 0.1f;
+                intervalBullets = 2;
+                intervalSpread = -30;
+                intervalRandomSpread = 0;
+                bulletInterval = 4;
+                intervalBullet = new BasicBulletType(3f, 15f, "large-orb") {{
+                    backRegion = cascadeBackBullet;
+                    frontRegion = cascadeFrontBullet;
+                    width = 2.5f;
+                    height = 5f;
+                    hitSize = 2f;
+                    homingPower = 0.4f;
+                    homingRange = 150f;
+
+                    shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
+                        colorFrom = colorTo = cascadeColor;
+                        lifetime = 2f;
+                        sizeTo = 2.5f;
+                        strokeFrom = 3f;
+                        strokeTo = 0.3f;
+                    }});
+                    smokeEffect = Fx.shootSmokeSmite;
+                    pierceCap = 4;
+                    pierce = true;
+                    pierceBuilding = true;
+                    hitColor = backColor = trailColor = cascadeColor;
+                    frontColor = Color.white;
+                    trailWidth = 1f;
+                    trailLength = 4;
+                    hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+
+                    despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                        sizeTo = 3.75f;
+                        colorFrom = colorTo = cascadeColor;
+                        lifetime = 2f;
+                    }});
+                    trailRotation = true;
+                    trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                    trailInterval = 3f;
+                    lifetime = 25f;
+                    knockback = 0.6f;
+                    collidesAir = collidesGround = true;
+                    buildingDamageMultiplier = 0.1f;
+                }};
+            }};
+        }};
+        cascade.region = Core.atlas.find("olupis-" + cascadeName, "olupis-cascade");
+        cascade.uiIcon = cascade.fullIcon = Core.atlas.find("olupis-" + cascadeName + "-preview"); //TODO DRAW BASE
+    }
+
+    public static Color updateColor(){
+        return Core.settings.getBool("nyfalis-bread-gun") ? Color.brown : Color.blue;
     }
 }

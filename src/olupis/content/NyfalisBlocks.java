@@ -90,7 +90,7 @@ public class NyfalisBlocks {
         //Buildings, sorted by category
 
         heavyMine,fragMine,glitchMine,mossMine,
-        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,cascade, slash, laceration,strata,
+        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator, slash, laceration,strata,
 
         rustyDrill, steamDrill, hydroElectricDrill,
 
@@ -115,6 +115,7 @@ public class NyfalisBlocks {
         /*special*/
         scarabRadar
     ; //endregion
+    public static  UnstablePowerTurret cascade;
 
     public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
     public static ObjectSet<Block>
