@@ -277,7 +277,8 @@ public class NyfalisUnits {
                     parts.addAll(
                         new RegionPart("olupis-pteropus-weapon"){{
                             mirror = true;
-                            x = -2.3f;
+                            x = 3f;
+			    y = 3.75f;
                             moveX = 1f;
                             progress = NyfPartParms.NyfPartProgress.elevationP.inv();
                             parts.addAll(
