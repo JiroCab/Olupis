@@ -29,3 +29,4 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 * [Kapzduke](https://github.com/kapzduke) - Sprites
 * [Otamamori](https://github.com/Otamamori917) - Sprites
 * [Catana](https://github.com/Catana791) - Sprites
+* [ItsKirby69](https://github.com/ItsKirby69) - Sprites

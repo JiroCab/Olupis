@@ -902,7 +902,7 @@ public class NyfalisTurrets {
         cascade = new UnstablePowerTurret("cascade"){{
             String visName = (Core.settings.getBool("nyfalis-bread-gun") ? "PH-cascade" : "cascade");
             localizedName = Core.bundle.get(getContentType() + ".olupis-" + visName + ".name");
-            outlineColor = Color.valueOf("371404");
+            outlineColor = NyfalisColors.contentOutline;
             details = Core.bundle.getOrNull(getContentType() + "." + visName + ".details");
             hideDetails = false;
             targetAir = true;

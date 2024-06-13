@@ -898,7 +898,7 @@ public class NyfalisUnits {
                             shootY = 6f;
                             recoilIndex = f;
                             outlineLayerOffset = 0f;
-                            outlineColor = unitOutLine;
+                            outlineColor = NyfalisColors.contentOutline;;
                             outline = drawRegion = under = true;
                             progress = PartProgress.recoil;
                             moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
@@ -936,7 +936,7 @@ public class NyfalisUnits {
                             y = 2f;
                             recoilIndex = f;
                             outlineLayerOffset = 0f;
-                            outlineColor = unitOutLine;
+                            outlineColor = NyfalisColors.contentOutline;;
                             outline = drawRegion = under = true;
                             progress = PartProgress.recoil;
                             moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
@@ -984,7 +984,7 @@ public class NyfalisUnits {
                         shootY = 6f;
                         recoilIndex = f;
                         outlineLayerOffset = 0f;
-                        outlineColor = unitOutLine;
+                        outlineColor = NyfalisColors.contentOutline;;
                         outline = drawRegion = under = true;
                         progress = PartProgress.recoil;
                         moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));

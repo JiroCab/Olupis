@@ -117,7 +117,7 @@ public class NyfalisBlocks {
     ; //endregion
     public static  UnstablePowerTurret cascade;
 
-    public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
+    public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
     public static ObjectSet<Block>
             nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
             rainRegrowables = new ObjectSet<>();
@@ -504,7 +504,7 @@ public class NyfalisBlocks {
         }};
 
         deadBush = new Prop("dead-bush"){{
-            variants = 1;
+            variants = 3;
         }};
 
         //endregion
@@ -571,14 +571,18 @@ public class NyfalisBlocks {
         //endregion
         //region Trees
         nyfalisTree = new TreeBlock("olupis-tree"){{
-            variants = 3;
+            variants = 2;
         }};
         mossTree = new TreeBlock("moss-tree"){{
-            variants = 3;
+            variants = 2;
         }};
-        pinkTree = new TreeBlock("pink-tree");
+        pinkTree = new TreeBlock("pink-tree"){{
+            variants = 2;
+        }};
         yellowTree = new TreeBlock("yellow-tree");
-        yellowTreeBlooming = new TreeBlock("yellow-tree-blooming");
+        yellowTreeBlooming = new TreeBlock("yellow-tree-blooming"){{
+            variants = 2;
+        }};
         infernalMegaBloom = new TreeBlock("infernal-megabloom"){{
             variants = 4;
             clipSize = 128f;
@@ -2065,7 +2069,7 @@ public class NyfalisBlocks {
             size = 1;
             discoveryTime = 3400;
             glowColor = Color.valueOf("3ed09a");
-            outlineColor = Color.valueOf("371404");
+            outlineColor = NyfalisColors.contentOutline;
             requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.with(new Object[]{Items.silicon, 1}));
             fogRadius = 40;
         }};

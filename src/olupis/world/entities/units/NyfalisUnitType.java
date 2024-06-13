@@ -30,8 +30,7 @@ import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import olupis.content.NyfalisItemsLiquid;
-import olupis.content.NyfalisStatusEffects;
+import olupis.content.*;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
 import olupis.world.entities.NyfalisStats;
@@ -59,12 +58,12 @@ public class NyfalisUnitType extends UnitType {
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
     public Seq<UnlockableContent> displayFactory = new Seq<>();
-    public Color unitOutLine = Color.valueOf("371404");
+
     public TextureRegion bossRegion;
 
     public NyfalisUnitType(String name){
         super(name);
-        outlineColor = unitOutLine;
+        outlineColor = NyfalisColors.contentOutline;
         ammoType = new ItemAmmoType(NyfalisItemsLiquid.rustyIron);
         researchCostMultiplier = 6f;
         generateIcons = true;
