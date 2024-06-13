@@ -82,7 +82,7 @@ public class NyfalisBlocks {
         mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall,
 
         /*Env Hazzard*/
-        atroposShroom,
+        boomPuffPassive, boomPuffActive,
 
         /*Trees*/
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, spruceTree,
@@ -2082,7 +2082,7 @@ public class NyfalisBlocks {
         sandBoxBlocks.addAll(
                 /*just to make it easier for testing and/or sandbox*/
                 itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid, powerSource, powerVoid, heatSource,
-                worldProcessor, worldMessage, atroposShroom
+                worldProcessor, worldMessage, boomPuffActive, boomPuffPassive
         );
 
         Vars.content.blocks().each(b->{

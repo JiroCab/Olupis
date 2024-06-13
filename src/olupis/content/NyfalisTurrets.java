@@ -1458,7 +1458,35 @@ public class NyfalisTurrets {
         };
         //endregion
         //region Env Hazzards
-        atroposShroom = new PowerTurret("atropos-shroom"){{
+        boomPuffPassive = new PowerTurret("non-reproductive-boompuff"){{
+            alwaysShooting = true;
+            inaccuracy =  360;
+            playerControllable = logicConfigurable = false;
+            var T = this;
+
+            shootType = new ExplosionBulletType(200,100){{
+                shootEffect = NyfalisFxs.smolPorpolKaboom;
+                killShooter = false;
+            }};
+
+            solid = createRubble = rebuildable = false;
+
+            breakEffect = Fx.breakProp;
+            breakSound = Sounds.plantBreak;
+
+
+            drawer = new DrawRegion("");
+            hasShadow = false;
+            drawTeamOverlay = false;
+            size = 1;
+            shootY = 0;
+            range = 0;
+            health = 1;
+            reload = 60 * 25;
+            shootSound = Sounds.none;
+
+        }};
+        boomPuffActive = new PowerTurret("reproductive-boompuff"){{
             alwaysShooting = true;
             inaccuracy =  360;
             playerControllable = logicConfigurable = false;
@@ -1493,7 +1521,15 @@ public class NyfalisTurrets {
                         collidesAir = collidesGround = false;
                         fragBullets = 1;
                         fragRandomSpread = fragSpread = 0;
-                        fragBullet = new MineBulletType(T,Fx.sporeSlowed,0.40f);
+                        fragBullet = new VariantBulletType(){{
+                            variants.addAll(
+                                    new MineBulletType(boomPuffPassive,Fx.sporeSlowed,0.60f),
+                                    new MineBulletType(boomPuffPassive,Fx.sporeSlowed,0.60f),
+                                    new MineBulletType(boomPuffPassive,Fx.sporeSlowed,0.60f),
+                                    new MineBulletType(boomPuffPassive,Fx.sporeSlowed,0.60f),
+                                    new MineBulletType(T,Fx.sporeSlowed,0.40f)
+                            );
+                        }};
                     }};
                 }};
             }};
