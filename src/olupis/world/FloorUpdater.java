@@ -40,26 +40,44 @@ public class FloorUpdater{
     }
 
     private static void updateSpread(){
-        if(state.isGame()){
+        if(state.isGame() && !state.isEditor()){
             if(state.isPaused()) return;
 
             for(ObjectIntMap.Entry<Tile> entry : tiles.entries()){
+                if(entry.key == null) continue;
                 var t = (SpreadingFloor) entry.key.floor();
+
+                if(t.next != null){
+                    if(entry.value > t.spreadTries){
+                        tiles.remove(entry.key);
+                        entry.key.setFloorNet(t.next, entry.key.overlay());
+                        if(t.next instanceof SpreadingFloor)
+                            tiles.put(entry.key, 0);
+
+                        if(t.growSpread){
+                            for(Tile tile : getNearby(entry.key, 0, t.blacklist)){
+                                replacedTiles.put(tile, tile.floor());
+                                tile.setFloorNet(t.set, tile.overlay());
+                                tiles.put(tile, 0);
+                            }
+                        }
+                    }else if(Mathf.chance(t.spreadChance)) tiles.increment(entry.key);
+
+                    continue;
+                }
 
                 if(entry.value >= t.spreadTries){
                     tiles.remove(entry.key);
                     Seq<Tile> nearby = getNearby(entry.key, t.spreadOffset, t.blacklist);
                     if(nearby.isEmpty()){
-                        Log.info("Tile at " + entry.key.x + ", " + entry.key.y + " is now dormant");
                         tiles.remove(entry.key);
                         dormantTiles.addUnique(entry.key);
-                        return;
+                        continue;
                     }
 
                     Tile next = nearby.random();
                     replacedTiles.put(next, next.floor());
-                    next.setFloorNet(entry.key.floor(), next.overlay());
-                    Log.info("Spreading tile at " + entry.key.x + ", " + entry.key.y + " to " + next.x + ", " + next.y);
+                    next.setFloorNet(t.set, next.overlay());
 
                     tiles.put(next, 0);
                     tiles.put(entry.key, 0);
@@ -82,10 +100,11 @@ public class FloorUpdater{
     }
 
     private static void updateDormant(){
-        if(state.isGame()){
+        if(state.isGame() && !state.isEditor()){
             if(state.isPaused()) return;
             //TODO, make the check slower if there ar 0 tiles total in the map, but not stop since map makers can add them after the fact w/ world logic
-            Log.info("Total tiles: " + (tiles.size + dormantTiles.size) + ", Of which: " + tiles.size + " active, " + dormantTiles.size + " dormant");
+            if(tiles.size > 0)
+                Log.info("Total tiles: " + (tiles.size + dormantTiles.size) + ", Of which: " + tiles.size + " active, " + dormantTiles.size + " dormant");
 
             dormantTiles.each(t -> {
                 var tmp = (SpreadingFloor) t.floor();
@@ -103,15 +122,14 @@ public class FloorUpdater{
         Tile t = null;
 
         if(radius <= 0)
-            for(int i = 0; i <= 3; i++) // linear
+            for(int i = 0; i <= 3; i++){ // linear
                 t = tile.nearby(i);
-                if(t != null && t.floor() != null
-                && !blacklist.contains(t.floor()))
+                if(t != null && !t.block().isStatic() && t.floor() != null && !blacklist.contains(t.floor()))
                     tiles.add(t);
+            }
         else
             tile.circle(radius, tmp -> { // random
-                if(tmp != null && tmp.floor() != null
-                && !blacklist.contains(tmp.floor()))
+                if(tmp != null && tmp.floor() != null && !tmp.block().isStatic() && !blacklist.contains(tmp.floor()))
                     tiles.add(tmp);
             });
 

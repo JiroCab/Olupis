@@ -68,7 +68,7 @@ public class NyfalisBlocks {
         redSand, lumaGrass, yellowGrass, pinkGrass, mossyDirt,  hardenMud, mossyhardenMud,
         frozenGrass, frozenDirt, frozenMud, crackedIce, redSandSnow, snowySand, frozenTar, frozenSlop,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent, spreadFloorTest,
+        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, shallowMossyWater, pinkGrassWater, yellowMossyWater, coralReef, slop,
@@ -347,9 +347,27 @@ public class NyfalisBlocks {
             attributes.set(Attribute.steam, 1f);
         }};
 
-        spreadFloorTest = new SpreadingFloor("testtest"){{
-           blacklist = ObjectSet.with(arc, duo);
-           variants = 0;
+        theircelium = new Floor("theircelium", 0);
+        ourcelium = new SpreadingFloor("ourcelium"){{
+            // this doesn't spread, but growth is affected by these settings too
+            spreadTries = 3;
+            spreadChance = 0.075d;
+
+            next = theircelium;
+        }};
+        yourcelium = new SpreadingFloor("yourcelium"){{
+            // this doesn't spread, but growth is affected by these settings too
+            spreadTries = 2;
+            spreadChance = 0.18d;
+
+            next = ourcelium;
+        }};
+        mycelium = new SpreadingFloor("mycelium"){{
+            growSpread = true;
+            spreadTries = 1;
+            spreadChance = 0.35d;
+
+            next = yourcelium;
         }};
 
         //endregion
