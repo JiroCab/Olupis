@@ -43,7 +43,7 @@ public class SpreadingFloor extends Floor{
     }
 
     public void handleBlacklist(ObjectSet<Block> list){
-        if(set instanceof SpreadingFloor t){
+        if(set != this && set instanceof SpreadingFloor t){
             if(t.growSpread || t.next == null)
                 t.blacklist.addAll(list);
             else t.handleBlacklist(list);
