@@ -71,10 +71,10 @@ public class NyfalisBlocks {
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
 
         /*Liquid floors*/
-        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, shallowMossyWater, pinkGrassWater, yellowMossyWater, coralReef, slop,
+        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, mossyWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop,
 
         /*props*/
-        yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
+        yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
 
         /*walls*/
         redDune, pinkShrubs, lightWall, lumaWall,
@@ -85,7 +85,7 @@ public class NyfalisBlocks {
         boomPuffPassive, boomPuffActive,
 
         /*Trees*/
-        nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, spruceTree,
+        nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, mossDeadTree, spruceTree,
 
         //Buildings, sorted by category
 
@@ -424,6 +424,19 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
+        mossyWaterDeep = new Floor("mossy-water-deep"){{ //Remind rushie to update the bundles thx -past rushie
+            variants = 3;
+            albedo = 0.9f;
+            drownTime = 200f;
+            statusDuration = 120f;
+            liquidMultiplier = 1.5f;
+            speedMultiplier = 0.2f;
+            isLiquid = supportsOverlay = true;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
+        }};
+
         pinkGrassWater = new Floor("pink-grass-water"){{
             isLiquid = supportsOverlay = true;
 
@@ -498,6 +511,10 @@ public class NyfalisBlocks {
             variants = 2;
             frozenGrass.asFloor().decoration = this;
             mossierStone.asFloor().decoration = this;
+        }};
+        mossBoulder = new Prop("moss-boulder"){{
+            variants = 2;
+            mossStone.asFloor().decoration = this;
             mossiestStone.asFloor().decoration = this;
         }};
 
@@ -609,7 +626,10 @@ public class NyfalisBlocks {
             variants = 3;
         }};
         deadTree = new TreeBlock("dead-tree"){{
-            variants = 1; //TODO: more
+            variants = 2;
+        }};
+        mossDeadTree = new TreeBlock("moss-dead-tree"){{
+            variants = 2;
         }};
 
         //endregion

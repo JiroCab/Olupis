@@ -1,5 +1,6 @@
 package olupis.world.entities.units;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
@@ -14,7 +15,7 @@ import mindustry.graphics.Pal;
 public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     private static final Vec2 legOffset = new Vec2();
     public float groundSpeed =  1f, navalSpeed = groundSpeed;
-    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true, floaterOnHiddenLegs = false, boostUsesNaval;
+    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true, floaterOnHiddenLegs = false, boostUsesNaval, customShadow = false;
 
     public LeggedWaterUnit(String name){
         super(name);
@@ -26,6 +27,12 @@ public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     public void init(){
         super.init();
         //pathCost = NyfalisPathfind.costLeggedNaval;
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        if(customShadow) softShadowRegion = Core.atlas.find("olupis-shadow-long");
     }
 
     @Override

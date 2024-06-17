@@ -1300,12 +1300,12 @@ public class NyfalisUnits {
         }};
 
         banshee = new LeggedWaterUnit("banshee"){{
-            hitSize = 8f;
+            hitSize = 18f;
             health = 150;
             legCount = 4;
             mineTier = 3;
             fogRadius = 8f;
-            legLength = 9f;
+            legLength = 10f;
             mineSpeed = 4f;
             navalSpeed = 1.1f;
             legForwardScl = 0.6f;
@@ -1317,7 +1317,7 @@ public class NyfalisUnits {
             constructor = LegsUnit::create;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = lockLegsOnLiquid= drawAmmo = true;
+            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = lockLegsOnLiquid= drawAmmo = customShadow = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = false;
         }};
 

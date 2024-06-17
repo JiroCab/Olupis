@@ -1,12 +1,13 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 20/03/2024 (+8utc) by Jirocab/RushieWashie
+Last updated on 17/06/2024 (+8utc) by Jirocab/RushieWashie
 
 = Version 1-7() =
-    + Units added: regioner, germanica, serpent, essex, revenant, pteropus, acerodon
-    + Blocks added: steamTurbine, lubricantMixer, discardDriver, siliconKiln, rustEngraver, alternateArticulator, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge, lidar, inductionSmelter
+    + Units added: regioner, germanica, serpent, essex, revenant, pteropus, acerodon, flea, lice, tick
+    + Blocks added: steamTurbine, lubricantMixer, discardDriver, siliconKiln, rustEngraver, alternateArticulator, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge, lidar, inductionSmelter, deliveryCanon
     + Tiles added: glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush, deadTree, hardenMuddyVent, oreAlco
-    + Status Effect added: lubed, mossed, deployed
+    + Status Effect added: lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained
+    + Maps added: TODO
     + Items added: alcoAlloy, aluminum
     + Added: Buttons to clear Nyfalis Sectors and research data
     + Added: Disclaimer system that warns the player if their sectors are outdated
@@ -25,16 +26,20 @@ Last updated on 20/03/2024 (+8utc) by Jirocab/RushieWashie
     ~ Bug Fix: Liquid Tank and Canister liquid layer are visible in corners
     ~ Bug Fix: Broiler now gets it production boosted with scrap and is functional
     ~ Bug Fix: Constructs not properly using power while making spirits
+    ~ Bug Fix: (Foo's) Other buttons such Disclaimer not showing (Thanks buthed for the help!)
     ~ Improved: Gnat and Phorid's attacking visual design to better indicate area of damage
     ~ Improved: Stats and general core database changes
-    ~ Improved: Obliterator fully implemented
     ~ Improved: Broiler now gets
+    ~ Improved: Increased `space` variety slightly
     ~ Sprites: Recoloured blocks to have new iron pallet
-    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item), quartz (ore), lubricant (liquid), aegis
+    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item), quartz (ore), lubricant (liquid), aegis, scrab, scarabRadar, avenger, deliveryCannon, strata, slash, laceration, corupt (effect), glitch (effect), drained (effect), malfuct (effect), unloaded (effect), boomPuffPassive, boomPuffActive
     ~ Sprites Contributed by Ethanol10: acerodon, germanica, essex, serpent, avenger
-    ~ Sprites Contributed by Catana: spirit
-    ~ Sprites Contributed by Lixie: spirit: rustyIron (item), rustedBridge, rustyConveyor, ironDistributor, ironJunction, ironRouter, steamBoiler, pipeCanister, ironSieve
-    -- Removed: e
+    ~ Sprites Contributed by Catana: spirit, banshee
+    ~ Sprites Contributed by Lixie: spirit: rustyIron (item), rustedBridge, rustyConveyor, ironDistributor, ironJunction, ironRouter, steamBoiler, pipeCanister, ironSieve, ironOverflow, ironUnderflow, rustyWall, rustyWallLarge, rustyWallHuge, rustyDrill, oreIron, windMill, wireBridge, wire
+    ~ Sprites Contributed by TwCash: arialConstruct, groundConstruct, navalConstruct, construct, cobalt (item), cobaltite (item), dirium (item), duralumin (item), plasteel (item), quartz (item), siliconCarbide (item), pteropus
+    ~ Sprites Contributed by ItsKirby69: bush, deadTree, olupisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall, mossyBoulder, bush, deadMossTree, mossyVent, mossyWater, mossyWaterDeep, mossStone, mossBoulder,
+    ~ Functionally Contributed by Wmf: Mycelium Spread
+    ~ Functionally Contributed by Otamamori: Shroom Spread, starta's mine placing
     -- Music removed from content mod - https://github.com/JiroCab/Nyfalis-Music
 
 = Version 1-6 (9d343a0) = https://github.com/JiroCab/Olupis/tree/9d343a0e5fc3aab9c5efc5073e9b9d7e4edfb1e5
