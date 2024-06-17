@@ -35,6 +35,7 @@ import mindustry.world.meta.*;
 import olupis.input.NyfalisShaders;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
+import olupis.world.blocks.environment.StaticWallTree;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
@@ -583,22 +584,22 @@ public class NyfalisBlocks {
             layer = Layer.power + 0.9f;
         }};
 
-        mossyStoneWall = new StaticWall("mossy-stone-wall"){{
+        mossyStoneWall = new StaticWallTree("mossy-stone-wall"){{
             attributes.set(Attribute.sand, 1f);
             mossierStone.asFloor().wall = this;
         }};
 
-        mossierStoneWall = new StaticWall("mossier-stone-wall"){{
+        mossierStoneWall = new StaticWallTree("mossier-stone-wall"){{
             mossierStone.asFloor().wall = this;
             attributes.set(Attribute.sand, 0.8f);
         }};
 
-        mossiestStoneWall = new StaticWall("mossiest-stone-wall"){{
+        mossiestStoneWall = new StaticWallTree("mossiest-stone-wall"){{
             mossiestStone.asFloor().wall = this;
             attributes.set(Attribute.sand, 0.6f);
         }};
 
-        mossStoneWall = new StaticWall("moss-stone-wall"){{
+        mossStoneWall = new StaticWallTree("moss-stone-wall"){{
             mossStone.asFloor().wall = this;
             attributes.set(Attribute.sand, 0.6f);
         }};
