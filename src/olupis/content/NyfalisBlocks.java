@@ -44,6 +44,7 @@ import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.pattern.ShootAlternateAlt;
 import olupis.world.environment.SpreadingFloor;
+import olupis.world.environment.SpreadingOre;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -61,8 +62,9 @@ public class NyfalisBlocks {
         //region Blocks Variables
     public static Block
         //environment
-        /*Ores / Overlays */
+        /*Ores / SpreadingOres / Overlays */
         oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead, oreQuartz, oreAlco,
+        mossyCopper, mossyOxidizedCopper, mossyLead, mossyOxidizedLead, mossyScrap, mossyCoal, mossyIron,
         glowSprouts, lumaSprouts, redCorals, blueCorals, greenCorals, kelp,
 
         /*Floors*/
@@ -348,25 +350,66 @@ public class NyfalisBlocks {
             attributes.set(Attribute.steam, 1f);
         }};
 
-        theircelium = new Floor("theircelium", 0);
-        ourcelium = new SpreadingFloor("ourcelium"){{
+        //endregion
+        //region Spreading & related floor
+
+        /* Note: The last stage of anything from the spreading types should go FIRST,
+        last stage -> middle stage -> first stage, otherwise stuff WILL break */
+
+        theircelium = new Floor("moss", 3);
+        mossyCopper = new SpreadingOre("moss-ore-copper", theircelium){{
+            variants = 3;
+        }};
+        mossyOxidizedCopper = new SpreadingOre("moss-ore-oxidized-copper", theircelium){{
+            variants = 3;
+        }};
+        mossyLead = new SpreadingOre("moss-ore-lead", theircelium){{
+            variants = 3;
+        }};
+        mossyOxidizedLead = new SpreadingOre("moss-ore-oxidized-lead", theircelium){{
+            variants = 3;
+        }};
+        mossyScrap = new SpreadingOre("moss-ore-scrap", theircelium){{
+            variants = 3;
+        }};
+        mossyCoal = new SpreadingOre("moss-ore-coal", theircelium){{
+            variants = 3;
+        }};
+        mossyIron = new SpreadingOre("moss-ore-oxidized-iron", theircelium){{
+            variants = 3;
+        }};
+        ourcelium = new SpreadingFloor("mossiest-overlay", 3){{
             // this doesn't spread, but growth is affected by these settings too
+            overlay = true;
             spreadTries = 3;
             spreadChance = 0.075d;
 
             next = theircelium;
         }};
-        yourcelium = new SpreadingFloor("yourcelium"){{
+        yourcelium = new SpreadingFloor("mossier-overlay", 3){{
             // this doesn't spread, but growth is affected by these settings too
+            overlay = true;
             spreadTries = 2;
             spreadChance = 0.18d;
 
             next = ourcelium;
         }};
-        mycelium = new SpreadingFloor("mycelium"){{
+        mycelium = new SpreadingFloor("mossy-overlay", 3){{
             growSpread = true;
+            overlay = true;
             spreadTries = 1;
             spreadChance = 0.35d;
+
+            replacements.putAll(
+                    oreCopper, mossyCopper,
+                    oreOxidizedCopper, mossyOxidizedCopper,
+                    oreLead, mossyLead,
+                    oreOxidizedLead, mossyOxidizedLead,
+                    oreCoal, mossyCoal,
+                    oreIron, mossyIron,
+                    oreScrap, mossyScrap
+            );
+            blacklist.add(theircelium);
 
             next = yourcelium;
         }};
