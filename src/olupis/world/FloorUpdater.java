@@ -39,9 +39,9 @@ public class FloorUpdater{
 
             Log.info("FloorUpdater setup complete, " + (tiles.size + ores.size) + " tiles to update");
 
-            if(!validator.isScheduled())
+            if(validator == null || !validator.isScheduled())
                 validator = Timer.schedule(FloorUpdater::updateSpread, 0, 1);
-            if(!dormantValidator.isScheduled())
+            if(dormantValidator == null || !dormantValidator.isScheduled())
                 dormantValidator = Timer.schedule(FloorUpdater::updateDormant, 0, 10);
         });
     }
