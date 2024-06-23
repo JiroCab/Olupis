@@ -13,7 +13,7 @@ public class NyfalisSectors {
 
     public static SectorPreset
         /*Arthin / Seredris*/
-        sanctuary, dyingForest, mossyCaverns, muddyLakes, citadelOfOasis, glasierSea, abandonedTrainStations, conciditRuins, coldFlats,
+        sanctuary, dyingForest, mossyCaverns, muddyLakes, ironCurtain, glasierSea, abandonedPayloadTerminal, conciditRuins, coldFlats,
         /*Nyfalis*/
         conservatorium, forestOfSerenity,
         /*Spelta / Vorgin*/
@@ -58,30 +58,12 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(Items.copper, 75, NyfalisItemsLiquid.rustyIron,300, Items.lead, 300, NyfalisItemsLiquid.iron, 250));
         }};
 
-        citadelOfOasis = new SectorPreset("citadel-of-oasis", arthin, 11){{
-            addStartingItems = overrideLaunchDefaults =  true;
-            allowLaunchLoadout = allowLaunchSchematics =  false;
-
-            difficulty = 3.5f;
-            captureWave = 26;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 2000, Items.lead, 2000, NyfalisItemsLiquid.iron, 750, Items.copper, 500,  Items.graphite, 350, NyfalisItemsLiquid.quartz, 475));
-        }};
-
         glasierSea = new SectorPreset("glasier-sea", arthin, 7){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 4;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1200, Items.lead, 1200, NyfalisItemsLiquid.iron, 200, Items.copper, 300,  Items.graphite, 200));
-        }};
-
-        abandonedTrainStations = new SectorPreset("abandoned-train-station", arthin, 0){{
-            addStartingItems = overrideLaunchDefaults =  true;
-            allowLaunchLoadout = allowLaunchSchematics =  false;
-
-            difficulty = 5;
-            captureWave = 21;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500, Items.copper, 500));
         }};
 
         conciditRuins = new SectorPreset("concidit-ruins", arthin, 6){{
@@ -99,6 +81,24 @@ public class NyfalisSectors {
             difficulty = 5;
             captureWave = 13;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000,Items.copper, 500, NyfalisItemsLiquid.iron, 550));
+        }};
+
+        ironCurtain = new SectorPreset("iron-curtain", arthin, 11){{
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 6;
+            captureWave = 21;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 100, Items.lead, 100));
+        }};
+
+        abandonedPayloadTerminal = new SectorPreset("abandoned-payload-terminal", arthin, 0){{
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 4;
+            captureWave = 21;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 0, Items.lead, 0));
         }};
 
         //endregion

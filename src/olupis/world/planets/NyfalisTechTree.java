@@ -29,8 +29,8 @@ public class NyfalisTechTree {
                                     });
                                 });
                                 node(muddyLakes, () -> {
-                                    node(abandonedTrainStations, () -> {
-                                        node(citadelOfOasis, () -> {
+                                    node(abandonedPayloadTerminal, () -> {
+                                        node(ironCurtain, () -> {
 
                                         });
                                     });
@@ -43,7 +43,7 @@ public class NyfalisTechTree {
                     });
                 });
                 node(nyfalis, Seq.with(
-                        new Objectives.SectorComplete(citadelOfOasis),
+                        new Objectives.SectorComplete(ironCurtain),
                         new Objectives.SectorComplete(glasierSea),
                         new Objectives.SectorComplete(coldFlats)
                 ),() ->{
@@ -366,7 +366,7 @@ public class NyfalisTechTree {
                         });
                     });
                     node(alternateArticulator,  Seq.with(
-                            new  Objectives.SectorComplete(abandonedTrainStations)
+                            new  Objectives.SectorComplete(abandonedPayloadTerminal)
                     ), () -> {
 
                     });

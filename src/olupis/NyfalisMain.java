@@ -60,7 +60,7 @@ public class NyfalisMain extends Mod{
         Events.on(FileTreeInitEvent.class, e -> Core.app.post(NyfalisSounds::LoadSounds));
 
         Events.on(EventType.WorldLoadBeginEvent.class, I -> {
-            NyfalisTurrets.dynamicTurretContent();
+            NyfalisTurrets.dynamicTurretContent(); //Vars.content.sectors().forEach(s => {if(s.sector == null || s.sector.preset == null) Log.err(s.name);});
         });
 
         Events.on(EventType.WorldLoadEvent.class, l ->{

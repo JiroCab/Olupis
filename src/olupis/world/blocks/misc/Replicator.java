@@ -42,7 +42,7 @@ public class Replicator extends PayloadBlock {
 
         //size = 4;
         update = outputsPayload = rotate = noUpdateDisabled = clearOnDoubleTap = teamPassable = commandable = configurable = solid = privileged = true;
-        hasPower = quickRotate = destructible =  false;
+        hasPower = quickRotate = destructible =  targetable = false;
         //make sure to display large units.
 
         clipSize = 120;
@@ -149,7 +149,7 @@ public class Replicator extends PayloadBlock {
 
             if (delayTimer <= 0) {
                 delayTimer = dynamicDelay * 60;
-                if (unlockedNowHost() && state.isCampaign()) return;
+                if (team == state.rules.defaultTeam && unlockedNowHost() && state.isCampaign()) return;
                 if (payload == null) {
                     scl = 0f;
                     if (selectedUnit != -1) {

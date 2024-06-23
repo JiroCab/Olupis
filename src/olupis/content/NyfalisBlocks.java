@@ -645,6 +645,7 @@ public class NyfalisBlocks {
         mossStoneWall = new StaticWallTree("moss-stone-wall"){{
             mossStone.asFloor().wall = this;
             attributes.set(Attribute.sand, 0.6f);
+            layer = Layer.power + 0.9f;
         }};
 
         //endregion
@@ -1167,6 +1168,7 @@ public class NyfalisBlocks {
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("ffef99")));
             ambientSound = Sounds.smelter;
             ambientSoundVolume = 0.07f;
+
 
             consumeItem(quartz, 4);
             consumeLiquid(oil, 15f/60f);
