@@ -35,6 +35,7 @@ import mindustry.world.meta.*;
 import olupis.input.NyfalisShaders;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
+import olupis.world.blocks.environment.RotatingFloor;
 import olupis.world.blocks.environment.StaticWallTree;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
@@ -48,14 +49,13 @@ import olupis.world.environment.SpreadingOre;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.oil;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisAttributeWeather.*;
 import static olupis.content.NyfalisItemsLiquid.*;
-import static olupis.content.NyfalisItemsLiquid.steam;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisBlocks {
@@ -241,17 +241,17 @@ public class NyfalisBlocks {
             attributes.set(Attribute.water, 0.25f);
         }};
 
-        mossyStone = new Floor("mossy-stone"){{
+        mossyStone = new RotatingFloor("mossy-stone"){{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }}  ;
+
+        mossierStone = new RotatingFloor("mossier-stone"){{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        mossierStone = new Floor("mossier-stone"){{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-
-        mossiestStone = new Floor("mossiest-stone"){{
+        mossiestStone = new RotatingFloor("mossiest-stone"){{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
@@ -261,7 +261,7 @@ public class NyfalisBlocks {
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        mossyDirt = new Floor("mossy-dirt"){{
+        mossyDirt = new RotatingFloor("mossy-dirt"){{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
@@ -303,7 +303,7 @@ public class NyfalisBlocks {
             variants = 3;
         }};
 
-        mossyhardenMud = new Floor("mossy-harden-mud"){{
+        mossyhardenMud = new RotatingFloor("mossy-harden-mud"){{
             attributes.set(bio, 0.2f);
             attributes.set(Attribute.water, 0.1f);
         }};

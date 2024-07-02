@@ -152,6 +152,7 @@ public class ItemUnitTurret extends ItemTurret {
                             title.add(item.localizedName).left().top();
                         }).left().row();
                         info.add(displayUnit.localizedName).left().row();
+                        info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
                         if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
                     });
                     b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
@@ -165,6 +166,8 @@ public class ItemUnitTurret extends ItemTurret {
                 }).growX().pad(5);
                 return;
             }
+            table.row();
+            table.image().color(Pal.darkerGray).height(3.0F).pad(3.0F).growX().row();
             for (Map.Entry<Item, BulletType> entry : alts.entrySet()) {
                 Item item = entry.getKey();
                 BulletType bul = entry.getValue();
@@ -186,6 +189,7 @@ public class ItemUnitTurret extends ItemTurret {
                             title.add(item.localizedName).left().top();
                         }).left().row();
                         info.add(displayUnit.localizedName).left().row();
+                        info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
                         if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
                     });
                     b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);

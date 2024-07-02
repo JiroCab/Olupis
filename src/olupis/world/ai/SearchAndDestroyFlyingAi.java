@@ -9,6 +9,7 @@
  import mindustry.gen.*;
  import mindustry.type.Weapon;
  import mindustry.world.meta.BlockFlag;
+ import olupis.world.entities.units.AmmoLifeTimeUnitType;
 
  import static mindustry.Vars.state;
 
@@ -17,7 +18,7 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
     /*avoids stuttering on trying to go to spawn after target is null*/
     public float delay = 70f * 60f, idleAfter;
     /*screw crawlers in particular*/
-    public boolean suicideOnSuicideUnits = false, suicideOnTarget = false;
+    public boolean suicideOnSuicideUnits = false, suicideOnTarget = false, inoperable = false;
     /*Compensate for target speed, for better chasing */
     public boolean compensateTargetSpeed = true;
 
@@ -30,7 +31,9 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
     public void updateMovement(){
         unloadPayloads();
 
+        if(invalid(target) && unit.type instanceof AmmoLifeTimeUnitType) inoperable = true;
         if(target == null){
+            if(unit.type instanceof AmmoLifeTimeUnitType) inoperable = true;
             if( Time.time >= idleAfter) {
                 //protect key points on idle
                 if(unit.closestEnemyCore() != null && unit.inFogTo(unit.team) && unit.within(unit.closestEnemyCore(), Math.min(600f, unit().range() * 2f))) moveTo(unit.closestEnemyCore(), unit.range() * 2f);

@@ -24,7 +24,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.BuildWeapon;
-import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 import olupis.input.NyfalisUnitCommands;
@@ -36,7 +35,7 @@ import olupis.world.entities.parts.CellPart;
 import olupis.world.entities.parts.NyfPartParms;
 import olupis.world.entities.units.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilePayload;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 
@@ -73,6 +72,7 @@ public class NyfalisUnits {
         lootbug
     ;
 
+    public  static BatHelperUnitType pteropusAir, acerodonAir, nyctalusAir, mirimiriAir , vampyrumAir;
 
     public static AmmoLifeTimeUnitType
         mite, tick, flea, lice,
@@ -403,6 +403,9 @@ public class NyfalisUnits {
             );
         }};
 
+
+        pteropusAir = new BatHelperUnitType(pteropus);
+        acerodonAir = new BatHelperUnitType(acerodon);
         //nyctalus -> deployed = fires a swarm of long range small missles (10) | air = short-medium range  shell that burst into mini swarm of missles (4)
         //endregion
         //region Air - Area / from naval
@@ -496,6 +499,7 @@ public class NyfalisUnits {
         venom = new SnekUnitType("venom"){{
             constructor = CrawlUnit::create;
             armor = 1;
+            accel = 2.5f;
             hitSize = 11f;
             health = 450;
             speed = 2.2f;
@@ -538,6 +542,7 @@ public class NyfalisUnits {
 
         serpent = new SnekUnitType("serpent"){{
             constructor = CrawlUnit::create;
+            accel = 3f;
             armor = 4;
             hitSize = 11f;
             health = 600;
@@ -767,21 +772,24 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
             abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f));
-            weapons.add(new PointDefenseWeapon("point-defense-mount"){{
+            weapons.add(new LaserPointerPointDefenceWeapon("point-defense-mount"){{
                 x = 0;
                 y = -7f;
                 reload = 6f;
                 targetInterval = targetSwitchInterval = 14f;
                 mirror = false;
+                minWarmup = 0.5f;
 
                 bullet = new BulletType(){{
                     shootEffect = Fx.shootSmokeSquare;
                     hitEffect = Fx.pointHit;
-                    maxRange = 80f;
+                    maxRange = 160f;
                     damage = 45f;
                 }};
             }});
         }};
+
+        //lexington -> Carrier a long range PDL w/ warm up & laser pointer
 
         //T4, a slow gunship carrier (district), flies and can carry ground units /payload
         excess = new LeggedWaterUnit("excess"){{
@@ -1046,6 +1054,7 @@ public class NyfalisUnits {
 
         //endregion
         //region Limited - Hive
+        float hiveDepletionRate = 1;
         flea = new AmmoLifeTimeUnitType("flea"){{
             hitSize = 8f;
             range = 4f;
@@ -1058,7 +1067,7 @@ public class NyfalisUnits {
             lightRadius = 15f;
             itemCapacity = 0;
             penaltyMultiplier = 1f;
-            ammoDepletionAmount = 0.6f;
+            ammoDepletionAmount = hiveDepletionRate;
             maxRange = 15f * Vars.tilesize;
             ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
@@ -1106,7 +1115,7 @@ public class NyfalisUnits {
             lightRadius = 15f;
             itemCapacity = 0;
             penaltyMultiplier = 1f;
-            ammoDepletionAmount = 0.6f;
+            ammoDepletionAmount = hiveDepletionRate;
 
             flying = targetGround = targetAir = drawAmmo = true;
             playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
@@ -1155,7 +1164,7 @@ public class NyfalisUnits {
             lightRadius = 15f;
             itemCapacity = 0;
             penaltyMultiplier = 1f;
-            ammoDepletionAmount = 0.6f;
+            ammoDepletionAmount = hiveDepletionRate;
             ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
             flying = targetGround = targetAir = drawAmmo = true;
@@ -1207,7 +1216,7 @@ public class NyfalisUnits {
             lightRadius = 15f;
             itemCapacity = 0;
             penaltyMultiplier = 1f;
-            ammoDepletionAmount = 0.6f;
+            ammoDepletionAmount = hiveDepletionRate;
             ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
             flying = targetGround = targetAir = drawAmmo = true;
@@ -1302,13 +1311,14 @@ public class NyfalisUnits {
         banshee = new LeggedWaterUnit("banshee"){{
             hitSize = 18f;
             health = 150;
-            legCount = 4;
+            legCount = 6;
             mineTier = 3;
             fogRadius = 8f;
             legLength = 10f;
             mineSpeed = 4f;
             navalSpeed = 1.1f;
-            legForwardScl = 0.6f;
+            legForwardScl = 0.8f;
+            legBaseOffset = -2f;
             legMoveSpace = 1.4f;
             ammoCapacity = 300;
 

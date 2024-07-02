@@ -24,6 +24,7 @@ import mindustry.world.Tile;
 import mindustry.world.meta.Env;
 import olupis.content.NyfalisFxs;
 import olupis.world.ai.NyfalisMiningAi;
+import olupis.world.ai.SearchAndDestroyFlyingAi;
 import olupis.world.entities.packets.NyfalisUnitTimedOutPacket;
 
 import static mindustry.Vars.*;
@@ -123,6 +124,16 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
         }
 
+        if(unit.controller() instanceof SearchAndDestroyFlyingAi ai ){
+            table.row();
+            table.table().left().growX().update(i -> {
+                i.left().clear();
+                if(ai.inoperable){
+                    i.add(Core.bundle.get("nyfalis-ai-inoperable"));
+                }
+            });
+        }
+
         if(unit.controller() instanceof NyfalisMiningAi ai ){
             table.row();
             table.table().left().growX().update(i -> {
@@ -199,8 +210,9 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             callTimeOut(unit);
         }
 
-        inoperable = ((unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null))
-                            || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding()));
+        inoperable = ((unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null || ai.inoperable) )
+                            || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding()))
+                            || (unit.controller() instanceof SearchAndDestroyFlyingAi ai && ai.inoperable);
         boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap));
 
         boolean shouldDeplete = ( (startTime+ ammoDepletionOffset) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
@@ -232,6 +244,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         }
         startTime = Time.time;
         unit.apply(spawnStatus, spawnStatusDuration);
+        startPos = new Vec2(unit.x /8f, unit.y /8f);
         return unit;
     }
 

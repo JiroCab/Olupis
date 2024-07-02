@@ -15,6 +15,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import olupis.content.NyfalisItemsLiquid;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 
@@ -83,6 +84,7 @@ public class PowerUnitTurret extends ItemUnitTurret {
                             title.add(item != internalItem ? item.localizedName : Core.bundle.get("stat.olupis-unitpowercost")).left().top();
                         }).left().row();
                         info.add(displayUnit.localizedName).left().row();
+                        info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
                         if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
                     });
                     b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);

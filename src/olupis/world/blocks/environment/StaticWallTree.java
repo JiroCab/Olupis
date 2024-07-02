@@ -17,14 +17,14 @@ public class StaticWallTree extends StaticWall {
         super(name);
     }
 
-
     @Override
     public void drawBase(Tile tile){
         int rx = tile.x / 2 * 2;
         int ry = tile.y / 2 * 2;
 
         if(Core.atlas.isFound(large) && eq(rx, ry) && Mathf.randomSeed(Point2.pack(rx, ry)) < 0.5){
-            drawFinal(split[tile.x % 2][1 - tile.y % 2], tile);
+            //TODO maybe split it, prob not
+            if((tile.x % 2) ==0 && (1 - tile.y % 2) == 0) Draw.rect(large, tile.worldx() + (tilesize / 2f), tile.worldy() - (tilesize /2f));;
         }else if(variants > 0){
             drawFinal(variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))], tile);
         }else{

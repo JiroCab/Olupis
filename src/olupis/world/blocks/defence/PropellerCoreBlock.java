@@ -114,7 +114,7 @@ public class PropellerCoreBlock extends CoreBlock {
             float yf = i == 0 || i == 2 ? offset * -1: offset,
                     xf = i == 2 || i == 3 ? offset* -1: offset;
             if(i == 2 || i == 3)  Tmp.v1.rotate(-90f);
-            Log.err((Math.max(rotateSpeed, scl * 2 ) *  Time.time) + "");
+//            Log.err((Math.max(rotateSpeed, scl * 2 ) *  Time.time) + "");
             Drawf.spinSprite(blur,  x + (xf * scl) + Tmp.v1.x, y + (yf * scl) + Tmp.v1.x, Math.max(rotateSpeed, scl * 2 ) *  Time.time);
         }
 

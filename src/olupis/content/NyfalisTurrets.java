@@ -332,7 +332,7 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
             coolant = consume(new ConsumeLubricant(15f / 60f));
             ammo(
-                rustyIron, new RollBulletType(3f, 31){{
+                rustyIron, new RollBulletType(3.5f, 38){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     height = 9f;
@@ -349,7 +349,7 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.3f);
                     backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.3f);
                 }},
-                iron, new RollBulletType(3.5f, 38){{
+                iron, new RollBulletType(4f, 42){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     width = 40f;
@@ -366,7 +366,7 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(iron.color).lerp(Pal.bulletYellowBack, 0.1f);
                     backColor = new Color().set(iron.color).lerp(Pal.bulletYellow, 0.2f);
                 }},
-                quartz, new RollBulletType(3.5f, 42){{
+                quartz, new RollBulletType(4.1f, 46){{
                     status = StatusEffects.slow;
                     collidesAir = false;
                     width = 40f;
@@ -380,7 +380,7 @@ public class NyfalisTurrets {
                     reloadMultiplier = 0.9f;
                     statusDuration = 60f * 2f;
                     buildingDamageMultiplier = 0.35f;
-                    fragBullet = new BasicBulletType(3f, 12, "bullet"){{
+                    fragBullet = new BasicBulletType(3f, 14, "bullet"){{
                         width = 5f;
                         height = 12f;
                         shrinkY = 1f;
@@ -685,7 +685,7 @@ public class NyfalisTurrets {
                 minWarmup = 0.8f;
 
                 ammo(
-                        copper, new EffectivenessMissleType(6f, 1f) {{
+                        copper, new EffectivenessMissleType(6f, 8f) {{
                             width = 6f;
                             reloadMultiplier = 1.6f;
                             shrinkX = 0;
@@ -704,7 +704,7 @@ public class NyfalisTurrets {
                             hitEffect = NyfalisFxs.hollowPointHit;
                             status = StatusEffects.shocked;
                         }},
-                        lead, new EffectivenessMissleType(3f, 5f) {{
+                        lead, new EffectivenessMissleType(3f, 12f) {{
                             width = 6f;
                             reloadMultiplier = 2f;
                             shrinkX = 0;
@@ -726,7 +726,7 @@ public class NyfalisTurrets {
                             buildingDamageMultiplier = 0.8f;
                         }},
 
-                        rustyIron, new EffectivenessMissleType(3f, 2.5f) {{
+                        rustyIron, new EffectivenessMissleType(3f, 6f) {{
                             width = 6f;
                             reloadMultiplier = 2f;
                             shrinkX = 0;
