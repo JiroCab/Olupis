@@ -11,18 +11,17 @@ public class RotatingFloor extends Floor {
         super(name);
     }
 
-
-
     @Override
     public void drawBase(Tile tile){
         //delegates to entity unless it is null
-        if(tile.build != null){
-            tile.build.draw();
-        }else{
-            Draw.rect(
-                    variants == 0 ? region :
-                            variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))],
-                    tile.drawx(), tile.drawy(), Math.round(Mathf.randomSeed(tile.pos(),0, 4)) * 90f );
-        }
+        Mathf.rand.setSeed(tile.pos());
+        Draw.rect(variants == 0 ? region :
+                variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))],
+                tile.drawx(), tile.drawy(), Math.round(Mathf.randomSeed(tile.pos(),0, 3)) * 90f )
+        ;
+
+        Draw.alpha(1f);
+        drawEdges(tile);
+        drawOverlay(tile);
     }
 }
