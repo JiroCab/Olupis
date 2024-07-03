@@ -17,6 +17,7 @@ public class SpreadingOre extends OreBlock{
     public boolean fullSpread;
     public ObjectSet<Block> blacklist = new ObjectSet<>();
     public SpreadingFloor parent;
+    public float drillEfficiency;
     /** A floor this ore needs to have around in order to start growing, as well as the one it places under itself when it's done growing */
     public Block baseFloor = Blocks.air;
     /** How many variants of overlay this ore has, not required if the ore already has a dedicated sprite */

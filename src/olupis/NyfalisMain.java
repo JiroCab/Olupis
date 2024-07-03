@@ -13,7 +13,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import olupis.content.*;
 import olupis.input.*;
-import olupis.world.FloorUpdater;
+import olupis.world.*;
 import olupis.world.entities.packets.*;
 import olupis.world.planets.*;
 
@@ -54,7 +54,7 @@ public class NyfalisMain extends Mod{
     }
 
     public NyfalisMain(){
-        FloorUpdater.load();
+        EnvUpdater.load();
 
         //Load sounds once they're added to the file tree
         Events.on(FileTreeInitEvent.class, e -> Core.app.post(NyfalisSounds::LoadSounds));

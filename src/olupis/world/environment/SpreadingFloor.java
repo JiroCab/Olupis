@@ -15,6 +15,8 @@ public class SpreadingFloor extends Floor{
     public double spreadChance = 0.013;
     /** Max tile offset, leave at 0 for linear spread */
     public int spreadOffset = 0;
+    /** Efficiency of drills on ores converted by this, set to -1 in order to manually adjust for each ore, otherwise this value will be set for each */
+    public float drillEfficiency = 1f;
     /** Whether this block spreads to all surrounding tiles at once, linear spreading only! */
     public boolean fullSpread = false;
     /** Spreading blacklist */
@@ -66,6 +68,8 @@ public class SpreadingFloor extends Floor{
                 o.spreadChance = spreadChance;
                 o.spreadTries = spreadTries;
                 o.spreadOffset = spreadOffset;
+                if(drillEfficiency > 0)
+                    o.drillEfficiency = drillEfficiency;
                 o.fullSpread = fullSpread;
                 o.blacklist = blacklist;
                 o.parent = this;

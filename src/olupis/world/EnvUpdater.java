@@ -7,25 +7,28 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.world.*;
-import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.production.Drill;
 import olupis.world.environment.*;
 
 import static mindustry.Vars.*;
 
-public class FloorUpdater{
+public class EnvUpdater{
     public static final ObjectMap<Tile, Block> replacedTiles = new ObjectMap<>();
-    private static final ObjectIntMap<Tile> tiles = new ObjectIntMap<>(), ores = new ObjectIntMap<>();
+    private static final ObjectIntMap<Tile> tiles = new ObjectIntMap<>(), ores = new ObjectIntMap<>(), walls = new ObjectIntMap<>();
     private static final Seq<Tile> dormantTiles = new Seq<>(), dormantOres = new Seq<>();
     private static Timer.Task validator, dormantValidator;
 
     public static void load(){
-        Log.info("FloorUpdater loaded");
+        Log.info("EnvUpdater loaded");
         Events.on(EventType.WorldLoadEvent.class, e -> {
             tiles.clear();
             ores.clear();
+            walls.clear();
             dormantTiles.clear();
             dormantOres.clear();
             replacedTiles.clear();
+            Log.info("Setting up EnvUpdater...");
 
             if(net.client()) return;
 
@@ -37,12 +40,12 @@ public class FloorUpdater{
                     ores.put(t, 0);
             });
 
-            Log.info("FloorUpdater setup complete, " + (tiles.size + ores.size) + " tiles to update");
+            Log.info("EnvUpdater setup complete, " + (tiles.size + ores.size) + " objects to update");
 
             if(validator == null || !validator.isScheduled())
-                validator = Timer.schedule(FloorUpdater::updateSpread, 0, 1);
+                validator = Timer.schedule(EnvUpdater::updateSpread, 0, 1);
             if(dormantValidator == null || !dormantValidator.isScheduled())
-                dormantValidator = Timer.schedule(FloorUpdater::updateDormant, 0, 10);
+                dormantValidator = Timer.schedule(EnvUpdater::updateDormant, 0, 10);
         });
     }
 
@@ -50,7 +53,7 @@ public class FloorUpdater{
         if(state.isGame() && !state.isEditor()){
             if(state.isPaused()) return;
 
-            for(ObjectIntMap.Entry<Tile> entry : tiles.entries()){
+            for(ObjectIntMap.Entry<Tile> entry : tiles){
                 if(entry.key == null) continue;
 
                 if(entry.key.floor() instanceof SpreadingFloor || entry.key.overlay() instanceof SpreadingFloor){
@@ -112,9 +115,11 @@ public class FloorUpdater{
                 }
             }
 
-            for(ObjectIntMap.Entry<Tile> entry : ores.entries()){
+            for(ObjectIntMap.Entry<Tile> entry : ores){
                 if(entry.key == null) continue;
                 var o = (SpreadingOre) entry.key.overlay();
+                if(o.drillEfficiency < 1 && entry.key.build instanceof Drill.DrillBuild d && d.timeScale() > o.drillEfficiency)
+                    d.applySlowdown(o.drillEfficiency, Float.MAX_VALUE); //TODO: Make this slowdown removable when the SpreadingOre is cleared up
 
                 if(entry.value >= o.spreadTries){
                     ores.remove(entry.key);
@@ -142,14 +147,41 @@ public class FloorUpdater{
                     else{
                         Tile next = nearby.random();
                         replacedTiles.put(next, next.overlay());
-                        (o.parent.replacements.containsKey(next.overlay()) ? ores : tiles).put(next, 0); // yeah it is a bit painful
+                        (o.parent.replacements.containsKey(next.overlay()) ? ores : tiles).put(next, 0);
                         next.setFloorNet(next.floor(), o.parent.replacements.containsKey(next.overlay()) ? o.parent.replacements.get(next.overlay()) : o.parent);
                     }
+
+                    if(o.parent.replacements.containsKey(entry.key.block()) && entry.key.block().isStatic()){
+                        var b = o.parent.replacements.get(entry.key.block());
+                        entry.key.setNet(b);
+                        if(b instanceof GrowingWall)
+                            walls.put(entry.key, 0);
+                    }
+
                 }else if(Mathf.chance(o.spreadChance)) ores.increment(entry.key);
+            }
+
+            for(ObjectIntMap.Entry<Tile> entry : walls){
+                if(entry.key == null) continue;
+                var w = (GrowingWall) entry.key.block();
+
+                if(w.next == null){
+                    walls.remove(entry.key);
+                    continue;
+                }
+
+                if(entry.value >= w.growTries){
+                    walls.remove(entry.key);
+                    replacedTiles.put(entry.key, entry.key.block());
+                    entry.key.setNet(w.next);
+                    if(w.next instanceof GrowingWall)
+                        walls.put(entry.key, 0);
+                }else if(Mathf.chance(w.growChance)) walls.increment(entry.key);
             }
         }else{
             tiles.clear();
             ores.clear();
+            walls.clear();
             dormantTiles.clear();
             dormantOres.clear();
             replacedTiles.clear();
@@ -158,7 +190,7 @@ public class FloorUpdater{
                 validator.cancel();
             if(dormantValidator != null)
                 dormantValidator.cancel();
-            Log.info("FloorUpdater disposed, tile cache empty");
+            Log.info("EnvUpdater disposed, tile cache empty");
         }
     }
 
@@ -167,8 +199,8 @@ public class FloorUpdater{
             if(state.isPaused()) return;
 
             if(tiles.size > 0)
-                Log.info(Strings.format("Total objects: @, Active - (@ tiles, @ ores), Dormant - (@ tiles, @ ores)",
-                tiles.size + ores.size + dormantTiles.size + dormantOres.size, tiles.size, ores.size, dormantTiles.size, dormantOres.size));
+                Log.info(Strings.format("Total objects: @, Active - (@ tiles, @ ores, @ walls), Dormant - (@ tiles, @ ores)",
+                tiles.size + ores.size + dormantTiles.size + dormantOres.size, tiles.size, ores.size, walls.size, dormantTiles.size, dormantOres.size));
 
             dormantTiles.each(t -> {
                 var tmp = (SpreadingFloor) t.floor();
@@ -181,6 +213,9 @@ public class FloorUpdater{
 
             dormantOres.each(o -> {
                 var tmp = (SpreadingOre) o.overlay();
+                if(tmp.drillEfficiency < 1 && o.build instanceof Drill.DrillBuild d && d.timeScale() > tmp.drillEfficiency)
+                    d.applySlowdown(tmp.drillEfficiency, Float.MAX_VALUE);
+
                 Seq<Tile> check = getNearby(o, tmp.spreadOffset, tmp.blacklist);
 
                 boolean replaced = true;
@@ -223,6 +258,10 @@ public class FloorUpdater{
     private static void setFloor(Tile tile, SpreadingFloor t){
         if(t.replacements.containsKey(tile.overlay()) && tile.drop() != null)
             ores.put(tile, 0);
+        if(t.replacements.containsKey(tile.block()) && (t.replacements.get(tile.block()) instanceof GrowingWall)){
+            tile.setNet(t.replacements.get(tile.block()));
+            walls.put(tile, 0);
+        }
 
         tile.setFloorNet(
             t.overlay ? tile.floor() : (t.replacements.containsKey(tile.floor()) ? t.replacements.get(tile.floor()) : t.set),
