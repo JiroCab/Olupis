@@ -147,7 +147,6 @@ public class NyfalisMain extends Mod{
     }
 
     public static void abandonedSectorsWarning(Seq<String> lostSectors){
-        Log.err(lostSectors.size + " " + lostSectors);
         if(lostSectors.size == 0) return;
         if(!shownWarning){
             shownWarning = true;

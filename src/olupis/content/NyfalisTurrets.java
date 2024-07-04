@@ -167,7 +167,7 @@ public class NyfalisTurrets {
 
         avenger = new AirPriorityItemTurret("avenger"){
             {
-                targetAir = true;
+                targetAir = slowFogOfWar =true;
                 size = 3;
                 recoil = 0;
                 reload = 42f;
@@ -184,7 +184,7 @@ public class NyfalisTurrets {
 
                 final float groundPenalty = 0.05f;
                 ammo(
-                    copper, new EffectivenessMissleType(4.6f, 20f){{
+                    copper, new EffectivenessMissleType(4.8f, 20f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -202,7 +202,7 @@ public class NyfalisTurrets {
                         status = StatusEffects.shocked;
                         groundDamageMultiplier = groundPenalty;
                     }},
-                    lead, new EffectivenessMissleType(4.6f, 60f){{
+                    lead, new EffectivenessMissleType(4.8f, 60f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -220,7 +220,7 @@ public class NyfalisTurrets {
                         status = NyfalisStatusEffects.drained;
                         groundDamageMultiplier = groundPenalty;
                     }},
-                    iron, new EffectivenessMissleType(5f, 80f){{
+                    iron, new EffectivenessMissleType(5.2f, 80f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -238,7 +238,7 @@ public class NyfalisTurrets {
                         status = StatusEffects.slow;
                         groundDamageMultiplier = groundPenalty;
                     }},
-                    cobalt, new EffectivenessMissleType(4.6f, 20f){{
+                    cobalt, new EffectivenessMissleType(4.8f, 20f){{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 60f;
@@ -671,10 +671,9 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 40, quartz, 20, cobalt, 20));
         }};
 
-        aegis = new ItemTurret("aegis"){
+        aegis = new AirPriorityItemTurret("aegis"){
             {
-                targetAir = true;
-                targetGround = true;
+                targetAir = slowFogOfWar = targetGround = true;
                 size = 3;
                 reload = 120;
                 range = 50f * 8f;
@@ -685,7 +684,7 @@ public class NyfalisTurrets {
                 minWarmup = 0.8f;
 
                 ammo(
-                        copper, new EffectivenessMissleType(6f, 8f) {{
+                        copper, new EffectivenessMissleType(6f, 10f) {{
                             width = 6f;
                             reloadMultiplier = 1.6f;
                             shrinkX = 0;
@@ -704,7 +703,7 @@ public class NyfalisTurrets {
                             hitEffect = NyfalisFxs.hollowPointHit;
                             status = StatusEffects.shocked;
                         }},
-                        lead, new EffectivenessMissleType(3f, 12f) {{
+                        lead, new EffectivenessMissleType(3f, 15f) {{
                             width = 6f;
                             reloadMultiplier = 2f;
                             shrinkX = 0;
@@ -722,11 +721,11 @@ public class NyfalisTurrets {
                             shootEffect = Fx.shootBigColor;
                             hitEffect = NyfalisFxs.hollowPointHit;
                             status = StatusEffects.sapped;
-                            groundDamageMultiplier = 0.5f;
-                            buildingDamageMultiplier = 0.8f;
+                            groundDamageMultiplier = 0.8f;
+                            buildingDamageMultiplier = 0.5f;
                         }},
 
-                        rustyIron, new EffectivenessMissleType(3f, 6f) {{
+                        rustyIron, new EffectivenessMissleType(3f, 8f) {{
                             width = 6f;
                             reloadMultiplier = 2f;
                             shrinkX = 0;
@@ -744,8 +743,28 @@ public class NyfalisTurrets {
                             shootEffect = Fx.shootBigColor;
                             hitEffect = NyfalisFxs.hollowPointHit;
                             status = StatusEffects.corroded;
-                            groundDamageMultiplier = 2f;
-                            buildingDamageMultiplier = 0.8f;
+                            groundDamageMultiplier = 1.5f;
+                            buildingDamageMultiplier = 0.5f;
+                        }},
+                        cobalt, new EffectivenessMissleType(8f, 15f) {{
+                            width = 6f;
+                            shrinkX = 0;
+                            lifetime = 140f;
+                            height = 10.5f;
+                            knockback = 0.8f;
+                            splashDamage = 2.5f;
+                            statusDuration = 120f;
+                            homingPower = 0.4f;
+                            homingRange = 150f;
+                            homingDelay = 20;
+                            splashDamageRadius = 25f * 0.75f;
+                            backColor = trailColor = cobalt.color;
+                            collidesAir = collidesGround = true;
+                            shootEffect = Fx.shootBigColor;
+                            hitEffect = NyfalisFxs.hollowPointHit;
+                            status = NyfalisStatusEffects.corupt;
+                            groundDamageMultiplier = 1.5f;
+                            buildingDamageMultiplier = 0.5f;
                         }}
                 );
                 drawer = new DrawTurret("iron-"){{
@@ -887,7 +906,7 @@ public class NyfalisTurrets {
                 shootEffect = Fx.shootSmallSmoke;
                 researchCost = with(lead, 1500, iron, 700, alcoAlloy, 700);
                 coolant = consume(new ConsumeLubricant(30f / 60f));
-                coolantMultiplier = 2.4f;
+                coolantMultiplier = 2.2f;
                 requirements(Category.turret, with(iron, 100, lead, 200, alcoAlloy, 60));
             }
 

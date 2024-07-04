@@ -17,7 +17,7 @@ public class RotatingFloor extends Floor {
         Mathf.rand.setSeed(tile.pos());
         Draw.rect(variants == 0 ? region :
                 variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))],
-                tile.drawx(), tile.drawy(), Math.round(Mathf.randomSeed(tile.pos(),0, 3)) * 90f )
+                tile.worldx(), tile.worldy(), Math.round(Mathf.randomSeed(tile.pos(),0, 3)) * 90f )
         ;
 
         Draw.alpha(1f);

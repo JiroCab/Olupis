@@ -2,6 +2,7 @@ package olupis.input;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.input.KeyCode;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
@@ -154,7 +155,7 @@ public class NyfalisSettingsDialog {
             boolean[] showData = {false, false};
             table.button("@setting.nyfalis-data-category", Icon.trash, Styles.togglet, () ->{
                 showData[0] = !showData[0];
-                if(Core.input.keyDown(Binding.boost)) showData[1] = !showData[1];
+                if(Core.input.keyDown(Binding.boost) && Core.input.keyDown(KeyCode.altLeft)) showData[1] = !showData[1];
 
 
             }).margin(14f).padLeft(5f).padRight(5f).growX().height(60f).checked(a -> showData[0]).pad(5f).center().row();
@@ -191,26 +192,23 @@ public class NyfalisSettingsDialog {
                     });
                 }).margin(14).width(260f).pad(6);
                 t.add(subTable);
-                if(Core.settings.getBool("nyfalis-debug")){
-                    t.row();
-                    Table debugTable = new Table();
-                    debugTable.button("test save disclaimer",  Icon.save, () -> {
-                        Core.settings.put("nyf-lastver", 0.1f);
-                        Sounds.respawn.play();
-                        float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
-                        Log.info("" + lVer);
-                    }).margin(14).width(260f).height(50f).pad(6);
-                    debugTable.button("Save Disclaimer", Icon.chat, NyfalisStartUpUis::showSaveDisclaimerDialog).margin(14).width(260f).height(50f).pad(6);
-                    t.add(debugTable);
-                }
             }, true, () -> showData[0]).growX().center().row();
             table.collapser(t -> {
                 Table subTable = new Table();
-                subTable.button("sandbox check", Icon.hammer, () -> {
+                subTable.button("sandbox check", () -> {
                     NyfalisMain.sandBoxCheck(false);
                 }).margin(14).width(260f).pad(6);
-                subTable.button("sector turn", Icon.hammer, NyfalisMain::sectorPostTurn).margin(14).width(260f).pad(6);
+                subTable.button("sector turn", NyfalisMain::sectorPostTurn).margin(14).width(260f).pad(6);
+                subTable.row();
+                subTable.button("test save disclaimer", () -> {
+                    Core.settings.put("nyf-lastver", 0.1f);
+                    Sounds.respawn.play();
+                    float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
+                    Log.info("" + lVer);
+                }).margin(14).width(260f).pad(6);
+                subTable.button("Save Disclaimer", NyfalisStartUpUis::showSaveDisclaimerDialog).margin(14).width(260f).pad(6);
                 t.add(subTable);
+
             }, true, () -> showData[1]).growX().center().row();
         }
 
