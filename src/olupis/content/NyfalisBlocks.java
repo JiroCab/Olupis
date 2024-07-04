@@ -396,7 +396,7 @@ public class NyfalisBlocks {
         mossyWater = new Floor("mossy-water"){{
             isLiquid = supportsOverlay = true;
 
-            variants = 3;
+            variants = 0;
             albedo = 0.9f;
             statusDuration = 50f;
             speedMultiplier = 0.8f;
