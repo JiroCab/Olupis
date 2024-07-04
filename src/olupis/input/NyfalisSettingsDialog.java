@@ -11,10 +11,12 @@ import mindustry.ctype.UnlockableContent;
 import mindustry.game.Saves;
 import mindustry.gen.*;
 import mindustry.graphics.Pal;
+import mindustry.input.Binding;
 import mindustry.type.Planet;
 import mindustry.type.Sector;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
+import olupis.NyfalisMain;
 import olupis.content.NyfalisPlanets;
 
 import static mindustry.Vars.*;
@@ -149,8 +151,13 @@ public class NyfalisSettingsDialog {
         }
 
         public void addDataButtons(SettingsMenuDialog.SettingsTable table) {
-            boolean[] showData = {false};
-            table.button("@setting.nyfalis-data-category", Icon.trash, Styles.togglet, () -> showData[0] = !showData[0]).margin(14f).padLeft(5f).padRight(5f).growX().height(60f).checked(a -> showData[0]).pad(5f).center().row();
+            boolean[] showData = {false, false};
+            table.button("@setting.nyfalis-data-category", Icon.trash, Styles.togglet, () ->{
+                showData[0] = !showData[0];
+                if(Core.input.keyDown(Binding.boost)) showData[1] = !showData[1];
+
+
+            }).margin(14f).padLeft(5f).padRight(5f).growX().height(60f).checked(a -> showData[0]).pad(5f).center().row();
             table.collapser(t -> {
                 Table subTable = new Table();
                 subTable.button("@setting.nyfalis-resetsector.name", Icon.trash, () -> {
@@ -166,7 +173,7 @@ public class NyfalisSettingsDialog {
                         }
 
                         for (Saves.SaveSlot s : control.saves.getSaveSlots()) {
-                            if (s.isSector() && NyfalisPlanets.isNyfalianPlanet(s.getSector().planet)) s.delete();;
+                            if (s.isSector() && NyfalisPlanets.isNyfalianPlanet(s.getSector().planet)) s.delete();
                         }
                     });
                 }).margin(14).width(260f).pad(6);
@@ -197,7 +204,14 @@ public class NyfalisSettingsDialog {
                     t.add(debugTable);
                 }
             }, true, () -> showData[0]).growX().center().row();
-
+            table.collapser(t -> {
+                Table subTable = new Table();
+                subTable.button("sandbox check", Icon.hammer, () -> {
+                    NyfalisMain.sandBoxCheck(false);
+                }).margin(14).width(260f).pad(6);
+                subTable.button("sector turn", Icon.hammer, NyfalisMain::sectorPostTurn).margin(14).width(260f).pad(6);
+                t.add(subTable);
+            }, true, () -> showData[1]).growX().center().row();
         }
 
         public void addDisclaimerButton(SettingsMenuDialog.SettingsTable table){

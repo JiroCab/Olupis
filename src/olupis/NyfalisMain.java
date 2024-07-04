@@ -1,6 +1,7 @@
 package olupis;
 
 import arc.*;
+import arc.struct.Seq;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -28,6 +29,7 @@ public class NyfalisMain extends Mod{
     public static LimitedLauncherSelect sectorSelect;
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
+    public static boolean shownWarning = false;
 
     @Override
     public void loadContent(){
@@ -81,23 +83,7 @@ public class NyfalisMain extends Mod{
             if(headless)return;
 
             Events.on(EventType.TurnEvent.class, e -> {
-                for (Sector sec : system.sectors) { //Guaranteed lost, if a base is left alone in 3 turns (6 minutes)
-                    if(sec.hasBase() && !sec.isBeingPlayed() && !sec.isCaptured()){
-                        sec.info.damage = Math.min(sec.info.damage + 0.33f, 1f);
-
-                        if(sec.info.damage >= 0.999){
-                            Log.info("(Nyfalis) " + sec + " was lost from being left alone for too long!");
-                            if(sec.info.wave < sec.info.winWave && sec.info.hasCore){
-                                Events.fire(new EventType.SectorLoseEvent(sec));
-
-                                sec.info.items.clear();
-                                sec.info.damage = 1f;
-                                sec.info.hasCore = false;
-                                sec.info.production.clear();
-                            }
-                        }
-                    }
-                }
+                sectorPostTurn();
             });
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
             if( Core.settings.getBool("nyfalis-debug")) NyfalisStartUpUis.buildDebugUI(Vars.ui.hudGroup);
@@ -136,9 +122,50 @@ public class NyfalisMain extends Mod{
         });
     }
 
-    public static void sandBoxCheck(){ //for any sandbox maps
+
+    public static void sectorPostTurn(){
+        Seq<String> lostSectors = new Seq<>();
+
+        for (Sector sec : system.sectors) { //Guaranteed lost, if a base is left alone in 3 turns (6 minutes)
+            if(sec.hasBase() && !sec.isBeingPlayed() && !sec.isCaptured()){
+                sec.info.damage = Math.min(sec.info.damage + 0.33f, 1f);
+
+                if(sec.info.damage >= 0.999){
+                    if(sec.info.wave < sec.info.winWave && sec.info.hasCore){
+                        lostSectors.add(sec.name() + "");
+                        Events.fire(new EventType.SectorLoseEvent(sec));
+
+                        sec.info.items.clear();
+                        sec.info.damage = 1f;
+                        sec.info.hasCore = false;
+                        sec.info.production.clear();
+                    }
+                }
+            }
+        }
+        Time.run(0.5f * Time.toSeconds, () -> abandonedSectorsWarning(lostSectors));
+    }
+
+    public static void abandonedSectorsWarning(Seq<String> lostSectors){
+        Log.err(lostSectors.size + " " + lostSectors);
+        if(lostSectors.size == 0) return;
+        if(!shownWarning){
+            shownWarning = true;
+            String list = String.valueOf(lostSectors).replace("[" , "").replace("]" , "");
+            Log.info("(Nyfalis) " + list + " was lost from being left alone for too long!");
+            Call.sendChatMessage(Core.bundle.format("nyfalis-sector.warning", list));
+        }
+        lostSectors.clear();
+    }
+
+    public static void sandBoxCheck(){
+        sandBoxCheck(true);
+    }
+
+    public static void sandBoxCheck(Boolean auto){
+        if(!state.isPlaying()) return;
         if(net.client())return;
-        if(!Core.settings.getBool("nyfalis-auto-ban")) return;
+        if(!Core.settings.getBool("nyfalis-auto-ban") && auto) return;
         boolean changed = false, anyPlanet = false;
         int prevEnv = state.rules.env;
         if(state.isCampaign()){ Planet sector = state.getSector().planet;
