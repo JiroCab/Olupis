@@ -1212,7 +1212,7 @@ public class NyfalisBlocks {
             liquidOutputDirections = new int[]{4};
             hasLiquids = outputsLiquid = rotate = quickRotate = true;
             liquidOutputs = LiquidStack.with(Liquids.slag, 5f / 60f);
-            requirements(Category.crafting, with(iron, 25, lead, 25));
+            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
         bioMatterPress = new GenericCrafter("biomatter-press"){{
@@ -1986,9 +1986,9 @@ public class NyfalisBlocks {
             alwaysUnlocked = isFirstTier = true;
             size = 2;
             itemCapacity = 1500;
-            health = coreBaseHp * 3;
-            buildCostMultiplier = 0.5f;
             unitCapModifier  = 8;
+            health = coreBaseHp * 3;
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
 
             unitType = gnat;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300));
@@ -1997,8 +1997,8 @@ public class NyfalisBlocks {
         coreVestige = new PropellerCoreBlock("core-vestige"){{
             size = 3;
             itemCapacity = 3000;
-            buildCostMultiplier = 0.5f;
             health = Math.round(coreBaseHp * 3.5f);
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
             unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap));
             researchCost = with(lead, 13500, rustyIron, 13500, iron, 13500);
 
@@ -2011,10 +2011,9 @@ public class NyfalisBlocks {
             reload = 80f;
             itemCapacity = 4500;
             shootX = shootY = 0f;
-            buildCostMultiplier = 0.5f;
             range = 20f * Vars.tilesize;
-            researchCostMultiplier = 0.5f;
             health = Math.round(coreBaseHp * 5f);
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
             unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap * 2));
 
             unitType = phorid;
@@ -2044,10 +2043,9 @@ public class NyfalisBlocks {
             reload = 55f;
             itemCapacity = 6000;
             shootX = shootY = 0f;
-            buildCostMultiplier = 0.5f;
             range = 25f * Vars.tilesize;
-            researchCostMultiplier = 0.5f;
             health = Math.round(coreBaseHp * 6.5f);
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
             unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap) * 3);
 
             unitType = phorid;
@@ -2074,10 +2072,9 @@ public class NyfalisBlocks {
             reload = 35f;
             itemCapacity = 7500;
             shootX = shootY = 0f;
-            buildCostMultiplier = 0.5f;
             range = 35 * Vars.tilesize;
-            researchCostMultiplier = 0.5f;
             health = Math.round(coreBaseHp * 8f);
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
             unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap) * 4);
 
             unitType = phorid;
@@ -2126,6 +2123,7 @@ public class NyfalisBlocks {
             radius = 140f;
             requirements(Category.effect, BuildVisibility.editorOnly, with());
         }};
+
         //endregion
         //region Logic
         fortifiedMessageBlock = new MessageBlock("fortified-message-block"){{

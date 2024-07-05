@@ -24,6 +24,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.BuildWeapon;
+import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 import olupis.input.NyfalisUnitCommands;
@@ -563,16 +564,16 @@ public class NyfalisUnits {
            weapons.addAll(
                new SnekWeapon(""){{
                    x = 0f;
-                   y = 13f;
-                   recoil = 1f;
+                   y = 13.5f;
+                   recoil = 0f;
                    shootY = 0f;
                    reload = 11f;
                    shootCone = 45f;
                    weaponSegmentParent = 7;
                    ejectEffect = Fx.none;
                    shootSound = Sounds.none;
-                   top = false;
-                   autoTarget = partialControl = rotate = alternate = mirror = controllable = strictAngle = true;
+                   top = mirror = false;
+                   autoTarget = partialControl = rotate = alternate = controllable = strictAngle = true;
                    bullet = new ExplosionBulletType(35, 10){{
                        trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                        killShooter = collidesAir = false;
@@ -582,7 +583,7 @@ public class NyfalisUnits {
                        fragBullet = new BulletType(){{
                            speed = 3;
                            damage = 0;
-                           lifetime = 1.5f;
+                           lifetime = 1f;
                            knockback = 0.5f;
                            trailEffect = despawnEffect = smokeEffect = shootEffect =  Fx.none;
                            hitEffect =  Fx.hitFlameSmall;
@@ -597,7 +598,7 @@ public class NyfalisUnits {
                            mirror = false;
                            under = true;
                            progress = PartProgress.warmup;
-                           moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
+                           moves.add(new PartMove(PartProgress.reload.sustain(0,10,60), 0, 0, 360f));
                        }}
                    );
                }},
@@ -612,13 +613,13 @@ public class NyfalisUnits {
                     ignoreRotation = dashShoot = dashExclusive = partialControl = true;
                     rotate = alternate = mirror = aiControllable = false;
                     ejectEffect = Fx.casing1;
-                    bullet = new BasicBulletType(5f, 10f){{
-                        width = 7f;
-                        height = 9f;
+                    bullet = new BasicBulletType(2f, 10f){{
+                        width = 8f;
+                        height = 10f;
                         recoil = 10f;
                         shrinkX = 45f /60;
                         shrinkY = 65f /60;
-                        lifetime = 13f;
+                        lifetime = 16f;
                         smokeEffect = Fx.shootSmokeSquare;
                     }};
                 }}
@@ -772,13 +773,12 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
             abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f));
-            weapons.add(new LaserPointerPointDefenceWeapon("point-defense-mount"){{
+            weapons.add(new PointDefenseWeapon("point-defense-mount"){{
                 x = 0;
                 y = -7f;
                 reload = 6f;
                 targetInterval = targetSwitchInterval = 14f;
                 mirror = false;
-                minWarmup = 0.5f;
 
                 bullet = new BulletType(){{
                     shootEffect = Fx.shootSmokeSquare;
@@ -790,6 +790,36 @@ public class NyfalisUnits {
         }};
 
         //lexington -> Carrier a long range PDL w/ warm up & laser pointer
+        lexington = new NyfalisUnitType("lexington"){{
+            armor = 6f;
+            hitSize = 12f;
+            health = 850;
+            speed = 0.75f;
+            itemCapacity = 0;
+            treadPullOffset = 3;
+            rotateSpeed = 3.5f;
+            researchCostMultiplier = 0f;
+
+            rotateMoveFirst = canDeploy = true;
+            constructor = UnitWaterMove::create;
+
+//            abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f));
+            weapons.add(new LaserPointerPointDefenceWeapon("point-defense-mount"){{
+                x = 0;
+                y = -7f;
+                reload = 6f;
+                targetInterval = targetSwitchInterval = 14f;
+                mirror = false;
+                minWarmup = 0.5f;
+
+                bullet = new BulletType(){{
+                    shootEffect = Fx.shootSmokeSquare;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 300f;
+                    damage = 60f;
+                }};
+            }});
+        }};
 
         //T4, a slow gunship carrier (district), flies and can carry ground units /payload
         excess = new LeggedWaterUnit("excess"){{

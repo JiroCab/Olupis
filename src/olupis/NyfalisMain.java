@@ -1,22 +1,28 @@
 package olupis;
 
-import arc.*;
+import arc.Core;
+import arc.Events;
 import arc.struct.Seq;
-import arc.util.*;
-import mindustry.*;
-import mindustry.content.*;
-import mindustry.game.*;
-import mindustry.game.EventType.*;
-import mindustry.gen.*;
-import mindustry.mod.*;
-import mindustry.net.*;
+import arc.util.Log;
+import arc.util.Time;
+import mindustry.Vars;
+import mindustry.content.Blocks;
+import mindustry.content.Planets;
+import mindustry.game.EventType;
+import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.EventType.FileTreeInitEvent;
+import mindustry.game.Team;
+import mindustry.gen.Call;
+import mindustry.gen.Icon;
+import mindustry.mod.Mod;
+import mindustry.net.Net;
 import mindustry.type.*;
-import mindustry.world.*;
+import mindustry.world.Block;
 import olupis.content.*;
 import olupis.input.*;
-import olupis.world.*;
-import olupis.world.entities.packets.*;
-import olupis.world.planets.*;
+import olupis.world.EnvUpdater;
+import olupis.world.entities.packets.NyfalisUnitTimedOutPacket;
+import olupis.world.planets.NyfalisTechTree;
 
 import static mindustry.Vars.*;
 import static olupis.content.NyfalisBlocks.*;
@@ -170,6 +176,10 @@ public class NyfalisMain extends Mod{
         if(state.isCampaign()){ Planet sector = state.getSector().planet;
             if(NyfalisPlanets.isNyfalianPlanet(sector)){
                 changed = true;
+                if(!state.rules.weather.contains(w -> w.weather ==  NyfalisAttributeWeather.cloudShadow)){
+                    state.rules.weather.add(new Weather.WeatherEntry(NyfalisAttributeWeather.cloudShadow));
+                    Log.info("(Nyfalis) Cloud shadows weather added!");
+                }
             }
         }
         if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun){

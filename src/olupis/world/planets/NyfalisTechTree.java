@@ -235,7 +235,7 @@ public class NyfalisTechTree {
                                 node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
 
                                 });
-                                node(broiler, Seq.with(new Objectives.Research(graphite)),()->{
+                                node(broiler, Seq.with(new Objectives.Research(graphite), new Objectives.Research(siliconArcSmelter)),()->{
 
                                 });
 

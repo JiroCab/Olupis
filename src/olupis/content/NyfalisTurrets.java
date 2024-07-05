@@ -328,8 +328,8 @@ public class NyfalisTurrets {
             drawer = new DrawTurret("iron-");
             shoot = new ShootSpread(3, 15);
             smokeEffect = Fx.shootSmokeSquareSparse;
-            researchCost = with(lead, 1000, iron, 850, graphite, 850);
-            requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20));
+            researchCost = with(lead, 1000, iron, 850, graphite, 850, copper, 1000);
+            requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20, copper, 30));
             coolant = consume(new ConsumeLubricant(15f / 60f));
             ammo(
                 rustyIron, new RollBulletType(3.5f, 38){{

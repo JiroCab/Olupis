@@ -2,6 +2,7 @@ package olupis.world.entities.units;
 
 import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
 import mindustry.entities.part.DrawPart;
@@ -14,6 +15,7 @@ import mindustry.type.weapons.PointDefenseWeapon;
 import static mindustry.Vars.state;
 
 public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
+   public float aoe = -1;
 
     public LaserPointerPointDefenceWeapon(String name){
         super(name);
@@ -60,7 +62,9 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
 
 
         if(mount.target != null){
-            Drawf.line(unit.type.cellColor(unit), wx, wy, mount.target.x(), mount.target.y() );
+            Lines.stroke(3f);
+            Draw.color(unit.type.cellColor(unit), unit.type.cellColor(unit).a);
+            Lines.line(wx, wy, mount.target.x(), mount.target.y());
         }
 
         if(region.found()) Draw.rect(region, wx, wy, weaponRotation);
@@ -108,6 +112,7 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
         }else{
             target.remove();
         }
+
 
         //beamEffect.at(shootX, shootY, rotation, color, new Vec2().set(target));
         bullet.shootEffect.at(shootX, shootY, rotation, color);
