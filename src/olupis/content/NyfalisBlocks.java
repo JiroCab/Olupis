@@ -1,60 +1,52 @@
 package olupis.content;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Lines;
-import arc.math.Mathf;
-import arc.math.geom.Vec2;
-import arc.struct.EnumSet;
-import arc.struct.ObjectSet;
-import mindustry.Vars;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
+import mindustry.*;
 import mindustry.content.*;
-import mindustry.entities.Effect;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.part.RegionPart;
-import mindustry.gen.Sounds;
+import mindustry.entities.effect.*;
+import mindustry.entities.part.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.world.Block;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.legacy.LegacyBlock;
+import mindustry.world.blocks.legacy.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.payloads.PayloadConveyor;
-import mindustry.world.blocks.payloads.PayloadRouter;
-import mindustry.world.blocks.power.Battery;
-import mindustry.world.blocks.power.ConsumeGenerator;
+import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.storage.StorageBlock;
-import mindustry.world.consumers.ConsumePower;
+import mindustry.world.blocks.storage.*;
+import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import olupis.input.NyfalisShaders;
+import olupis.input.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
-import olupis.world.blocks.environment.RotatingFloor;
-import olupis.world.blocks.environment.StaticWallTree;
+import olupis.world.blocks.environment.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
-import olupis.world.consumer.ConsumeLubricant;
-import olupis.world.entities.bullets.HealOnlyBulletType;
-import olupis.world.entities.bullets.SpawnHelperBulletType;
-import olupis.world.entities.pattern.ShootAlternateAlt;
-import olupis.world.environment.GrowingWall;
-import olupis.world.environment.SpreadingFloor;
-import olupis.world.environment.SpreadingOre;
+import olupis.world.consumer.*;
+import olupis.world.entities.bullets.*;
+import olupis.world.entities.pattern.*;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.stroke;
-import static mindustry.Vars.tilesize;
+import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.*;
+import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
-import static mindustry.content.Liquids.oil;
-import static mindustry.type.ItemStack.with;
+import static mindustry.content.Liquids.*;
+import static mindustry.type.ItemStack.*;
 import static olupis.content.NyfalisAttributeWeather.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
@@ -620,12 +612,15 @@ public class NyfalisBlocks {
         /* Note: The last stage of anything from the spreading types should go FIRST,
         last stage -> middle stage -> first stage, otherwise stuff WILL break */
 
+        // TODO: Add Fx (spreadEffect [floors, ores], upgradeEffect [floors], growEffect [walls])
         growingWall = new GrowingWall("walltest", 0){{
-            growTries = 3;
-            growChance = 0.24d;
+            growTries = 11;
+            growChance = 0.04d;
             next = mossiestStoneWall;
         }};
-        theircelium = new Floor("moss", 3);
+        theircelium = new Floor("moss", 3){{
+            mapColor = Color.valueOf("#1e2f0a");
+        }};
         mossyCopper = new SpreadingOre("moss-ore-copper", theircelium){{
             variants = 3;
         }};
@@ -650,24 +645,30 @@ public class NyfalisBlocks {
         ourcelium = new SpreadingFloor("mossiest-overlay", 3){{
             // this doesn't spread, but growth is affected by these settings too
             overlay = true;
-            spreadTries = 3;
-            spreadChance = 0.075d;
+            spreadTries = 6;
+            spreadChance = 0.0095d;
 
             next = theircelium;
+
+            mapColor = Color.valueOf("#3c5e14");
+            spreadSound = NyfalisSounds.mossSpread;
         }};
         yourcelium = new SpreadingFloor("mossier-overlay", 3){{
             // this doesn't spread, but growth is affected by these settings too
             overlay = true;
-            spreadTries = 2;
-            spreadChance = 0.18d;
+            spreadTries = 4;
+            spreadChance = 0.013d;
 
             next = ourcelium;
+
+            mapColor = Color.valueOf("#5a8d1d");
+            spreadSound = NyfalisSounds.mossSpread;
         }};
         mycelium = new SpreadingFloor("mossy-overlay", 3){{
             growSpread = true;
             overlay = true;
-            spreadTries = 1;
-            spreadChance = 0.35d;
+            spreadTries = 3;
+            spreadChance = 0.021d;
             drillEfficiency = 0.66f;
 
             replacements.putAll(
@@ -683,6 +684,9 @@ public class NyfalisBlocks {
             blacklist.add(theircelium);
 
             next = yourcelium;
+
+            mapColor = Color.valueOf("#78bc27");
+            spreadSound = NyfalisSounds.mossSpread;
         }};
 
         //endregion
@@ -858,7 +862,7 @@ public class NyfalisBlocks {
 
             envEnabled ^= Env.space;
             consumePower(50f/60f);
-            consumeLiquid(steam, 0.05f);
+            consumeLiquid(NyfalisItemsLiquid.steam, 0.05f);
             researchCost = with(iron, 300, lead, 700);
             consumeLiquid(Liquids.slag, 0.06f).boost();
             requirements(Category.production, with( iron, 40, lead, 20));
@@ -871,7 +875,7 @@ public class NyfalisBlocks {
             liquidBoostIntensity = 1.7f;
 
             envEnabled ^= Env.space;
-            consumeLiquid(steam, 0.1f);
+            consumeLiquid(NyfalisItemsLiquid.steam, 0.1f);
             consumePower(30f/60f);
             consumeLiquid(Liquids.slag, 0.1f).boost();
             researchCost = with(iron, 1000, graphite, 1000, silicon, 500);
@@ -1036,13 +1040,13 @@ public class NyfalisBlocks {
             consumePower(1f);
             consumeLiquid(Liquids.water, 20/60f);
             researchCost = with(rustyIron, 50, lead, 50, copper, 50);
-            outputLiquid = new LiquidStack(steam, 12/60f);
+            outputLiquid = new LiquidStack(NyfalisItemsLiquid.steam, 12/60f);
             requirements(Category.liquid, with(rustyIron, 10, lead, 10, copper, 10));
 
             drawer = new DrawMulti(
                 new DrawDefault(),
                 new DrawLiquidTile(Liquids.water),
-                new DrawLiquidTile(steam),
+                new DrawLiquidTile(NyfalisItemsLiquid.steam),
                 new DrawRegion("-mid"),
                 new DrawFlame()
             );
@@ -1063,7 +1067,7 @@ public class NyfalisBlocks {
             attribute = Attribute.steam;
 
             researchCost = with(lead, 750, rustyIron, 750, copper, 750);
-            outputLiquid = new LiquidStack(steam, 15/60f);
+            outputLiquid = new LiquidStack(NyfalisItemsLiquid.steam, 15/60f);
             requirements(Category.production, with(rustyIron, 30, lead, 30, copper, 30));
 
         }};
@@ -1163,7 +1167,7 @@ public class NyfalisBlocks {
             researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             outputItem = new ItemStack(Items.graphite, 1);
             requirements(Category.crafting, with(iron, 10, lead, 50, rustyIron, 40));
-            consumeLiquids(LiquidStack.with(Liquids.oil, 10f / 60f, steam, 10f/60f));
+            consumeLiquids(LiquidStack.with(Liquids.oil, 10f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
         }};
 
         siliconKiln = new GenericCrafter("silicon-kiln"){{
@@ -1746,7 +1750,7 @@ public class NyfalisBlocks {
             size = 6;
             powerProduction = 145f/60f;
 
-            consumeLiquid(steam, 24f/60f);
+            consumeLiquid(NyfalisItemsLiquid.steam, 24f/60f);
             consumeLiquid(oil, 20f / 60f).boost();
             requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
         }};

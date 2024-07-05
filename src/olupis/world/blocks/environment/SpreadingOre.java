@@ -1,14 +1,16 @@
-package olupis.world.environment;
+package olupis.world.blocks.environment;
 
 import arc.*;
+import arc.audio.Sound;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.entities.Effect;
+import mindustry.gen.Sounds;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.meta.*;
 
 public class SpreadingOre extends OreBlock{
     public int spreadTries;
@@ -18,6 +20,8 @@ public class SpreadingOre extends OreBlock{
     public ObjectSet<Block> blacklist = new ObjectSet<>();
     public SpreadingFloor parent;
     public float drillEfficiency;
+    public Sound spreadSound;
+    public Effect spreadEffect;
     /** A floor this ore needs to have around in order to start growing, as well as the one it places under itself when it's done growing */
     public Block baseFloor = Blocks.air;
     /** How many variants of overlay this ore has, not required if the ore already has a dedicated sprite */
@@ -28,7 +32,7 @@ public class SpreadingOre extends OreBlock{
 
     public SpreadingOre(String name, Block block){
         super(name);
-        baseFloor = block; // <- here
+        baseFloor = block;
     }
     // TODO: Make this autogenerate ores in hjson if they do not exist already, use replaced renedering for drawing the additional overlays, copy stats from the floor that can replace the ore
     // This will be used to provide compatibility with other mods without the need for those mods to add the ore themselves

@@ -26,8 +26,9 @@ public class NyfalisSounds {
             space = new Sound(),
             space2 = new Sound(),
             rainbow1 = new Sound(),
-            rainbow2 = new Sound()
+            rainbow2 = new Sound(),
 
+            mossSpread = new Sound();
     ;
     public static Seq<Sound> spaces;
 
@@ -43,6 +44,7 @@ public class NyfalisSounds {
         rainbow2 = tree.loadSound("rainbow-stat-music2");
         space = tree.loadSound("space");
         space2 = tree.loadSound("space2");
+        mossSpread = tree.loadSound("moss-spread");
 
         spaces = Seq.with(space, space2);
     }
