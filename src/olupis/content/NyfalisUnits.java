@@ -226,6 +226,8 @@ public class NyfalisUnits {
                 }};
             }});
         }};
+
+        // falcon -> btd6 druid top path ball of lightning
         //endregion
         //region Air - Bats
         pteropus = new NyfalisUnitType("pteropus"){{
@@ -404,10 +406,10 @@ public class NyfalisUnits {
             );
         }};
 
+        //nyctalus -> deployed = fires a swarm of long range small missles (10) | air = short-medium range  shell that burst into mini swarm of missles (4)
 
         pteropusAir = new BatHelperUnitType(pteropus);
         acerodonAir = new BatHelperUnitType(acerodon);
-        //nyctalus -> deployed = fires a swarm of long range small missles (10) | air = short-medium range  shell that burst into mini swarm of missles (4)
         //endregion
         //region Air - Area / from naval
         zoner = new NyfalisUnitType("zoner"){{
@@ -808,14 +810,14 @@ public class NyfalisUnits {
                 x = 0;
                 y = -7f;
                 reload = 6f;
-                targetInterval = targetSwitchInterval = 14f;
+                targetInterval = targetSwitchInterval = 12f;
                 mirror = false;
-                minWarmup = 0.5f;
+                minWarmup = 0.8f;
 
                 bullet = new BulletType(){{
                     shootEffect = Fx.shootSmokeSquare;
                     hitEffect = Fx.pointHit;
-                    maxRange = 300f;
+                    maxRange = 320f;
                     damage = 60f;
                 }};
             }});

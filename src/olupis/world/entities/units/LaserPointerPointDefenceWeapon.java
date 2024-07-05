@@ -7,15 +7,19 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import mindustry.entities.part.DrawPart;
 import mindustry.entities.units.WeaponMount;
-import mindustry.gen.Bullet;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
 import mindustry.type.weapons.PointDefenseWeapon;
+import olupis.content.NyfalisFxs;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
-   public float aoe = -1;
+    public float aoe = 50,
+                     laserSize = 2f,
+                     laserAlpha = 0.5f
+    ;
 
     public LaserPointerPointDefenceWeapon(String name){
         super(name);
@@ -62,9 +66,11 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
 
 
         if(mount.target != null){
-            Lines.stroke(3f);
-            Draw.color(unit.type.cellColor(unit), unit.type.cellColor(unit).a);
+            Lines.stroke(laserSize);
+            Draw.color(unit.type.cellColor(unit), laserAlpha);
             Lines.line(wx, wy, mount.target.x(), mount.target.y());
+            Lines.circle(mount.target.x(), mount.target.y(), aoe);
+            Draw.color();
         }
 
         if(region.found()) Draw.rect(region, wx, wy, weaponRotation);
@@ -109,8 +115,26 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
         float bulletDamage = bullet.damage * unit.damageMultiplier() * state.rules.unitDamage(unit.team);
         if(target.damage() > bulletDamage){
             target.damage(target.damage() - bulletDamage);
+            target.damage(target.damage() + bulletDamage);
         }else{
             target.remove();
+        }
+
+        if(aoe >= 0){
+            Groups.bullet.intersect(target.x, target.y, aoe * tilesize, aoe * tilesize, s -> {
+                if(s == target) return;
+                if(s.team != unit.team && s.type().hittable){
+                    if(target.damage() > bulletDamage){
+                        s.damage(s.damage() - bulletDamage);
+                    }else{
+                        s.remove();
+                    }
+
+                    NyfalisFxs.hitEmpSpark.at(target.x, target.y, Pal.redSpark); //TODO dedicate a fx here
+                }
+            });
+
+
         }
 
 
