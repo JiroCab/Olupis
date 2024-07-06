@@ -107,16 +107,10 @@ public class PropellerCoreBlock extends CoreBlock {
         float length = 1- (thrusterLength * (frame - 1f) - 1f/4f);
 
         for(int i = 0; i < 4; i++){
-            float rot =  (i * 90 + 45) + rotation % 90f;
-            Tmp.v1.trns(rot, length * Draw.xscl);
+            float rot =  (i * 90) + rotation % 90f;
+            Tmp.v1.trns(rot, (offset + length) * Draw.xscl);
 
-            Draw.alpha(1f);
-            float yf = i == 0 || i == 2 ? offset * -1: offset,
-                    xf = i == 2 || i == 3 ? offset* -1: offset,
-                    rx =  (float)Math.cos(Math.PI * 2f * rotation/360f), ry  = (float) Math.sin(Math.PI * 2 * rotation/360);
-            if(i == 2 || i == 3)  Tmp.v1.rotate(-90f);
-//            Log.err((Math.max(rotateSpeed, scl * 2 ) *  Time.time) + "");
-            Drawf.spinSprite(blur,  x +( rx +xf * scl) + Tmp.v1.x, y + (ry + yf * scl) + Tmp.v1.x, Math.max(rotateSpeed, scl * 2 ) *  Time.time);
+            Drawf.spinSprite(blur,  x + Tmp.v1.x, y+ Tmp.v1.y, Math.max(rotateSpeed, scl * 2 ) *  Time.time);
         }
 
 
@@ -132,11 +126,11 @@ public class PropellerCoreBlock extends CoreBlock {
                     if(Mathf.chance(0.65f)){
                         float rotation = Interp.pow2In.apply(renderer.getLandTime() / coreLandDuration ) * 540f;
                         /*  -45 so it doesn't end at the corner and align with the propellers*/
-                        Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx(), t.worldy()) + rotation - 45, Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
+                        Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx() + Mathf.range(0.05f), t.worldy() + Mathf.range(0.25f)) + rotation - 45, Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
                     }
                 });
 
-                renderer.setLandPTimer(0f);
+                super.updateLandParticles();
             }
         }
     }
