@@ -5,8 +5,10 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.scene.ui.layout.Scl;
-import arc.util.*;
+import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -68,7 +70,7 @@ public class PropellerCoreBlock extends CoreBlock {
 
         Draw.color();
 
-        drawProbs(x, y, rotation, thrusterFrame, scl);
+        drawProps(x, y, rotation, thrusterFrame, scl);
         Draw.scl();
         Draw.reset();
     }
@@ -101,7 +103,8 @@ public class PropellerCoreBlock extends CoreBlock {
         Draw.alpha(1f);
     }
 
-    protected void drawProbs(float x, float y, float rotation, float frame, float scl){
+
+    protected void drawProps(float x, float y, float rotation, float frame, float scl){
         if(!blur.found()) return;
         /*Renders spinny propellers in flight*/
         float length = 1- (thrusterLength * (frame - 1f) - 1f/4f);
@@ -120,11 +123,11 @@ public class PropellerCoreBlock extends CoreBlock {
     public class PropellerCoreBuild extends CoreBuild {
 
         @Override
-        public void updateLandParticles(){
-            if(renderer.getLandTime() >= 1f){
+        public void updateLandParticles() {
+            if (renderer.getLandTime() >= 1f) {
                 tile.getLinkedTiles(t -> {
-                    if(Mathf.chance(0.65f)){
-                        float rotation = Interp.pow2In.apply(renderer.getLandTime() / coreLandDuration ) * 540f;
+                    if (Mathf.chance(0.65f)) {
+                        float rotation = Interp.pow2In.apply(renderer.getLandTime() / coreLandDuration) * 540f;
                         /*  -45 so it doesn't end at the corner and align with the propellers*/
                         Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx() + Mathf.range(0.05f), t.worldy() + Mathf.range(0.25f)) + rotation - 45, Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
                     }
@@ -133,6 +136,15 @@ public class PropellerCoreBlock extends CoreBlock {
                 super.updateLandParticles();
             }
         }
-    }
 
+        @Override
+        public void drawThrusters(float frame) {
+            float length = thrusterLength * (frame - 1f) - 1f / 8f;
+            for (int i = 0; i < 4; i++) {
+                var reg = i >= 2 ? thruster2 : thruster1;
+                float dx = Geometry.d4x[i] * length, dy = Geometry.d4y[i] * length;
+                Draw.rect(reg, x + dx, y + dy, i * 90);
+            }
+        }
+    }
 }

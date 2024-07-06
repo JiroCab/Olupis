@@ -12,7 +12,7 @@ Last updated on 17/06/2024 (+8utc) by Jirocab/RushieWashie
     + Added: Buttons to clear Nyfalis Sectors and research data
     + Added: Disclaimer system that warns the player if their sectors are outdated
     + Added: Toggleable weather effect for cloud shadows (still needs to be manually added as a weather)
-    + Seredis is now flushed out in sectors!
+    + Seredis is now flushed out in sectors! (non numbered)
     ~ Balance: Reduced Rusted Junction to better scale with other blocks
     ~ Balance: Core health scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp, active units now scale to core teir
     ~ Balance: Relic & Vestige Weapon types swapped, stats unchanged
@@ -31,6 +31,8 @@ Last updated on 17/06/2024 (+8utc) by Jirocab/RushieWashie
     ~ Improved: Stats and general core database changes
     ~ Improved: Broiler now gets
     ~ Improved: Increased `space` variety slightly
+    ~ Improved: Number Sectors now have Nyfalis Waves
+    ~ Improved: Cores now better Launching/Landing Sprite
     ~ Sprites: Recoloured blocks to have new iron pallet
     ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item), quartz (ore), lubricant (liquid), aegis, scrab, scarabRadar, avenger, deliveryCannon, strata, slash, laceration, corupt (effect), glitch (effect), drained (effect), malfuct (effect), unloaded (effect), boomPuffPassive, boomPuffActive
     ~ Sprites Contributed by Ethanol10: acerodon, germanica, essex, serpent, avenger
@@ -38,6 +40,7 @@ Last updated on 17/06/2024 (+8utc) by Jirocab/RushieWashie
     ~ Sprites Contributed by Lixie: spirit: rustyIron (item), rustedBridge, rustyConveyor, ironDistributor, ironJunction, ironRouter, steamBoiler, pipeCanister, ironSieve, ironOverflow, ironUnderflow, rustyWall, rustyWallLarge, rustyWallHuge, rustyDrill, oreIron, windMill, wireBridge, wire
     ~ Sprites Contributed by TwCash: arialConstruct, groundConstruct, navalConstruct, construct, cobalt (item), cobaltite (item), dirium (item), duralumin (item), plasteel (item), quartz (item), siliconCarbide (item), pteropus
     ~ Sprites Contributed by ItsKirby69: bush, deadTree, olupisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall, mossyBoulder, bush, deadMossTree, mossyVent, mossyWater, mossyWaterDeep, mossStone, mossBoulder,
+    ~ Sprites Contributed by RushieWashie: coreRelic, coreVestige
     ~ Functionally Contributed by Wmf: Mycelium Spread
     ~ Functionally Contributed by Otamamori: Shroom Spread, starta's mine placing
     -- Music removed from content mod - https://github.com/JiroCab/Nyfalis-Music

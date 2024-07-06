@@ -1996,6 +1996,7 @@ public class NyfalisBlocks {
 
         coreVestige = new PropellerCoreBlock("core-vestige"){{
             size = 3;
+            offset = 17.5f;
             itemCapacity = 3000;
             health = Math.round(coreBaseHp * 3.5f);
             buildCostMultiplier = researchCostMultiplier = 0.5f;
@@ -2008,6 +2009,7 @@ public class NyfalisBlocks {
 
         coreRelic = new PropellerCoreTurret("core-relic"){{
             size = 4;
+            offset = 25f;
             reload = 80f;
             itemCapacity = 4500;
             shootX = shootY = 0f;

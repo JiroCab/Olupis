@@ -1649,8 +1649,9 @@ public class NyfalisUnits {
 
             weapons.add(
                 new NyfalisWeapon() {{
+                    shootY = 2;
                     reload = 60*10;
-                    x = y = shootX = shootY = 0;
+                    x = y = shootX = 0;
                     shootStatus = StatusEffects.unmoving;
                     shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
                     /*3 bullets deep, just so everything shoot at the same time, as being separate weapons causes early/late shooting*/

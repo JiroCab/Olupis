@@ -317,6 +317,7 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
                     updateShooting();
                 }
             }
+            super.updateTile();
         }
 
         public void targetPosition(Posc pos) {
