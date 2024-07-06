@@ -87,10 +87,10 @@ public class NyfalisTechTree {
                 node(spirit, Seq.with(
                     new  Objectives.Research(construct)
                 ), () ->{
-                    node(phantom,  Seq.with(
+                    node(banshee,  Seq.with(
                             new  Objectives.Produce(quartz)
                     ), () ->{
-                        node(banshee, Seq.with(
+                        node(phantom, Seq.with(
                                 new  Objectives.Produce(graphite)
                         ), () -> {
                             node(revenant, Seq.with(
@@ -166,7 +166,7 @@ public class NyfalisTechTree {
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
                         node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder), new Objectives.SectorComplete(sanctuary)), () -> {
-                            node(garden, Seq.with(new Objectives.Research(dyingForest)),()->{
+                            node(garden, Seq.with(new Objectives.SectorComplete(dyingForest)),()->{
                                 node(bioMatterPress, () ->{
 
                                 });
@@ -180,7 +180,7 @@ public class NyfalisTechTree {
                                     });
                                 });
                             });
-                            node(inductionSmelter, () -> {
+                            node(inductionSmelter, Seq.with(new Objectives.Research(alcoAlloy)), () -> {
                                 node(rustEngraver, () ->{
 
                                 });
@@ -233,6 +233,9 @@ public class NyfalisTechTree {
                                     Seq.with(new Objectives.OnSector(mossyCaverns)),
                             ()->{
                                 node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
+
+                                });
+                                node(demulsifier, Seq.with(new Objectives.OnSector(dyingForest), new Objectives.Produce(emulsiveSlop)),()->{
 
                                 });
                                 node(broiler, Seq.with(new Objectives.Research(graphite), new Objectives.Research(siliconArcSmelter)),()->{
@@ -308,7 +311,19 @@ public class NyfalisTechTree {
                 node(corroder, Seq.with(new Objectives.Research(rustyPump)), ()-> {
                     node(avenger, () -> {
                         node(aegis, ()->{
+                            node(cascade, ()->{
+                                node(strata, ()->{
+                                    node(mossMine, ()->{
+                                        node(heavyMine, ()->{
+                                            node(fragMine, ()->{
+                                                node(glitchMine, ()->{
 
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
                         });
                     });
                     node(slash, ()->{
@@ -343,21 +358,14 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(construct, Seq.with(new Objectives.Research(ironRouter), new Objectives.SectorComplete(dyingForest)), ()->{
+                node(construct, Seq.with(new Objectives.Research(ironRouter), new Objectives.OnSector(dyingForest)), ()->{
                     node(groundConstruct,
-                        Seq.with(new Objectives.Research(silicon))
+                        Seq.with(new Objectives.Research(iron))
                     , () ->{
-                        node(arialConstruct, () ->{
+                        node(arialConstruct, Seq.with(new Objectives.SectorComplete(dyingForest)), () ->{
                             node(navalConstruct, () ->{
-                                node(alternateArticulator, () ->{
 
-                                });
                             });
-                        });
-                    });
-                    node(unitReplicator, ()->{
-                        node(unitReplicatorSmall, ()->{
-
                         });
                     });
                     node(fortifiePayloadConveyor, () -> {
@@ -365,19 +373,28 @@ public class NyfalisTechTree {
 
                         });
                     });
-                    node(alternateArticulator,  Seq.with(
-                            new  Objectives.SectorComplete(abandonedPayloadTerminal)
-                    ), () -> {
+                    node(repairPin, () -> {
+                        node(alternateArticulator,  Seq.with(
+                                new  Objectives.SectorComplete(abandonedPayloadTerminal)
+                        ), () -> {
 
+                        });
+                    });
+
+                    node(unitReplicator, ()->{
+                        node(unitReplicatorSmall, ()->{
+
+                        });
                     });
                 });
 
                 node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{
                     node(mechanicalProcessor, () -> {
                         node(mechanicalSwitch, () -> {
-                            node(mechanicalRegistry, ()->{
 
-                            });
+                        });
+                        node(mechanicalRegistry, ()->{
+
                         });
                     });
                 });
@@ -392,8 +409,8 @@ public class NyfalisTechTree {
                         });
                     });
                     nodeProduce(iron, () ->{
-                        node(alcoAlloy, ()->{
-                            node(aluminum, () -> {
+                        nodeProduce(alcoAlloy, ()->{
+                            nodeProduce(aluminum, () -> {
 
                             });
                             nodeProduce(cobalt, ()->{
@@ -408,8 +425,11 @@ public class NyfalisTechTree {
                         nodeProduce(steam, () ->{
 
                         });
-                        nodeProduce(Liquids.oil,()->{
-                            nodeProduce(graphite, ()->{
+                        nodeProduce(emulsiveSlop, () ->{
+                            nodeProduce(Liquids.oil,()->{
+                                nodeProduce(graphite, ()->{
+
+                                });
                                 nodeProduce(silicon, ()->{
 
                                 });

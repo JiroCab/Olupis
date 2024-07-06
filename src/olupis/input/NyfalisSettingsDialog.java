@@ -156,8 +156,6 @@ public class NyfalisSettingsDialog {
             table.button("@setting.nyfalis-data-category", Icon.trash, Styles.togglet, () ->{
                 showData[0] = !showData[0];
                 if(Core.input.keyDown(Binding.boost) && Core.input.keyDown(KeyCode.altLeft)) showData[1] = !showData[1];
-
-
             }).margin(14f).padLeft(5f).padRight(5f).growX().height(60f).checked(a -> showData[0]).pad(5f).center().row();
             table.collapser(t -> {
                 Table subTable = new Table();
@@ -181,14 +179,14 @@ public class NyfalisSettingsDialog {
                 subTable.button("@setting.nyfalis-resetresearch.name", Icon.trash, () -> {
                     ui.showConfirm("@confirm", "@setting.nyfalis-resetresearch.confirm", () -> {
                         content.each(c -> {
-                            for(Planet planet : NyfalisPlanets.planetList ){
-                                planet.techTree.reset();
-                                planet.techTree.each(TechTree.TechNode::reset);
-                            }
                             if(c instanceof UnlockableContent u && u.name.contains("olupis-")){
                                 u.clearUnlock();
                             }
                         });
+                        for(Planet planet : NyfalisPlanets.planetList ){
+                            planet.techTree.reset();
+                            planet.techTree.each(TechTree.TechNode::reset);
+                        }
                     });
                 }).margin(14).width(260f).pad(6);
                 t.add(subTable);
@@ -210,6 +208,11 @@ public class NyfalisSettingsDialog {
                 t.add(subTable);
 
             }, true, () -> showData[1]).growX().center().row();
+            if((mobile || testMobile) && Core.settings.getBool("nyfalis-debug")){
+                table.row();
+                table.button("extra", () -> showData[1] = !showData[1]).margin(14).width(260f).pad(6);
+                table.row();
+            }
         }
 
         public void addDisclaimerButton(SettingsMenuDialog.SettingsTable table){

@@ -179,6 +179,7 @@ public class NyfalisMain extends Mod{
                 if(!state.rules.weather.contains(w -> w.weather ==  NyfalisAttributeWeather.cloudShadow)){
                     state.rules.weather.add(new Weather.WeatherEntry(NyfalisAttributeWeather.cloudShadow));
                     Log.info("(Nyfalis) Cloud shadows weather added!");
+
                 }
             }
         }
