@@ -385,7 +385,7 @@ public class NyfalisBlocks {
             lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
-        algaeWater = new Floor("algaewater-shallow"){{
+        algaeWater = new Floor("mossy-water"){{
             isLiquid = supportsOverlay = true;
 
             variants = 3;
@@ -397,7 +397,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
-        algaeWaterDeep = new Floor("algaewater-deep"){{ //Remind rushie to update the bundles thx -past rushie
+        algaeWaterDeep = new Floor("mossy-water-deep"){{ //Remind rushie to update the bundles thx -past rushie
             variants = 3;
             albedo = 0.9f;
             drownTime = 200f;
