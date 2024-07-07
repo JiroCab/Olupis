@@ -388,7 +388,7 @@ public class NyfalisBlocks {
         algaeWater = new Floor("algaewater-shallow"){{
             isLiquid = supportsOverlay = true;
 
-            variants = 0;
+            variants = 3;
             albedo = 0.9f;
             statusDuration = 50f;
             speedMultiplier = 0.8f;
