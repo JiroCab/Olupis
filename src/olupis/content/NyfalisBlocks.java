@@ -61,7 +61,7 @@ public class NyfalisBlocks {
         glowSprouts, lumaSprouts, redCorals, blueCorals, greenCorals, kelp,
 
         /*Floors*/
-        redSand, lumaGrass, yellowGrass, pinkGrass, mossyDirt,  hardenMud, mossyhardenMud,
+        redSand, riverSand, lumaGrass, yellowGrass, pinkGrass, mossyDirt,  hardenMud, mossyhardenMud,
         frozenGrass, frozenDirt, frozenMud, crackedIce, redSandSnow, snowySand, frozenTar, frozenSlop,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
@@ -179,6 +179,10 @@ public class NyfalisBlocks {
             itemDrop = Items.sand;
             playerUnmineable = true;
             attributes.set(Attribute.oil, 1.5f);
+        }};
+		riverSand = new Floor("river-sand"){{
+            itemDrop = Items.sand;
+            attributes.set(Attribute.oil, 1.2f);
         }};
 
         redSandSnow = new Floor("red-sand-snow"){{
