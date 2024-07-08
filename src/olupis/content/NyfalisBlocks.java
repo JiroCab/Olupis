@@ -67,7 +67,7 @@ public class NyfalisBlocks {
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
 
         /*Liquid floors*/
-        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, mossyWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop,
+        redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop,
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
@@ -385,10 +385,10 @@ public class NyfalisBlocks {
             lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
-        mossyWater = new Floor("mossy-water"){{
+        algaeWater = new Floor("mossy-water"){{
             isLiquid = supportsOverlay = true;
 
-            variants = 0;
+            variants = 3;
             albedo = 0.9f;
             statusDuration = 50f;
             speedMultiplier = 0.8f;
@@ -397,7 +397,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
-        mossyWaterDeep = new Floor("mossy-water-deep"){{ //Remind rushie to update the bundles thx -past rushie
+        algaeWaterDeep = new Floor("mossy-water-deep"){{ //Remind rushie to update the bundles thx -past rushie
             variants = 3;
             albedo = 0.9f;
             drownTime = 200f;

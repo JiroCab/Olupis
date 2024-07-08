@@ -43,7 +43,7 @@ public class NyfalisAttributeWeather {
         deepTaintedWater.attributes.set(hydro, 0.3f);
         darksandTaintedWater.attributes.set(hydro, 0.3f);
 
-        mossyWater.attributes.set(hydro, 0.3f);
+        algaeWater.attributes.set(hydro, 0.3f);
         redSandWater.attributes.set(hydro, 0.3f);
         pinkGrassWater.attributes.set(hydro, 0.3f);
         lumaGrassWater.attributes.set(hydro, 0.3f);

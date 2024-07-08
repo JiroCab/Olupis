@@ -34,10 +34,10 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
     Block[][] arr =
             {
-                    {mossyWater, mossStone, mossiestStone, mossierStone, mossyStone, stone, dirt },
-                    {mossyWater, mossiestStone, mossierStone, mossyStone, stone, grass},
-                    {mossyWater, mossierStone, mossyStone, stone, mossyStone, mossierStone},
-                    {mossyWater, mossierStone, mossyStone, stone, mossyStone, stone},
+                    {algaeWater, mossStone, mossiestStone, mossierStone, mossyStone, stone, dirt },
+                    {algaeWater, mossiestStone, mossierStone, mossyStone, stone, grass},
+                    {algaeWater, mossierStone, mossyStone, stone, mossyStone, mossierStone},
+                    {algaeWater, mossierStone, mossyStone, stone, mossyStone, stone},
                     {Blocks.water, sandWater, sandWater, mossierStone, stone, mossyStone, mossierStone},
                     {Blocks.water, sandWater, sandWater, dirt, mossyStone, dirt, stone, grass },
                     { sandWater, sandWater, dirt, dirt, stone, yellowGrass , grass},
@@ -604,7 +604,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
     public Floor waterCheck(Block floor, boolean deep){
         Floor out;
         if(floor == dirt || floor == hardenMud) out = deep ? Blocks.water.asFloor() : mud.asFloor();
-        else if (floor == moss || floor == mossStone || floor == mossierStone || floor == mossiestStone) out = (deep ? Blocks.water : mossyWater).asFloor();
+        else if (floor == moss || floor == mossStone || floor == mossierStone || floor == mossiestStone) out = (deep ? Blocks.water : algaeWater).asFloor();
         else out = (deep ? Blocks.water : darksandWater).asFloor();
         return out;
     };
