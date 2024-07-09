@@ -26,6 +26,7 @@ Last updated on 17/06/2024 (+8utc) by Jirocab/RushieWashie
     ~ Bug Fix: Liquid Tank and Canister liquid layer are visible in corners
     ~ Bug Fix: Broiler now gets it production boosted with scrap and is functional
     ~ Bug Fix: Constructs not properly using power while making spirits
+    ~ Bug Fix: Bay's front machine gun not changing target leading to lost dps
     ~ Bug Fix: (Foo's) Other buttons such Disclaimer not showing (Thanks buthed for the help!)
     ~ Improved: Gnat and Phorid's attacking visual design to better indicate area of damage
     ~ Improved: Stats and general core database changes

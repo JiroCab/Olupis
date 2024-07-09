@@ -191,6 +191,7 @@ public class NyfalisSettingsDialog {
                 }).margin(14).width(260f).pad(6);
                 t.add(subTable);
             }, true, () -> showData[0]).growX().center().row();
+
             table.collapser(t -> {
                 Table subTable = new Table();
                 subTable.button("sandbox check", () -> {
@@ -205,10 +206,23 @@ public class NyfalisSettingsDialog {
                     Log.info("" + lVer);
                 }).margin(14).width(260f).pad(6);
                 subTable.button("Save Disclaimer", NyfalisStartUpUis::showSaveDisclaimerDialog).margin(14).width(260f).pad(6);
-                t.add(subTable);
+                subTable.row();
+                subTable.button("Repair save", () -> {
+                    if(state.isGame()){
+                        Log.err("fix?");
+                        NyfalisMain.sandBoxCheck(false);
+                        for (Building b : Groups.build) {
+                            if (!b.enabled && b.lastDisabler == null && b.block.supportsEnv(state.rules.env)) {
+                                b.enabled = true;
+                            }
+                        }
+                    }
+                }).tooltip("may not always work").margin(14).width(260f).pad(6);
+                subTable.row();
 
+                t.add(subTable);
             }, true, () -> showData[1]).growX().center().row();
-            if((mobile || testMobile) && Core.settings.getBool("nyfalis-debug")){
+            if(Core.settings.getBool("nyfalis-debug")){
                 table.row();
                 table.button("extra", () -> showData[1] = !showData[1]).margin(14).width(260f).pad(6);
                 table.row();

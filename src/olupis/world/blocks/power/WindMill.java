@@ -15,6 +15,7 @@ public class WindMill extends PowerGenerator {
     //ThermalGenerator but Attribute multiples a base number and doesn't require the attribute tiles
     public Attribute attribute = Attribute.heat;
     public float displayEfficiencyScale = 1f;
+    public float attributeMul = 0.5f;
     public final boolean displayEfficiency = true;
     public final Effect generateEffect = Fx.none;
     public final float effectChance = 0.05f;
@@ -63,7 +64,7 @@ public class WindMill extends PowerGenerator {
 
         @Override
         public void updateTile(){
-            productionEfficiency = sum + attribute.env() + 1f;
+            productionEfficiency = (sum * attributeMul) + attribute.env() + 1f;
             if(boosterMultiplier > 1f){
                 productionEfficiency *= Mathf.lerp(1f, boosterMultiplier, optionalEfficiency);
             }

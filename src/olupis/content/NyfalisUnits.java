@@ -891,6 +891,8 @@ public class NyfalisUnits {
                 shootCone = 30f;
                 rotateSpeed = 10f;
                 rotationLimit = 45f;
+                targetInterval = 10f;
+                targetSwitchInterval = 20f;
                 autoTarget = rotate = partialControl = true;
                 mirror = controllable = false;
                 bullet = new BasicBulletType(2.5f, 10){{
