@@ -236,7 +236,7 @@ public class NyfalisUnits {
             accel = 0.08f;
             health = 250f;
             speed = 2.20f;
-            engineSize = 1.7f;
+            engineSize = -1f;
             rotateSpeed = 19f;
             itemCapacity = 20;
             engineOffset = 7f;
@@ -280,20 +280,21 @@ public class NyfalisUnits {
                     parts.addAll(
                         new RegionPart("olupis-pteropus-weapon"){{
                             mirror = true;
-                            x = 3f;
-			    y = 3.75f;
+                            x = -1.75f;
+                            y = 1.95f;
                             moveX = 1f;
+                            moveY = -0.5f;
                             progress = NyfPartParms.NyfPartProgress.elevationP.inv();
-                            parts.addAll(
-                            );
+                            mixColor = new Color(1f, 1f, 1f, 0f);
+                            mixColorTo = new Color(0f, 0f, 0f, 0.25f); //pops it out from rest of the sprite while landed bc there no outline
                         }},
-                        new RegionPart("olupis-pteropus-weapon"){{
-                            mirror = under = true;
-                            x = -2.3f;
+                        new CellPart("olupis-pteropus-weapon-cell"){{
+                            mirror = true;
+                            x = -1.75f;
+                            y = 1.95f;
                             moveX = 1f;
+                            moveY = -0.5f;
                             progress = NyfPartParms.NyfPartProgress.elevationP.inv();
-                            color = Color.valueOf("00000000");
-                            colorTo = Color.valueOf("000000");
                         }}
                     );
 
@@ -310,6 +311,9 @@ public class NyfalisUnits {
                         sprite = "mine-bullet";
                     }};
                 }}
+            );
+            setEnginesMirror(
+                    new UnitEngine(18 / 4f, -26 / 4f, 2.2f, 315f)
             );
         }};
 
@@ -951,8 +955,8 @@ public class NyfalisUnits {
                         height = 9f;
                         trailSize = 3f;
                         lifetime = 65f;
-                        splashDamage = 3f;
-                        splashDamageRadius = 30f * 0.75f;
+                        splashDamage = 7f;
+                        splashDamageRadius = 2.5f *8f;
                         collidesAir = false;
                         frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
                         backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
@@ -984,7 +988,7 @@ public class NyfalisUnits {
                             moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
                     }}); }
 
-                    bullet = new BasicBulletType(2.5f, 14){{
+                    bullet = new BasicBulletType(2.5f, 8){{
                         width = 5f;
                         height = 6f;
                         lifetime = 78f;
@@ -1126,8 +1130,8 @@ public class NyfalisUnits {
                     lifetime = 30f;
                     ammoMultiplier = 5f;
                     reloadMultiplier = 0.5f;
-                    splashDamage = 22f * 1.5f;
-                    splashDamageRadius = 18f;
+                    splashDamage = 20f * 1.5f;
+                    splashDamageRadius = 4f * 8f;
                     buildingDamageMultiplier = 0f;
                     collidesGround = true;
                     shootEffect = Fx.shootSmall;
@@ -1406,7 +1410,7 @@ public class NyfalisUnits {
             aiController = BuilderAI::new;
             defaultCommand = UnitCommand.rebuildCommand;
             setEnginesMirror(new UnitEngine(8 / 4f, -21 / 4f, 2.1f, 245));
-            isEnemy = ammoDepletesOverTime = depleteOnInteraction = false;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive =  targetAir = targetGround = singleTarget  = drawAmmo  = true;
         }};
 
