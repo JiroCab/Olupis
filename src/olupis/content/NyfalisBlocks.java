@@ -1068,8 +1068,14 @@ public class NyfalisBlocks {
             liquidCapacity = 30f;
             minEfficiency = 9f - 0.0001f;
             envEnabled = Env.any;
+            updateEffect = Fx.steam;
             attribute = Attribute.steam;
 
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NyfalisItemsLiquid.steam, 1f),
+                    new DrawDefault()
+            );
             researchCost = with(lead, 750, rustyIron, 750, copper, 750);
             outputLiquid = new LiquidStack(NyfalisItemsLiquid.steam, 15/60f);
             requirements(Category.production, with(rustyIron, 30, lead, 30, copper, 30));
@@ -1110,8 +1116,9 @@ public class NyfalisBlocks {
 
             craftTime = 2f / 60f;
             consumePower(1f);
-            consumeLiquid(emulsiveSlop, 15f/ 60f);
             liquidOutputDirections = new int[]{1, 3};
+            consumeLiquid(emulsiveSlop, 15f/ 60f);
+            researchCost = with(iron, 500, lead, 800, copper, 800, rustyIron, 800);
             outputLiquids = LiquidStack.with(Liquids.water, 13f / 60f, Liquids.oil, 10f / 60f);
             requirements(Category.liquid, with(quartz, 40, iron, 25, lead, 50,copper, 50));
         }};
@@ -1535,7 +1542,6 @@ public class NyfalisBlocks {
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
             delay = 5f;
-
             this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
         }};
 
@@ -1699,7 +1705,6 @@ public class NyfalisBlocks {
             size = 3;
             boosterMultiplier = 3.8f;/* rationed for press + 2 gardens*/
             powerProduction = 20f/60f;
-            displayEfficiencyScale = 1.1f;
             attribute = Attribute.steam;
             consumeLiquid(oil, 10f / 60f).boost();
             researchCost = with(rustyIron, 20, Items.lead, 2);

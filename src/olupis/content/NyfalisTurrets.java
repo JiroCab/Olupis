@@ -940,7 +940,7 @@ public class NyfalisTurrets {
             minWarmup = 0.9f;
             smokeEffect = shootEffect =  Fx.none;
 
-            shootType = new ExplosionBulletType(35, 10){{
+            shootType = new ExplosionBulletType(35, 13){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = false;
                 fragBullets = 8;
@@ -963,8 +963,9 @@ public class NyfalisTurrets {
 
                 size = 2;
                 recoil = 0;
+                armor = 2f;
                 range = 20f;
-                health = 4000;
+                health = 3000;
                 fogRadius = 13;
                 shootCone = 180f;
                 liquidCapacity = 5f;

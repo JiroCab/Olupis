@@ -371,7 +371,7 @@ public class NyfalisUnits {
                     top = alternate = mirror = false;
 
                     shootSound = Sounds.shootAlt;
-                    float cx = -4.2f, mx = 0.6f, cy = 2.8f, r = 1;
+                    float cx = -4.2f, mx = 0.8f, cy = 2.8f, r = 1;
                     parts.addAll(
                         new RegionPart("olupis-acerodon-weapon"){{
                             mirror = true;
@@ -380,6 +380,8 @@ public class NyfalisUnits {
                             moveX = mx;
                             moveRot = r;
                             progress = NyfPartParms.NyfPartProgress.elevationP.inv();
+                            mixColor = new Color(1f, 1f, 1f, 0f);
+                            mixColorTo = new Color(0f, 0f, 0f, 0.25f); //pops it out from rest of the sprite while landed bc there no outline
                         }},
                         new CellPart("olupis-acerodon-weapon-cell"){{
                             mirror = true;
@@ -1310,7 +1312,7 @@ public class NyfalisUnits {
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = true;
-            isEnemy = ammoDepletesOverTime = depleteOnInteraction =false;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
         }};
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{

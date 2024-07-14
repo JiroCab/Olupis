@@ -14,7 +14,6 @@ import mindustry.world.meta.*;
 public class WindMill extends PowerGenerator {
     //ThermalGenerator but Attribute multiples a base number and doesn't require the attribute tiles
     public Attribute attribute = Attribute.heat;
-    public float displayEfficiencyScale = 1f;
     public float attributeMul = 0.5f;
     public final boolean displayEfficiency = true;
     public final Effect generateEffect = Fx.none;
@@ -38,7 +37,7 @@ public class WindMill extends PowerGenerator {
     @Override
     public void setStats(){
         super.setStats();
-        stats.add(Stat.affinities, attribute, floating, size * size * displayEfficiencyScale, !displayEfficiency);
+        stats.add(Stat.affinities, attribute, floating, size * size * boosterMultiplier, !displayEfficiency);
         stats.remove(generationType);
         stats.add(generationType, powerProduction * 60.0f, StatUnit.powerSecond);
     }
@@ -48,9 +47,8 @@ public class WindMill extends PowerGenerator {
         super.drawPlace(x, y, rotation, valid);
 
         if(displayEfficiency && sumAttribute(attribute, x, y) != 0){
-            drawPlaceText(Core.bundle.formatFloat("bar.efficiency", sumAttribute(attribute, x, y) * 100, 1), x, y, valid);
+            drawPlaceText(Core.bundle.formatFloat("bar.nyfalis-windmill", sumAttribute(attribute, x, y) * 10, 0), x, y, valid);
         }
-        if (Core.settings.getBool("nyfalis-debug")) drawPlaceText(Core.bundle.formatFloat("bar.efficiency", ((attribute.env() + sumAttribute(attribute, x, y)) * powerProduction + powerProduction ) , 1),  x , y - 2, valid);
     }
 
     @Override
