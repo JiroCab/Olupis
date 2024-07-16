@@ -381,7 +381,7 @@ public class NyfalisTechTree {
                         });
                     });
 
-                    node(unitReplicator, ()->{
+                    node(unitReplicator,  Seq.with(new Objectives.OnSector(dyingForest)),()->{
                         node(unitReplicatorSmall, ()->{
 
                         });

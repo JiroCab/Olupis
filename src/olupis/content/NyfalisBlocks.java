@@ -1,5 +1,6 @@
 package olupis.content;
 
+import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -754,7 +755,7 @@ public class NyfalisBlocks {
             size = 2;
             health = 200;
             buildCostMultiplier = 2f;
-            hasPower = conductivePower = consumesPower = true;
+            hasPower = conductivePower = consumesPower = noUpdateDisabled = true;
             researchCost = with(rustyIron, 300, lead, 300, iron, 10);
             consumePower (6f/60);
             requirements(Category.distribution, with(rustyIron, 3, lead, 3, iron, 1));
@@ -1712,22 +1713,39 @@ public class NyfalisBlocks {
         }};
 
         hydroMill = new ThermalGeneratorNoLight("hydro-mill"){{
-            floating = true;
+                floating = true;
 
-            size = 3;
-            effectChance = 0.011f;
-            powerProduction = 20f/60f;
-            ambientSoundVolume = 0.06f;
+                size = 3;
+                powerProduction = 20f/60f;
+                ambientSoundVolume = 0.06f;
 
-            attribute = hydro;
-            generateEffect = Fx.steam;
-            ambientSound = Sounds.hum;
-            researchCost = with(iron, 750, silicon, 500, lead, 1500, cobalt, 500);
-            requirements(Category.power, with(iron, 20, silicon, 20, lead, 50, cobalt, 20));
-            drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
-                blurThresh = 0.01f;
-            }});
-        }};
+                attribute = hydro;
+                ambientSound = Sounds.hum;
+                researchCost = with(iron, 750, silicon, 500, lead, 1500, cobalt, 500);
+                requirements(Category.power, with(iron, 20, silicon, 20, lead, 50, cobalt, 20));
+                drawer = new DrawMulti(
+                        new DrawLiquidTile(Liquids.water, 2f){
+                            @Override
+                            public void draw(Building build){
+                                Liquid drawn = drawLiquid != null ? drawLiquid : build.liquids.current();
+                                LiquidBlock.drawTiledFrames(build.block.size, build.x, build.y, padLeft, padRight, padTop, padBottom, drawn, alpha);
+                            }
+                        },
+                        new DrawBubbles(){{spread = 9.5f;}},
+                        new DrawDefault(),
+                        new DrawBlurSpin("-rotator", 0.45f * 9f){{blurThresh =  0.01f;}}
+                );
+            }
+            @Override
+            public void drawPlace(int x, int y, int rotation, boolean valid){
+                drawPotentialLinks(x, y);
+                drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
+
+                if(displayEfficiency && sumAttribute(attribute, x, y) != 0){
+                    drawPlaceText(Core.bundle.formatFloat("bar.nyfalis-windmill", (sumAttribute(attribute, x, y) * 10) * 2, 0), x, y, valid);
+                }
+            }
+        };
 
         hydroElectricGenerator = new ThermalGeneratorNoLight("hydro-electric-generator"){{
             placeableLiquid = floating = true;
