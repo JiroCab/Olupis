@@ -1724,6 +1724,7 @@ public class NyfalisBlocks {
                 researchCost = with(iron, 750, silicon, 500, lead, 1500, cobalt, 500);
                 requirements(Category.power, with(iron, 20, silicon, 20, lead, 50, cobalt, 20));
                 drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
                         new DrawLiquidTile(Liquids.water, 2f){
                             @Override
                             public void draw(Building build){
@@ -1731,7 +1732,7 @@ public class NyfalisBlocks {
                                 LiquidBlock.drawTiledFrames(build.block.size, build.x, build.y, padLeft, padRight, padTop, padBottom, drawn, alpha);
                             }
                         },
-                        new DrawBubbles(){{spread = 9.5f;}},
+                        new DrawBubbles(){{spread = 9f;}},
                         new DrawDefault(),
                         new DrawBlurSpin("-rotator", 0.45f * 9f){{blurThresh =  0.01f;}}
                 );

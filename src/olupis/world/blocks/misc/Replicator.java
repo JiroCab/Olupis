@@ -1,6 +1,6 @@
 package olupis.world.blocks.misc;
 
-import arc.graphics.Color;
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
@@ -10,7 +10,8 @@ import arc.scene.ui.Label;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
@@ -18,6 +19,7 @@ import mindustry.entities.units.BuildPlan;
 import mindustry.game.Gamemode;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Shaders;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
@@ -27,8 +29,8 @@ import mindustry.world.meta.BlockGroup;
 import static mindustry.Vars.*;
 
 public class Replicator extends PayloadBlock {
-    public float maxDelay = 30f, speedScl, time;
-    public Interp riseInterp = Interp.circleOut;
+    public float maxDelay = 60f, speedScl, time;
+    public Interp riseInterp = Interp.circle;
     public float delay = 1;
     public Seq<UnitType> spawnableUnits = new Seq<>();
 
@@ -126,7 +128,17 @@ public class Replicator extends PayloadBlock {
                 configure(f);
                 delayTimer = 0;
                 delayDisplay.get().setText("Delay: " + dynamicDelay + " sec");
-            });
+            }).growX();
+            if(Core.settings.getBool("nyfalis-debug")){
+                table.row();
+                table.table().update(t -> {
+                    t.clear();
+                    t.add(Math.round(delayTimer/60) + "s ").row();
+                    t.add(delayTimer + "t");
+                }).growX();
+
+
+            }
         }
 
         @Override
@@ -142,9 +154,9 @@ public class Replicator extends PayloadBlock {
             time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
 
             if (delayTimer <= 0) {
-                delayTimer = dynamicDelay * 60;
                 if (team == state.rules.defaultTeam && unlockedNowHost() && state.isCampaign()) return;
                 if (payload == null) {
+                    delayTimer = dynamicDelay * 60;
                     scl = 0f;
                     if (selectedUnit != -1) {
                         payload = new UnitPayload(spawnableUnits.get(selectedUnit).create(team));
@@ -172,12 +184,17 @@ public class Replicator extends PayloadBlock {
             Draw.rect(outRegion, x, y, rotdeg());
 
             if(selectedUnit != -1 && !inFogTo(Vars.player.team())){
+                UnitType unit = spawnableUnits.get(selectedUnit);
                 Draw.draw(Layer.blockOver, () ->{
-                   //Drawf.construct(this, spawnableUnits.get(selectedUnit), rotdeg() - 90f, 1 - (delayTimer / (dynamicDelay * 60)) , scl, time )
-                    Draw.alpha(1 - (delayTimer / (dynamicDelay * 60)));
-                    float f = Mathf.clamp(1 - riseInterp.apply(delayTimer / (dynamicDelay * 60)));
-                    Draw.color(Tmp.c1.set(spawnableUnits.get(selectedUnit).outlineColor).lerp(Color.white, f + Mathf.absin(Time.time, Math.max(f * 3f, 0.9f), 1f - f)));
-                    Draw.rect(spawnableUnits.get(selectedUnit).fullIcon, x, y, rotdeg() - 90f);
+                    Shaders.build.region = unit.fullIcon;
+                    Shaders.build.progress = Mathf.clamp(1 - riseInterp.apply(delayTimer / (dynamicDelay * 60)));
+                    Shaders.build.color.set(spawnableUnits.get(selectedUnit).outlineColor);
+                    Shaders.build.color.a =riseInterp.apply((delayTimer / (dynamicDelay * 60))) ;
+                    Shaders.build.time = riseInterp.apply(delayTimer / (dynamicDelay * 60)) * 10;
+
+                    Draw.shader(Shaders.build);
+                    Draw.rect(unit.fullIcon, x, y, rotdeg() - 90f);
+                    Draw.shader();
                     Draw.color();
                     Draw.reset();
                 } );
