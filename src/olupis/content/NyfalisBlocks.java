@@ -657,6 +657,7 @@ public class NyfalisBlocks {
 
             mapColor = Color.valueOf("#3c5e14");
             spreadSound = NyfalisSounds.mossSpread;
+            blacklist.addAll(coreZone);
         }};
         yourcelium = new SpreadingFloor("mossier-overlay", 3){{
             // this doesn't spread, but growth is affected by these settings too

@@ -19,7 +19,7 @@ public class NyfalisTechTree {
             node(system, () -> {
                 node(arthin, () ->{
                     node(sanctuary, () -> {
-                        node(mossyCaverns,
+                        node(terrarootCaves,
                                 Seq.with(new Objectives.SectorComplete(sanctuary)),
                         () -> {
                             node(dyingForest, () -> {
@@ -230,7 +230,7 @@ public class NyfalisTechTree {
 
                             });
                             node(steamBoiler,
-                                    Seq.with(new Objectives.OnSector(mossyCaverns)),
+                                    Seq.with(new Objectives.OnSector(terrarootCaves)),
                             ()->{
                                 node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
 

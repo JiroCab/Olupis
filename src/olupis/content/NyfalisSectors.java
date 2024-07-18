@@ -13,7 +13,7 @@ public class NyfalisSectors {
 
     public static SectorPreset
         /*Arthin / Seredris*/
-        sanctuary, dyingForest, mossyCaverns, muddyLakes, ironCurtain, glasierSea, abandonedPayloadTerminal, conciditRuins, coldFlats,
+        sanctuary, dyingForest, terrarootCaves, muddyLakes, ironCurtain, glasierSea, abandonedPayloadTerminal, conciditRuins, coldFlats,
         /*Nyfalis*/
         conservatorium, forestOfSerenity,
         /*Spelta / Vorgin*/
@@ -31,12 +31,12 @@ public class NyfalisSectors {
             rules = commonRules(captureWave);
         }};
 
-        mossyCaverns = new SectorPreset("mossy-caverns", arthin, 31){{
+        terrarootCaves = new SectorPreset("terraroot-caves", arthin, 31){{
             overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
             difficulty = 2;
-            captureWave = 14;
+            captureWave = 13;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 150));
         }};
 
