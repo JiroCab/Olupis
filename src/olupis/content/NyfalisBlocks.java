@@ -687,7 +687,7 @@ public class NyfalisBlocks {
                     oreScrap, mossyScrap,
                     stoneWall, growingWall
             );
-            blacklist.addAll(coreZone, theircelium); //doesnt work
+            blacklist.addAll(coreZone, theircelium); // does work now
 
             next = yourcelium;
 

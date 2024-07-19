@@ -77,6 +77,7 @@ public class EnvUpdater{
 
                     if(t.next != null){
                         if(entry.value > t.spreadTries){
+                            if(!(t.next.isOverlay() || (t.next instanceof SpreadingFloor f && f.overlay) && t.blacklist.contains(entry.key.floor()))) continue;
                             tiles.remove(entry.key);
                             t.upgradeEffect.at(entry.key);
                             if(t.next instanceof SpreadingFloor f){
@@ -142,11 +143,14 @@ public class EnvUpdater{
                         for(int i = 0; i <= 3; i++){
                             Tile tile = entry.key.nearby(i);
                             if(tile != null && tile.floor() == o.baseFloor){
-                                o.spreadEffect.at(entry.key);
-                                o.spreadSound.at(entry.key);
-                                replacedTiles.put(entry.key, entry.key.floor());
-                                entry.key.setFloorNet(o.baseFloor, entry.key.overlay());
-                                if(o.baseFloor instanceof SpreadingFloor) tiles.put(entry.key, 0);
+                                if(!o.blacklist.contains(entry.key.floor())){
+                                    o.spreadEffect.at(entry.key);
+                                    o.spreadSound.at(entry.key);
+                                    replacedTiles.put(entry.key, entry.key.floor());
+                                    entry.key.setFloorNet(o.baseFloor, entry.key.overlay());
+                                    if(o.baseFloor instanceof SpreadingFloor) tiles.put(entry.key, 0);
+                                }
+
                                 dormantOres.addUnique(entry.key);
                             }
                         }
