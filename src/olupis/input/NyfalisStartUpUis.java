@@ -21,6 +21,7 @@ import mindustry.ui.dialogs.CustomRulesDialog;
 import olupis.NyfalisMain;
 import olupis.content.NyfalisPlanets;
 import olupis.content.NyfalisSectors;
+import olupis.world.EnvUpdater;
 
 import java.util.Objects;
 
@@ -128,14 +129,16 @@ public class NyfalisStartUpUis {
                 NyfalisPlanets.nyfalis.applyRules(state.rules);
                 NyfalisMain.sandBoxCheck();
                 ui.paused.show();
-            }).width(77.5f).height(40f).checked(false);
+            }).width(77.5f).height(40f).checked(false).tooltip("Apply Nyfalis Settings/Env to current game");
             z.button("C", Icon.down, Styles.squareTogglet, () -> {
                 if(state.isCampaign()) Logic.sectorCapture();
                 state.wave += 100;
                 for (Item i : content.items())
                     if (i.unlocked()) player.team().core().items.set(i, player.team().core().storageCapacity);
-            }).width(77.5f).height(40f).checked(false);
-        }).width(155f).height(40f).margin(12f).checked(false).row();
+            }).width(77.5f).height(40f).checked(false).tooltip("Capture Sector & fill core with Items");
+            z.row();
+            z.button("Ua", Icon.modeAttack, Styles.squareTogglet, EnvUpdater::debugUpdateActive).width(77.5f).height(40f).checked(false).tooltip("Update Spreading Moss");
+        }).width(155f).growY().margin(12f).checked(false).row();
         debugTable.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
             ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
         }).width(155f).height(40f).margin(12f).checked(false).row();

@@ -3,6 +3,7 @@ package olupis.input;
 import arc.Core;
 import arc.graphics.Color;
 import arc.input.KeyCode;
+import arc.scene.ui.CheckBox;
 import arc.scene.ui.Dialog;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
@@ -20,6 +21,7 @@ import mindustry.ui.dialogs.SettingsMenuDialog;
 import olupis.NyfalisMain;
 import olupis.content.NyfalisPlanets;
 
+import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class NyfalisSettingsDialog {
@@ -43,17 +45,17 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-cloud-shadows", true);
             table.checkPref("nyfalis-auto-ban", true);
             table.checkPref("nyfalis-disclaimer", true);
-            table.checkPref("nyfalis-debug", false);
 
             table.row();
 
             if(musicModPresent)BuildNyfalisSoundSettings(table, false);
             else table.checkPref("nyfalis-space-sfx", false);
             table.row();
+            table.pref(new CollapserSetting("nyfalis-debug-button") );
 
             table.pref(new CollapserSetting("data-buttons", 1));
             table.pref(new CollapserSetting("disclaimer-button", 2));
-            table.pref(new CollapserSetting("discord-button"));
+            table.pref(new CollapserSetting("discord-button", 3) );
 
         });
     }
@@ -104,10 +106,7 @@ public class NyfalisSettingsDialog {
                 i.image(Icon.discord);
             }).size(h).left();
 
-            t.add("@nyfalis-discord-long").color(Pal.accent).growX().padLeft(10f);
-
-            Table c = new Table();
-            c.add(nyfalisDiscordInvite).growX();
+            t.add(Core.bundle.format("nyfalis-discord-long", nyfalisDiscordInvite.replace("https://", "" ))).color(Pal.accent).growX().padLeft(10f);
 
         }).size(520f, h).pad(10f);
 
@@ -143,7 +142,23 @@ public class NyfalisSettingsDialog {
         public void add(SettingsMenuDialog.SettingsTable table) {
             if(type == 1) addDiscordButton(table);
             else if(type == 2) addDisclaimerButton(table);
-            else addDataButtons(table);
+            else if(type == 3)addDataButtons(table);
+            else { //Haha, was the effort Worth it? probably not -Rushie
+                settings.defaults("nyfalis-debug", false);
+                CheckBox box = new CheckBox("@nyfalis-debug");
+
+                box.update(() -> box.setChecked(settings.getBool("nyfalis-debug")));
+
+                box.changed(() -> {
+                    if(Core.settings.getBool("nyfalis-debug"))settings.put("nyfalis-debug", false);
+                    else ui.showConfirm("@confirm", "@nyfalis-debug.confirm",() -> settings.put("nyfalis-debug", true));
+                });
+
+                box.left();
+                ui.addDescTooltip(table.add(box).left().padTop(3f).get(), "@nyfalis-debug.description");
+                table.row();
+
+            }
 
         }
 

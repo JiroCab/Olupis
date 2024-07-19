@@ -253,6 +253,11 @@ public class EnvUpdater{
         }
     }
 
+    public static void debugUpdateActive(){
+        updateSpread();
+        updateDormant();
+    }
+
     private static Seq<Tile> getNearby(Tile tile, int radius, ObjectSet<Block> blacklist){
         Seq<Tile> tiles = new Seq<>();
         if(tile.block().isStatic())
