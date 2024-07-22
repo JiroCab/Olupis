@@ -36,7 +36,7 @@ public class NyfalisLogicDialog extends BaseDialog {
     Seq<Prov<LStatement>> statements;
 
     public NyfalisLogicDialog(){
-        super("nyaflis-logic");
+        super("nyfalis-logic");
 
         clearChildren();
 

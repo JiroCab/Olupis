@@ -88,6 +88,8 @@ public class NyfalisMain extends Mod{
             });
             if(headless)return;
 
+            NyfalisTurrets.cascadeBackBullet = (Core.atlas.find("large-orb-back"));
+            NyfalisTurrets.cascadeFrontBullet = Core.atlas.find("large-orb");
             Events.on(EventType.TurnEvent.class, e -> {
                 sectorPostTurn();
             });
@@ -218,9 +220,11 @@ public class NyfalisMain extends Mod{
     @Override
     public void init() {
         nyfalisSettings = new NyfalisSettingsDialog();
-        logicDialog = new NyfalisLogicDialog();
-        sectorSelect = new LimitedLauncherSelect();
-        unlockPlanets();
+        if(!headless){
+            logicDialog = new NyfalisLogicDialog();
+            sectorSelect = new LimitedLauncherSelect();
+            unlockPlanets();
+        }
     }
 
     public void unlockPlanets(){

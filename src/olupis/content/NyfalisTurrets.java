@@ -5,7 +5,6 @@ import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -30,6 +29,7 @@ import olupis.world.entities.bullets.*;
 import olupis.world.entities.parts.DrawUnstableTurret;
 import olupis.world.entities.parts.UnstableRegionPart;
 
+import static mindustry.Vars.headless;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisBlocks.*;
@@ -40,7 +40,7 @@ public class NyfalisTurrets {
     /*Rushie wanted dynamic content with this settings so this the pain she has made*/
     public static boolean cascadeAlt;
     public static Color cascadeColor = updateColor();
-    public static TextureRegion cascadeBackBullet = Core.atlas.find("large-orb-back"), cascadeFrontBullet = Core.atlas.find("large-orb");
+    public static TextureRegion cascadeBackBullet, cascadeFrontBullet;
 
     public static void LoadTurrets(){
 
@@ -1366,12 +1366,7 @@ public class NyfalisTurrets {
 
     public static void dynamicTurretContent(){
         cascadeAlt = Core.settings.getBool("nyfalis-bread-gun") ;
-        Log.err(cascadeAlt + "");
-        String cascadeName = cascadeAlt ? "PH-cascade" : "cascade";
-        cascadeColor = updateColor();
 
-        cascade.localizedName = Core.bundle.get(cascade.getContentType() + ".olupis-"  + cascadeName + ".name");
-        cascade.details = Core.bundle.getOrNull(cascade.getContentType() + ".olupis-" + cascadeName + ".details");
         cascade.consumePower(17 * (cascadeAlt ? 4f : 1f));
         cascade.range = (50f * 8f) * (cascadeAlt ? 4f : 1f);
         cascade.explosionRadius = 25 * (cascadeAlt ? 4f : 1f);
@@ -1499,9 +1494,20 @@ public class NyfalisTurrets {
                 }};
             }};
         }};
+        if(!headless)dynamicTurretContentClient();
+    }
+
+    public static void dynamicTurretContentClient(){
+        String cascadeName = cascadeAlt ? "PH-cascade" : "cascade";
         cascade.region = Core.atlas.find("olupis-" + cascadeName, "olupis-cascade");
         cascade.uiIcon = cascade.fullIcon = Core.atlas.find("olupis-" + cascadeName + "-preview"); //TODO DRAW BASE
+
+        cascade.localizedName = Core.bundle.get(cascade.getContentType() + ".olupis-"  + cascadeName + ".name");
+        cascade.details = Core.bundle.getOrNull(cascade.getContentType() + ".olupis-" + cascadeName + ".details");
+
+        cascadeColor = updateColor();
     }
+
 
     public static Color updateColor(){
         return Core.settings.getBool("nyfalis-bread-gun") ? Color.brown : Color.blue;
