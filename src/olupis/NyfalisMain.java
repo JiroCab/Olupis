@@ -75,9 +75,8 @@ public class NyfalisMain extends Mod{
             /*Delayed since custom games, for some reason needs it*/
             Time.run(0.5f * Time.toSeconds, NyfalisMain::sandBoxCheck);
 
-            unlockPlanets();
-            NyfalisStartUpUis.rebuildDebugTable();
             //Clean up of the old system of banning stuff
+            unlockPlanets();
 
             if(state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet())){
                 if(state.rules.blockWhitelist) state.rules.blockWhitelist = false;
@@ -87,6 +86,7 @@ public class NyfalisMain extends Mod{
                if(NyfalisPlanets.isNyfalianPlanet(e.sector.planet) && !e.sector.near().contains(e.sector.info.destination)) e.sector.info.destination = e.sector;
             });
             if(headless)return;
+            NyfalisStartUpUis.rebuildDebugTable();
 
             NyfalisTurrets.cascadeBackBullet = (Core.atlas.find("large-orb-back"));
             NyfalisTurrets.cascadeFrontBullet = Core.atlas.find("large-orb");
