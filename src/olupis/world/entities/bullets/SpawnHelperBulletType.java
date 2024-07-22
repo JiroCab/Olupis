@@ -18,7 +18,7 @@ import olupis.world.entities.units.AmmoLifeTimeUnitType;
 import static mindustry.Vars.*;
 
 public class SpawnHelperBulletType extends BasicBulletType {
-    public boolean hasParent = false;
+    public boolean hasParent = false, eventMake = true;
     public BulletType alternateType;
     public float unitRange = -1;
 
@@ -47,6 +47,8 @@ public class SpawnHelperBulletType extends BasicBulletType {
                         spawned.command().command(u.command);
                     }
                     if(u.isUnitFactory())Events.fire(new EventType.UnitCreateEvent(spawned, u));
+                } else if (eventMake && owner instanceof Unit u){
+                    Events.fire(new EventType.UnitCreateEvent(spawned, null, u));
                 }
                 if(spawned.controller() instanceof AgressiveFlyingAi ai && hasParent) {
                     ai.hasParent = true;

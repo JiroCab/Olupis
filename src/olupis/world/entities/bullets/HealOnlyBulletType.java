@@ -11,20 +11,23 @@ import mindustry.world.blocks.ConstructBlock;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class HealOnlyBulletType extends BasicBulletType {
-    public boolean fogVisible, alwaysSplashDamage = false, despawnHitEffect = false;
+    public boolean fogVisible = true, alwaysSplashDamage = false, despawnHitEffect = false;
 
-    public HealOnlyBulletType(float speed, float damage, String bulletSprite, boolean fogVisible){
+    public HealOnlyBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage);
         this.sprite = bulletSprite;
         this.collidesAir = this.hittable = false;
         this.collidesTeam = true;
+
+    }
+
+    public HealOnlyBulletType(float speed, float damage, String bulletSprite, Boolean fogVisible){
+        this(speed, damage, bulletSprite);
         this.fogVisible = fogVisible;
     }
-    public HealOnlyBulletType(float speed, float damage, String bulletSprite){
-        this(speed, damage, bulletSprite, true);
-    }
+
     public HealOnlyBulletType(float speed, float damage){
-        this(speed, damage, "bullet", true);
+        this(speed, damage, "bullet");
     }
 
     @Override
@@ -72,7 +75,7 @@ public class HealOnlyBulletType extends BasicBulletType {
     /*Don't like how gnats/phorids interval bullets are a dead give away in fog, so only the diamond will be visible*/
     @Override
     public void draw(Bullet b){
-        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.draw(b);
+        if(checkFog(b)) super.draw(b);
     }
 
     @Override
@@ -82,7 +85,7 @@ public class HealOnlyBulletType extends BasicBulletType {
 
         if(!fragOnHit) createFrags(b, b.x, b.y);
 
-        if(b.inFogTo(Vars.player.team()) || !fogVisible) return;
+        if(!checkFog(b)) return;
 
         despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
         despawnSound.at(b);
@@ -92,12 +95,12 @@ public class HealOnlyBulletType extends BasicBulletType {
 
     @Override
     public void drawTrail(Bullet b){
-        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.drawTrail(b);
+        if(checkFog(b)) super.drawTrail(b);
     }
 
     @Override
     public void removed(Bullet b){
-        if(!b.inFogTo(Vars.player.team()) || fogVisible) super.removed(b);
+        if(checkFog(b)) super.removed(b);
     }
 
     @Override
@@ -118,5 +121,12 @@ public class HealOnlyBulletType extends BasicBulletType {
         }
 
         handlePierce(b, initialHealth, x, y);
+    }
+
+    public boolean checkFog(Bullet b){
+        if(!Vars.state.rules.fog) return false;
+        if(Vars.headless) return  false; //causes a crash because of the bellow, so this will just be hidden client side
+        if(fogVisible) return true;
+        return !b.inFogTo(Vars.player.team());
     }
 }

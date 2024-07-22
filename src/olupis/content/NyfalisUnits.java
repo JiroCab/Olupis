@@ -1418,7 +1418,7 @@ public class NyfalisUnits {
 
         //endregion
         //region Limited - Sumoned
-        embryo = new AmmoLifeTimeUnitType("embryo"){{
+        embryo = new AmmoLifeTimeUnitType("embryo"){{ //TODO Not properly synced on  net client ( despawns instantly )
             /*(trans) Egg if chan-version is made >;3c */
             speed = 3f;
             fogRadius = 0f;
@@ -1802,6 +1802,7 @@ public class NyfalisUnits {
                                 intervalRandomSpread = 90;
                                 height = width = healAmount = 20;
 
+                                fogVisible = true;
                                 keepVelocity = false;
                                 hitEffect = despawnEffect = Fx.heal;
                                 backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
