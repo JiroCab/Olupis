@@ -37,7 +37,7 @@ public class NyfalisSectors {
 
             difficulty = 2;
             captureWave = 13;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 150));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 300, Items.lead, 200));
         }};
 
         muddyLakes = new SectorPreset("muddy-lakes", arthin, 21){{
