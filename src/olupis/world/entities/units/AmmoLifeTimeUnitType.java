@@ -272,16 +272,16 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     }
 
     public void callTimeOut(Unit unit){
-        if (Vars.net.server()) {
+        if (!net.active() || Vars.net.server()) {
             NyfalisUnitTimedOutPacket packet = new NyfalisUnitTimedOutPacket();
             packet.unit = unit;
             Vars.net.send(packet, true);
-        }
-        timedOut(unit);
+        } else if(!net.client()) timedOut(unit);
+
     }
 
     public void timedOut(Unit unit){
-        timedOutFx.at(unit.x, unit.y, 0, unit);
+        timedOutFx.at(unit.x, unit.y, unit.rotation, unit);
         timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
         unit.remove();
     }

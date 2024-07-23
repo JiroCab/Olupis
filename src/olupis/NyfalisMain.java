@@ -15,13 +15,11 @@ import mindustry.game.Team;
 import mindustry.gen.Call;
 import mindustry.gen.Icon;
 import mindustry.mod.Mod;
-import mindustry.net.Net;
 import mindustry.type.*;
 import mindustry.world.Block;
 import olupis.content.*;
 import olupis.input.*;
 import olupis.world.EnvUpdater;
-import olupis.world.entities.packets.NyfalisUnitTimedOutPacket;
 import olupis.world.planets.NyfalisTechTree;
 
 import static mindustry.Vars.*;
@@ -31,7 +29,6 @@ import static olupis.content.NyfalisPlanets.*;
 public class NyfalisMain extends Mod{
 
     public static NyfalisSounds soundHandler = new NyfalisSounds();
-    public static NyfalisUnitTimedOutPacket unitTimedOut = new NyfalisUnitTimedOutPacket();
     public static LimitedLauncherSelect sectorSelect;
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
@@ -51,7 +48,7 @@ public class NyfalisMain extends Mod{
         NyfalisAttributeWeather.loadWeather();
         NyfalisPlanets.LoadPlanets();
         NyfalisSectors.LoadSectors();
-        Net.registerPacket(NyfalisUnitTimedOutPacket::new); //If new packets are needed, turn this into a dedicated class
+        NyfalisPackets.LoadPackets();
 
         NyfalisPlanets.PostLoadPlanet();
         NyfalisTechTree.load();

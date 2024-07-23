@@ -20,6 +20,7 @@ import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import olupis.NyfalisMain;
 import olupis.content.NyfalisPlanets;
+import olupis.world.entities.packets.NyfalisDebugPackets;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;
@@ -210,7 +211,10 @@ public class NyfalisSettingsDialog {
             table.collapser(t -> {
                 Table subTable = new Table();
                 subTable.button("sandbox check", () -> {
-                    NyfalisMain.sandBoxCheck(false);
+                    if(player.admin && net.active() && net.client()){
+                        NyfalisDebugPackets packet = new NyfalisDebugPackets();
+                        Vars.net.send(packet, true);
+                    }else NyfalisMain.sandBoxCheck(false);
                 }).margin(14).width(260f).pad(6);
                 subTable.button("sector turn", NyfalisMain::sectorPostTurn).margin(14).width(260f).pad(6);
                 subTable.row();
@@ -224,11 +228,17 @@ public class NyfalisSettingsDialog {
                 subTable.row();
                 subTable.button("Repair save", () -> {
                     if(state.isGame()){
-                        Log.err("fix?");
-                        NyfalisMain.sandBoxCheck(false);
-                        for (Building b : Groups.build) {
-                            if (!b.enabled && b.lastDisabler == null && b.block.supportsEnv(state.rules.env)) {
-                                b.enabled = true;
+                        if(player.admin && net.active() && net.client()){
+                            NyfalisDebugPackets packet = new NyfalisDebugPackets();
+                            packet.type = 1;
+                            Vars.net.send(packet, true);
+                        } else {
+                            Log.err("fix?");
+                            NyfalisMain.sandBoxCheck(false);
+                            for (Building b : Groups.build) {
+                                if (!b.enabled && b.lastDisabler == null && b.block.supportsEnv(state.rules.env)) {
+                                    b.enabled = true;
+                                }
                             }
                         }
                     }
