@@ -21,10 +21,12 @@ import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Shaders;
 import mindustry.type.UnitType;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.BlockGroup;
+import olupis.content.NyfalisBlocks;
 
 import static mindustry.Vars.*;
 
@@ -33,6 +35,7 @@ public class Replicator extends PayloadBlock {
     public Interp riseInterp = Interp.circle;
     public float delay = 1;
     public Seq<UnitType> spawnableUnits = new Seq<>();
+    public Block replacement = NyfalisBlocks.rustyScrapWall;
 
     public Replicator(String name){
         super(name);
@@ -149,6 +152,10 @@ public class Replicator extends PayloadBlock {
         @Override
         public void updateTile(){
             super.updateTile();
+            if(state.isCampaign() && state.getSector().isCaptured()){
+              this.remove();
+              tile.setNet(replacement, team(), this.rotation);
+            }
             delayTimer = Mathf.approachDelta(delayTimer,0,1);
             speedScl = Mathf.lerpDelta(speedScl, 0f, 0.05f);
             time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);

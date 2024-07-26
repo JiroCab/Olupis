@@ -1,5 +1,6 @@
 package olupis.world.entities.packets;
 
+import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.*;
@@ -45,6 +46,7 @@ public class NyfalisDebugPackets extends Packet {
             NyfalisPlanets.nyfalis.applyRules(state.rules);
             NyfalisMain.sandBoxCheck();
         }else NyfalisMain.sandBoxCheck(false);
+        Log.info(con.player.name() + " called " + type + " type debug packet!");
     }
 
 }

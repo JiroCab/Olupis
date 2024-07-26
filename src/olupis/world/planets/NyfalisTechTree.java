@@ -290,7 +290,7 @@ public class NyfalisTechTree {
 
                             });
                         });
-                        node(ironSieve, Seq.with(new Objectives.SectorComplete(dyingForest), new Objectives.Produce(sand)),() ->{
+                        node(ironSieve, Seq.with(new Objectives.OnSector(dyingForest), new Objectives.Produce(sand)),() ->{
 
                         });
                     });

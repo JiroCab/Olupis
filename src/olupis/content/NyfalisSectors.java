@@ -1,11 +1,14 @@
 package olupis.content;
 
 import arc.func.Cons;
+import arc.struct.Seq;
 import mindustry.content.Items;
 import mindustry.game.Rules;
 import mindustry.type.ItemStack;
 import mindustry.type.SectorPreset;
+import mindustry.world.Block;
 
+import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisSectors {
@@ -18,6 +21,13 @@ public class NyfalisSectors {
         conservatorium, forestOfSerenity,
         /*Spelta / Vorgin*/
          dormantCell, forestOfHope
+    ;
+
+    public static final Seq<Block> //Used by the planet generators, Not in NyfalisBLock so it's not null
+            mossGreen = Seq.with(mossStone, mossyStone, mossierStone, mossiestStone),
+            mossGreenExtra = Seq.with(mossyDirt, mossyhardenMud, mossyVent),
+            mossGreenAll = Seq.with(mossGreen).addAll(mossGreenExtra),
+            mossYellow = Seq.with(yellowGrass, yellowMossyWater)
     ;
 
     public static void LoadSectors(){

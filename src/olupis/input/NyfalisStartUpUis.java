@@ -22,6 +22,7 @@ import olupis.NyfalisMain;
 import olupis.content.NyfalisPlanets;
 import olupis.content.NyfalisSectors;
 import olupis.world.EnvUpdater;
+import olupis.world.entities.packets.NyfalisDebugPackets;
 
 import java.util.Objects;
 
@@ -125,10 +126,16 @@ public class NyfalisStartUpUis {
 
         debugTable.table( z -> {
             z.button("E", Icon.export, Styles.squareTogglet, () -> {
-                state.rules.blockWhitelist = true;
-                NyfalisPlanets.nyfalis.applyRules(state.rules);
-                NyfalisMain.sandBoxCheck();
-                ui.paused.show();
+                if(player.admin && net.active() && net.client()){
+                    NyfalisDebugPackets packet = new NyfalisDebugPackets();
+                    packet.type = 1;
+                    Vars.net.send(packet, true);
+                } else {
+                    state.rules.blockWhitelist = true;
+                    NyfalisPlanets.nyfalis.applyRules(state.rules);
+                    NyfalisMain.sandBoxCheck();
+                    ui.paused.show();
+                }
             }).width(77.5f).height(40f).checked(false).tooltip("Apply Nyfalis Settings/Env to current game");
             z.button("C", Icon.down, Styles.squareTogglet, () -> {
                 if(state.isCampaign()) Logic.sectorCapture();

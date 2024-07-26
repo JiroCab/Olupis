@@ -276,7 +276,8 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
             NyfalisUnitTimedOutPacket packet = new NyfalisUnitTimedOutPacket();
             packet.unit = unit;
             Vars.net.send(packet, true);
-        } else if(!net.client()) timedOut(unit);
+            timedOut(unit);
+        }
 
     }
 

@@ -1418,7 +1418,7 @@ public class NyfalisUnits {
 
         //endregion
         //region Limited - Sumoned
-        embryo = new AmmoLifeTimeUnitType("embryo"){{ //TODO Not properly synced on  net client ( despawns instantly )
+        embryo = new AmmoLifeTimeUnitType("embryo"){{ //TODO Ammo not synced properly
             /*(trans) Egg if chan-version is made >;3c */
             speed = 3f;
             fogRadius = 0f;
