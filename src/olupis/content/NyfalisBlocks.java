@@ -1,53 +1,60 @@
 package olupis.content;
 
 import arc.Core;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.math.geom.*;
-import arc.struct.*;
-import mindustry.*;
+import arc.graphics.Color;
+import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
+import arc.math.geom.Vec2;
+import arc.struct.EnumSet;
+import arc.struct.ObjectSet;
+import mindustry.Vars;
 import mindustry.content.*;
-import mindustry.entities.*;
+import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.*;
-import mindustry.entities.part.*;
-import mindustry.gen.*;
+import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.part.RegionPart;
+import mindustry.gen.Building;
+import mindustry.gen.Sounds;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.world.*;
+import mindustry.world.Block;
 import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.legacy.*;
+import mindustry.world.blocks.legacy.LegacyBlock;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.payloads.PayloadConveyor;
+import mindustry.world.blocks.payloads.PayloadRouter;
+import mindustry.world.blocks.power.Battery;
+import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.consumers.*;
+import mindustry.world.blocks.storage.StorageBlock;
+import mindustry.world.consumers.ConsumePower;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import olupis.input.*;
+import olupis.input.NyfalisShaders;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
 import olupis.world.blocks.environment.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
-import olupis.world.consumer.*;
-import olupis.world.entities.bullets.*;
-import olupis.world.entities.pattern.*;
+import olupis.world.consumer.ConsumeLubricant;
+import olupis.world.entities.bullets.HealOnlyBulletType;
+import olupis.world.entities.bullets.SpawnHelperBulletType;
+import olupis.world.entities.pattern.ShootAlternateAlt;
 
-import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.*;
+import java.util.Objects;
+
+import static arc.graphics.g2d.Draw.color;
+import static arc.graphics.g2d.Lines.stroke;
 import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
-import static mindustry.content.Liquids.*;
-import static mindustry.type.ItemStack.*;
+import static mindustry.content.Liquids.oil;
+import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisAttributeWeather.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
@@ -2220,12 +2227,15 @@ public class NyfalisBlocks {
 
         nyfalisCores.addAll(coreRemnant, coreRelic, coreShrine, coreTemple, coreVestige);
 
-        Planets.serpulo.techTree.each(n ->{
-            if(n.content instanceof Block b) hiddenNyfalisBlocks.add(b);
-        });
+        for (Planet p : Vars.content.planets()) {
+            if (Objects.equals(p.name, "serpulo")) p.techTree.each(n -> {
+                if (n.content instanceof Block b) hiddenNyfalisBlocks.add(b);
+            });
+        }
 
         rainRegrowables.addAll(grass, moss, mossierStone, mossyStone, yellowGrass, cinderBloomGrass, cinderBloomiest, cinderBloomiest, mossyDirt, frozenDirt, frozenGrass, frozenSlop);
 
+        if(headless) return;
         cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
         cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);
         cinderBloomiest.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.25f);
@@ -2234,6 +2244,6 @@ public class NyfalisBlocks {
         mossiestStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.25f);
         mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
         frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
-
+        coralReef.mapColor = deepwater.mapColor;
     }
 }

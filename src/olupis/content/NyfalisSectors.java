@@ -27,7 +27,12 @@ public class NyfalisSectors {
             mossGreen = Seq.with(mossStone, mossyStone, mossierStone, mossiestStone),
             mossGreenExtra = Seq.with(mossyDirt, mossyhardenMud, mossyVent),
             mossGreenAll = Seq.with(mossGreen).addAll(mossGreenExtra),
-            mossYellow = Seq.with(yellowGrass, yellowMossyWater)
+            mossYellow = Seq.with(yellowGrass, yellowMossyWater),
+            waterFeatures = Seq.with(kelp, redCorals, blueCorals, greenCorals),
+            treesGreen = Seq.with(nyfalisTree, mossTree, mossDeadTree, mossTree),
+            treesYellow = Seq.with(yellowTree, yellowTreeBlooming, mossDeadTree, mossTree),
+            treesAll = Seq.with(treesGreen).addAll(treesYellow),
+            solidMossYellow = Seq.with(yellowShrubs, yellowShrubsCrooked, yellowShrubsIrregular, yellowTree, yellowTreeBlooming)
     ;
 
     public static void LoadSectors(){

@@ -80,12 +80,12 @@ public class NyfalisMain extends Mod{
             }
             Events.on(EventType.SectorLaunchEvent.class, e -> {
                 //When launching, prevents exporting to items to where you launched from if it's out of range
-               if(NyfalisPlanets.isNyfalianPlanet(e.sector.planet) && !e.sector.near().contains(e.sector.info.destination)) e.sector.info.destination = e.sector;
+                if(NyfalisPlanets.isNyfalianPlanet(e.sector.planet) && !e.sector.near().contains(e.sector.info.destination)) e.sector.info.destination = e.sector;
             });
             if(headless)return;
             NyfalisStartUpUis.rebuildDebugTable();
 
-            NyfalisTurrets.cascadeBackBullet = (Core.atlas.find("large-orb-back"));
+            NyfalisTurrets.cascadeBackBullet = Core.atlas.find("large-orb-back");
             NyfalisTurrets.cascadeFrontBullet = Core.atlas.find("large-orb");
             Events.on(EventType.TurnEvent.class, e -> {
                 sectorPostTurn();
@@ -100,7 +100,6 @@ public class NyfalisMain extends Mod{
         Events.on(EventType.SectorCaptureEvent.class, event -> unlockPlanets());
 
         Events.on(ClientLoadEvent.class, e -> {
-            NyfalisBlocks.NyfalisBlocksPlacementFix();
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
             NyfalisStartUpUis.saveDisclaimerDialog();
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
@@ -216,6 +215,7 @@ public class NyfalisMain extends Mod{
 
     @Override
     public void init() {
+        NyfalisBlocks.NyfalisBlocksPlacementFix();
         nyfalisSettings = new NyfalisSettingsDialog();
         if(!headless){
             logicDialog = new NyfalisLogicDialog();

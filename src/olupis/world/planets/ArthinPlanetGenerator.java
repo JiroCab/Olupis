@@ -28,23 +28,20 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
     public static boolean alt = false;
 
     BaseGenerator basegen = new BaseGenerator();
-    float scl = 1.7f;
+    float scl = 1.8f;
     float waterOffset = 0.1f;
     boolean genLakes = false;
+    float extraMaxCoreZonesScale = 0.25f;
 
     Block[][] arr =
             {
-                    {deepwater, Blocks.water, yellowMossyWater, yellowGrass},
-                    {deepwater, Blocks.water, yellowMossyWater, yellowGrass, yellowMossyWater, Blocks.water, redSand },
-                    {algaeWater, mossierStone, mossyStone, stone, mossyStone, mossierStone},
+                    { yellowGrass, Blocks.water, mossyStone, stone, mossyStone, mossierStone},
+                    { redSand , Blocks.water, mossierStone, stone, mossyStone, mossierStone},
                     {algaeWater, mossierStone, mossyStone, stone, mossyStone, stone},
-                    {Blocks.water, sandWater, sandWater, mossierStone, stone, mossyStone, mossierStone},
-                    {Blocks.water, sandWater, sandWater, dirt, mossyStone, dirt, stone, grass },
-                    { sandWater, sandWater, dirt, dirt, stone, yellowGrass , grass},
-                    { Blocks.water, dirt, dirt, stone, grass, grass, stone, frozenGrass},
-                    {dirt, stone, grass, frozenGrass, stone, frozenGrass , stone},
-                    {dirt, stone, grass, frozenGrass, ice, frozenGrass},
-                    {snow, stone, grass, frozenGrass, ice, frozenGrass}
+                    {deepwater, yellowGrass, Blocks.water, redSand },
+                    {redSand, dirt, mossyStone, dirt, stone, yellowGrass },
+                    {redSand, Blocks.water, dirt, dirt, stone, yellowGrass , yellowGrass}
+
             };
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
@@ -427,8 +424,9 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
             }
         });
 
-        blendf(redSand, redSandWater, 1, Seq.with(Blocks.water), true);
-        blendf(algaeWater, algaeWaterDeep, 3, Seq.with(deepwater), false);
+        blendf(redSand, redSandWater, 2, Seq.with(Blocks.water), true);
+        blendf(yellowGrass, yellowMossyWater, 2, Seq.with(Blocks.water), true);
+        blendf(deepwater, algaeWaterDeep, 3, Seq.with(algaeWater), true);
 
         if(naval){
             int deepRadius = 2;
@@ -491,14 +489,15 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
         //replace sandwall to dirt walls
         pass((x, y) -> {
-            if(tiles.get(x, y).block() == sandWall){
-                Log.err((tiles.get(x, y).block() == sandWall) + " " + tiles.get(x, y).block());
-                block = dirtWall;
-            }
-
+            if(tiles.get(x, y).block() == sandWall) block = dirtWall;
         });
 
+        float difficulty = sector.threat;
+        int zoneCap = 1 + Math.round(extraMaxCoreZonesScale * difficulty);
+        final int[] zoneCount = {0};
+
         pass((x, y) -> {
+            Tile tile = tiles.get(x, y);
             //random grass
             if(floor == grass){
                 if(Math.abs(0.5f - noise(x - 90, y, 4, 0.8, 65)) > 0.02){
@@ -542,22 +541,18 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
                 }
             }
 
-            if(rand.chance(0.0075)){
-                //random spore trees
-                boolean any = false;
-                boolean all = true;
-                for(Point2 p : Geometry.d4){
-                    Tile other = tiles.get(x + p.x, y + p.y);
-                    if(other != null && other.block() == air){
-                        any = true;
-                    }else{
-                        all = false;
-                    }
-                }
+            //Trees
+            if(block.solid && rand.chance(tile.floor().isLiquid ? 0.0015 : 0.015)){
+                if(solidMossYellow.contains(block)){
+                    block = treesYellow.random();
+                } else  block = treesGreen.random();
+            }
 
-                if(any && ((block == shrubs || block == greenShrubsIrregular) || (all && block == air && floor == snow && rand.chance(0.03)))){
-                    block = nyfalisTree;
-                }
+            //water features
+            if(tile.floor().isLiquid && tile.overlay() == air && tile.block() == air && rand.chance(0.02)) {
+                if(floor == deepwater && rand.chance(0.5)){
+                    floor = coralReef;
+                } else ore = waterFeatures.random();
             }
 
             //random stuff
@@ -573,21 +568,51 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
                     block = dec.get(floor, floor.asFloor().decoration);
                 }
             }
+
+            zone:
+            {
+                if (zoneCount[0] > zoneCap) break zone;
+                for (int i = 0; i < 6; i++) {
+                    for (int j = 0; i < 6; i++) {
+                        Tile check = tiles.get(x + i, y + j);
+                        if (check != null && (!treesAll.contains(check.block()) || check.block() != air)) {
+                            break zone;
+                        }
+                    }
+                }
+
+                if (rand.chance(0.05)) {
+                    ++zoneCount[0];
+                    for (int i = 0; i < 5; i++) {
+                        for (int j = 0; i < 5; i++) {
+                            Log.err("uwu");
+                            floor = coreZone;
+                        }
+                    }
+                }
+            }
+
         });
 
-        float difficulty = sector.threat;
+
         ints.clear();
         ints.ensureCapacity(width * height / 4);
 
 
-        //remove invalid ores
+
         for(Tile tile : tiles){
             if(tile.overlay().needsSurface && !tile.floor().hasSurface()){
                 tile.setOverlay(air);
             }
         }
 
+        //ehh to lazy
+        tiles.get(spawn.x, spawn.y).setFloor(coreZone.asFloor());
+        tiles.get(spawn.x +1, spawn.y).setFloor(coreZone.asFloor());
+        tiles.get(spawn.x +1, spawn.y +1).setFloor(coreZone.asFloor());
+        tiles.get(spawn.x, spawn.y + 1).setFloor(coreZone.asFloor());
         Schematics.placeLaunchLoadout(spawn.x, spawn.y);
+
 
         for(Room espawn : enemies){
             tiles.getn(espawn.x, espawn.y).setOverlay(Blocks.spawn);
@@ -617,6 +642,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         if(floor == dirt || floor == hardenMud || floor == frozenMud || floor == mossyDirt ) out = deep ? Blocks.water.asFloor() : mud.asFloor();
         else if (mossGreenAll.contains(floor)) out = (deep ? algaeWaterDeep : algaeWater).asFloor();
         else if (mossYellow.contains(floor)) out = (deep ? Blocks.water : yellowMossyWater).asFloor();
+        else if (floor == redSand) out =  (deep ? deepwater : redSandWater).asFloor();
         else out = (deep ? Blocks.water : darksandWater).asFloor();
         return out;
     }
