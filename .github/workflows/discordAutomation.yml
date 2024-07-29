@@ -9,10 +9,10 @@ on:
 
 jobs:
   on-success:
-      runs-on: ubuntu-latest
-      if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
-      steps:
+    steps:
       - name: 'Download artifact'
         id: download-artifact
         uses: dawidd6/action-download-artifact@v3
@@ -37,9 +37,9 @@ jobs:
       - name: Send file Jar to the nyfalis-beta-files channel of the discord
         uses: sinshutu/upload-to-discord@master
         env:
-            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-            args: Olupis-but-a-jar.jar/Olupis-but-a-jar.jar
+          args: Olupis-but-a-jar.jar/Olupis-but-a-jar.jar
 
   on-failure:
     runs-on: ubuntu-latest
