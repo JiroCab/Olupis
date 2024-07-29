@@ -20,6 +20,20 @@ jobs:
           workflow: deploy.yml
           branch: experimental
 
+      - name: Message Commit Author to the nyfalis-beta-files channel of the discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: '*${{github.actor}}* Committed to experimental:'
+
+      - name: Message Commit title & message to the nyfalis-beta-files channel of the discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: '> ${{github.event.workflow_run.head_commit.message}}'
+
       - name: Send file Jar to the nyfalis-beta-files channel of the discord
         uses: sinshutu/upload-to-discord@master
         env:
