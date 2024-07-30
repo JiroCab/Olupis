@@ -7,6 +7,7 @@ import arc.scene.Group;
 import arc.scene.event.Touchable;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Scaling;
 import mindustry.Vars;
@@ -14,13 +15,15 @@ import mindustry.core.Logic;
 import mindustry.editor.WaveInfoDialog;
 import mindustry.game.Rules;
 import mindustry.gen.Icon;
+import mindustry.input.Binding;
+import mindustry.input.DesktopInput;
 import mindustry.type.*;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.CustomRulesDialog;
+import mindustry.ui.fragments.HintsFragment;
 import olupis.NyfalisMain;
-import olupis.content.NyfalisPlanets;
-import olupis.content.NyfalisSectors;
+import olupis.content.*;
 import olupis.world.EnvUpdater;
 import olupis.world.entities.packets.NyfalisDebugPackets;
 
@@ -157,5 +160,38 @@ public class NyfalisStartUpUis {
         debugTable.marginBottom(200f);
     }
 
+    public static void loadHints(){
+        ui.hints.hints.add(new HintsFragment.Hint() {
+            final Seq<UnitType> coreUnits = Seq.with(NyfalisUnits.gnat, NyfalisUnits.pedicia, NyfalisUnits.phorid) ;
+            @Override
+            public String name() {
+                return "hint.nyflais-command";
+            }
 
+            @Override
+            public String text() {
+                return Core.bundle.get("hint.nyflais-command.text");
+            }
+
+            @Override
+            public boolean complete() {
+                return Core.keybinds.get(Binding.command_mode).key != Core.keybinds.get(Binding.boost).key;
+            }
+
+            @Override
+            public boolean show() {
+                return Core.keybinds.get(Binding.command_mode).key == Core.keybinds.get(Binding.boost).key;
+            }
+
+            @Override
+            public int order() {
+                return 5 ;
+            }
+
+            @Override
+            public boolean valid() {
+                return !Vars.mobile ||  control.input instanceof DesktopInput;
+            }
+        });
+    }
 }

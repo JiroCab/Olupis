@@ -221,7 +221,9 @@ public class NyfalisMain extends Mod{
             logicDialog = new NyfalisLogicDialog();
             sectorSelect = new LimitedLauncherSelect();
             unlockPlanets();
+            NyfalisStartUpUis.loadHints();
         }
+
     }
 
     public void unlockPlanets(){
