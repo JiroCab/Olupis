@@ -183,7 +183,7 @@ public class NyfalisTurrets {
                 shootWarmupSpeed = 0.11f;
                 shootCone =inaccuracy = 360;
 
-                final float groundPenalty = 0.05f;
+                final float groundPenalty = 0.05f, splashPenalty = 0.05f;
                 ammo(
                     copper, new EffectivenessMissleType(4.8f, 20f){{
                         width = 6f;
@@ -202,6 +202,7 @@ public class NyfalisTurrets {
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.shocked;
                         groundDamageMultiplier = groundPenalty;
+                        groundDamageSplashMultiplier = splashPenalty;
                     }},
                     lead, new EffectivenessMissleType(4.8f, 60f){{
                         width = 6f;
@@ -220,6 +221,7 @@ public class NyfalisTurrets {
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = NyfalisStatusEffects.drained;
                         groundDamageMultiplier = groundPenalty;
+                        groundDamageSplashMultiplier = splashPenalty;
                     }},
                     iron, new EffectivenessMissleType(5.2f, 80f){{
                         width = 6f;
@@ -238,6 +240,7 @@ public class NyfalisTurrets {
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.slow;
                         groundDamageMultiplier = groundPenalty;
+                        groundDamageSplashMultiplier = splashPenalty;
                     }},
                     cobalt, new EffectivenessMissleType(4.8f, 20f){{
                         width = 6f;
@@ -257,6 +260,7 @@ public class NyfalisTurrets {
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = NyfalisStatusEffects.corupt;
                         groundDamageMultiplier = groundPenalty;
+                        groundDamageSplashMultiplier = splashPenalty;
                     }}
                 );
                 limitRange(1.5f);

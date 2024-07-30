@@ -1,15 +1,28 @@
 package olupis.world.entities.bullets;
 
 import arc.Events;
+import arc.func.Cons;
+import arc.math.Mathf;
+import arc.math.geom.Rect;
 import arc.util.Tmp;
+import mindustry.content.StatusEffects;
+import mindustry.core.World;
+import mindustry.entities.*;
 import mindustry.entities.bullet.MissileBulletType;
 import mindustry.game.EventType;
+import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.world.Tile;
+
+import static mindustry.Vars.*;
 
 public class EffectivenessMissleType extends MissileBulletType {
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
     public float groundDamageMultiplier = 1f;
+    public float groundDamageSplashMultiplier = 1f;
     public boolean flatDamage = false;
+
+    private static final Rect rect = new Rect();
 
     public EffectivenessMissleType(float speed, float damge, String bulletSprite){
         super(speed, damge, bulletSprite);
@@ -53,4 +66,86 @@ public class EffectivenessMissleType extends MissileBulletType {
         handlePierce(b, health, entity.x(), entity.y());
     }
 
+    @Override
+    public void createSplashDamage(Bullet b, float x, float y){
+        //All this so splash damge's mul is also applied
+        //Damage.damage(b.team, x, y, splashDamageRadius, splashDamage * b.damageMultiplier(), splashDamagePierce, collidesAir, collidesGround, scaledSplashDamage, b);
+        if(splashDamageRadius > 0 && !b.absorbed){
+            Cons<Unit> cons = unit -> {
+                if(unit.team == b.team  || !unit.checkTarget(collidesAir, collidesGround) || !unit.hittable() || !unit.within(x, y, splashDamageRadius + (scaledSplashDamage ? unit.hitSize / 2f : 0f))){
+                    return;
+                }
+
+                boolean dead = unit.dead, grounded = unit.isGrounded() && collidesGround;
+
+                float amount = calculateDamage(scaledSplashDamage ? Math.max(0, unit.dst(x, y) - unit.type.hitSize/2) : unit.dst(x, y), splashDamageRadius, splashDamage * (grounded  ? groundDamageSplashMultiplier : 1));
+                unit.damage(amount);
+
+                if(b != null){
+                    Events.fire(bulletDamageEvent.set(unit, b));
+                    unit.controller().hit(b);
+
+                    if(!dead && unit.dead){
+                        Events.fire(new EventType.UnitBulletDestroyEvent(unit, b));
+                    }
+                }
+                //TODO better velocity displacement
+                float dst =  Tmp.v1.set(unit.x - x, unit.y - y).len();
+                unit.vel.add( Tmp.v1.setLength((1f - dst / splashDamageRadius) * 2f / unit.mass()));
+
+                if(splashDamagePierce && splashDamage >= 9999999f && unit.isPlayer()){
+                    Events.fire(EventType.Trigger.exclusionDeath);
+                }
+            };
+
+            rect.setSize(splashDamageRadius * 2).setCenter(x, y);
+            if(b.team != null){
+                Units.nearbyEnemies(b.team, rect, cons);
+            }else{
+                Units.nearby(rect, cons);
+            }
+
+            if(collidesGround){
+                if(!splashDamagePierce){
+                    Damage.tileDamage(b.team, World.toTile(x), World.toTile(y), splashDamageRadius / tilesize, damage * (b == null ? 1f : b.type.buildingDamageMultiplier), b);
+                }else{
+                    completeDamage(b.team, x, y, splashDamageRadius, damage);
+                }
+            }
+
+            if(status != StatusEffects.none){
+                Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+            }
+
+            if(heals()){
+                indexer.eachBlock(b.team, x, y, splashDamageRadius, Building::damaged, other -> {
+                    healEffect.at(other.x, other.y, 0f, healColor, other.block);
+                    other.heal(healPercent / 100f * other.maxHealth() + healAmount);
+                });
+            }
+
+            if(makeFire){
+                indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team, other -> Fires.create(other.tile));
+            }
+        }
+    }
+
+    private static float calculateDamage(float dist, float radius, float damage){
+        float falloff = 0.4f;
+        float scaled = Mathf.lerp(1f - dist / radius, 1f, falloff);
+        return damage * scaled;
+    }
+
+    private static void completeDamage(Team team, float x, float y, float radius, float damage){
+
+        int trad = (int)(radius / tilesize);
+        for(int dx = -trad; dx <= trad; dx++){
+            for(int dy = -trad; dy <= trad; dy++){
+                Tile tile = world.tile(Math.round(x / tilesize) + dx, Math.round(y / tilesize) + dy);
+                if(tile != null && tile.build != null && (team == null || team != tile.team()) && dx*dx + dy*dy <= trad*trad){
+                    tile.build.damage(team, damage);
+                }
+            }
+        }
+    }
 }

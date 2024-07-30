@@ -22,20 +22,20 @@ public class NyfalisTechTree {
                         node(terrarootCaves,
                                 Seq.with(new Objectives.SectorComplete(sanctuary)),
                         () -> {
-                            node(dyingForest, () -> {
+                            node(dyingForest, Seq.with(new Objectives.SectorComplete(terrarootCaves)), () -> {
                                 node(coldFlats, Seq.with(new Objectives.SectorComplete(conciditRuins)),  () -> {
-                                    node(glasierSea, () -> {
+                                    node(glasierSea,Seq.with(new Objectives.SectorComplete(coldFlats), new Objectives.SectorComplete(dyingForest)), () -> {
 
                                     });
                                 });
-                                node(muddyLakes, () -> {
-                                    node(abandonedPayloadTerminal, () -> {
-                                        node(ironCurtain, () -> {
+                                node(muddyLakes, Seq.with(new Objectives.SectorComplete(dyingForest)), () -> {
+                                    node(abandonedPayloadTerminal, Seq.with(new Objectives.SectorComplete(muddyLakes)), () -> {
+                                        node(ironCurtain, Seq.with(new Objectives.SectorComplete(abandonedPayloadTerminal)), () -> {
 
                                         });
                                     });
                                 });
-                                node(conciditRuins, Seq.with(new Objectives.Research(groundConstruct)), () -> {
+                                node(conciditRuins, Seq.with(new Objectives.Research(groundConstruct), new Objectives.SectorComplete(dyingForest)), () -> {
 
                                 });
                             });
@@ -47,15 +47,21 @@ public class NyfalisTechTree {
                         new Objectives.SectorComplete(glasierSea),
                         new Objectives.SectorComplete(coldFlats)
                 ),() ->{
-                    node(conservatorium, Seq.with(
-                            new Objectives.SectorComplete(sanctuary)
+                    node(conservatorium, Seq.with( //Just incase the planet node was somehow unlocked prematurely
+                            new Objectives.SectorComplete(sanctuary),
+                            new Objectives.SectorComplete(ironCurtain),
+                            new Objectives.SectorComplete(glasierSea),
+                            new Objectives.SectorComplete(coldFlats)
                     ), () ->{
                     });
                 });
                 node(spelta, Seq.with(
                         new Objectives.SectorComplete(sanctuary), new  Objectives.Research(groundConstruct)
                 ), () ->{
-                    node(forestOfHope,  () ->{
+                    node(forestOfHope, Seq.with(
+                            new Objectives.SectorComplete(conservatorium),
+                            new Objectives.Research(groundConstruct)
+                    ), () ->{
                         node(dormantCell,  ()-> {
 
                         });
