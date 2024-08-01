@@ -944,7 +944,7 @@ public class NyfalisTurrets {
             minWarmup = 0.9f;
             smokeEffect = shootEffect =  Fx.none;
 
-            shootType = new ExplosionBulletType(35, 13){{
+            shootType = new ExplosionBulletType(40, 13.4f){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = false;
                 fragBullets = 8;
@@ -954,7 +954,7 @@ public class NyfalisTurrets {
                     speed = 3;
                     damage = 0;
                     lifetime = 2;
-                    knockback = 0.5f;
+                    knockback = 0.8f;
                     hitSoundVolume = 0.5f;
                     trailEffect = despawnEffect = smokeEffect = shootEffect =  Fx.none;
                     hitEffect =  Fx.hitFlameSmall;
@@ -991,9 +991,9 @@ public class NyfalisTurrets {
             outlineColor = nyfalisBlockOutlineColour;
             loopSound = NyfalisSounds.sawActiveLoop;
             coolant = consume(new ConsumeLubricant(15f / 60f));
-            consumePower(0.3f);
-            researchCost = with(rustyIron, 200, copper, 150);
-            requirements(Category.turret, with(rustyIron, 60, copper, 50));
+            consumePower(20f / 60f);
+            researchCost = with(iron, 200, copper, 150);
+            requirements(Category.turret, with(iron, 60, copper, 50));
 
         }
             @Override

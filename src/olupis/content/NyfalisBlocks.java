@@ -96,18 +96,18 @@ public class NyfalisBlocks {
         heavyMine,fragMine,glitchMine,mossMine,
         corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator, slash, laceration,strata,
 
-        rustyDrill, steamDrill, hydroElectricDrill,
+        rustyDrill, steamDrill, hydroElectricDrill, steamAgitator, garden, fortifiedRadiator,
 
         rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader, rustedBridge,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
-        steamBoiler, steamAgitator, broiler, oilSeparator, lubricantMixer, demulsifier,
+        steamBoiler, broiler, oilSeparator, lubricantMixer, demulsifier,
 
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine,
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
+         bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall, repairPin, scoutPad,
 
@@ -918,6 +918,44 @@ public class NyfalisBlocks {
             requirements(Category.production, ItemStack.with(iron, 30, lead, 60, rustyIron, 60));
         }};
 
+        steamAgitator = new AttributeCrafter("steam-agitator"){{
+            outputsLiquid = solid = hasLiquids = true;
+            displayEfficiency = rotate = false;
+
+            size = 3;
+            boostScale = 0.1f;
+            craftTime = 150f;
+            baseEfficiency = 0f;
+            scaledHealth = 50f;
+            liquidCapacity = 30f;
+            minEfficiency = 9f - 0.0001f;
+            envEnabled = Env.any;
+            updateEffect = Fx.steam;
+            attribute = Attribute.steam;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NyfalisItemsLiquid.steam, 1f),
+                    new DrawDefault()
+            );
+            researchCost = with(lead, 750, rustyIron, 750, copper, 750);
+            outputLiquid = new LiquidStack(NyfalisItemsLiquid.steam, 15/60f);
+            requirements(Category.production, with(rustyIron, 30, lead, 30, copper, 30));
+        }};
+
+        fortifiedRadiator = new RadiatorCrafter("fortified-radiator"){{
+
+            size = 5;
+            liquidCapacity = 50f;
+            buildCostMultiplier = 1.5f;
+            passiveOutput = (24f/60f)/ 9f; //really meant for vents that are 3x3, anything more is a boost
+            consumePower(1f);
+            consumeLiquid(NyfalisItemsLiquid.steam, 40/60f);
+            outputLiquid = new LiquidStack(Liquids.water, 6/60f);
+            attribute = Attribute.steam;
+            requirements(Category.production, with(rustyIron, 150, lead, 150, copper, 150));
+        }};
+
         //endregion
         //region Liquid
         rustyPump = new Pump("rusty-pump"){{
@@ -1065,31 +1103,6 @@ public class NyfalisBlocks {
             );
         }};
 
-        steamAgitator = new AttributeCrafter("steam-agitator"){{
-            outputsLiquid = solid = hasLiquids = true;
-            displayEfficiency = rotate = false;
-
-            size = 3;
-            boostScale = 0.1f;
-            craftTime = 150f;
-            baseEfficiency = 0f;
-            scaledHealth = 50f;
-            liquidCapacity = 30f;
-            minEfficiency = 9f - 0.0001f;
-            envEnabled = Env.any;
-            updateEffect = Fx.steam;
-            attribute = Attribute.steam;
-
-            drawer = new DrawMulti(
-                    new DrawRegion("-bottom"),
-                    new DrawLiquidTile(NyfalisItemsLiquid.steam, 1f),
-                    new DrawDefault()
-            );
-            researchCost = with(lead, 750, rustyIron, 750, copper, 750);
-            outputLiquid = new LiquidStack(NyfalisItemsLiquid.steam, 15/60f);
-            requirements(Category.production, with(rustyIron, 30, lead, 30, copper, 30));
-
-        }};
 
         broiler = new BoostableGenericCrafter("broiler"){{
             hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
