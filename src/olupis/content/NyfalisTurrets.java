@@ -52,7 +52,7 @@ public class NyfalisTurrets {
             recoil = 1;
             shootY = 7f;
             range = 15 * 8f;
-            health = 1500;
+            health = 750;
             fogRadius = 13;
             shootCone = 50f;
             inaccuracy = 8.5f;
