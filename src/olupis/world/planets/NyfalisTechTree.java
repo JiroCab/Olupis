@@ -148,13 +148,15 @@ public class NyfalisTechTree {
 
                     });
                 });
-                node(phorid, Seq.with(
-                        new Objectives.SectorComplete(sanctuary), new  Objectives.Research(coreRelic)
-                ), () -> {
-                    node(embryo, () -> {
+                node(pedicia, Seq.with(new Objectives.Research(coreVestige)), () ->{
+                    node(phorid, Seq.with(
+                            new Objectives.SectorComplete(sanctuary), new  Objectives.Research(coreRelic)
+                    ), () -> {
+                        node(embryo, () -> {
 
+                        });
                     });
-                });
+                }) ;
             });
 
             node(mossyBoulder, ()-> {
@@ -239,7 +241,9 @@ public class NyfalisTechTree {
                                     Seq.with(new Objectives.OnSector(terrarootCaves)),
                             ()->{
                                 node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
+                                    node(fortifiedRadiator, () ->{
 
+                                    });
                                 });
                                 node(demulsifier, Seq.with(new Objectives.OnSector(dyingForest), new Objectives.Produce(emulsiveSlop)),()->{
 

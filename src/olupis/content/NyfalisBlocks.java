@@ -947,7 +947,7 @@ public class NyfalisBlocks {
 
             size = 5;
             liquidCapacity = 50f;
-            buildCostMultiplier = 1.5f;
+            buildCostMultiplier = 2f;
             passiveOutput = (24f/60f)/ 9f; //really meant for vents that are 3x3, anything more is a boost
             consumePower(1f);
             consumeLiquid(NyfalisItemsLiquid.steam, 40/60f);
@@ -1196,28 +1196,34 @@ public class NyfalisBlocks {
             buildCostMultiplier = 0.5f;
             craftEffect = Fx.pulverizeMedium;
 
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NyfalisItemsLiquid.steam),
+                    new DrawLiquidTile(Liquids.oil, 10f),
+                    new DrawDefault()
+            );
             consumePower(30f/60f);
-            researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             outputItem = new ItemStack(Items.graphite, 1);
+            researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             requirements(Category.crafting, with(iron, 10, lead, 50, rustyIron, 40));
             consumeLiquids(LiquidStack.with(Liquids.oil, 10f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
         }};
 
         siliconKiln = new GenericCrafter("silicon-kiln"){{
-            requirements(Category.crafting, with(Items.copper, 30, Items.lead, 25, rustyIron, 15));
-            craftEffect = Fx.smeltsmoke;
-            outputItem = new ItemStack(Items.silicon, 1);
-            craftTime = 40f;
+
+
             size = 2;
-            hasPower = hasLiquids = true;
-            drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("ffef99")));
-            ambientSound = Sounds.smelter;
-            ambientSoundVolume = 0.07f;
-
-
+            craftTime = 40f;
             consumeItem(quartz, 4);
+            ambientSoundVolume = 0.07f;
             consumeLiquid(oil, 15f/60f);
             consumePower(0.50f);
+            hasPower = hasLiquids = true;
+            craftEffect = Fx.smeltsmoke;
+            ambientSound = Sounds.smelter;
+            outputItem = new ItemStack(Items.silicon, 1);
+            requirements(Category.crafting, with(Items.copper, 30, Items.lead, 30, iron, 20));
+            drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("ffef99")));
         }};
 
         siliconArcSmelter = new GenericCrafter("silicon-arc-smelters") {{
@@ -1749,7 +1755,7 @@ public class NyfalisBlocks {
                         new DrawLiquidTile(Liquids.water, 2f){
                             @Override
                             public void draw(Building build){
-                                Liquid drawn = drawLiquid != null ? drawLiquid : build.liquids.current();
+                                Liquid drawn = build.floor().isLiquid && build.floor().asFloor().liquidDrop != null ?  build.floor().asFloor().liquidDrop : (drawLiquid != null ? drawLiquid : build.liquids.current());
                                 LiquidBlock.drawTiledFrames(build.block.size, build.x, build.y, padLeft, padRight, padTop, padBottom, drawn, alpha);
                             }
                         },

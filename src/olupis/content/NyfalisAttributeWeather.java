@@ -48,6 +48,9 @@ public class NyfalisAttributeWeather {
         pinkGrassWater.attributes.set(hydro, 0.3f);
         lumaGrassWater.attributes.set(hydro, 0.3f);
         yellowMossyWater.attributes.set(hydro, 0.3f);
+        algaeWaterDeep.attributes.set(hydro, 0.5f);
+        coralReef.attributes.set(hydro, 0.5f);
+        slop.attributes.set(hydro, 0.08f);
 
         mossyStone.asFloor().decoration = bush;
         mossyStone.asFloor().decoration = boulder;

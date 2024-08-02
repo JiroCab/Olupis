@@ -19,8 +19,7 @@ import mindustry.type.Category;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.legacy.LegacyBlock;
-import mindustry.world.draw.DrawRegion;
-import mindustry.world.draw.DrawTurret;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.consumer.ConsumeLubricant;
@@ -1504,7 +1503,7 @@ public class NyfalisTurrets {
     public static void dynamicTurretContentClient(){
         String cascadeName = cascadeAlt ? "PH-cascade" : "cascade";
         cascade.region = Core.atlas.find("olupis-" + cascadeName, "olupis-cascade");
-        cascade.uiIcon = cascade.fullIcon = Core.atlas.find("olupis-" + cascadeName + "-preview"); //TODO DRAW BASE
+        cascade.uiIcon = cascade.fullIcon = Core.atlas.find("olupis-" + cascadeName + "-ui");
 
         cascade.localizedName = Core.bundle.get(cascade.getContentType() + ".olupis-"  + cascadeName + ".name");
         cascade.details = Core.bundle.getOrNull(cascade.getContentType() + ".olupis-" + cascadeName + ".details");
