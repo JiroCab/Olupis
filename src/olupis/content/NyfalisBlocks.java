@@ -1210,13 +1210,12 @@ public class NyfalisBlocks {
         }};
 
         siliconKiln = new GenericCrafter("silicon-kiln"){{
-
-
             size = 2;
             craftTime = 40f;
-            consumeItem(quartz, 4);
+            liquidCapacity = 30f;
             ambientSoundVolume = 0.07f;
-            consumeLiquid(oil, 15f/60f);
+            consumeItem(quartz, 4);
+            consumeLiquid(oil, 25f/60f);
             consumePower(0.50f);
             hasPower = hasLiquids = true;
             craftEffect = Fx.smeltsmoke;
@@ -1231,6 +1230,7 @@ public class NyfalisBlocks {
             size = 4;
             craftTime = 30f;
             itemCapacity = 30;
+            liquidCapacity = 15f;
 
             consumePower(70f/60f);
             outputItem = new ItemStack(silicon, 3);
@@ -1251,7 +1251,7 @@ public class NyfalisBlocks {
             liquidOutputDirections = new int[]{4};
             hasLiquids = outputsLiquid = rotate = quickRotate = true;
             liquidOutputs = LiquidStack.with(Liquids.slag, 5f / 60f);
-            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
+            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, alcoAlloy, 20));
         }};
 
         bioMatterPress = new GenericCrafter("biomatter-press"){{
