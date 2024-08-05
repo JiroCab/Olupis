@@ -124,7 +124,7 @@ public class HealOnlyBulletType extends BasicBulletType {
     }
 
     public boolean checkFog(Bullet b){
-        if(!Vars.state.rules.fog) return false;
+        if(!Vars.state.rules.fog) return true;
         if(Vars.headless) return  false; //causes a crash because of the bellow, so this will just be hidden client side
         if(fogVisible) return true;
         return !b.inFogTo(Vars.player.team());

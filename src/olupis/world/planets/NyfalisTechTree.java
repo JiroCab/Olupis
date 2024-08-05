@@ -368,31 +368,31 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(construct, Seq.with(new Objectives.Research(ironRouter), new Objectives.OnSector(dyingForest)), ()->{
-                    node(groundConstruct,
-                        Seq.with(new Objectives.Research(iron))
-                    , () ->{
-                        node(arialConstruct, Seq.with(new Objectives.SectorComplete(dyingForest)), () ->{
-                            node(navalConstruct, () ->{
+                node(unitReplicatorSmall, Seq.with(new Objectives.OnSector(terrarootCaves)),()->{
+                    node(construct, Seq.with(new Objectives.Research(ironRouter), new Objectives.OnSector(dyingForest)), ()->{
+                        node(groundConstruct,
+                            Seq.with(new Objectives.Research(iron))
+                        , () ->{
+                            node(arialConstruct, Seq.with(new Objectives.SectorComplete(dyingForest)), () ->{
+                                node(navalConstruct, () ->{
+
+                                });
+                            });
+                        });
+                        node(fortifiePayloadConveyor, () -> {
+                            node(fortifiePayloadConveyor, () -> {
 
                             });
                         });
-                    });
-                    node(fortifiePayloadConveyor, () -> {
-                        node(fortifiePayloadConveyor, () -> {
+                        node(repairPin, () -> {
+                            node(alternateArticulator,  Seq.with(
+                                    new  Objectives.SectorComplete(abandonedPayloadTerminal)
+                            ), () -> {
 
+                            });
                         });
-                    });
-                    node(repairPin, () -> {
-                        node(alternateArticulator,  Seq.with(
-                                new  Objectives.SectorComplete(abandonedPayloadTerminal)
-                        ), () -> {
 
-                        });
-                    });
-
-                    node(unitReplicator,  Seq.with(new Objectives.OnSector(dyingForest)),()->{
-                        node(unitReplicatorSmall, ()->{
+                        node(unitReplicator,  Seq.with(new Objectives.OnSector(dyingForest)),()->{
 
                         });
                     });

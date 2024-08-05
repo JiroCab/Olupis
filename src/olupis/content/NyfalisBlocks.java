@@ -1103,7 +1103,6 @@ public class NyfalisBlocks {
             );
         }};
 
-
         broiler = new BoostableGenericCrafter("broiler"){{
             hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
 
@@ -1136,6 +1135,7 @@ public class NyfalisBlocks {
             hasLiquids = hasPower =  outputsLiquid = consumesPower = rotate = true;
             size = 2;
 
+            liquidCapacity =25f;
             craftTime = 2f / 60f;
             consumePower(1f);
             liquidOutputDirections = new int[]{1, 3};
@@ -1143,6 +1143,16 @@ public class NyfalisBlocks {
             researchCost = with(iron, 500, lead, 800, copper, 800, rustyIron, 800);
             outputLiquids = LiquidStack.with(Liquids.water, 13f / 60f, Liquids.oil, 10f / 60f);
             requirements(Category.liquid, with(quartz, 40, iron, 25, lead, 50,copper, 50));
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water){{
+                        padLeft = 7f;
+                    }},
+                    new DrawLiquidTile(Liquids.oil){{
+                        padRight = 7f;
+                    }},
+                    new DrawDefault()
+            );
         }};
 
         //endregion
