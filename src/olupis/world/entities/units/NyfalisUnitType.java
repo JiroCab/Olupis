@@ -28,14 +28,14 @@ import mindustry.type.*;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
 import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.parts.NyfPartParms;
 
+import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class NyfalisUnitType extends UnitType {
@@ -139,6 +139,10 @@ public class NyfalisUnitType extends UnitType {
             stats.add(Stat.weapons, NyfalisStats.weapons(this, weapons));
         }
 
+        if(settings.getBool("nyfalis-debug")){
+            stats.add(new Stat("olupis-id", StatCat.function), this.id);
+        }
+
     }
 
     @Override
@@ -220,6 +224,8 @@ public class NyfalisUnitType extends UnitType {
         strictAngle = true,
         /*Solid check*/
         fireOverSolids = true,
+        /*Fire on time out*/
+        fireOnTimeOut = false,
         /*Stats*/
         statsBlocksOnly = false;
         /*Margin where when a weapon can fire while transition from ground to air*/

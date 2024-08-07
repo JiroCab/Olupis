@@ -15,6 +15,7 @@ import mindustry.ai.types.LogicAI;
 import mindustry.content.Blocks;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
+import mindustry.entities.units.WeaponMount;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
@@ -207,6 +208,12 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
     @Override
     public void update(Unit unit){
         if (unit.ammo <= deathThreshold && killOnAmmoDepletion){
+            for(WeaponMount mount : unit.mounts){
+                if(mount.weapon instanceof  NyfalisWeapon w && w.fireOnTimeOut ){
+                    mount.shoot = true;
+                    mount.weapon.update(unit, mount);
+                }
+            }
             callTimeOut(unit);
         }
 
@@ -264,6 +271,14 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
         startTime = Time.time;
         unit.apply(spawnStatus, spawnStatusDuration);
         return unit;
+    }
+
+    public Unit spawn(Team team, float x, float y, float ammo){
+        Unit out = create(team);
+        out.set(x, y);
+        out.ammo =ammoCapacity * ammo;
+        out.add();
+        return out;
     }
 
     public boolean inRange(Unit unit){

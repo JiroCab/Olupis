@@ -101,8 +101,8 @@ public class NyfalisMain extends Mod{
 
         Events.on(ClientLoadEvent.class, e -> {
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
-            NyfalisStartUpUis.saveDisclaimerDialog();
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
+            NyfalisStartUpUis.saveDisclaimerDialog();
 
             Vars.ui.planet.shown(() -> {
                 if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.spaces.random(), Core.settings.getInt("ambientvol", 100) / 100f, 1, 0, false);

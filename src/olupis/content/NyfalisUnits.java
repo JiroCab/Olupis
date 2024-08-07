@@ -1273,7 +1273,7 @@ public class NyfalisUnits {
                 ammoPerShot = ammoCapacity ;
                 shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
                 mirror = false;
-                shootOnDeath = true;
+                shootOnDeath = fireOnTimeOut = true;
                 bullet = new BulletType(){{
 
                     speed = 0f;

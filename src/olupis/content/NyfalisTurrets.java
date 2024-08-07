@@ -310,6 +310,78 @@ public class NyfalisTurrets {
             }
         };
 
+        slash = new PowerTurret("slash"){{
+            reload = 6;
+            shootY = 11;
+            inaccuracy = 0.5f;
+            rotateSpeed = 3f;
+            minWarmup = 0.9f;
+            smokeEffect = shootEffect =  Fx.none;
+
+            shootType = new ExplosionBulletType(40, 13.4f){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = false;
+                fragBullets = 8;
+                fragSpread = 360;
+                fragRandomSpread = 0;
+                fragBullet = new BulletType(){{
+                    speed = 3;
+                    damage = 0;
+                    lifetime = 2;
+                    knockback = 0.8f;
+                    hitSoundVolume = 0.5f;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect =  Fx.none;
+                    hitEffect =  Fx.hitFlameSmall;
+                    collidesAir = false;
+                    hitSound = NyfalisSounds.sawCollision;
+                }};
+            }};
+            drawer = new DrawTurret("iron-"){{
+                targetAir = false;
+
+                size = 2;
+                recoil = 0;
+                armor = 2f;
+                range = 20f;
+                health = 3000;
+                fogRadius = 13;
+                shootCone = 180f;
+                liquidCapacity = 5f;
+                coolantMultiplier = 3f;
+
+                parts.addAll(
+                        new RegionPart("-buzzsaw"){{
+                            layer = Layer.legUnit + 0.1f;
+                            mirror = false;
+                            under = true;
+                            progress = PartProgress.warmup;
+                            y = 4;
+                            moveY = 8;
+                            moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
+                        }}
+                );
+            }};
+            shootSound = Sounds.none;
+            outlineColor = nyfalisBlockOutlineColour;
+            loopSound = NyfalisSounds.sawActiveLoop;
+            coolant = consume(new ConsumeLubricant(15f / 60f));
+            consumePower(20f / 60f);
+            researchCost = with(iron, 200, copper, 150);
+            requirements(Category.turret, with(iron, 60, copper, 50));
+
+        }
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.remove(Stat.ammo);
+                stats.remove(Stat.inaccuracy);
+                stats.remove(Stat.reload);
+                stats.remove(Stat.booster);
+                stats.add(new Stat("olupis-damage", StatCat.function),shootType.splashDamage * (60 / reload) , StatUnit.perSecond);
+                stats.add(Stat.booster, NyfalisStats.sawBoosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
+            }
+        };
+
         shredder = new ItemTurret("shredder"){{
             //TODO: check for clear path to unit
             targetAir = false;
@@ -934,78 +1006,6 @@ public class NyfalisTurrets {
             heatColor = cascadeColor;
             cooldownTime = 240;
         }};
-
-        slash = new PowerTurret("slash"){{
-            reload = 6;
-            shootY = 11;
-            inaccuracy = 0.5f;
-            rotateSpeed = 3f;
-            minWarmup = 0.9f;
-            smokeEffect = shootEffect =  Fx.none;
-
-            shootType = new ExplosionBulletType(40, 13.4f){{
-                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
-                killShooter = collidesAir = false;
-                fragBullets = 8;
-                fragSpread = 360;
-                fragRandomSpread = 0;
-                fragBullet = new BulletType(){{
-                    speed = 3;
-                    damage = 0;
-                    lifetime = 2;
-                    knockback = 0.8f;
-                    hitSoundVolume = 0.5f;
-                    trailEffect = despawnEffect = smokeEffect = shootEffect =  Fx.none;
-                    hitEffect =  Fx.hitFlameSmall;
-                    collidesAir = false;
-                    hitSound = NyfalisSounds.sawCollision;
-                }};
-            }};
-            drawer = new DrawTurret("iron-"){{
-                targetAir = false;
-
-                size = 2;
-                recoil = 0;
-                armor = 2f;
-                range = 20f;
-                health = 3000;
-                fogRadius = 13;
-                shootCone = 180f;
-                liquidCapacity = 5f;
-                coolantMultiplier = 3f;
-
-                parts.addAll(
-                        new RegionPart("-buzzsaw"){{
-                            layer = Layer.legUnit + 0.1f;
-                            mirror = false;
-                            under = true;
-                            progress = PartProgress.warmup;
-                            y = 4;
-                            moveY = 8;
-                            moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
-                        }}
-                );
-            }};
-            shootSound = Sounds.none;
-            outlineColor = nyfalisBlockOutlineColour;
-            loopSound = NyfalisSounds.sawActiveLoop;
-            coolant = consume(new ConsumeLubricant(15f / 60f));
-            consumePower(20f / 60f);
-            researchCost = with(iron, 200, copper, 150);
-            requirements(Category.turret, with(iron, 60, copper, 50));
-
-        }
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.remove(Stat.ammo);
-                stats.remove(Stat.inaccuracy);
-                stats.remove(Stat.reload);
-                stats.remove(Stat.booster);
-                stats.add(new Stat("olupis-damage", StatCat.function),shootType.splashDamage * (60 / reload) , StatUnit.perSecond);
-                stats.add(Stat.booster, NyfalisStats.sawBoosters(reload, coolant.amount, coolantMultiplier, false, this::consumesLiquid));
-            }
-        };
 
         laceration = new PowerTurret("laceration"){{
             inaccuracy = 0.5f;
