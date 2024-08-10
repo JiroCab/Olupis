@@ -299,12 +299,15 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
         //check positions on the map to place the player spawn. this needs to be in the corner of the map
         Room spawn = null;
+
         Seq<Room> enemies = new Seq<>();
         int enemySpawns = rand.random(1, Math.max((int)(sector.threat * 4), 1));
+
         int offset = rand.nextInt(360);
         float length = width/2.55f - rand.random(13, 23);
         int angleStep = 5;
         int waterCheckRad = 5;
+
         for(int i = 0; i < 360; i+= angleStep){
             int angle = offset + i;
             int cx = (int)(width/2 + Angles.trnsx(angle, length));
@@ -494,7 +497,6 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
         float difficulty = sector.threat;
         int zoneCap = 1 + Math.round(extraMaxCoreZonesScale * difficulty);
-        final int[] zoneCount = {0};
 
         pass((x, y) -> {
             Tile tile = tiles.get(x, y);
@@ -555,6 +557,16 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
                 } else ore = waterFeatures.random();
             }
 
+            //Ore Randomness TODO: spreading moss addition
+            if(tile.overlay() == oreCopper){
+               if(rand.chance(0.45)) ore = oreOxidizedCopper;
+//               else if(rand.chance(0.25)) ore = mossyCopper;
+            }
+            if(tile.overlay() == oreLead){
+                if(rand.chance(0.45)) ore = oreOxidizedLead;
+//               else if(rand.chance(0.25)) ore = mossyLead;
+            }
+
             //random stuff
             dec: {
                 for(int i = 0; i < 4; i++){
@@ -566,29 +578,6 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
                 if(rand.chance(0.01) && floor.asFloor().hasSurface() && block == air){
                     block = dec.get(floor, floor.asFloor().decoration);
-                }
-            }
-
-            zone:
-            {
-                if (zoneCount[0] > zoneCap) break zone;
-                for (int i = 0; i < 6; i++) {
-                    for (int j = 0; i < 6; i++) {
-                        Tile check = tiles.get(x + i, y + j);
-                        if (check != null && (!treesAll.contains(check.block()) || check.block() != air)) {
-                            break zone;
-                        }
-                    }
-                }
-
-                if (rand.chance(0.05)) {
-                    ++zoneCount[0];
-                    for (int i = 0; i < 5; i++) {
-                        for (int j = 0; i < 5; i++) {
-                            Log.err("uwu");
-                            floor = coreZone;
-                        }
-                    }
                 }
             }
 
@@ -613,6 +602,18 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         tiles.get(spawn.x, spawn.y + 1).setFloor(coreZone.asFloor());
         Schematics.placeLaunchLoadout(spawn.x, spawn.y);
 
+        Seq<Room> zRoom = roomseq;
+        zRoom.remove(spawn);
+        for(int j = 0; j < zoneCap; j++){
+            Math.abs(Mathf.randomSeed(zRoom.size,0,  zRoom.size));
+            Room zone = roomseq.random();
+            tiles.getn(zone.x, zone.y).setFloor(coreZone.asFloor());
+            tiles.getn(zone.x, zone.y).setBlock(corroder, Team.sharded);
+            tiles.getn(zone.x +1, zone.y).setFloor(coreZone.asFloor());
+            tiles.getn(zone.x +1, zone.y +1).setFloor(coreZone.asFloor());
+            tiles.getn(zone.x, zone.y + 1).setFloor(coreZone.asFloor());
+            zRoom.remove(zone);
+        }
 
         for(Room espawn : enemies){
             tiles.getn(espawn.x, espawn.y).setOverlay(Blocks.spawn);

@@ -1,12 +1,15 @@
 package olupis.content;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.EnumSet;
 import arc.struct.ObjectSet;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.Effect;
@@ -27,8 +30,7 @@ import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.payloads.PayloadRouter;
-import mindustry.world.blocks.power.Battery;
-import mindustry.world.blocks.power.ConsumeGenerator;
+import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumePower;
@@ -117,7 +119,7 @@ public class NyfalisBlocks {
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
 
         /*special*/
-        scarabRadar
+        scarabRadar, FloodDisruptor
     ; //endregion
     public static  UnstablePowerTurret cascade;
 
@@ -2221,7 +2223,39 @@ public class NyfalisBlocks {
             researchCost = with(iron, 400, graphite, 400, silicon, 200);
         }};
 
+        FloodDisruptor = new ImpactReactor("flood-disruptor"){{
+            //Flood helper
+            requirements(Category.logic, with(rustyIron, 500, Items.silicon, 100, Items.graphite, 250, iron, 250, copper, 300, lead, 300));
+            size = 5;
+            health = 900;
+            powerProduction = 20f/60f;
+            itemDuration = 3f * 60f;
+            ambientSound = Sounds.pulse;
+            ambientSoundVolume = 0.07f;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawDefault(),
+                    new DrawPlasma(){
+                        @Override
+                        public void draw(Building build){
+                            Draw.blend(Blending.additive);
+                            for(int i = 0; i < regions.length; i++){
+                                float r = ((float)regions[i].width * regions[i].scl() - 3f + Mathf.absin(Time.time, 2f + i * 1f, 5f - i * 0.5f));
 
+                                Draw.color(plasma1, plasma2, (float)i / regions.length);
+                                Draw.alpha((0.3f + Mathf.absin(Time.time, 2f + i * 2f, 0.3f + i * 0.05f)) * build.warmup());
+                                Draw.rect(regions[i], build.x, build.y, r, r); //no spin
+                            }
+                            Draw.color();
+                            Draw.blend();
+                        }
+                    }
+            );
+
+            consumePower(300f/60f);
+            consumeItems(new ItemStack(iron, 1), new ItemStack(silicon, 1));
+            consumeLiquid(lubricant, 0.25f);
+        }};
         //endregion
         //special
         scarabRadar = new Radar("scarab-block-radar"){{
@@ -2258,7 +2292,7 @@ public class NyfalisBlocks {
 
         for (Planet p : Vars.content.planets()) {
             if (Objects.equals(p.name, "serpulo")) p.techTree.each(n -> {
-                if (n.content instanceof Block b) hiddenNyfalisBlocks.add(b);
+                if (n.content instanceof Block b && !sandBoxBlocks.contains(b)) hiddenNyfalisBlocks.add(b);
             });
         }
 
