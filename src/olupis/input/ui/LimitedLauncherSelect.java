@@ -1,4 +1,4 @@
-package olupis.input;
+package olupis.input.ui;
 
 import arc.Core;
 import arc.Events;
@@ -42,7 +42,7 @@ import olupis.content.NyfalisSounds;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.graphics.g3d.PlanetRenderer.*;
-import static olupis.input.LimitedLauncherSelect.NyfMode.*;
+import static olupis.input.ui.LimitedLauncherSelect.NyfMode.*;
 
 public class LimitedLauncherSelect extends BaseDialog implements PlanetRenderer.PlanetInterfaceRenderer {
     static final String[] defaultIcons = {

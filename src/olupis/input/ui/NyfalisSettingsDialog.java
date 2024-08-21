@@ -1,4 +1,4 @@
-package olupis.input;
+package olupis.input.ui;
 
 import arc.Core;
 import arc.graphics.Color;

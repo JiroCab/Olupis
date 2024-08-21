@@ -2,8 +2,8 @@ package olupis.world.blocks.defence;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.util.Nullable;
-import arc.util.Scaling;
+import arc.scene.ui.layout.Table;
+import arc.util.*;
 import arc.util.io.Reads;
 import mindustry.content.Items;
 import mindustry.entities.Units;
@@ -16,6 +16,7 @@ import mindustry.ui.*;
 import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import olupis.NyfalisMain;
 import olupis.content.NyfalisItemsLiquid;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 
@@ -68,11 +69,50 @@ public class PowerUnitTurret extends ItemUnitTurret {
         stats.remove(Stat.output);
         stats.add(Stat.output, table -> {
             table.row();
-            this.ammoTypes.each((item, bul) -> {
+            boolean[] show = {true};
+
+            //power unit
+            table.table(Styles.grayPanel, nu ->{
+                UnitType displayUnit = ammoTypes.get(internalItem).spawnUnit;
+                if (displayUnit == null || internalItem == null) return;
+                nu.row();
+                nu.table(Styles.grayPanel, b -> {
+                    if (!displayUnit.isBanned())
+                        b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                    else
+                        b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                    b.table(info -> {
+                        if (internalItem != null) info.table(title -> {
+                            title.image(internalItem.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                            title.add(Core.bundle.get("stat.olupis-unitpowercost")).left().top().padLeft(5f);
+                        }).left().row();
+                        info.add(displayUnit.localizedName).left().row();
+                        info.add("[lightgray]"+Math.round(ammoTypes.get(internalItem).reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
+                        if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                    });
+                    b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                }).growX().pad(5).row();
+            }).growX().pad(5).row();
+
+            //Divider
+            table.image().color(Pal.accent).height(3.0F).pad(3.0F).growX().row();
+
+            //Items
+            table.add(new Table(NyfalisMain.gayerPanel, b ->{
+                b.button(Icon.upOpen, Styles.emptyi, () -> show[0] = !show[0]).update(i -> i.getStyle().imageUp = (!show[0] ? Icon.upOpen : Icon.downOpen)).pad(10).padRight(4).left();
+                for(ItemStack stack : requiredItems){
+                    b.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
+                }
+            }).align(Align.center)).growX().pad(5);
+            table.row();
+
+            //Units
+            table.collapser(nu -> this.ammoTypes.each((item, bul) -> {
                 UnitType displayUnit = bul.spawnUnit;
-                if (displayUnit == null) return;
-                table.row();
-                table.table(Styles.grayPanel, b -> {
+                if (displayUnit == null || item == internalItem) return;
+                nu.row();
+                nu.table(Styles.grayPanel, b -> {
                     if (!displayUnit.isBanned())
                         b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
                     else
@@ -81,7 +121,7 @@ public class PowerUnitTurret extends ItemUnitTurret {
                     b.table(info -> {
                         if (item != null) info.table(title -> {
                             title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
-                            title.add(item != internalItem ? item.localizedName : Core.bundle.get("stat.olupis-unitpowercost")).left().top();
+                            title.add(item.localizedName).left().top().padLeft(5f);
                         }).left().row();
                         info.add(displayUnit.localizedName).left().row();
                         info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
@@ -89,7 +129,7 @@ public class PowerUnitTurret extends ItemUnitTurret {
                     });
                     b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
                 }).growX().pad(5).row();
-            });
+            }), () -> show[0]).growX();
         });
     }
 

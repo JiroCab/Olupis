@@ -706,6 +706,7 @@ public class NyfalisBlocks {
 
         //endregion
     }
+
     public static void LoadBlocks(){
         //region Distribution
         rustyIronConveyor = new Conveyor("rusty-iron-conveyor"){{
@@ -952,9 +953,10 @@ public class NyfalisBlocks {
             buildCostMultiplier = 2f;
             passiveOutput = (24f/60f)/ 9f; //really meant for vents that are 3x3, anything more is a boost
             consumePower(1f);
+            attribute = Attribute.steam;
             consumeLiquid(NyfalisItemsLiquid.steam, 40/60f);
             outputLiquid = new LiquidStack(Liquids.water, 6/60f);
-            attribute = Attribute.steam;
+            researchCost = with(rustyIron, 750, copper, 750, lead, 750);
             requirements(Category.production, with(rustyIron, 150, lead, 150, copper, 150));
         }};
 
@@ -1425,7 +1427,7 @@ public class NyfalisBlocks {
             itemCapacity = 80;
             alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
-            shootY = 2.5f * Vars.tilesize;
+            shootY = 3f * Vars.tilesize;
 
             ammo(
                 lead, new SpawnHelperBulletType(){{

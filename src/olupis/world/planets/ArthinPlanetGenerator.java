@@ -192,6 +192,11 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         return Simplex.noise3d(seed, octaves, falloff, 1f / scl, v.x, v.y, v.z) * (float)mag;
     }
 
+    protected float noise(float x, float y, double octaves, double falloff, double scl, double mag, int subSeed){
+        Vec3 v = sector.rect.project(x, y).scl(5f);
+        return Simplex.noise3d(subSeed, octaves, falloff, 1f / scl, v.x, v.y, v.z) * (float)mag;
+    }
+
     @Override
     protected void generate(){
 
@@ -381,7 +386,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
             }
         }
 
-        distort(10f, 6f);
+        distort(250f, 5f);
 
         //rivers
         pass((x, y) -> {
@@ -456,39 +461,46 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
                 }
             });
         }
-        Seq<Block> ores = Seq.with(oreIron, oreLead, oreCopper);
-        Seq<Integer> no = Seq.with(17, 18, 28, 26, 27, 19, 24, 23, 22, 20, 1, 22, 30, 4);
-        if(!no.contains(sector.id)){
-            ores.add(oreQuartz);
-        }
-        float poles = Math.abs(sector.tile.v.y);
-
-
-        FloatSeq frequencies = new FloatSeq();
-        for(int i = 0; i < ores.size; i++){
-            frequencies.add(rand.random(-0.1f, 0.01f) - i * 0.01f + poles * 0.04f);
-        }
-
-        pass((x, y) -> {
-            if(!floor.asFloor().hasSurface()) return;
-
-            int offsetX = x - 4, offsetY = y + 23;
-            for(int i = ores.size - 1; i >= 0; i--){
-                Block entry = ores.get(i);
-                float freq = frequencies.get(i);
-                if(Math.abs(0.5f - noise(offsetX, offsetY + i*999, 2, 0.7, (40 + i * 2))) > 0.22f + i*0.01 &&
-                        Math.abs(0.5f - noise(offsetX, offsetY - i*999, 1, 1, (30 + i * 4))) > 0.37f + freq){
-                    ore = entry;
-                    break;
-                }
-            }
-        });
 
         trimDark();
 
         median(2);
 
         inverseFloodFill(tiles.getn(spawn.x, spawn.y));
+
+
+        Seq<Block> oresSeq = Seq.with(oreIron, oreLead);
+        Seq<Integer> quartzBan = Seq.with(17, 18, 28, 26, 27, 19, 24, 23, 22, 20, 1, 22, 30, 4);
+        Seq<Integer> copperBan = Seq.with(17, 18, 28, 26, 27, 19, 24, 23, 22, 20, 1, 22, 30, 4);
+        if(!quartzBan.contains(sector.id))oresSeq.add(oreQuartz);
+        if(!copperBan.contains(sector.id))oresSeq.add(oreCopper);
+
+
+        float poles = Math.abs(sector.tile.v.y);
+        FloatSeq frequencies = new FloatSeq();
+        for(int i = 0; i < oresSeq.size; i++){
+            frequencies.add(rand.random(-0.1f, 0.01f) - i * 0.01f + (poles) * 0.04f);
+        }
+
+        pass((x, y) -> {
+            if(!floor.asFloor().hasSurface()) return;
+
+            int offsetX = x - 4, offsetY = y + 23;
+            Seq<String> logs = new Seq<>();
+            for(int i = oresSeq.size - 1; i >= 0; i--){
+                Block entry = oresSeq.get(i);
+                int freq = Mathf.round(frequencies.get(i));
+                float nos = noise(offsetX, offsetY - i*999, 20, 0.3, 69,69, freq );
+                //float nos = noise(offsetX, offsetY - i*999, 1.7, 0.3, 69,86, freq );
+                if(nos > 47){
+                    logs.add(nos + "");
+                    if(ore != air) tiles.getn(x, y).setBlock(duo, Team.sharded);
+                    ore = entry;
+                    break;
+                }
+            }
+            if(!logs.isEmpty())Log.err(logs + "");
+        });
 
         //replace sandwall to dirt walls
         pass((x, y) -> {
@@ -577,7 +589,11 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
                 }
 
                 if(rand.chance(0.01) && floor.asFloor().hasSurface() && block == air){
-                    block = dec.get(floor, floor.asFloor().decoration);
+                    if(floor.asFloor().decoration != air){
+                        block = dec.get(floor, floor.asFloor().decoration);
+                    } else if(floor == mud || floor == dirt){
+                         block = deadBush;
+                    }
                 }
             }
 

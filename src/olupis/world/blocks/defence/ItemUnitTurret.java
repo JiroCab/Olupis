@@ -40,6 +40,7 @@ import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import olupis.NyfalisMain;
 import olupis.content.NyfalisFxs;
 import olupis.content.NyfalisItemsLiquid;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
@@ -137,27 +138,47 @@ public class ItemUnitTurret extends ItemTurret {
         if(range <= 1)stats.remove(Stat.shootRange);
         stats.add(Stat.output, table ->{
             HashMap<Item, BulletType> alts = new HashMap<>();
-            this.ammoTypes.each((item, bul) -> {
-                if(bul instanceof SpawnHelperBulletType spw && spw.alternateType != null ) alts.put(item, spw.alternateType);
-                UnitType displayUnit = bul.spawnUnit;
-                if(displayUnit == null) return;
+            boolean[] show = {true, true};
+            //Normal items
+            if((requiredItems.length > 0)){
                 table.row();
-                table.table(Styles.grayPanel, b -> {
-                    if(!displayUnit.isBanned()) b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                    else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
 
-                    b.table(info -> {
-                        if(item != null) info.table(title -> {
-                            title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
-                            title.add(item.localizedName).left().top();
-                        }).left().row();
-                        info.add(displayUnit.localizedName).left().row();
-                        info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
-                        if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
-                    });
-                    b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
-                }).growX().pad(5);
-            });
+                table.add(new Table(statArticulator != null ? NyfalisMain.gayerPanel : Styles.none, b ->{
+                    b.button(Icon.upOpen, Styles.emptyi, () -> show[0] = !show[0]).update(i -> i.getStyle().imageUp = (!show[0] ? Icon.upOpen : Icon.downOpen)).pad(10).padRight(4).left();
+                    for(ItemStack stack : requiredItems){
+                        b.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
+                    }
+                }).align(statArticulator != null ? Align.center : Align.left)).growX().pad(5);
+                table.row();
+            }
+
+            //Normal Units
+            table.collapser(nu -> {
+                this.ammoTypes.each((item, bul) -> {
+                    if(bul instanceof SpawnHelperBulletType spw && spw.alternateType != null ) alts.put(item, spw.alternateType);
+                    UnitType displayUnit = bul.spawnUnit;
+                    if(displayUnit == null) return;
+                    nu.row();
+                    nu.table(Styles.grayPanel, b -> {
+                        if(!displayUnit.isBanned()) b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                        else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                        b.table(info -> {
+                            if(item != null) info.table(title -> {
+                                title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                                title.add(item.localizedName).left().padLeft(5f).top();
+                            }).left().row();
+                            info.add(displayUnit.localizedName).left().row();
+                            info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
+                            if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                        });
+                        b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                    }).growX().pad(5);
+                });
+            }, () -> show[0]).growX();
+            table.row();
+
+            //Alternate banned check
             if(statArticulator != null && (!statArticulator.unlockedNow() || !statArticulator.isVisible())){
                 table.row();
                 table.table(Styles.grayPanel, b -> {
@@ -166,54 +187,13 @@ public class ItemUnitTurret extends ItemTurret {
                 }).growX().pad(5);
                 return;
             }
-            table.row();
-            table.image().color(Pal.darkerGray).height(3.0F).pad(3.0F).growX().row();
-            for (Map.Entry<Item, BulletType> entry : alts.entrySet()) {
-                Item item = entry.getKey();
-                BulletType bul = entry.getValue();
-                if (bul instanceof SpawnHelperBulletType spw && spw.alternateType != null)
-                    alts.put(item, spw.alternateType);
-                UnitType displayUnit = bul.spawnUnit;
-                if (displayUnit == null) continue;
-                table.row();
-                table.table(Styles.grayPanel, b -> {
-                    if (!displayUnit.isBanned())
-                        b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                    else
-                        b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
 
-                    b.table(info -> {
-                        if (item != null) info.table(title -> {
-                            title.image(statArticulator.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top().tooltip(statArticulator.localizedName).padLeft(0.5f);
-                            title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
-                            title.add(item.localizedName).left().top();
-                        }).left().row();
-                        info.add(displayUnit.localizedName).left().row();
-                        info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
-                        if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
-                    });
-                    b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
-                }).growX().pad(5);
-            }
-        });
+            //Divider
+            table.image().color(Pal.accent).height(3.0F).pad(3.0F).growX().row();
 
-        if(requiredItems.length > 0)stats.add(Stat.input, table -> {
-        /*I'm sorry*/
-            if(statArticulator != null) table.row();
-            table.add(new Table(statArticulator != null ? Styles.grayPanel : Styles.none, b ->{
-                for(ItemStack stack : requiredItems){
-                    b.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
-                }
-            }).align(statArticulator != null ? Align.center : Align.left)).growX().pad(5);
-
-            if(statArticulator != null) {
-                table.row();
-                if(!statArticulator.unlockedNow() || !statArticulator.isVisible()){
-                    table.add(new Table(Styles.grayPanel, r -> r.image(Icon.cancel.getRegion()).color(Pal.remove).size(22).pad(10f).left().scaling(Scaling.fit))).growX().pad(5).tooltip(statArticulator.localizedName);
-                    return;
-                }
-
-                table.add(new Table(Styles.grayPanel, r -> {
+            //Alternate Items
+            if(statArticulator != null && statArticulator.unlockedNow() && statArticulator.isVisible() ){
+                table.add(new Table(NyfalisMain.gayerPanel, r ->{
                     r.add(new Table(c ->{
                         c.add(new Table(o -> {
                             o.add(new Image(statArticulator.uiIcon)).size(32f).scaling(Scaling.fit);
@@ -227,14 +207,47 @@ public class ItemUnitTurret extends ItemTurret {
                         });
                         c.button("?", Styles.flatBordert, () -> ui.content.show(statArticulator)).size(40f).pad(10).right().grow().visible(statArticulator::unlockedNow);
                     })).row();
-                    r.add(new Table(i -> { for (ItemStack stack : requiredAlternate) {
-                        i.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
-                    }}));
-                })
-
-                ).growX().pad(5);
+                    r.add(new Table(i -> {
+                        i.button(Icon.upOpen, Styles.emptyi, () -> show[1] = !show[1]).update(iu -> iu.getStyle().imageUp = (!show[1] ? Icon.upOpen : Icon.downOpen)).pad(10).padRight(4).left();
+                        for (ItemStack stack : requiredAlternate) {
+                            i.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
+                        }
+                    }));
+                })).growX().pad(5);
+                table.row();
             }
+
+            //Alternate Units
+            table.collapser(nu -> {
+                for (Map.Entry<Item, BulletType> entry : alts.entrySet()) {
+                    Item item = entry.getKey();
+                    BulletType bul = entry.getValue();
+                    if (bul instanceof SpawnHelperBulletType spw && spw.alternateType != null)
+                        alts.put(item, spw.alternateType);
+                    UnitType displayUnit = bul.spawnUnit;
+                    if (displayUnit == null) continue;
+                    nu.row();
+                    nu.table(Styles.grayPanel, b -> {
+                        if (!displayUnit.isBanned())
+                            b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                        else
+                            b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                        b.table(info -> {
+                            if (item != null) info.table(title -> {
+                                title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                                title.add(item.localizedName).left().top().padLeft(5f);
+                            }).left().row();
+                            info.add(displayUnit.localizedName).left().row();
+                            info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
+                            if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                        });
+                        b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                    }).growX().pad(5);
+                }
+            }, () -> show[1]).growX();
         });
+
         if(heatRequirement > 0) stats.add(Stat.input, heatRequirement, StatUnit.heatUnits);
     }
 

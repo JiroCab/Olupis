@@ -2,6 +2,7 @@ package olupis;
 
 import arc.Core;
 import arc.Events;
+import arc.scene.style.TextureRegionDrawable;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
@@ -12,13 +13,15 @@ import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.EventType.FileTreeInitEvent;
 import mindustry.game.Team;
-import mindustry.gen.Call;
-import mindustry.gen.Icon;
+import mindustry.gen.*;
+import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.type.*;
 import mindustry.world.Block;
 import olupis.content.*;
-import olupis.input.*;
+import olupis.input.NyfalisPackets;
+import olupis.input.NyfalisShaders;
+import olupis.input.ui.*;
 import olupis.world.EnvUpdater;
 import olupis.world.planets.NyfalisTechTree;
 
@@ -33,6 +36,7 @@ public class NyfalisMain extends Mod{
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
     public static boolean shownWarning = false;
+    public static TextureRegionDrawable gayerPanel = (TextureRegionDrawable) Tex.whiteui;
 
     @Override
     public void loadContent(){
@@ -218,6 +222,10 @@ public class NyfalisMain extends Mod{
         NyfalisBlocks.NyfalisBlocksPlacementFix();
         nyfalisSettings = new NyfalisSettingsDialog();
         if(!headless){
+
+            gayerPanel = (TextureRegionDrawable) Tex.whiteui;
+            gayerPanel = (TextureRegionDrawable) gayerPanel.tint(Pal.darkerGray);
+
             logicDialog = new NyfalisLogicDialog();
             sectorSelect = new LimitedLauncherSelect();
             unlockPlanets();
