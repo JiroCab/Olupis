@@ -161,37 +161,61 @@ public class NyfalisStartUpUis {
     }
 
     public static void loadHints(){
-        ui.hints.hints.add(new HintsFragment.Hint() {
+        ui.hints.hints.addAll(new HintsFragment.Hint() {
             final Seq<UnitType> coreUnits = Seq.with(NyfalisUnits.gnat, NyfalisUnits.pedicia, NyfalisUnits.phorid) ;
             @Override
-            public String name() {
-                return "hint.nyflais-command";
-            }
+            public String name() {return "hint.nyflais-command";}
 
             @Override
-            public String text() {
-                return Core.bundle.get("hint.nyflais-command.text");
-            }
+            public String text() {return Core.bundle.get("hint.nyflais-command.text");}
 
             @Override
-            public boolean complete() {
-                return Core.keybinds.get(Binding.command_mode).key != Core.keybinds.get(Binding.boost).key;
-            }
+            public boolean complete() {return Core.keybinds.get(Binding.command_mode).key != Core.keybinds.get(Binding.boost).key;}
 
             @Override
-            public boolean show() {
-                return Core.keybinds.get(Binding.command_mode).key == Core.keybinds.get(Binding.boost).key;
-            }
+            public boolean show() {return Core.keybinds.get(Binding.command_mode).key == Core.keybinds.get(Binding.boost).key;}
 
             @Override
-            public int order() {
-                return 5 ;
-            }
+            public int order() {return 5;}
 
             @Override
-            public boolean valid() {
-                return !Vars.mobile ||  control.input instanceof DesktopInput;
-            }
+            public boolean valid() {return !Vars.mobile ||  control.input instanceof DesktopInput;}
+        },new HintsFragment.Hint() {
+            @Override
+            public String name() {return "hint.nyflais-end-of-content";}
+
+            @Override
+            public String text() {return Core.bundle.get("hint.nyflais-end-of-content.text");}
+
+            @Override
+            public boolean complete() {return state.isCampaign() && state.getSector().preset == NyfalisSectors.conservatorium && state.getSector().isCaptured();}
+
+            @Override
+            public boolean show() {return state.isCampaign() && state.getSector().preset == NyfalisSectors.conservatorium;}
+
+            @Override
+            public int order() {return 6;}
+
+            @Override
+            public boolean valid() {return true;}
+        }, new HintsFragment.Hint() {
+            @Override
+            public String name() {return "hint.nyflais-optional-sectors";}
+
+            @Override
+            public String text() {return Core.bundle.get("hint.nyflais-optional-sectors.text");}
+
+            @Override
+            public boolean complete() {return state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet()) && state.getSector().preset == null && state.getSector().isCaptured() ;}
+
+            @Override
+            public boolean show() {return state.isCampaign() &&  NyfalisPlanets.isNyfalianPlanet(state.getPlanet()) && state.getSector().preset == null;}
+
+            @Override
+            public int order() {return 7;}
+
+            @Override
+            public boolean valid() {return true;}
         });
     }
 }

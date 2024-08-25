@@ -22,7 +22,7 @@ public class NyfalisItemsLiquid {
 
             flammability = 1.2f;
         }};
-        rustyIron = new Item("rusty-iron", Color.valueOf("9B5534")) {{
+        rustyIron = new Item("rusty-iron", Color.valueOf("471B12")) {{
             hardness = 1;
         }};
         iron = new Item("iron", Color.valueOf("989AA4")) {{

@@ -119,7 +119,7 @@ public class NyfalisBlocks {
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
 
         /*special*/
-        scarabRadar, FloodDisruptor
+        scarabRadar, floodDisruptor
     ; //endregion
     public static  UnstablePowerTurret cascade;
 
@@ -2225,7 +2225,7 @@ public class NyfalisBlocks {
             researchCost = with(iron, 400, graphite, 400, silicon, 200);
         }};
 
-        FloodDisruptor = new ImpactReactor("flood-disruptor"){{
+        floodDisruptor = new ImpactReactor("flood-disruptor"){{
             //Flood helper
             requirements(Category.logic, with(rustyIron, 500, Items.silicon, 100, Items.graphite, 250, iron, 250, copper, 300, lead, 300));
             size = 5;

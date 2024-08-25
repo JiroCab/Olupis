@@ -14,6 +14,7 @@ import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.bullet.BulletType;
+import mindustry.entities.part.RegionPart;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
@@ -315,8 +316,10 @@ public class NyfalisStats extends StatValues {
 
             for(int i = 0; i < weapons.size; ++i) {
                 Weapon weapon = weapons.get(i);
-                if (!weapon.flipSprite && weapon.hasStats(unit)) {
-                    TextureRegion region = !weapon.name.isEmpty() ? Core.atlas.find(weapon.name + "-preview", weapon.region) : null;
+                if (!weapon.flipSprite && weapon.hasStats(unit)) { //haha supella work around
+                    TextureRegion region = !weapon.name.isEmpty() ? Core.atlas.find(weapon.name + "-preview", weapon.region) :
+                        !weapon.parts.isEmpty() && weapon.parts.first() instanceof RegionPart rp ? rp.regions[0] : null;
+
                     table.table(Styles.grayPanel, (w) -> {
                         w.left().top().defaults().padRight(3.0F).left();
                         if (region != null && region.found() && weapon.showStatSprite) {

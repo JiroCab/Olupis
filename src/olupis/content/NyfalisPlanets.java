@@ -57,7 +57,8 @@ public class NyfalisPlanets {
             totalRadius = 2.7f;
             atmosphereRadIn = 0.01f;
             atmosphereRadOut = 0.05f;
-            startSector = sectorSeed = 2;
+            startSector = 0;
+            sectorSeed = 2;
             launchCapacityMultiplier = 0.4f;
 
             systemSector.add(sectors);

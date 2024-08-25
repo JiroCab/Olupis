@@ -32,7 +32,10 @@ public class NyfalisSectors {
             treesGreen = Seq.with(nyfalisTree, mossTree, mossDeadTree, mossTree),
             treesYellow = Seq.with(yellowTree, yellowTreeBlooming, mossDeadTree, mossTree),
             treesAll = Seq.with(treesGreen).addAll(treesYellow),
-            solidMossYellow = Seq.with(yellowShrubs, yellowShrubsCrooked, yellowShrubsIrregular, yellowTree, yellowTreeBlooming)
+            solidMossYellow = Seq.with(yellowShrubs, yellowShrubsCrooked, yellowShrubsIrregular, yellowTree, yellowTreeBlooming),
+            solidMossYellowAll = Seq.with(solidMossYellow).addAll(yellowTree),
+            solidShurbsGrass = Seq.with(greenShrubsIrregular, greenShrubsCrooked),
+            overlayFlowers = Seq.with(glowSprouts, lumaSprouts)
     ;
 
     public static void LoadSectors(){
@@ -60,7 +63,7 @@ public class NyfalisSectors {
             allowLaunchLoadout = allowLaunchSchematics = false;
 
             captureWave = 17;
-            difficulty = 2;
+            difficulty = 4;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 500, Items.lead, 500));
         }};
 
@@ -69,7 +72,7 @@ public class NyfalisSectors {
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics  = false;
 
             captureWave = 16;
-            difficulty = 2;
+            difficulty = 3;
             rules = commonRules(captureWave, ItemStack.with(Items.copper, 75, NyfalisItemsLiquid.rustyIron,300, Items.lead, 300, NyfalisItemsLiquid.iron, 250));
         }};
 
@@ -77,7 +80,7 @@ public class NyfalisSectors {
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
-            difficulty = 4;
+            difficulty = 5;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1200, Items.lead, 1200, NyfalisItemsLiquid.iron, 200, Items.copper, 300,  Items.graphite, 200));
         }};
 
@@ -111,7 +114,7 @@ public class NyfalisSectors {
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
-            difficulty = 4;
+            difficulty = 5;
             captureWave = 21;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 0, Items.lead, 0));
         }};

@@ -53,6 +53,9 @@ public class NyfalisTechTree {
                             new Objectives.SectorComplete(glasierSea),
                             new Objectives.SectorComplete(coldFlats)
                     ), () ->{
+                        node(forestOfSerenity,Seq.with(new Objectives.SectorComplete(conservatorium)), () -> {
+
+                        });
                     });
                 });
                 node(spelta, Seq.with(

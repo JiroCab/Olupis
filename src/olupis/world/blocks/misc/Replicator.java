@@ -31,9 +31,9 @@ import olupis.content.NyfalisBlocks;
 import static mindustry.Vars.*;
 
 public class Replicator extends PayloadBlock {
-    public float maxDelay = 60f, speedScl, time;
+    public float maxDelay = 300f, speedScl, time;
     public Interp riseInterp = Interp.circle;
-    public float delay = 1;
+    public float delay = maxDelay;
     public Seq<UnitType> spawnableUnits = new Seq<>();
     public Block replacement = NyfalisBlocks.rustyScrapWall;
 
@@ -96,8 +96,8 @@ public class Replicator extends PayloadBlock {
 
     public class ReplicatorBuild extends PayloadBlockBuild<Payload>{
         public @Nullable Vec2 commandPos;
-        public float dynamicDelay = delay,
-                delayTimer = 0;
+        public float dynamicDelay = delay * 60,
+                delayTimer = delay * 60;
         public int selectedUnit = -1;
         public float scl;
 
@@ -129,7 +129,7 @@ public class Replicator extends PayloadBlock {
             table.row();
             table.slider(1,maxDelay,0.5f,dynamicDelay, true,(f) -> {
                 configure(f);
-                delayTimer = 0;
+                delayTimer = dynamicDelay * 60;
                 delayDisplay.get().setText("Delay: " + dynamicDelay + " sec");
             }).growX();
             if(Core.settings.getBool("nyfalis-debug")){
@@ -214,11 +214,16 @@ public class Replicator extends PayloadBlock {
             Draw.reset();
         }
 
+        public void drawPayload(){
+          if(!headless && this.inFogTo(player.team()))super.drawPayload();
+        }
+
         @Override
         public void write(Writes write){
             super.write(write);
             write.i(selectedUnit);
             write.f(dynamicDelay);
+            write.f(delayTimer);
         }
 
         @Override
@@ -226,7 +231,13 @@ public class Replicator extends PayloadBlock {
             super.read(read, revision);
             selectedUnit = read.i();
             dynamicDelay = read.f();
+            if(revision>= 1) delayTimer = read.f();
         }
+
+        public byte version() {
+            return 1;
+        }
+
         @Override
         public boolean canPickup(){
             return false;
