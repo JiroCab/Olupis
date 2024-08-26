@@ -107,11 +107,11 @@ public class NyfalisBlocks {
 
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine,
 
-        rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
+        rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
          bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
 
-        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall, repairPin, scoutPad,
+        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, repairPin, scoutPad,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
         mendFieldProjector, taurus, ladar,
@@ -122,6 +122,7 @@ public class NyfalisBlocks {
         scarabRadar, floodDisruptor
     ; //endregion
     public static  UnstablePowerTurret cascade;
+    public static Replicator unitReplicator, unitReplicatorSmall;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
     public static ObjectSet<Block>
@@ -1557,7 +1558,7 @@ public class NyfalisBlocks {
 
                 Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
             });
-            requirements(Category.units, with(iron, 15, Items.lead, 20));
+            requirements(Category.units, with(iron, 15, Items.lead, 20, copper, 20));
         }};
 
         fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
@@ -1584,6 +1585,7 @@ public class NyfalisBlocks {
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
             delay = 5f;
+            replacement = air;
             this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
         }};
 
@@ -1941,13 +1943,19 @@ public class NyfalisBlocks {
         rustyScrapWallHuge = new Wall("rusty-scrap-wall-huge"){{
             size = 3;
             variants  = 2;
-            health = 3840;
+            health = 2160;
             requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 9));
         }};
 
         rustyScrapWallGigantic = new Wall("rusty-scrap-wall-gigantic"){{
             size = 4;
-            health = 2530;
+            health = 3840;
+            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 16));
+        }};
+
+        rustyScrapWallHumongous = new Wall("rusty-scrap-wall-humongous"){{
+            size = 5;
+            health = 6000;
             requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 16));
         }};
 
@@ -2052,11 +2060,12 @@ public class NyfalisBlocks {
         int coreBaseHp = 600, coreUnitCap = 2;
 
         coreRemnant = new PropellerCoreBlock("core-remnant"){{
-            alwaysUnlocked = isFirstTier = true;
+            alwaysUnlocked = isFirstTier = requiresCoreZone = true;
             size = 2;
             itemCapacity = 1500;
             unitCapModifier  = 8;
             health = coreBaseHp * 3;
+            thrusterLength = (14f/2.4f)/4f;
             buildCostMultiplier = researchCostMultiplier = 0.5f;
 
             unitType = gnat;
@@ -2064,6 +2073,7 @@ public class NyfalisBlocks {
         }};
 
         coreVestige = new PropellerCoreBlock("core-vestige"){{
+
             size = 3;
             offset = 17.5f;
             itemCapacity = 3000;
@@ -2299,6 +2309,10 @@ public class NyfalisBlocks {
         }
 
         rainRegrowables.addAll(grass, moss, mossierStone, mossyStone, yellowGrass, cinderBloomGrass, cinderBloomiest, cinderBloomiest, mossyDirt, frozenDirt, frozenGrass, frozenSlop);
+
+
+        unitReplicator.replacement = NyfalisBlocks.rustyScrapWallHumongous;
+        unitReplicatorSmall.replacement = NyfalisBlocks.rustyScrapWallGigantic;
 
         if(headless) return;
         cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);

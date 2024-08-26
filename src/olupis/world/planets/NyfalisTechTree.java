@@ -30,7 +30,11 @@ public class NyfalisTechTree {
                                 });
                                 node(muddyLakes, Seq.with(new Objectives.SectorComplete(dyingForest)), () -> {
                                     node(abandonedPayloadTerminal, Seq.with(new Objectives.SectorComplete(muddyLakes)), () -> {
-                                        node(ironCurtain, Seq.with(new Objectives.SectorComplete(abandonedPayloadTerminal)), () -> {
+                                        node(ironCurtain, Seq.with(
+                                                new Objectives.SectorComplete(abandonedPayloadTerminal),
+                                                new Objectives.SectorComplete(glasierSea),
+                                                new Objectives.SectorComplete(coldFlats)
+                                        ), () -> {
 
                                         });
                                     });

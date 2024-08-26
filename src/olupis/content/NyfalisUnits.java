@@ -128,9 +128,9 @@ public class NyfalisUnits {
                     pierceCap = 2;
                     lightStroke = 10;
                     frontLength = 10f;
-                    damage = 10 / 12f;
+                    damage = 15 / 12f;
                     homingPower = 0.06f;
-                    buildingDamageMultiplier = 1.1f;
+                    buildingDamageMultiplier = 1.05f;
                     incendChance = incendSpread = 0f;
                     pierce = true;
                     removeAfterPierce = false;
@@ -319,9 +319,10 @@ public class NyfalisUnits {
 
         acerodon = new NyfalisUnitType("acerodon"){{
             hitSize = 10f;
+            armor = 2;
             drag = 0.06f;
             accel = 0.08f;
-            health = 600f;
+            health = 550f;
             speed = 2.20f;
             engineSize = 4f;
             engineOffset = 8f;
@@ -343,13 +344,13 @@ public class NyfalisUnits {
                     shootSound = Sounds.missile;
 
                     showStatSprite = mirror = false;
-                    bullet = new ArtilleryBulletType(2.5f, 3, "olupis-diamond-bullet"){{
+                    bullet = new ArtilleryBulletType(3.5f, 3, "olupis-diamond-bullet"){{
                         width = 8;
                         height = 10f;
                         trailSize = 2f;
                         lifetime = 40f;
                         knockback = 0.3f;
-                        splashDamage = 33f;
+                        splashDamage = 27f;
                         splashDamageRadius = 25f * 0.75f;
                         shootEffect = Fx.none;
                         smokeEffect = Fx.shootSmallSmoke;
@@ -450,6 +451,7 @@ public class NyfalisUnits {
                     height = 6f;
                     lifetime = 40f;
                     homingPower = 0.05f;
+                    buildingDamageMultiplier = 0.5f;
                     shootEffect = Fx.none;
                     smokeEffect = Fx.shootSmallSmoke;
                     frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
@@ -493,6 +495,7 @@ public class NyfalisUnits {
                     width = 6;
                     height = 8f;
                     lifetime = 20f;
+                    buildingDamageMultiplier = 0.3f;
 
                     frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
                     hitEffect = despawnEffect = NyfalisFxs.scatterDebris;
@@ -510,7 +513,7 @@ public class NyfalisUnits {
             armor = 1;
             accel = 2.5f;
             hitSize = 11f;
-            health = 450;
+            health = 650;
             speed = 2.2f;
             segments = 7;
             segmentScl = 8f;
@@ -552,11 +555,11 @@ public class NyfalisUnits {
         serpent = new SnekUnitType("serpent"){{
             constructor = CrawlUnit::create;
             accel = 3f;
-            armor = 4;
+            armor = 5;
             hitSize = 11f;
             health = 600;
             segments = 8;
-            speed = 2.25f;
+            speed = 2.15f;
             segmentScl = 7f;
             rotateSpeed = 15f;
             legMoveSpace = 1.2f;
@@ -644,7 +647,7 @@ public class NyfalisUnits {
 
             armor = 1;
             hitSize = 8;
-            health = 140;
+            health = 200;
             speed = 0.65f;
             engineSize = -1;
             rotateSpeed = 1.72f;
@@ -713,7 +716,7 @@ public class NyfalisUnits {
             rotateSpeed = 2.25f;
             boostMultiplier = 0.8f;
             immunities.add(StatusEffects.burning);
-            abilities.add(new MicroWaveFieldAbility(6.5f, 40f, 38f, 20f){{
+            abilities.add(new MicroWaveFieldAbility(6.5f, 40f, 40f, 20f){{
                 ideRangeDisplay = false;
                 damageEffect = Fx.none;
                 sectors = 3;
@@ -1824,6 +1827,8 @@ public class NyfalisUnits {
                 }}
             );
         }};
+
+        //diptera -> Flying unit that drops healing cluster bomb,  explode (w/ dmg) > split into 2 healing circles
 
         //added a death weapon
         //endregion

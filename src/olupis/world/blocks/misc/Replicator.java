@@ -152,10 +152,6 @@ public class Replicator extends PayloadBlock {
         @Override
         public void updateTile(){
             super.updateTile();
-            if(state.isCampaign() && state.getSector().isCaptured()){
-              this.remove();
-              tile.setNet(replacement, team(), this.rotation);
-            }
             delayTimer = Mathf.approachDelta(delayTimer,0,1);
             speedScl = Mathf.lerpDelta(speedScl, 0f, 0.05f);
             time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
@@ -254,6 +250,10 @@ public class Replicator extends PayloadBlock {
         @Override
         public boolean collide(Bullet other){
             return !privileged;
+        }
+
+        public Block getReplacement(){
+            return replacement;
         }
     }
 }

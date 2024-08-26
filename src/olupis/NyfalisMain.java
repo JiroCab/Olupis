@@ -18,11 +18,13 @@ import mindustry.graphics.Pal;
 import mindustry.mod.Mod;
 import mindustry.type.*;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import olupis.content.*;
 import olupis.input.NyfalisPackets;
 import olupis.input.NyfalisShaders;
 import olupis.input.ui.*;
 import olupis.world.EnvUpdater;
+import olupis.world.blocks.misc.Replicator;
 import olupis.world.planets.NyfalisTechTree;
 
 import static mindustry.Vars.*;
@@ -100,6 +102,15 @@ public class NyfalisMain extends Mod{
         });
 
         if(headless)return;
+        Events.on(EventType.SectorCaptureEvent.class, event -> {
+            for (Building b : Groups.build)
+                if (b instanceof Replicator.ReplicatorBuild r) {
+                    Tile tile = r.tile;
+                    tile.setNet(r.getReplacement());
+                    r.remove();
+                    NyfalisFxs.replicatorDie.at(r.x, r.y, 0, b.team.color, r.getReplacement());
+                }
+        });
         Events.on(EventType.UnlockEvent.class, event -> unlockPlanets());
         Events.on(EventType.SectorCaptureEvent.class, event -> unlockPlanets());
 

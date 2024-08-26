@@ -10,6 +10,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
+import mindustry.world.Block;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
@@ -149,6 +150,14 @@ public class NyfalisFxs extends Fx {
             Drawf.tri(e.x, e.y, w, 17f * e.fout(), e.rotation);
             Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
         }),
+
+        replicatorDie = new Effect(80f, e -> {
+            if(!(e.data instanceof Block block)) return;
+
+            mixcol(NyfalisColors.contentOutline, e.color, 1f);
+            alpha(e.fout());
+            rect(block.fullIcon, e.x, e.y);
+        }).layer(Layer.turret - 5f),
 
         obliteratorShockwave = new MultiEffect(colouredShockwave, fastSquareSmokeCloud)
 
