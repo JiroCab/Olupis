@@ -77,7 +77,7 @@ public class NyfalisStartUpUis {
                 break;
             }
         }
-        if (hasSave && !(lVer < NyfalisSectors.sectorVersion)) return;
+        if (hasSave && lVer >= 1 && !(lVer < NyfalisSectors.sectorVersion)) return;
         showSaveDisclaimerDialog();
     }
 

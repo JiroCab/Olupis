@@ -187,23 +187,65 @@ public class NyfalisSettingsDialog {
                             }
                         }
 
-                        for (Saves.SaveSlot s : control.saves.getSaveSlots()) {
+                        for (Saves.SaveSlot s : control.saves.getSaveSlots())
                             if (s.isSector() && NyfalisPlanets.isNyfalianPlanet(s.getSector().planet)) s.delete();
-                        }
                     });
                 }).margin(14).width(260f).pad(6);
                 subTable.button("@setting.nyfalis-resetresearch.name", Icon.trash, () -> {
                     ui.showConfirm("@confirm", "@setting.nyfalis-resetresearch.confirm", () -> {
                         content.each(c -> {
-                            if(c instanceof UnlockableContent u && u.name.contains("olupis-")){
-                                u.clearUnlock();
-                            }
+                            if(c instanceof UnlockableContent u && u.name.contains("olupis-")) u.clearUnlock();
                         });
+
                         for(Planet planet : NyfalisPlanets.planetList ){
                             planet.techTree.reset();
                             planet.techTree.each(TechTree.TechNode::reset);
                         }
                     });
+                }).margin(14).width(260f).pad(6).row();
+                subTable.button("@setting.nyfalis-resetprogress.name", Icon.trash, () -> {
+                    ui.showConfirm("@confirm", "@setting.nyfalis-resetprogress.confirm", () -> {
+                        content.each(c -> {
+                            if(c instanceof UnlockableContent u && u.name.contains("olupis-")) u.clearUnlock();
+                        });
+                        for(Planet planet : NyfalisPlanets.planetList ){
+                            planet.techTree.reset();
+                            planet.techTree.each(TechTree.TechNode::reset);
+                        }
+
+                        for (Planet p : content.planets()) {
+                            if (!p.name.contains("olupis-")) continue;
+                            for (Sector s : p.sectors) {
+                                s.clearInfo();
+                                if (s.save == null) continue;
+                                s.save.delete();
+                                s.save = null;
+                            }
+                        }
+
+                        for (Saves.SaveSlot s : control.saves.getSaveSlots()) {
+                            if (s.isSector() && NyfalisPlanets.isNyfalianPlanet(s.getSector().planet)) s.delete();
+                        }
+                    });
+                }).margin(14).width(260f).pad(6);
+                subTable.button("@setting.nyfalis-repair.name", Icon.pencil, () -> {
+                    if(state.isGame()) {
+                        ui.showConfirm("@confirm", "@setting.nyfalis-repair.confirm", () -> {
+                            if (player.admin && net.active() && net.client()) {
+                                NyfalisDebugPackets packet = new NyfalisDebugPackets();
+                                packet.type = 1;
+                                Vars.net.send(packet, true);
+                            } else {
+                                Log.err("fix?");
+                                NyfalisMain.sandBoxCheck(false);
+                                for (Building b : Groups.build) {
+                                    if (!b.enabled && b.lastDisabler == null && b.block.supportsEnv(state.rules.env)) {
+                                        b.enabled = true;
+                                    }
+                                }
+                            }
+                        });
+                    } else  ui.showInfo("@setting.nyfalis-repair.error");
                 }).margin(14).width(260f).pad(6);
                 t.add(subTable);
             }, true, () -> showData[0]).growX().center().row();
@@ -226,23 +268,6 @@ public class NyfalisSettingsDialog {
                 }).margin(14).width(260f).pad(6);
                 subTable.button("Save Disclaimer", NyfalisStartUpUis::showSaveDisclaimerDialog).margin(14).width(260f).pad(6);
                 subTable.row();
-                subTable.button("Repair save", () -> {
-                    if(state.isGame()){
-                        if(player.admin && net.active() && net.client()){
-                            NyfalisDebugPackets packet = new NyfalisDebugPackets();
-                            packet.type = 1;
-                            Vars.net.send(packet, true);
-                        } else {
-                            Log.err("fix?");
-                            NyfalisMain.sandBoxCheck(false);
-                            for (Building b : Groups.build) {
-                                if (!b.enabled && b.lastDisabler == null && b.block.supportsEnv(state.rules.env)) {
-                                    b.enabled = true;
-                                }
-                            }
-                        }
-                    }
-                }).tooltip("may not always work").margin(14).width(260f).pad(6);
                 subTable.row();
 
                 t.add(subTable);

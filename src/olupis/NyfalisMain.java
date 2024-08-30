@@ -91,8 +91,6 @@ public class NyfalisMain extends Mod{
             if(headless)return;
             NyfalisStartUpUis.rebuildDebugTable();
 
-            NyfalisTurrets.cascadeBackBullet = Core.atlas.find("large-orb-back");
-            NyfalisTurrets.cascadeFrontBullet = Core.atlas.find("large-orb");
             Events.on(EventType.TurnEvent.class, e -> {
                 sectorPostTurn();
             });
