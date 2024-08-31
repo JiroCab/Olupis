@@ -182,7 +182,7 @@ public class NyfalisStatusEffects {
             });
         }};
 
-        unloaded = new StatusEffect("unloaded"){{
+        unloaded = new StatusEffect("unloaded"){{ //Just tells Nyfalis weapon to unload/reset reload
             color = Color.valueOf("6b675f");
             effect = Fx.oily;
             show = false;

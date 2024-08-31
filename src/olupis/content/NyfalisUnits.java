@@ -784,7 +784,7 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
             abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f));
-            weapons.add(new PointDefenseWeapon("point-defense-mount"){{
+            weapons.add(new PointDefenseWeapon("olupis-essex-point-defense"){{
                 x = 0;
                 y = -7f;
                 reload = 6f;

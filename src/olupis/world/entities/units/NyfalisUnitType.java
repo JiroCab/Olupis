@@ -157,7 +157,7 @@ public class NyfalisUnitType extends UnitType {
             u.lifetime(lifetime);
         }
         unit.apply(spawnStatus, spawnStatusDuration);
-        if(weaponsStartEmpty)unit.apply(NyfalisStatusEffects.unloaded, 60f * 0.03f);
+        if(weaponsStartEmpty)unit.apply(NyfalisStatusEffects.unloaded, 60f); //is now a second bc it wont get synced properly
         return unit;
     }
 
