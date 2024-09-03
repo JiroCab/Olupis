@@ -80,7 +80,7 @@ public class NyfalisBlocks {
         redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop,
 
         /*props*/
-        yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
+        yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly,
 
         /*walls*/
         redDune, pinkShrubs, lightWall, lumaWall,
@@ -506,7 +506,7 @@ public class NyfalisBlocks {
             mossiestStone.asFloor().decoration = this;
         }};
 
-        infernalBloom = new Prop("infernal-bloom"){{
+        infernalBloom = new RotatingProp("infernal-bloom"){{
             variants = 3;
             breakSound = Sounds.plantBreak;
             cinderBloomGrass.asFloor().decoration = this;
@@ -519,15 +519,25 @@ public class NyfalisBlocks {
             redSand.asFloor().decoration = this;
         }};
 
-        glowBloom = new Prop("glow-bloom"){{
+        glowBloom = new RotatingProp("glow-bloom"){{
             variants = 3;
-
             lightRadius = 10f;
             emitLight = true;
+            breakSound = Sounds.plantBreak;
         }};
 
-        deadBush = new Prop("dead-bush"){{
+        deadBush = new RotatingProp("dead-bush"){{
+            hasShadow = false;
             variants = 3;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        glowLilly = new RotatingProp("glow-lilly"){{
+            variants = 1;
+            lightRadius = 8.5f;
+            hasShadow = false;
+            floating = placeableLiquid = emitLight = true;
+            breakSound = Sounds.plantBreak;
         }};
 
         //endregion
@@ -1497,7 +1507,7 @@ public class NyfalisBlocks {
             );
             requiredItems = with(copper, 40);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            alwaysShooting = hoverShowsSpawn = hasPower = floating = arrowShootPos = unitFactory = true;
+            alwaysShooting = hoverShowsSpawn = floating = arrowShootPos = unitFactory = true;
             researchCost = with(lead, 1500, graphite, 500,  iron, 800);
             requirements(Category.units, with(iron, 100, lead, 100, graphite, 50));
         }};

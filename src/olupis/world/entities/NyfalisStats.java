@@ -18,6 +18,7 @@ import mindustry.entities.part.RegionPart;
 import mindustry.gen.Icon;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
+import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.defense.ShockMine;
 import mindustry.world.blocks.defense.turrets.Turret;
@@ -240,7 +241,8 @@ public class NyfalisStats extends StatValues {
                         }
 
                         if (type.homingPower > 0.01f) {
-                            sep(bt, "@bullet.homing");
+                            if(type instanceof  RollBulletType r  && r.ricochetHoming) sep(bt, "@stat.olupis-ricochet");
+                            else sep(bt, "@bullet.homing");
                         }
 
                         if (type.lightning > 0) {
@@ -322,9 +324,8 @@ public class NyfalisStats extends StatValues {
 
                     table.table(Styles.grayPanel, (w) -> {
                         w.left().top().defaults().padRight(3.0F).left();
-                        if (region != null && region.found() && weapon.showStatSprite) {
-                            w.image(region).size(60.0F).scaling(Scaling.bounded).left().top();
-                        }
+                        if (region != null && region.found() && weapon.showStatSprite) w.image(region).size(60.0F).scaling(Scaling.bounded).left().top();
+                        if(weapon instanceof PointDefenseWeapon) sep(w, "@stat.olupis-pointdefence");
 
                         w.row();
                         ammoWithInfo(ObjectMap.of(unit, weapon.bullet), unit).display(w);

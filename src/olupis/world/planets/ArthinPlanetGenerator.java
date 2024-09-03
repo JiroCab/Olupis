@@ -29,7 +29,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
     BaseGenerator basegen = new BaseGenerator();
     float scl = 1.7f;
-    float waterOffset = 0.05f;
+    float waterOffset = 0.085f;
     float extraMaxCoreZonesScale = 0.25f;
     public Seq<Integer> lakesSeq = Seq.with(18, 19, 24, 26, 25);
 
@@ -387,47 +387,37 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
         distort(250f, 5f);
 
-        boolean genLake = rand.chance(0.1f);
+        int secIdDigit = sector.id <= 9 ? sector.id : sector.id  <= 19 ? sector.id %10 : sector.id %100;
+        boolean genLake = (secIdDigit  % 2) != 0;
         if(lakesSeq.contains(sector.id)) genLake = true;
+        Log.err(sector.id + " " + secIdDigit + " " + genLake);
         boolean finalGenLake = genLake;
+
         //shoreline setup & lakes
-        pass((x, y) -> {
-            int deepRadius = 3;
+        if(genLake) {
+            int lakeSize = Math.max(sector.id, 4);
+            Log.err("we laking");
 
-            if(floor.asFloor().isLiquid && floor.asFloor().shallow){
+            pass((x, y) -> {
+                Tile tile = tiles.get(x, y);
+                if(world.getWallDarkness(tile)  > 0){
+                    floor = waterCheck(floor, false);
+                } else {
 
-                for(int cx = -deepRadius; cx <= deepRadius; cx++){
-                    for(int cy = -deepRadius; cy <= deepRadius; cy++){
-                        if((cx) * (cx) + (cy) * (cy) <= deepRadius * deepRadius){
-                            int wx = cx + x, wy = cy + y;
-
-                            Tile tile = tiles.get(wx, wy);
-                            if(tile != null && (!tile.floor().isLiquid || tile.block() != air)){
-                                //found something solid, skip replacing anything
-                                return;
+                    for (int yi = 0; yi < lakeSize; yi++) {
+                        for (int xi = 0; xi < lakeSize; xi++) {
+                            for (int i = 0; i < 4; i++) {
+                                Tile near = world.tile(x + Geometry.d4[i].x + xi, y + Geometry.d4[i].y + yi);
+                                if (near != null && near.floor().isLiquid) {
+                                    floor = waterCheckShallow(floor, false);
+                                }
                             }
                         }
                     }
-                }
 
-                floor = Blocks.water;
-            }
-
-            if(finalGenLake && floor != ice ){
-                if(floor.asFloor().isLiquid && !floor.asFloor().isDeep()){
-                    waterCheck(floor, true);
-                }else if(floor.asFloor().hasSurface()) {
-                    float noise = noise(x + 782, y, 5, 0.75f, 260f, 1f);
-                    if (noise > 0.67f && !roomseq.contains(e -> Mathf.within(x, y, e.x, e.y, 14))) {
-                        if (noise > 0.72f) {
-                            floor = waterCheck(floor, noise > 0.78f, true);
-                        } else {
-                            floor = (floor == sand ? floor : darksand);
-                        }
-                    }
                 }
-            }
-        });
+            });
+        }
 
         //rivers
         pass((x, y) -> {
@@ -437,9 +427,10 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
             float rr = Simplex.noise2d(sector.id, (float)2, 0.6f, 1f / 5f, x, y) * 0.1f;
             float value = Ridged.noise3d(2, v.x, v.y, 1, 1, 1f / 55f) + rr - rawHeight(v) * 0f;
-            float rrscl = rr * 61 - 2;
+            int rrmul = finalGenLake ? 66 : 44;
+            float rrscl = rr * rrmul - 2;
 
-            if((value + 3) > 0.17f && !Mathf.within(x, y, fspawn.x, fspawn.y, 12 + rrscl)){
+            if((value) > 0.17f && !Mathf.within(x, y, fspawn.x, fspawn.y, 12 + rrscl)){
                 boolean deep = value > 0.17f + 0.1f && !Mathf.within(x, y, fspawn.x, fspawn.y, 15 + rrscl);
                 //do not place rivers on ice, they're frozen
                 //ignore pre-existing liquids
@@ -491,6 +482,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         Seq<Integer> copperBan = Seq.with(18, 26, 27, 28, 17, 22, 30, 4, 14);
         if(!quartzBan.contains(sector.id))oresSeq.add(oreQuartz);
         if(!copperBan.contains(sector.id))oresSeq.add(oreCopper);
+        if(genLake)oresSeq.addAll(kelp, blueCorals);
 
 
         float poles = Math.abs(sector.tile.v.y);
@@ -507,10 +499,14 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
                 int freq = Mathf.round(frequencies.get(i));
                 float nos = noise(offsetX, offsetY - i*999, 50 + (2 * freq) , 0.3, 69,69, freq, 2f );
                 //float nos = noise(offsetX, offsetY - i*999, 1.7, 0.3, 69,86, freq );
+                if(entry == kelp || entry == blueCorals) nos += 10;
                 if(nos > 58 ){
-                    //logs.add(nos + " ");
-                    floor = solidCheck(floor);
-                    ore = entry;
+                    if(entry != blueCorals)floor = solidCheck(floor);
+                    else floor = waterCheck(floor, true, true);  // random chasms in the water
+
+                    if (entry == kelp || entry == blueCorals) block = air; //just add extra island if the sector is flooded
+                    else ore = entry;
+
                     break;
                 }
             }
@@ -584,6 +580,9 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
                     floor = coralReef;
                 } else ore = waterFeatures.random();
             }
+            if(tile.floor().isLiquid && tile.overlay() == air && tile.block() == air && rand.chance(0.01)) {
+                block = glowLilly;
+            }
 
             //Ore Randomness TODO: spreading moss addition
             if(tile.overlay() == oreCopper){
@@ -642,7 +641,6 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
             Math.abs(Mathf.randomSeed(zRoom.size,0,  zRoom.size));
             Room zone = roomseq.random(rand);
             tiles.getn(zone.x, zone.y).setFloor(coreZone.asFloor());
-            tiles.getn(zone.x, zone.y).setBlock(corroder, Team.sharded);
             tiles.getn(zone.x +1, zone.y).setFloor(coreZone.asFloor());
             tiles.getn(zone.x +1, zone.y +1).setFloor(coreZone.asFloor());
             tiles.getn(zone.x, zone.y + 1).setFloor(coreZone.asFloor());
@@ -676,13 +674,21 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         return waterCheck(floor, deep, false);
     }
 
+    public Floor waterCheckShallow (Block floor, boolean deep){
+        Block out = waterCheck(floor, deep);
+        if(out == deepwater) out = Blocks.water;
+        else if(out == algaeWaterDeep) out = algaeWater;
+
+        return out.asFloor();
+    }
+
     public Floor waterCheck(Block floor, boolean deep, boolean requireWater){
         Block out;
-        if(Seq.with(dirt, hardenMud, frozenMud, mossyDirt, mud).contains(floor)) out = (deep ? Blocks.water : requireWater ? Blocks.water : mud);
+        if(Seq.with(dirt, hardenMud, frozenMud, mossyDirt, mud).contains(floor)) out = (deep ? deepwater : requireWater ? Blocks.water : mud);
         else if (mossGreenAll.contains(floor) || floor == algaeWater) out = (deep ? algaeWaterDeep : algaeWater);
-        else if (mossYellow.contains(floor) || floor == yellowMossyWater) out = (deep ? Blocks.water : yellowMossyWater);
-        else if (Seq.with(redSand, redSandWater, redSandSnow).contains(floor)) out =  (deep ? deepwater : redSandWater);
-        else if (floor.asFloor().isLiquid) out = deep ? Blocks.water : floor;
+        else if (mossYellow.contains(floor) || floor == yellowMossyWater) out = (deep ? deepwater : yellowMossyWater);
+        else if (Seq.with(redSand, redSandWater, redSandSnow).contains(floor)) out = (deep ? deepwater : redSandWater);
+        else if (floor.asFloor().isLiquid) out = deep ? deepwater : floor;
         else out = (deep ? Blocks.deepwater : Blocks.water);
         return out.asFloor();
     }

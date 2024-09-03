@@ -520,7 +520,7 @@ public class NyfalisUnits {
             rotateSpeed = 10f;
             itemCapacity = 20;
             legMoveSpace = 1.1f;
-            crushDamage = 0.25f;
+            crushDamage = 0.20f;
             segmentMaxRot = 80f;
             crawlSlowdown = 0.2f;
             segmentRotSpeed = 5f;
@@ -1047,6 +1047,7 @@ public class NyfalisUnits {
                     height = 9f;
                     lifetime = 65f;
                     splashDamage = 2f;
+                    homingPower = 0.15f;
                     splashDamageRadius = 25f * 0.75f;
                     collidesAir = false;
                     frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);

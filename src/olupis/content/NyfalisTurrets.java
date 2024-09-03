@@ -505,7 +505,15 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.3f);
                 }}
             );
-        }};
+        }
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
+            }
+        };
 
         hive = new ItemUnitTurret("hive"){{
             size = 4;

@@ -84,6 +84,8 @@ public class NyfalisPlanets {
             accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = allowWaveSimulation = true;
 
             startSector = 2;
+            lightDstTo = 0.8f;
+            lightDstFrom = 0f;
             enemyBuildSpeedMultiplier = 0.4f;
             icon = "effect";
             ruleSetter = commonRules;
