@@ -22,6 +22,7 @@ import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.*;
 import olupis.world.blocks.defence.*;
+import olupis.world.blocks.turret.*;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.NyfalisStats;
 import olupis.world.entities.bullets.*;
@@ -32,6 +33,7 @@ import static mindustry.Vars.headless;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisBlocks.*;
+import static olupis.content.NyfalisColors.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
 
@@ -43,8 +45,8 @@ public class NyfalisTurrets {
     public static void LoadTurrets(){
 
         //region Turrets
-        corroder = new LiquidTurret("corroder"){{ //architronito
-            targetAir = true;
+        corroder = new NyfalisLiquidTurret("corroder"){{ //architronito
+            targetAir = emitLight = true;
 
             size = 2;
             recoil = 1;
@@ -55,6 +57,7 @@ public class NyfalisTurrets {
             shootCone = 50f;
             inaccuracy = 8.5f;
             rotateSpeed = 3f;
+            lightRadius = 150;
             coolantMultiplier = 2.5f;
             liquidCapacity = reload = 5f;
 
@@ -151,6 +154,7 @@ public class NyfalisTurrets {
             limitRange(0f);
             loopSound = Sounds.steam;
             consumePower(1f);
+            lightColor = turretLightColor;
             outlineColor = nyfalisBlockOutlineColour;
             researchCost = with(rustyIron, 100, lead, 100);
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
@@ -166,12 +170,13 @@ public class NyfalisTurrets {
 
         avenger = new AirPriorityItemTurret("avenger"){
             {
-                targetAir = slowFogOfWar =true;
+                targetAir = slowFogOfWar = emitLight = true;
                 size = 3;
                 recoil = 0;
                 reload = 42f;
                 health = 300;
                 range = 34 * 8;
+                lightRadius = 320;
                 rotateSpeed = 0;
                 shootCone = 360;
                 inaccuracy = 180;
@@ -281,6 +286,7 @@ public class NyfalisTurrets {
                         groundDamageSplashMultiplier = splashPenalty;
                     }}
                 );
+                lightColor = floodLightColor;
                 limitRange(1.5f);
                 shootSound = Sounds.missile;
                 shootEffect = Fx.blastsmoke;
@@ -329,7 +335,7 @@ public class NyfalisTurrets {
             }
         };
 
-        slash = new PowerTurret("slash"){{
+        slash = new NyfalisPowerTurret("slash"){{
             reload = 6;
             shootY = 11;
             inaccuracy = 0.5f;
@@ -357,6 +363,7 @@ public class NyfalisTurrets {
             }};
             drawer = new DrawTurret("iron-"){{
                 targetAir = false;
+                emitLight = true;
 
                 size = 2;
                 recoil = 0;
@@ -364,6 +371,7 @@ public class NyfalisTurrets {
                 range = 20f;
                 health = 3000;
                 fogRadius = 13;
+                lightRadius = 37;
                 shootCone = 180f;
                 liquidCapacity = 5f;
                 coolantMultiplier = 3f;
@@ -381,6 +389,7 @@ public class NyfalisTurrets {
                 );
             }};
             shootSound = Sounds.none;
+            lightColor = turretLightColor;
             outlineColor = nyfalisBlockOutlineColour;
             loopSound = NyfalisSounds.sawActiveLoop;
             coolant = consume(new ConsumeLubricant(15f / 60f));
@@ -401,16 +410,18 @@ public class NyfalisTurrets {
             }
         };
 
-        shredder = new ItemTurret("shredder"){{
+        shredder = new NyfalisItemTurret("shredder"){{
             //TODO: check for clear path to unit
             targetAir = false;
+            emitLight = true;
 
             size = 3;
             armor = 5;
-            health = 750;
             reload = 70f;
-            range = 160;
+            range = 170;
+            health = 750;
             shootCone = 15f;
+            lightRadius = 200;
             rotateSpeed = 10f;
             coolantMultiplier = 6f;
             ammoUseEffect = Fx.casing1;
@@ -419,10 +430,11 @@ public class NyfalisTurrets {
             outlineColor = nyfalisBlockOutlineColour;
 
             limitRange(1f);
-            shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
+            lightColor = turretLightColor;
             drawer = new DrawTurret("iron-");
             shoot = new ShootSpread(3, 15);
             smokeEffect = Fx.shootSmokeSquareSparse;
+            shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
             researchCost = with(lead, 1000, iron, 850, graphite, 850, copper, 1000);
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20, copper, 30));
             coolant = consume(new ConsumeLubricant(15f / 60f));
@@ -505,6 +517,7 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.3f);
                 }}
             );
+            limitRange();
         }
 
             @Override
@@ -522,6 +535,7 @@ public class NyfalisTurrets {
             reload = 600f;
             maxAmmo  = 20;
             itemCapacity = 60;
+            lightRadius = (size * 8) + 4;
             fogRadiusMultiplier = 0.5f;
             shootSound = Sounds.respawn;
 
@@ -551,10 +565,11 @@ public class NyfalisTurrets {
                     unitRange = 650;
                 }}
             );
-            playerControllable = drawOnTarget = true;
+            playerControllable = drawOnTarget = emitLight = true;
             commandable = configurable = rallyAim = false;
             requiredAlternate = with();
             buildingFilter = b -> false; //dont
+            lightColor = floodLightColor;
             requiredItems = with(copper, 10);
             researchCost = with(lead, 1500, silicon, 1500,  iron, 1500, copper, 1500);
             requirements(Category.turret, with(iron, 100, lead, 40, silicon, 40, copper, 40));
@@ -577,15 +592,16 @@ public class NyfalisTurrets {
 
         aegis = new AirPriorityItemTurret("aegis"){
             {
-                targetAir = slowFogOfWar = targetGround = true;
+                targetAir = slowFogOfWar = targetGround = emitLight = true;
                 size = 3;
-                reload = 120;
-                range = 50f * 8f;
                 shootY = 5;
                 shootX = 0f;
+                reload = 120;
+                range = 50f * 8f;
+                minWarmup = 0.8f;
+                lightRadius = 450;
                 fogRadiusMultiplier = 0.75f;
                 shootWarmupSpeed = 0.05f;
-                minWarmup = 0.8f;
 
                 ammo(
                         copper, new EffectivenessMissleType(6f, 10f) {{
@@ -806,6 +822,7 @@ public class NyfalisTurrets {
                 ammoPerShot = 20;
                 maxAmmo = 220;
                 shootSound = Sounds.missile;
+                lightColor = floodLightColor;
                 outlineColor = nyfalisBlockOutlineColour;
                 shootEffect = Fx.shootSmallSmoke;
                 researchCost = with(lead, 1500, iron, 700, alcoAlloy, 700);
@@ -828,16 +845,16 @@ public class NyfalisTurrets {
             outlineColor = NyfalisColors.contentOutline;
             details = Core.bundle.getOrNull(getContentType() + "." + visName + ".details");
             hideDetails = false;
-            targetAir = true;
-            targetGround = true;
+            targetAir = targetGround = emitLight =true;
             size = 4;
-            reload = 120;
-            range = (50f * 8f) * (cascadeAlt ? 4f : 1f);
             shootY = 2;
             shootX = 0f;
+            reload = 120;
+            lightRadius = 450;
+            minWarmup = 0.8f;
             fogRadiusMultiplier = 0.75f;
             shootWarmupSpeed = 0.05f;
-            minWarmup = 0.8f;
+            range = (50f * 8f) * (cascadeAlt ? 4f : 1f);
             explosionRadius = 25 * (cascadeAlt ? 4f : 1f);
             explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
             consumePower(17f * (cascadeAlt ? 4f : 1f));
@@ -1160,6 +1177,7 @@ public class NyfalisTurrets {
 
             }};
             shootSound = Sounds.shootSmite;
+            lightColor = floodLightColor;
             shootEffect = new MultiEffect(Fx.shootPayloadDriver, NyfalisFxs.fastSquareSmokeCloud);
             researchCost = with(iron, 500 * (cascadeAlt ? 4f : 1f), copper, 500 * (cascadeAlt ? 4f : 1f), cobalt, 350 * (cascadeAlt ? 4f : 1f), quartz, 100 * (cascadeAlt ? 4f : 1f));
             coolant = consumeCoolant(2 ,true,true);
@@ -1170,11 +1188,12 @@ public class NyfalisTurrets {
             cooldownTime = 240;
         }};
 
-        laceration = new PowerTurret("laceration"){{
-            inaccuracy = 0.5f;
-            rotateSpeed = 3f;
+        laceration = new NyfalisPowerTurret("laceration"){{
+            emitLight = true;
             reload = 8;
             shootY = 18;
+            inaccuracy = 0.5f;
+            rotateSpeed = 3f;
             minWarmup = 0.9f;
             smokeEffect = shootEffect =  Fx.none;
             shoot = new ShootAlternate(){{
@@ -1182,7 +1201,6 @@ public class NyfalisTurrets {
                 spread = 12;
                 shotDelay = 0;
             }};
-
 
             shootType = new ExplosionBulletType(200, 10){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
@@ -1252,6 +1270,7 @@ public class NyfalisTurrets {
             }};
             loopSound = NyfalisSounds.sawActiveLoop;
             shootSound = Sounds.none;
+            lightColor = turretLightColor;
             outlineColor = nyfalisBlockOutlineColour;
             coolant = consume(new ConsumeLubricant(30f / 60f));
             consumePower(2.5f);
@@ -1428,6 +1447,8 @@ public class NyfalisTurrets {
                 stats.add(Stat.ammo, NyfalisStats.ammoBlocksOnly(ammoTypes, this));
             }
         };
+
+
         //endregion
         //region Env Hazzards
         boomPuffPassive = new PowerTurret("non-reproductive-boompuff"){{

@@ -12,7 +12,7 @@ import mindustry.graphics.Drawf;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
-import olupis.world.blocks.defence.UnstablePowerTurret;
+import olupis.world.blocks.turret.UnstablePowerTurret;
 
 import java.util.Iterator;
 

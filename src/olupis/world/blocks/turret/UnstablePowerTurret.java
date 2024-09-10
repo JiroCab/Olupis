@@ -1,4 +1,4 @@
-package olupis.world.blocks.defence;
+package olupis.world.blocks.turret;
 
 import arc.*;
 import arc.audio.Sound;
@@ -127,6 +127,13 @@ public class UnstablePowerTurret extends PowerTurret {
                 Effect.shake(explosionShake, explosionShakeDuration, this);
             }
         }
+
+        @Override
+        public void drawLight() {
+            if(emitLight)Drawf.light(x, y, lightRadius, lightColor, lightColor.a);
+            super.drawLight();
+        }
+
         @Override
         public double sense(LAccess sensor){
             if(sensor == LAccess.heat) return heatT;

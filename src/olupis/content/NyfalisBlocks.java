@@ -43,6 +43,7 @@ import olupis.world.blocks.environment.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
+import olupis.world.blocks.turret.UnstablePowerTurret;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
@@ -121,7 +122,7 @@ public class NyfalisBlocks {
         /*special*/
         scarabRadar, floodDisruptor
     ; //endregion
-    public static  UnstablePowerTurret cascade;
+    public static UnstablePowerTurret cascade;
     public static Replicator unitReplicator, unitReplicatorSmall;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
@@ -523,6 +524,7 @@ public class NyfalisBlocks {
             variants = 3;
             lightRadius = 10f;
             emitLight = true;
+            lightColor = NyfalisColors.glowPlantLight;
             breakSound = Sounds.plantBreak;
         }};
 
@@ -536,6 +538,7 @@ public class NyfalisBlocks {
             variants = 1;
             lightRadius = 8.5f;
             hasShadow = false;
+            lightColor = NyfalisColors.glowPlantLight;
             floating = placeableLiquid = emitLight = true;
             breakSound = Sounds.plantBreak;
         }};
@@ -1596,14 +1599,14 @@ public class NyfalisBlocks {
             size = 5;
             delay = 5f;
             replacement = air;
-            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
         }};
 
         unitReplicatorSmall = new Replicator("unit-replicator-small"){{
             size = 4;
             delay = 4f;
 
-            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
         }};
 
         //endregion

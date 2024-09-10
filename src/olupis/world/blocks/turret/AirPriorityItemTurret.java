@@ -1,4 +1,4 @@
-package olupis.world.blocks.defence;
+package olupis.world.blocks.turret;
 
 import arc.math.Mathf;
 import arc.util.io.Reads;
@@ -60,6 +60,12 @@ public class AirPriorityItemTurret extends ItemTurret {
             super.write(write);
 
             if(slowFogOfWar)write.f(progressFog);
+        }
+
+        @Override
+        public void drawLight() {
+            if(emitLight)Drawf.light(x, y, lightRadius, lightColor, lightColor.a);
+            super.drawLight();
         }
 
         @Override

@@ -12,7 +12,7 @@ import arc.util.*;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import olupis.world.blocks.defence.UnstablePowerTurret;
+import olupis.world.blocks.turret.UnstablePowerTurret;
 
 import java.util.Iterator;
 

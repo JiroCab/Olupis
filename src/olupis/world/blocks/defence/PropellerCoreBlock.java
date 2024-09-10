@@ -1,6 +1,7 @@
 package olupis.world.blocks.defence;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
@@ -12,6 +13,7 @@ import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.storage.CoreBlock;
+import olupis.content.NyfalisColors;
 
 import static mindustry.Vars.*;
 
@@ -19,6 +21,7 @@ public class PropellerCoreBlock extends CoreBlock {
      public TextureRegion blur;
      public boolean singleBlade = false;
     public float rotateSpeed = 7f, offset = 10f;
+    public Color lightColorAlt = NyfalisColors.floodLightColor;
 
     public PropellerCoreBlock(String name){
         super(name);
@@ -145,6 +148,12 @@ public class PropellerCoreBlock extends CoreBlock {
                 float dx = Geometry.d4x[i] * length, dy = Geometry.d4y[i] * length;
                 Draw.rect(reg, x + dx, y + dy, i * 90);
             }
+        }
+
+        @Override
+        public void drawLight() {
+            if(emitLight)Drawf.light(x, y, fogRadius * 8, lightColorAlt, lightColorAlt.a);
+            super.drawLight();
         }
     }
 }

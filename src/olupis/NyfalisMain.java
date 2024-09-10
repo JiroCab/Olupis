@@ -128,6 +128,7 @@ public class NyfalisMain extends Mod{
             if(Core.settings.getBool("nyfalis-debug")){
                 Vars.renderer.maxZoom  = 100; //just going to leave this here so aligning, screenshot are easier
                 //if(control.saves.getSaveSlots().first() != null) ui.load.runLoadSave(control.saves.getSaveSlots().first());
+                ui.planet.debugSelect = true;
             }
 
             /*For those people who don't like the name/icon or overwrites in general*/
