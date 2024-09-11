@@ -25,6 +25,7 @@ public class PropellerCoreBlock extends CoreBlock {
 
     public PropellerCoreBlock(String name){
         super(name);
+        clipSize = 500; //floodlight
     }
 
     @Override

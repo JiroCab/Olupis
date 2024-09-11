@@ -1,19 +1,26 @@
 package olupis.world.blocks.turret;
 
+import arc.math.Mathf;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 
 public class NyfalisLiquidTurret  extends LiquidTurret {
+    public float illuminateTime = 30f;
+
     public NyfalisLiquidTurret(String name){
         super(name);
     }
 
     public class NyfalisLiquidTurretBuild extends LiquidTurretBuild{
+        public float progressLight;
 
         @Override
         public void drawLight() {
-            boolean check = (hasPower && power.status >= 0.5f);
-            if(emitLight && check)Drawf.light(x, y, lightRadius, lightColor, lightColor.a);
+            boolean check = (!hasPower || power.status >= 0.5f) && (hasAmmo());
+            if(emitLight){
+                progressLight = Mathf.lerpDelta(progressLight, check ? lightRadius : 0, this.delta() / illuminateTime);
+                if(progressLight >= 0)Drawf.light(x, y, progressLight, lightColor, lightColor.a);
+            }
             super.drawLight();
         }
 

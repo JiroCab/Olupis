@@ -19,7 +19,7 @@ public class DeployedAi extends FlyingAI {
     @Override
     public void updateMovement(){
         if(unit.isFlying()){
-            if (unit.controller() instanceof CommandAI ai) {
+            if (!unit.type.flying && unit.controller() instanceof CommandAI ai) {
                 ai.defaultBehavior();
             }
             if(unit.type.canBoost && unit.type instanceof NyfalisUnitType nyf && nyf.deployLands){

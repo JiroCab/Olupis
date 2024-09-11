@@ -36,7 +36,7 @@ import olupis.world.entities.parts.CellPart;
 import olupis.world.entities.parts.NyfPartParms;
 import olupis.world.entities.units.*;
 
-import static mindustry.Vars.tilePayload;
+import static mindustry.Vars.*;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 
@@ -227,7 +227,7 @@ public class NyfalisUnits {
             }});
         }};
 
-        // falcon -> btd6 druid top path ball of lightning
+        // falcon -> infintode lightning ablity/tesla ultimate - fast-ish no collision bullet that zaps targets
         //endregion
         //region Air - Bats
         pteropus = new NyfalisUnitType("pteropus"){{
@@ -463,7 +463,6 @@ public class NyfalisUnits {
 
         //re.gioner - shotgun aircraft!
         regioner = new NyfalisUnitType("regioner"){{
-            hitSize = 7f;
             drag = 0.05f;
             accel = 0.10f;
             health = 450f;
@@ -473,6 +472,8 @@ public class NyfalisUnits {
             itemCapacity = 25;
             engineOffset = 4.6f;
             armor = speed = 3f;
+            hitSize = 12f;
+
 
             constructor = UnitEntity::create;
             aiController = ArmDefenderAi::new;
@@ -512,7 +513,6 @@ public class NyfalisUnits {
             constructor = CrawlUnit::create;
             armor = 1;
             accel = 2.5f;
-            hitSize = 11f;
             health = 650;
             speed = 2.2f;
             segments = 7;
@@ -520,8 +520,9 @@ public class NyfalisUnits {
             rotateSpeed = 10f;
             itemCapacity = 20;
             legMoveSpace = 1.1f;
-            crushDamage = 0.20f;
+            crushDamage = 0.1f;
             segmentMaxRot = 80f;
+            hitSize = 12f;
             crawlSlowdown = 0.2f;
             segmentRotSpeed = 5f;
             crawlSlowdownFrac = 1f;
@@ -563,7 +564,7 @@ public class NyfalisUnits {
             segmentScl = 7f;
             rotateSpeed = 15f;
             legMoveSpace = 1.2f;
-            crushDamage = 0.45f;
+            crushDamage = 0.2f;
             segmentMaxRot = 80f;
             crawlSlowdown = 0.4f;
             segmentRotSpeed = 5f;
@@ -585,7 +586,7 @@ public class NyfalisUnits {
                    shootSound = Sounds.none;
                    top = mirror = false;
                    autoTarget = partialControl = rotate = alternate = controllable = strictAngle = true;
-                   bullet = new ExplosionBulletType(35, 10){{
+                   bullet = new ExplosionBulletType(40, 10){{
                        trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                        killShooter = collidesAir = false;
                        fragBullets = 8;
@@ -707,7 +708,7 @@ public class NyfalisUnits {
 
             canBoost = lowAltitude = alwaysShootWhenMoving = true;
             armor = 4;
-            hitSize = 8;
+            hitSize = 12f;
             range = 1.5f;
             health = 620;
             speed = 0.7f;
@@ -1460,14 +1461,16 @@ public class NyfalisUnits {
             speed = 3.6f;
             health = 50;
             engineSize = 3f;
+            lightRadius = 30;
             engineOffset = 7f;
             rotateSpeed = 30f;
             itemCapacity = 40;
             drag = accel = 0.08f;
-            constructor = UnitEntity::create;
-            defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
+            secondaryLightRadius = 250;
+            payloadCapacity = (float) ((1.5 * 1.5) * 64);
+            constructor = PayloadUnit::create;
             range = 32;
-            flying = true;
+            flying = canDeploy = canCharge = emitSecondaryLight = true;
             useUnitCap = false;
             fogRadius = 35;
             parts.addAll(
@@ -1488,7 +1491,7 @@ public class NyfalisUnits {
                 shootY = -9.1f;
                 y = x = recoil = 0f;
                 reload = shootCone = 360f;
-                noAttack = shootOnDeath = statsBlocksOnly = true;
+                noAttack = shootOnDeath = statsBlocksOnly = dashShoot = true;
                 ejectEffect = Fx.none;
                 shootSound = Sounds.none;
                 bullet = new BasicBulletType(){{

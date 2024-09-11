@@ -13,6 +13,7 @@ import static mindustry.Vars.*;
 
 public class AirPriorityItemTurret extends ItemTurret {
     public float discoveryTime = 60f * 60f * 1f;
+    public float illuminateTime = 30f;
     public boolean slowFogOfWar = false;
 
     public AirPriorityItemTurret(String name){
@@ -22,6 +23,7 @@ public class AirPriorityItemTurret extends ItemTurret {
     public class AirPriorityTurretItemBuild extends ItemTurretBuild{
 
         public float progressFog;
+        public float progressLight;
         public float lastRadius = 0f;
         public float smoothEfficiency = 1f;
 
@@ -64,7 +66,11 @@ public class AirPriorityItemTurret extends ItemTurret {
 
         @Override
         public void drawLight() {
-            if(emitLight)Drawf.light(x, y, lightRadius, lightColor, lightColor.a);
+            boolean check = (!hasPower || power.status >= 0.5f) && (hasAmmo());
+            if(emitLight){
+                progressLight = Mathf.lerpDelta(progressLight, check ? lightRadius : 0, this.delta() / illuminateTime);
+                if(progressLight >= 0)Drawf.light(x, y, progressLight, lightColor, lightColor.a);
+            }
             super.drawLight();
         }
 

@@ -42,6 +42,7 @@ public class UnstablePowerTurret extends PowerTurret {
     public Color hotColor = Color.red;
     public Color flashColor1 = Color.red, flashColor2 = Color.yellow;
 
+    public float illuminateTime = 30f;
 
     public UnstablePowerTurret(String name){
         super(name);
@@ -65,6 +66,7 @@ public class UnstablePowerTurret extends PowerTurret {
     }
 
     public class UnstablePowerTurretBuild extends PowerTurretBuild{
+        public float progressLight;
         public float heatT;
         public float flash;
         @Override
@@ -130,7 +132,11 @@ public class UnstablePowerTurret extends PowerTurret {
 
         @Override
         public void drawLight() {
-            if(emitLight)Drawf.light(x, y, lightRadius, lightColor, lightColor.a);
+            boolean check = (!hasPower || power.status >= 0.5f) && (hasAmmo());
+            if(emitLight){
+                progressLight = Mathf.lerpDelta(progressLight, check ? lightRadius : 0, this.delta() / illuminateTime);
+                if(progressLight >= 0)Drawf.light(x, y, progressLight, lightColor, lightColor.a);
+            }
             super.drawLight();
         }
 

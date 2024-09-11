@@ -23,6 +23,7 @@ import mindustry.entities.Sized;
 import mindustry.entities.units.WeaponMount;
 import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.ItemAmmoType;
@@ -58,6 +59,10 @@ public class NyfalisUnitType extends UnitType {
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
     public Seq<UnlockableContent> displayFactory = new Seq<>();
+    /*secondary light  parameters*/
+    public boolean emitSecondaryLight = false;
+    public Color secondaryLightColor = NyfalisColors.floodLightColor;
+    public float secondaryLightRadius = lightRadius  * 2;
 
     public TextureRegion bossRegion;
 
@@ -186,6 +191,12 @@ public class NyfalisUnitType extends UnitType {
 
     public float partAmmo(Unit unit){
         return unit.ammo/ ammoCapacity;
+    }
+
+    @Override
+    public void drawLight(Unit unit){
+        if(lightRadius > 0) Drawf.light(unit.x, unit.y, lightRadius, lightColor, lightOpacity);
+        if(secondaryLightRadius > 0) Drawf.light(unit.x, unit.y, secondaryLightRadius, secondaryLightColor, secondaryLightColor.a);
     }
 
     @Override
@@ -351,7 +362,7 @@ public class NyfalisUnitType extends UnitType {
             if(unit.type instanceof NyfalisUnitType nyf && nyf.canDeploy && unit.controller() instanceof LogicAI ai && ai.shoot)mount.shoot = true;
 
             if(!unit.isPlayer()) {
-                boolean isDashing = unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDashCommand;
+                boolean isDashing = unit.isCommandable() && (unit.command().command == NyfalisUnitCommands.nyfalisDashCommand || unit.command().command == NyfalisUnitCommands.nyfalisChargeCommand);
                 if (dashShoot && isDashing) mount.shoot = true;
                 else if (dashExclusive && !isDashing) mount.shoot = false;
             }

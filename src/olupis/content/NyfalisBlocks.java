@@ -1533,11 +1533,18 @@ public class NyfalisBlocks {
         // t4 = t2 + t3 reconstructor + Articulator
         // t5 = t1-t4 at assembler
 
+        scoutPad = new MechPad("scout-pad"){{
+            hasPower = consumesPower = solid = true;
+            consumePower(100f / 60f);
+            requirements(Category.units, with(lead, 150, iron, 50, rustyIron, 150, copper, 110));
+            size = 4;
+        }};
+
         repairPin = new UnitRailingRepairTurret("repair-pin"){{
             //Intrusive bottom thoughts won -Rushie
             size = 3;
             shootY = 10;
-            repairSpeed = 2.5f;
+            repairSpeed = 3f;
             repairRadius = 110;
             powerUse =100f / 60f;
 
@@ -1574,6 +1581,7 @@ public class NyfalisBlocks {
             requirements(Category.units, with(iron, 15, Items.lead, 20, copper, 20));
         }};
 
+
         fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
             requirements(Category.units, with(Items.graphite, 10 , iron, 5));
             canOverdrive = false;
@@ -1588,12 +1596,6 @@ public class NyfalisBlocks {
             size = 4;
         }};
 
-        scoutPad = new MechPad("scout-pad"){{
-            //proof of concept
-            requirements(Category.units, BuildVisibility.hidden, with(Items.graphite, 15, iron, 10));
-            size = 4;
-        }};
-        //TODO: payloadLifter -> payload into a air unit to drop off at configured location, air unit can be killed
 
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
@@ -2034,14 +2036,16 @@ public class NyfalisBlocks {
 
 
         ladar = new Ladar("ladar"){{
+            emitLight = true;
             size = 2;
             fogRadius = 64;
+            lightRadius = 200;
             rotateSpeed = 20f;
             glowMag = glowScl = 0f;
             discoveryTime = 60f * 80f;
             consumePower(240f/60f);
             glowColor = Color.valueOf("00000000");
-            requirements(Category.effect, BuildVisibility.fogOnly, with(Items.lead, 60, Items.graphite, 50, iron, 10));
+            requirements(Category.effect, with(Items.lead, 60, Items.graphite, 50, iron, 10));
         }};
 
         //Healing turret that has ammo and water to heal better
@@ -2068,7 +2072,6 @@ public class NyfalisBlocks {
             researchCost = with(iron, 550, rustyIron, 800, silicon, 550);
             requirements(Category.effect, with(rustyIron, 75, iron, 50, silicon, 50));
         }};
-
 
         int coreBaseHp = 600, coreUnitCap = 2;
 
@@ -2283,7 +2286,7 @@ public class NyfalisBlocks {
         }};
         //endregion
         //special
-        scarabRadar = new Radar("scarab-block-radar"){{
+        scarabRadar = new Ladar("scarab-block-radar"){{
             underBullets = true;
             health = 10;
             size = 1;
@@ -2291,7 +2294,7 @@ public class NyfalisBlocks {
             glowColor = Color.valueOf("3ed09a");
             outlineColor = NyfalisColors.contentOutline;
             requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.with(new Object[]{Items.silicon, 1}));
-            fogRadius = 40;
+            fogRadius = 20;
         }};
 
     }
