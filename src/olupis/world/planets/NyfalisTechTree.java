@@ -164,6 +164,11 @@ public class NyfalisTechTree {
                         });
                     });
                 }) ;
+                node(scarab, Seq.with(
+                        new  Objectives.Research(scoutPad)
+                ), () -> {
+
+                });
             });
 
             node(mossyBoulder, ()-> {
@@ -392,6 +397,11 @@ public class NyfalisTechTree {
                             });
                         });
                         node(repairPin, () -> {
+                            node(scoutPad,  Seq.with(
+                                    new  Objectives.OnSector(glasierSea)
+                            ), () -> {
+
+                            });
                             node(alternateArticulator,  Seq.with(
                                     new  Objectives.SectorComplete(abandonedPayloadTerminal)
                             ), () -> {
