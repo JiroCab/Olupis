@@ -1458,13 +1458,13 @@ public class NyfalisUnits {
         //region Scout
         scarab = new NyfalisUnitType("scarab"){{
             hitSize = 9f;
-            speed = 3.6f;
             health = 50;
+            speed = 3.6f;
             engineSize = 3f;
             lightRadius = 30;
+            itemCapacity = 0;
             engineOffset = 7f;
             rotateSpeed = 30f;
-            itemCapacity = 40;
             drag = accel = 0.08f;
             secondaryLightRadius = 250;
             payloadCapacity = (float) ((1.5 * 1.5) * 64);

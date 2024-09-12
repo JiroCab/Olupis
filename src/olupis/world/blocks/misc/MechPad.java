@@ -17,8 +17,8 @@ import static mindustry.Vars.net;
 
 public class MechPad extends Block {
     UnitType type = NyfalisUnits.scarab;
-    public float unPowerThershold = 0.3f;
-    public float lowPowerThershold = 0.7f;
+    public float unPowerThreshold = 0.3f;
+    public float lowPowerThreshold = 0.7f;
     public StatusEffect lowPowerStatus = StatusEffects.slow;
     public StatusEffect unPowerStatus = StatusEffects.unmoving;
 
@@ -41,7 +41,7 @@ public class MechPad extends Block {
                 if(slave != null || !net.client()) readUnitId = -1;
             }
 
-            if(slave == null && Units.canCreate(team, type) && efficiency > unPowerThershold){
+            if(slave == null && Units.canCreate(team, type) && efficiency > unPowerThreshold){
                 if(!net.client()){
                     slave = type.create(team);
                     slave.set(x, y);
@@ -52,8 +52,9 @@ public class MechPad extends Block {
             }
 
             if (slave != null){
-                if(efficiency < unPowerThershold) slave.apply(unPowerStatus, 5 * Time.toSeconds);
-                else if(efficiency < lowPowerThershold) slave.apply(lowPowerStatus, 5 * Time.toSeconds);
+                if(efficiency < unPowerThreshold) slave.apply(unPowerStatus, 1 * Time.toSeconds);
+                else if(efficiency < lowPowerThreshold) slave.apply(lowPowerStatus, 1 * Time.toSeconds);
+                if(slave instanceof  Payloadc p && p.hasPayload()) slave.apply(StatusEffects.disarmed);
             }
         }
 

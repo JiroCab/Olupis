@@ -2,16 +2,18 @@ package olupis.input.ui;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;
+import arc.input.KeyCode;
+import arc.math.Mathf;
 import arc.scene.Element;
 import arc.scene.Group;
 import arc.scene.event.Touchable;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Align;
-import arc.util.Scaling;
+import arc.util.*;
 import mindustry.Vars;
 import mindustry.core.Logic;
+import mindustry.core.Version;
 import mindustry.editor.WaveInfoDialog;
 import mindustry.game.Rules;
 import mindustry.gen.Icon;
@@ -33,6 +35,7 @@ import static mindustry.Vars.*;
 
 public class NyfalisStartUpUis {
     public static Table debugTable = new Table();
+    public boolean forceShowFunny = false;
 
     public static void  disclaimerDialog(){
         BaseDialog dialog = new BaseDialog("@nyfalis-disclaimer.name");
@@ -44,6 +47,7 @@ public class NyfalisStartUpUis {
 
             Label header = new Label("@nyfalis-disclaimer.header");
             Label body = new Label("@nyfalis-disclaimer.body");
+            Label funny = new Label("@nyfalis-disclaimer.funny");
             header.setAlignment(Align.center);
             header.setWrap(true);
             body.setWrap(true);
@@ -51,9 +55,23 @@ public class NyfalisStartUpUis {
             body.setAlignment(Align.center);
 
             t.add(header).row();
-            /*Very convoluted way to load the mod icon, because I'm not bright to think of any other way*/
-            TextureRegion icon = new TextureRegion(mods.list().find(a -> Objects.equals(a.name, "olupis")).iconTexture);
-            t.table(a -> a.image(icon).scaling(Scaling.bounded).row()).tooltip("Art By RushieWashie").maxSize(700).margin(14).pad(3).center().row();
+
+
+            boolean foos = Structs.contains(Version.class.getDeclaredFields(), var -> var.getName().equals("foos"));
+            //Crash on foo's with how the icon is loaded so this a temp fix that will be here till the end of time
+
+            if( foos || Mathf.random(1, 200) == 1 || (Core.input.keyDown(KeyCode.altLeft) && Core.input.keyDown(KeyCode.shiftLeft))){
+                TextureRegion icon = NyfalisUnits.gnat.uiIcon;
+                t.table(a ->{
+                    a.image(icon).scaling(Scaling.bounded).row();
+                    a.add(funny).center().growX().row();
+                }).maxSize(700).margin(14).pad(3).center().row();
+            } else {
+                /*Very convoluted way to load the mod icon, because I'm not bright to think of any other way*/
+                @Nullable TextureRegion icon = new TextureRegion(mods.list().find(a -> Objects.equals(a.name, "olupis")).iconTexture);
+                t.table(a -> a.image(icon).scaling(Scaling.bounded).row()).tooltip("Art By RushieWashie").maxSize(700).margin(14).pad(3).center().row();
+            }
+
 
             t.add(body).row();
 

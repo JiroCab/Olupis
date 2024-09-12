@@ -28,8 +28,7 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.legacy.LegacyBlock;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.payloads.PayloadConveyor;
-import mindustry.world.blocks.payloads.PayloadRouter;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
@@ -110,9 +109,9 @@ public class NyfalisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-         bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
+        bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
 
-        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, repairPin, scoutPad,
+        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
         mendFieldProjector, taurus, ladar,
@@ -1600,7 +1599,6 @@ public class NyfalisBlocks {
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
             delay = 5f;
-            replacement = air;
             this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
         }};
 
@@ -1608,6 +1606,11 @@ public class NyfalisBlocks {
             size = 4;
             delay = 4f;
 
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
+        }};
+
+        blackHoleContainer = new PayloadVoid("black-hole-container"){{
+            size = 4;
             this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
         }};
 

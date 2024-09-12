@@ -47,11 +47,9 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-auto-ban", true);
             table.checkPref("nyfalis-disclaimer", true);
 
-            table.row();
 
             if(musicModPresent)BuildNyfalisSoundSettings(table, false);
             else table.checkPref("nyfalis-space-sfx", false);
-            table.row();
             table.pref(new CollapserSetting("nyfalis-debug-button") );
 
             table.pref(new CollapserSetting("data-buttons", 1));

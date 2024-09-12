@@ -1,21 +1,20 @@
 package olupis.world.blocks.turret;
 
-import arc.*;
+import arc.Events;
 import arc.audio.Sound;
 import arc.graphics.Color;
-import arc.math.*;
+import arc.math.Mathf;
 import arc.struct.ObjectMap;
-import arc.util.*;
-import mindustry.content.*;
-import mindustry.entities.Damage;
-import mindustry.entities.Effect;
-import mindustry.entities.Puddles;
-import mindustry.game.EventType.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.logic.*;
-import mindustry.type.*;
-import mindustry.ui.*;
+import arc.util.Tmp;
+import mindustry.content.Fx;
+import mindustry.entities.*;
+import mindustry.game.EventType.Trigger;
+import mindustry.gen.Sounds;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
+import mindustry.logic.LAccess;
+import mindustry.type.Liquid;
+import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.meta.Stat;
@@ -37,7 +36,8 @@ public class UnstablePowerTurret extends PowerTurret {
     public float explosionShake = 3, explosionShakeDuration = 30;
     public float explosionPuddleRange = 80, explosionPuddleAmount = 10;
     public float smokeThreshold = 0.3f, flashThreshold = 0.6f;
-    public float coolantPower = 0.1f;
+    public float coolantPower = 0.05f;
+    public float heatTime = 5f * 60f;
     public Color coolColor = new Color(1, 1, 1, 0f);
     public Color hotColor = Color.red;
     public Color flashColor1 = Color.red, flashColor2 = Color.yellow;
@@ -75,10 +75,12 @@ public class UnstablePowerTurret extends PowerTurret {
             super.updateTile();
 
             if(isShooting() && power.status > 0){
-                heatT = Mathf.clamp(heatT + 0.1f);
+                heatT += edelta() / heatTime;
+                heatT = Mathf.clamp(heatT);
             }
 
-            if(heatT > 0){
+            //So logic cant cheese it
+            if(heatT > 0 &&  liquids.currentAmount() > 0.5){
                 float maxUsed = Math.min(liquids.currentAmount(), heatT / coolantPower);
                 heatT -= maxUsed * coolantPower;
                 liquids.remove(liquids.current(), maxUsed);

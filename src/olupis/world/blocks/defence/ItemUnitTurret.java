@@ -295,14 +295,14 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return ((ammoTypes.get(item) != null && totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo && !ammoTypes.get(item).spawnUnit.isBanned())
+            return ((super.acceptItem(source, item) && !ammoTypes.get(item).spawnUnit.isBanned())
                      || !useAlternate && (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)))
                     || useAlternate && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < alternateCapacity);
         }
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
-            if(acceptItem(self(), item) && block.hasItems && (source == null || source.team() == team)){
+            if(acceptItem(self(), item) && block.hasItems && (source == null || source.team() == team) && !ammoTypes.containsKey(item)){
                 return Math.min((useAlternate ? alternateCapacity : getMaximumAccepted(item)) - items.get(item), amount);
             } else return super.acceptStack(item, amount, source);
         }

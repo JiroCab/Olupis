@@ -25,6 +25,7 @@ import olupis.input.NyfalisShaders;
 import olupis.input.ui.*;
 import olupis.world.EnvUpdater;
 import olupis.world.blocks.misc.Replicator;
+import olupis.world.entities.packets.NyfalisSyncOtherSettingsPacket;
 import olupis.world.planets.NyfalisTechTree;
 
 import static mindustry.Vars.*;
@@ -71,7 +72,15 @@ public class NyfalisMain extends Mod{
         Events.on(FileTreeInitEvent.class, e -> Core.app.post(NyfalisSounds::LoadSounds));
 
         Events.on(EventType.WorldLoadBeginEvent.class, I -> {
-            NyfalisTurrets.dynamicTurretContent(); //Vars.content.sectors().forEach(s => {if(s.sector == null || s.sector.preset == null) Log.err(s.name);});
+            if(net.server() || !net.active()){
+                NyfalisTurrets.cascadeAlt = Core.settings.getBool("nyfalis-bread-gun");
+                NyfalisTurrets.dynamicTurretContent();
+
+                NyfalisSyncOtherSettingsPacket packet = new NyfalisSyncOtherSettingsPacket();
+                packet.cascadeBread = NyfalisTurrets.cascadeAlt;
+                Vars.net.send(packet, true);
+            }if(net.client())Call.serverPacketReliable("olupis-getsettings", "");
+
         });
 
         Events.on(EventType.WorldLoadEvent.class, l ->{

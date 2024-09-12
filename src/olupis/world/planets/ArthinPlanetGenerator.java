@@ -390,13 +390,11 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         int secIdDigit = sector.id <= 9 ? sector.id : sector.id  <= 19 ? sector.id %10 : sector.id %100;
         boolean genLake = (secIdDigit  % 2) != 0;
         if(lakesSeq.contains(sector.id)) genLake = true;
-        Log.err(sector.id + " " + secIdDigit + " " + genLake);
         boolean finalGenLake = genLake;
 
         //shoreline setup & lakes
         if(genLake) {
             int lakeSize = Math.max(sector.id, 4);
-            Log.err("we laking");
 
             pass((x, y) -> {
                 Tile tile = tiles.get(x, y);

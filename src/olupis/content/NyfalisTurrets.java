@@ -4,8 +4,10 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
+import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.*;
+import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.WaveEffect;
@@ -16,12 +18,13 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Category;
 import mindustry.world.Tile;
-import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.legacy.LegacyBlock;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.*;
-import olupis.world.blocks.defence.*;
+import olupis.world.blocks.defence.ItemUnitTurret;
 import olupis.world.blocks.turret.*;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.NyfalisStats;
@@ -41,6 +44,7 @@ public class NyfalisTurrets {
     /*Rushie wanted dynamic content with this settings so this the pain she has made*/
     public static boolean cascadeAlt;
     public static Color cascadeColor = updateColor();
+    public static Effect cascadeEffect = updateTrail();
 
     public static void LoadTurrets(){
 
@@ -287,7 +291,7 @@ public class NyfalisTurrets {
                     }}
                 );
                 lightColor = floodLightColor;
-                limitRange(1.5f);
+                limitRange(3f);
                 shootSound = Sounds.missile;
                 shootEffect = Fx.blastsmoke;
 
@@ -500,7 +504,7 @@ public class NyfalisTurrets {
                     backColor = new Color().set(quartz.color).lerp(Pal.bulletYellowBack, 0.1f);
                     frontColor = new Color().set(quartz.color).lerp(Pal.bulletYellow, 0.3f);
                 }},
-                silicon, new RollBulletType(4.5f, 60){{
+                silicon, new RollBulletType(4.5f, 100){{
                     status = StatusEffects.slow;
                     collidesAir = ricochetHoming = false;
                     width = 40f;
@@ -512,6 +516,7 @@ public class NyfalisTurrets {
                     homingRange = 50f;
                     statusDuration = 60f * 2f;
                     buildingDamageMultiplier = 0.35f;
+                    reloadMultiplier = 1.15f;
                     shootEffect = smokeEffect = Fx.none;
                     backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.1f);
                     frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.3f);
@@ -640,7 +645,7 @@ public class NyfalisTurrets {
                             collidesAir = collidesGround = true;
                             shootEffect = Fx.shootBigColor;
                             hitEffect = NyfalisFxs.hollowPointHit;
-                            status = StatusEffects.sapped;
+                            status = NyfalisStatusEffects.drained;
                             groundDamageMultiplier = 0.8f;
                             buildingDamageMultiplier = 0.5f;
                         }},
@@ -829,6 +834,7 @@ public class NyfalisTurrets {
                 coolant = consume(new ConsumeLubricant(30f / 60f));
                 coolantMultiplier = 2.2f;
                 requirements(Category.turret, with(iron, 100, lead, 200, alcoAlloy, 60));
+                limitRange(1f);
             }
 
             @Override
@@ -858,7 +864,7 @@ public class NyfalisTurrets {
             explosionRadius = 25 * (cascadeAlt ? 4f : 1f);
             explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
             consumePower(17f * (cascadeAlt ? 4f : 1f));
-
+            
             shootType = new BasicBulletType(3f, 20f) {{
                 sprite = "large-orb";
                 width = 10f;
@@ -880,7 +886,7 @@ public class NyfalisTurrets {
                 frontColor = Color.white;
                 trailWidth = 2f;
                 trailLength = 8;
-                hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                hitEffect = cascadeEffect;
 
                 despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                     sizeTo = 15f;
@@ -888,9 +894,9 @@ public class NyfalisTurrets {
                     lifetime = 6f;
                 }});
                 trailRotation = true;
-                trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                trailInterval = 3f;
-                lifetime = 75f * (cascadeAlt ? 4f : 1f);
+                trailEffect = Fx.disperseTrail;
+                trailInterval = 6f;
+                lifetime = 75f;
                 knockback = 0.8f;
                 collidesAir = collidesGround = true;
                 buildingDamageMultiplier = 0.1f;
@@ -920,7 +926,7 @@ public class NyfalisTurrets {
                     frontColor = Color.white;
                     trailWidth = 1.5f;
                     trailLength = 6;
-                    hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                    hitEffect = cascadeEffect;
 
                     despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                         sizeTo = 7.5f;
@@ -928,9 +934,9 @@ public class NyfalisTurrets {
                         lifetime = 4f;
                     }});
                     trailRotation = true;
-                    trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                    trailInterval = 3f;
-                    lifetime = 50f;
+                    trailEffect = Fx.disperseTrail;
+                    trailInterval = 4f;
+                    lifetime = 40f;
                     knockback = 0.6f;
                     collidesAir = collidesGround = true;
                     buildingDamageMultiplier = 0.1f;
@@ -962,7 +968,7 @@ public class NyfalisTurrets {
                         frontColor = Color.white;
                         trailWidth = 1f;
                         trailLength = 4;
-                        hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                        hitEffect = cascadeEffect;
 
                         despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                             sizeTo = 3.75f;
@@ -970,9 +976,9 @@ public class NyfalisTurrets {
                             lifetime = 2f;
                         }});
                         trailRotation = true;
-                        trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                        trailInterval = 3f;
-                        lifetime = 25f;
+                        trailEffect = Fx.disperseTrail;
+                        trailInterval = 6f;
+                        lifetime = 15f;
                         knockback = 0.6f;
                         collidesAir = collidesGround = true;
                         buildingDamageMultiplier = 0.1f;
@@ -981,7 +987,7 @@ public class NyfalisTurrets {
                         intervalRandomSpread = 0;
                         bulletInterval = 6;
 
-                        intervalBullet = new BasicBulletType(3f, 5f, "large-orb") {{
+                        intervalBullet = new BasicBulletType(3f, 10f, "large-orb") {{
                             width = 5f;
                             height = 10f;
                             hitSize = 4f;
@@ -1001,7 +1007,7 @@ public class NyfalisTurrets {
                             frontColor = Color.white;
                             trailWidth = 1.5f;
                             trailLength = 6;
-                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                            hitEffect = cascadeEffect;
 
                             despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                                 sizeTo = 7.5f;
@@ -1009,16 +1015,16 @@ public class NyfalisTurrets {
                                 lifetime = 4f;
                             }});
                             trailRotation = true;
-                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                            trailInterval = 3f;
-                            lifetime = 50f;
+                            trailEffect = Fx.disperseTrail;
+                            trailInterval = 6f;
+                            lifetime = 25f;
                             knockback = 0.6f;
                             collidesAir = collidesGround = true;
                             buildingDamageMultiplier = 0.1f;
                             intervalBullets = 2;
                             intervalSpread = -30;
                             intervalRandomSpread = 0;
-                            bulletInterval = 4;
+                            bulletInterval = 8;
                             intervalBullet = new BasicBulletType(3f, 15f, "large-orb") {{
                                 width = 2.5f;
                                 height = 5f;
@@ -1041,7 +1047,7 @@ public class NyfalisTurrets {
                                 frontColor = Color.white;
                                 trailWidth = 1f;
                                 trailLength = 4;
-                                hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                                hitEffect = cascadeEffect;
 
                                 despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                                     sizeTo = 3.75f;
@@ -1049,17 +1055,17 @@ public class NyfalisTurrets {
                                     lifetime = 2f;
                                 }});
                                 trailRotation = true;
-                                trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                                trailInterval = 3f;
-                                lifetime = 25f;
+                                trailEffect = Fx.disperseTrail;
+                                trailInterval = 6f;
+                                lifetime = 15f;
                                 knockback = 0.6f;
                                 collidesAir = collidesGround = true;
                                 buildingDamageMultiplier = 0.1f;
                                 intervalBullets = 2;
                                 intervalSpread = -30;
                                 intervalRandomSpread = 0;
-                                bulletInterval = 4;
-                                intervalBullet = new BasicBulletType(3f, 15f, "large-orb") {{
+                                bulletInterval = 8;
+                                intervalBullet = new BasicBulletType(3f, 30f, "large-orb") {{
                                     width = 2.5f;
                                     height = 5f;
                                     hitSize = 2f;
@@ -1081,7 +1087,7 @@ public class NyfalisTurrets {
                                     frontColor = Color.white;
                                     trailWidth = 1f;
                                     trailLength = 4;
-                                    hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                                    hitEffect = cascadeEffect;
 
                                     despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                                         sizeTo = 3.75f;
@@ -1089,9 +1095,9 @@ public class NyfalisTurrets {
                                         lifetime = 2f;
                                     }});
                                     trailRotation = true;
-                                    trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
-                                    trailInterval = 3f;
-                                    lifetime = 25f;
+                                    trailEffect = Fx.disperseTrail;
+                                    trailInterval = 6f;
+                                    lifetime = 15f;
                                     knockback = 0.6f;
                                     collidesAir = collidesGround = true;
                                     buildingDamageMultiplier = 0.1f;
@@ -1306,7 +1312,7 @@ public class NyfalisTurrets {
                             hitColor = trailColor = iron.color;
                             trailWidth = 1f;
                             trailLength = 4;
-                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                            hitEffect = cascadeEffect;
 
                             despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                                 sizeTo = 3.75f;
@@ -1314,7 +1320,7 @@ public class NyfalisTurrets {
                                 lifetime = 2f;
                             }});
                             trailRotation = true;
-                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                            trailEffect = Fx.disperseTrail;
                             fragBullets = 1;
                             fragRandomSpread = 0;
                             fragSpread = 360;
@@ -1334,7 +1340,7 @@ public class NyfalisTurrets {
                             hitColor = trailColor = cobalt.color;
                             trailWidth = 1f;
                             trailLength = 4;
-                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                            hitEffect = cascadeEffect;
 
                             despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                                 sizeTo = 3.75f;
@@ -1342,7 +1348,7 @@ public class NyfalisTurrets {
                                 lifetime = 2f;
                             }});
                             trailRotation = true;
-                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                            trailEffect = Fx.disperseTrail;
                             fragBullets = 1;
                             fragRandomSpread = 0;
                             fragSpread = 360;
@@ -1362,7 +1368,7 @@ public class NyfalisTurrets {
                             hitColor = trailColor = quartz.color;
                             trailWidth = 1f;
                             trailLength = 4;
-                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                            hitEffect = cascadeEffect;
 
                             despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                                 sizeTo = 3.75f;
@@ -1370,7 +1376,7 @@ public class NyfalisTurrets {
                                 lifetime = 2f;
                             }});
                             trailRotation = true;
-                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                            trailEffect = Fx.disperseTrail;
                             fragBullets = 1;
                             fragRandomSpread = 0;
                             fragSpread = 360;
@@ -1390,7 +1396,7 @@ public class NyfalisTurrets {
                             hitColor = trailColor = condensedBiomatter.color;
                             trailWidth = 1f;
                             trailLength = 4;
-                            hitEffect = new MultiEffect(Fx.hitBulletColor,NyfalisFxs.scatterDebris);
+                            hitEffect = cascadeEffect;
 
                             despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
                                 sizeTo = 3.75f;
@@ -1398,7 +1404,7 @@ public class NyfalisTurrets {
                                 lifetime = 2f;
                             }});
                             trailRotation = true;
-                            trailEffect = new MultiEffect(Fx.disperseTrail,NyfalisFxs.hollowPointHit);
+                            trailEffect = Fx.disperseTrail;
                             fragBullets = 1;
                             fragRandomSpread = 0;
                             fragSpread = 360;
@@ -1552,12 +1558,12 @@ public class NyfalisTurrets {
     }
 
     public static void dynamicTurretContent(){
-        cascadeAlt = Core.settings.getBool("nyfalis-bread-gun") ;
 
         cascade.consumePower(17 * (cascadeAlt ? 4f : 1f));
-        cascade.range = (50f * 8f) * (cascadeAlt ? 4f : 1f);
+        cascade.range = (55f * 8f) * (cascadeAlt ? 2f : 1f);
         cascade.explosionRadius = 25 * (cascadeAlt ? 4f : 1f);
         cascade.explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
+        cascade.limitRange(-1f);
         if(!headless)dynamicTurretContentClient();
     }
 
@@ -1570,10 +1576,16 @@ public class NyfalisTurrets {
         cascade.details = Core.bundle.getOrNull(cascade.getContentType() + ".olupis-" + cascadeName + ".details");
 
         cascadeColor = updateColor();
+        cascadeEffect = updateTrail();
     }
 
 
     public static Color updateColor(){
-        return Core.settings.getBool("nyfalis-bread-gun") ? Color.brown : Color.blue;
+        return cascadeAlt ? Color.brown : Color.blue;
+    }
+
+    public static Effect updateTrail(){
+        if(cascadeAlt) return Fx.none;
+        return new MultiEffect(Fx.disperseTrail, NyfalisFxs.hollowPointHit);
     }
 }
