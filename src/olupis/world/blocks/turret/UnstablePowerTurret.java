@@ -6,6 +6,8 @@ import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.util.Tmp;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.*;
 import mindustry.game.EventType.Trigger;
@@ -35,12 +37,13 @@ public class UnstablePowerTurret extends PowerTurret {
     public int explosionPuddles = 4;
     public float explosionShake = 3, explosionShakeDuration = 30;
     public float explosionPuddleRange = 80, explosionPuddleAmount = 10;
-    public float smokeThreshold = 0.3f, flashThreshold = 0.6f;
+    public float smokeThreshold = 0.3f, flashThreshold = 0.6f, soundThreshold = 0.4f;
     public float coolantPower = 0.05f;
     public float heatTime = 5f * 60f;
     public Color coolColor = new Color(1, 1, 1, 0f);
     public Color hotColor = Color.red;
     public Color flashColor1 = Color.red, flashColor2 = Color.yellow;
+    public float minBeepRate = 2f , maxBeepRate = 60f;
 
     public float illuminateTime = 30f;
 
@@ -68,11 +71,21 @@ public class UnstablePowerTurret extends PowerTurret {
     public class UnstablePowerTurretBuild extends PowerTurretBuild{
         public float progressLight;
         public float heatT;
+        public float beepT;
         public float flash;
         @Override
         public void updateTile(){
             unit.ammo(power.status * (float)unit.type().ammoCapacity);
             super.updateTile();
+
+            if(heatT >= soundThreshold){
+                beepT += this.delta() / Mathf.lerp(maxBeepRate, minBeepRate, heatT);
+                beepT = Mathf.clamp(beepT);
+                if(beepT >= 0.999f){
+                    beepT = 0;
+                    warningSound.at(this);
+                }
+            }
 
             if(isShooting() && power.status > 0){
                 heatT += edelta() / heatTime;
@@ -88,14 +101,9 @@ public class UnstablePowerTurret extends PowerTurret {
                     heatT = Mathf.clamp(heatT - 0.0005f);
                 }
             }
-            if(heatT > flashThreshold){
-                float sound = 1.0f + (heatT - flashThreshold) / (1f - flashThreshold); //ranges from 1.0 to 2.0
-                if(Mathf.chance(sound / 20.0 * delta())){
-                    warningSound.at(this);
-                }
-            }
+
             if(heatT > smokeThreshold){
-                float smoke = 1.0f + (heatT - smokeThreshold) / (1f - smokeThreshold); //ranges from 1.0 to 2.0
+                float smoke = 1.0f + (heatT - smokeThreshold) / (1f - smokeThreshold); //ranges from 1 to 2.0
                 if(Mathf.chance(smoke / 20.0 * delta())){
                     Fx.reactorsmoke.at(x + Mathf.range(size * 8 / 2f),
                             y + Mathf.range(size * 8 / 2f));
@@ -146,6 +154,26 @@ public class UnstablePowerTurret extends PowerTurret {
         public double sense(LAccess sensor){
             if(sensor == LAccess.heat) return heatT;
             return super.sense(sensor);
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.f(heatT);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            if(revision >= 2){
+                heatT = read.f();
+            }
+        }
+
+        @Override
+        public byte version(){
+            return 2;
         }
     }
 }
