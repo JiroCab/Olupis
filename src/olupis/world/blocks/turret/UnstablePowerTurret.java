@@ -5,6 +5,7 @@ import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
+import arc.util.Log;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -24,6 +25,8 @@ import mindustry.world.meta.StatValues;
 import olupis.content.NyfalisSounds;
 import olupis.world.entities.parts.DrawUnstableTurret;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static mindustry.Vars.world;
 
 public class UnstablePowerTurret extends PowerTurret {
@@ -40,6 +43,8 @@ public class UnstablePowerTurret extends PowerTurret {
     public float smokeThreshold = 0.3f, flashThreshold = 0.6f, soundThreshold = 0.4f;
     public float coolantPower = 0.05f;
     public float heatTime = 5f * 60f;
+    public float minimumHeatTime = 10;
+    public int maxCopies = 4;
     public Color coolColor = new Color(1, 1, 1, 0f);
     public Color hotColor = Color.red;
     public Color flashColor1 = Color.red, flashColor2 = Color.yellow;
@@ -75,6 +80,12 @@ public class UnstablePowerTurret extends PowerTurret {
         public float flash;
         @Override
         public void updateTile(){
+            AtomicInteger copies = new AtomicInteger(0);
+            Units.nearbyBuildings(this.x,this.y,range,b -> {
+                        if (b.block == this.block() && b.team == this.team && b != this){
+                            copies.incrementAndGet();
+                        };
+                    });
             unit.ammo(power.status * (float)unit.type().ammoCapacity);
             super.updateTile();
 
@@ -88,15 +99,23 @@ public class UnstablePowerTurret extends PowerTurret {
             }
 
             if(isShooting() && power.status > 0){
-                heatT += edelta() / heatTime;
+                heatT = Mathf.clamp(heatT);
+                if (heatTime - (60*copies.get()) <= minimumHeatTime){
+                    heatT += edelta() / minimumHeatTime;
+                }else{
+                    heatT += edelta() / (heatTime - (60*copies.get()));
+                }
                 heatT = Mathf.clamp(heatT);
             }
 
             //So logic cant cheese it
-            if(heatT > 0 &&  liquids.currentAmount() > 0.5){
+            if(heatT > 0 &&  liquids.currentAmount() > 0.5f){
                 float maxUsed = Math.min(liquids.currentAmount(), heatT / coolantPower);
-                heatT -= maxUsed * coolantPower;
-                liquids.remove(liquids.current(), maxUsed);
+                if(copies.get() <= maxCopies){
+                    //for some reason, heat doesn't accumulate after the water hits zero this way, so I added this if
+                    heatT -= maxUsed * coolantPower;
+                }
+                liquids.remove(liquids.current(), maxUsed + (20*copies.get()));
                 if(!isShooting() && liquids.currentAmount() <= 0){
                     heatT = Mathf.clamp(heatT - 0.0005f);
                 }
@@ -118,6 +137,7 @@ public class UnstablePowerTurret extends PowerTurret {
                 kill();
             }
         }
+
 
         public void createExplosion(){
             if(explosionDamage > 0){
