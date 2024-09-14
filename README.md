@@ -21,7 +21,7 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 
 ## Credits:
 * [RushieWashie](https://github.com/JiroCab) - Code, Sprites, Maps
-* [Remington Thomas](https://github.com/NightmarishWolf) - Sprites, Ideas, Organization, Maps
+* [NightmarishWolf](https://github.com/NightmarishWolf) - Sprites, Ideas, Organization, Maps
 * [Ethanol10](https://github.com/SuperEthanol10) - Sprites
 * [Siede](https://github.com/siede2010) - Code, Sprites
 * [WMF Industries](https://github.com/WMF-Industries) - Code
