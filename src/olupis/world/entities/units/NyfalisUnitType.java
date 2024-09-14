@@ -2,6 +2,7 @@ package olupis.world.entities.units;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
@@ -13,6 +14,7 @@ import arc.util.*;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.CommandAI;
+import mindustry.ai.types.LogicAI;
 import mindustry.audio.SoundLoop;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.UnlockableContent;
@@ -21,38 +23,52 @@ import mindustry.entities.Sized;
 import mindustry.entities.units.WeaponMount;
 import mindustry.game.Team;
 import mindustry.gen.*;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatValues;
-import olupis.content.NyfalisItemsLiquid;
+import mindustry.world.meta.*;
+import olupis.content.*;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.ai.NyfalisMiningAi;
-import olupis.world.entities.bullets.SpawnHelperBulletType;
+import olupis.world.entities.NyfalisStats;
+import olupis.world.entities.parts.NyfPartParms;
 
+import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
-    public boolean canCircleTarget = false, canHealUnits = false, customMineAi = false, canGuardUnits  = false, canMend = false, canDeploy = false, constructHideDefault = false;
+    public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false, canCharge = false,
+                           constructHideDefault = false, customMineAi = false;
     /*Makes (legged) units boost automatically regardless of Ai*/
     public boolean alwaysBoostOnSolid = false;
     /*Replace Move Command to a custom one*/
     public boolean customMoveCommand = false;
     /*Face targets when idle/not moving, assumes `customMoveCommand` = true  */
     public boolean idleFaceTargets = false;
-    /*Effects that a unit spawns with, gnat cheese fix*/
+    /*forces the unit to be landed on deploy*/
+    public boolean deployLands = false, alwaysBoosts = false, deployHasEffect = false;
+    public StatusEffect deployEffect = StatusEffects.none;
+    public float deployEffectTime = 20f;
+    /*Reload cooldown on spawn (gant cheese fix)*/
+    public boolean weaponsStartEmpty = false;
+    /*Effects that a unit spawns with*/
     public StatusEffect spawnStatus = StatusEffects.none;
     public float spawnStatusDuration = 60f * 5f;
     public Seq<UnlockableContent> displayFactory = new Seq<>();
-    public Color unitOutLine = Color.valueOf("371404");
+    /*secondary light  parameters*/
+    public boolean emitSecondaryLight = false;
+    public Color secondaryLightColor = NyfalisColors.floodLightColor;
+    public float secondaryLightRadius = lightRadius  * 2;
+
+    public TextureRegion bossRegion;
 
     public NyfalisUnitType(String name){
         super(name);
-        outlineColor = unitOutLine;
+        outlineColor = NyfalisColors.contentOutline;
         ammoType = new ItemAmmoType(NyfalisItemsLiquid.rustyIron);
         researchCostMultiplier = 6f;
         generateIcons = true;
@@ -74,6 +90,9 @@ public class NyfalisUnitType extends UnitType {
             if(canMend) cmds.add(NyfalisUnitCommands.nyfalisMendCommand);
             if (customMineAi) cmds.add(NyfalisUnitCommands.nyfalisMineCommand);
             if (canGuardUnits) cmds.add(NyfalisUnitCommands.nyfalisGuardCommand);
+            if (canDash)cmds.add(NyfalisUnitCommands.nyfalisDashCommand);
+            if (canCharge) cmds.add(NyfalisUnitCommands.nyfalisChargeCommand);
+            if (canBoost && alwaysBoosts) cmds.remove(UnitCommand.boostCommand);
         commands = cmds.toArray();
     }
 
@@ -122,52 +141,11 @@ public class NyfalisUnitType extends UnitType {
 
         if(weapons.any()){
             stats.remove(Stat.weapons);
-            stats.add(Stat.weapons, table -> {
-                for(Weapon w : weapons) {
-                    if(!w.hasStats(this) || w.flipSprite) continue;
+            stats.add(Stat.weapons, NyfalisStats.weapons(this, weapons));
+        }
 
-                    if (w.bullet instanceof SpawnHelperBulletType) {
-                        UnitType spawn = w.bullet.spawnUnit;
-                        table.row();
-                        table.table(Styles.grayPanel, t -> {
-                            boolean show = !spawn.isBanned();
-                            if (!spawn.unlocked() && (Vars.state.isCampaign() || !Vars.state.isPlaying()))
-                                t.image(Icon.lock.getRegion()).tooltip(spawn.localizedName).size(25).pad(10f).left().scaling(Scaling.fit);
-                            else {
-                                if (show) t.image(spawn.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                                else
-                                    t.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
-                                t.table(info -> {
-                                    info.add(spawn.localizedName).left();
-                                    if (Core.settings.getBool("console")) {
-                                        info.row();
-                                        info.add(spawn.name).left().color(Color.lightGray);
-                                    }
-                                });
-                                t.button("?", Styles.flatBordert, () -> ui.content.show(spawn)).size(40f).pad(10).right().grow().visible(spawn::unlockedNow);
-                            }
-                        }).growX().pad(5).row();
-                        if(w.bullet.intervalBullet != null){
-                            table.row();
-                            table.table(Styles.grayPanel, t -> {
-                                t.left().top().defaults().padRight(3).left();
-                                StatValues.ammo(ObjectMap.of(this, w.bullet.intervalBullet)).display(t);
-                            }).growX().pad(5).margin(10);
-                        }
-                    } else {
-                        table.row();
-                        TextureRegion region = !w.name.isEmpty() ? Core.atlas.find(w.name + "-preview", w.region) : null;
-                        table.table(Styles.grayPanel, wt -> {
-                            wt.left().top().defaults().padRight(3).left();
-                            if (region != null && region.found() && w.showStatSprite)
-                                wt.image(region).size(60).scaling(Scaling.bounded).left().top();
-                            wt.row();
-                            w.addStats(this, wt);
-                        }).growX().pad(5).margin(10);
-                        table.row();
-                    }
-                }
-            });
+        if(settings.getBool("nyfalis-debug")){
+            stats.add(new Stat("olupis-id", StatCat.function), this.id);
         }
 
     }
@@ -178,39 +156,124 @@ public class NyfalisUnitType extends UnitType {
         unit.team = team;
         unit.setType(this);
         unit.ammo = ammoCapacity; //fill up on ammo upon creation
-        unit.elevation = flying ? 1f : 0;
+        unit.elevation = flying || alwaysBoosts ? 1f : 0;
         unit.heal();
         if(unit instanceof TimedKillc u){
             u.lifetime(lifetime);
         }
         unit.apply(spawnStatus, spawnStatusDuration);
+        if(weaponsStartEmpty)unit.apply(NyfalisStatusEffects.unloaded, 60f); //is now a second bc it won't get synced properly
         return unit;
+    }
+
+    @Override
+    public void draw(Unit unit){
+        if(parts.size > 0){
+            NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit) );
+        }
+        super.draw(unit);
+    }
+
+    @Override
+    public void drawBody(Unit unit){
+        applyColor(unit);
+        TextureRegion e = !unit.hasEffect(StatusEffects.boss) || bossRegion == null ? region : bossRegion;
+        Draw.rect(e, unit.x, unit.y, unit.rotation - 90);
+
+        Draw.reset();
+    }
+
+    @Override
+    public void load() {
+        super.load();
+        bossRegion = Core.atlas.find(name + "-boss", name);
+    }
+
+    public float partAmmo(Unit unit){
+        return unit.ammo/ ammoCapacity;
+    }
+
+    @Override
+    public void drawLight(Unit unit){
+        if(lightRadius > 0) Drawf.light(unit.x, unit.y, lightRadius, lightColor, lightOpacity);
+        if(secondaryLightRadius > 0) Drawf.light(unit.x, unit.y, secondaryLightRadius, secondaryLightColor, secondaryLightColor.a);
     }
 
     @Override
     public void update(Unit unit){
         super.update(unit);
 
+        if(deployHasEffect && (!deployLands || unit.isGrounded())) unit.apply(deployEffect, deployEffectTime);
+        if(unit.type instanceof  NyfalisUnitType nyf && nyf.canDeploy) {
+            if (!unit.isPlayer() && !(unit.controller() instanceof LogicAI)) {
+                boolean deployed = (unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDeployCommand);
+                if(deployed && unit.isGrounded())unit.apply(deployEffect, deployEffectTime);
+
+                if (!deployed && alwaysBoosts) {
+                    unit.updateBoosting(true);
+                    unit.unapply(deployEffect);
+                } else if (deployLands) unit.updateBoosting(!(deployed && unit.canLand()));
+                else if (alwaysBoosts) unit.updateBoosting(true);
+            }
+        }
+
         if(alwaysBoostOnSolid && canBoost && (unit.controller() instanceof CommandAI c && c.command != UnitCommand.boostCommand)){
             unit.updateBoosting(unit.onSolid());
         }
-
     }
 
-    public class NyfalisWeapon extends Weapon {
-        boolean boostShoot = true, groundShoot = true, partailControl = true, idlePrefRot = true;
+    public  class NyfalisWeapon extends Weapon {
+        public boolean
+        /*Determines if the weapon can shoot while boosting or not*/
+        boostShoot = true, groundShoot = true,
+        /*Allows weapon to be shot by the player when Ai is not using it*/
+        partialControl = false,
+        idlePrefRot = true, alwaysRotate = false,
+        /*Shoot while dash command is selected*/
+        dashShoot = false, dashExclusive = false,
+        /*Check for angle to target before shooting */
+        strictAngle = true,
+        /*Solid check*/
+        fireOverSolids = true,
+        /*Fire on time out*/
+        fireOnTimeOut = false,
+        /*Stats*/
+        statsBlocksOnly = false;
+        /*Margin where when a weapon can fire while transition from ground to air*/
+        float boostedEvaluation = 0.95f, groundedEvaluation = 0.05f;
+        /*Snek weapon helper so I don't have to override anything else there*/
+        float shootXf = shootX, shootYf = shootY;
+        boolean altWeaponPos = false;
+        public float ammoPerShot = -1;
 
-        public NyfalisWeapon(String name){this.name = name;}
+        public NyfalisWeapon(String name){super(name);}
         public NyfalisWeapon(String name, boolean boostShoot, boolean groundShoot ){
-            this.name = name;
-            this.groundShoot = groundShoot;
+            super(name);
             this.boostShoot = boostShoot;
+            this.groundShoot = groundShoot;
         }
-        NyfalisWeapon(){}
+        public NyfalisWeapon(){
+            super();
+        }
+
+        @Override
+        public void draw(Unit unit, WeaponMount mount){
+            if(parts.size > 0){
+                NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit));
+            }
+            super.draw(unit, mount);
+        }
 
         @Override
         public void update(Unit unit, WeaponMount mount){
-            boolean can = !unit.disarmed && (unit.type.canBoost && (unit.isFlying() && boostShoot || unit.isGrounded() && groundShoot));
+
+            if(unit.hasEffect(NyfalisStatusEffects.unloaded)){
+                mount.reload = reload;
+            }
+
+            boolean can = !unit.disarmed
+                    && (unit.onSolid() && fireOverSolids || !unit.onSolid()) && (!unit.type.canBoost ||
+                    (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation));
             float lastReload = mount.reload;
             mount.reload =Math.max(mount.reload -Time.delta *unit.reloadMultiplier,0);
             mount.recoil =Mathf.approachDelta(mount.recoil,0,unit.reloadMultiplier /recoilTime);
@@ -246,7 +309,7 @@ public class NyfalisUnitType extends UnitType {
             }else if(!rotate){
                 mount.rotation = baseRotation;
                 mount.targetRotation = unit.angleTo(mount.aimX, mount.aimY);
-            } else if ( !mount.shoot && idlePrefRot) {
+            } else if ( ( alwaysRotate || !mount.rotate || !mount.shoot) && idlePrefRot) {
                 mount.targetRotation = baseRotation;
                 mount.rotation = Angles.moveToward(mount.rotation, mount.targetRotation, rotateSpeed * Time.delta);
             }
@@ -254,12 +317,12 @@ public class NyfalisUnitType extends UnitType {
             float weaponRotation = unit.rotation - 90 + (rotate ? mount.rotation : baseRotation),
                     mountX = unit.x + Angles.trnsx(unit.rotation - 90, x, y),
                     mountY = unit.y + Angles.trnsy(unit.rotation - 90, x, y),
-                    bulletX = mountX + Angles.trnsx(weaponRotation, this.shootX, this.shootY),
-                    bulletY = mountY + Angles.trnsy(weaponRotation, this.shootX, this.shootY),
+                    bulletX = altWeaponPos  ? shootXf : mountX + Angles.trnsx(weaponRotation, this.shootX, this.shootY),
+                    bulletY =  altWeaponPos  ? shootYf : mountY + Angles.trnsy(weaponRotation, this.shootX, this.shootY),
                     shootAngle = bulletRotation(unit, mount, bulletX, bulletY);
 
             //find a new target
-            if(!controllable &&autoTarget){
+            if(!controllable && autoTarget){
                 if ((mount.retarget -= Time.delta) <= 0f) {
                     mount.target = findTarget(unit, mountX, mountY, bullet.range, bullet.collidesAir, bullet.collidesGround);
                     mount.retarget = mount.target == null ? targetInterval : targetSwitchInterval;
@@ -283,9 +346,9 @@ public class NyfalisUnitType extends UnitType {
                         mount.aimY = mount.target.y();
                     }
                 } else{
-                    shoot = partailControl && unit.isShooting && can;
-                    mount.aimX = partailControl ? unit.aimX : bulletX;
-                    mount.aimY = partailControl ? unit.aimY : bulletY;
+                    shoot = partialControl && unit.isShooting && can;
+                    mount.aimX = partialControl ? unit.aimX : bulletX;
+                    mount.aimY = partialControl ? unit.aimY : bulletY;
                 }
 
                 mount.shoot = mount.rotate = shoot;
@@ -295,7 +358,14 @@ public class NyfalisUnitType extends UnitType {
             }
 
             if(alwaysShooting)mount.shoot =true;
+            // deploying units can shoot regardless of elevation && LogicAi 's shouldShoot checks for boosting and this is a work around
+            if(unit.type instanceof NyfalisUnitType nyf && nyf.canDeploy && unit.controller() instanceof LogicAI ai && ai.shoot)mount.shoot = true;
 
+            if(!unit.isPlayer()) {
+                boolean isDashing = unit.isCommandable() && (unit.command().command == NyfalisUnitCommands.nyfalisDashCommand || unit.command().command == NyfalisUnitCommands.nyfalisChargeCommand);
+                if (dashShoot && isDashing) mount.shoot = true;
+                else if (dashExclusive && !isDashing) mount.shoot = false;
+            }
             //update continuous state
             if(continuous &&mount.bullet !=null) {
                 if (!mount.bullet.isAdded() || mount.bullet.time >= mount.bullet.lifetime || mount.bullet.type != bullet) {
@@ -335,7 +405,7 @@ public class NyfalisUnitType extends UnitType {
             }
 
             //shoot if applicable
-            if((mount.shoot || partailControl && unit.isShooting && !controllable) && //must be shooting
+            if((mount.shoot || partialControl && unit.isShooting && !controllable) && //must be shooting
                     can && //must be able to shoot
                     !(bullet.killShooter &&mount.totalShots >0)&& //if the bullet kills the shooter, you should only ever be able to shoot once
                     (!useAmmo ||unit.ammo >0||!state.rules.unitAmmo ||unit.team.rules().infiniteAmmo)&& //check ammo
@@ -343,20 +413,37 @@ public class NyfalisUnitType extends UnitType {
                     mount.warmup >=minWarmup && //must be warmed up
                     unit.vel.len()>=minShootVelocity && //check velocity requirements
                     (mount.reload <=0.0001f||(alwaysContinuous &&mount.bullet ==null))&& //reload has to be 0, or it has to be an always-continuous weapon
-                    (alwaysShooting ||Angles.within(rotate ?mount.rotation :unit.rotation +baseRotation,mount.targetRotation,shootCone)) //has to be within the cone
-            )
-
-            {
+                    (alwaysShooting || (!strictAngle || Angles.within(rotate ?mount.rotation :unit.rotation +baseRotation,mount.targetRotation,shootCone))) //has to be within the cone
+            ) {
                 shoot(unit, mount, bulletX, bulletY, shootAngle);
 
                 mount.reload = reload;
 
                 if (useAmmo) {
-                    unit.ammo--;
+                    if(ammoPerShot == -1)unit.ammo--;
+                    else if (ammoPerShot > 0) unit.ammo -= ammoPerShot;
                     if (unit.ammo < 0) unit.ammo = 0;
                 }
             }
         }
+
+        @Override
+        public void addStats(UnitType u, Table t){
+            if(inaccuracy > 0){
+                t.row();
+                t.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + (int)inaccuracy + " " + StatUnit.degrees.localized());
+            }
+            if(!alwaysContinuous && reload > 0){
+                t.row();
+                t.add("[lightgray]" + Stat.reload.localized() + ": " + (mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / reload * shoot.shots, 2) + " " + StatUnit.perSecond.localized());
+            }
+            if(statsBlocksOnly){
+                NyfalisStats.ammoBlocksOnly(ObjectMap.of(u, bullet), null).display(t);
+                return;
+            }
+            NyfalisStats.ammo(ObjectMap.of(u, bullet)).display(t);
+        }
+
     }
 
 }

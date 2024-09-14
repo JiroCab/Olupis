@@ -1,9 +1,11 @@
 package olupis.world.entities.abilities;
 
+import arc.Core;
 import arc.Events;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
-import arc.util.Time;
+import arc.scene.ui.layout.Table;
+import arc.util.*;
 import mindustry.Vars;
 import mindustry.ai.UnitCommand;
 import mindustry.entities.Units;
@@ -12,9 +14,12 @@ import mindustry.game.EventType;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.type.UnitType;
+import mindustry.ui.Styles;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import olupis.input.NyfalisUnitCommands;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class UnitRallySpawnAblity extends UnitSpawnAbility {
 
@@ -55,7 +60,20 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
             if(Units.canCreate(unit.team, this.unit))Drawf.construct(x, y, this.unit.fullIcon, unit.rotation - 90, timer / spawnTime, 1f, timer);
             else Draw.rect(this.unit.fullIcon, x, y, unit.rotation - 90);
         });
+    }
 
+    @Override
+    public void addStats(Table t){
+        t.add("[lightgray]" + Stat.buildTime.localized() + ": [white]" + Strings.autoFixed(spawnTime / 60f, 2) + " " + StatUnit.seconds.localized());
+        t.row();
+        t.table( u -> {
+            u.image(unit.uiIcon).scaling(Scaling.fit).left();
+            u.table(in -> {
+                in.add(unit.localizedName).row();
+                if (Core.settings.getBool("console")) in.add("[lightgray]" +unit.name + "[]");
+            }).center().pad(10f);
+            u.button("?", Styles.flatBordert, () -> ui.content.show(unit)).right().growY().visible(unit::unlockedNow).size(40f);
+        });
     }
 
 }

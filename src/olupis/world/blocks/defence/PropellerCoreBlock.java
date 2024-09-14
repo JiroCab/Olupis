@@ -1,20 +1,37 @@
 package olupis.world.blocks.defence;
 
+import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.scene.ui.layout.Scl;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.storage.CoreBlock;
+import olupis.content.NyfalisColors;
 
 import static mindustry.Vars.*;
 
 public class PropellerCoreBlock extends CoreBlock {
+     public TextureRegion blur;
+     public boolean singleBlade = false;
+    public float rotateSpeed = 7f, offset = 10f;
+    public Color lightColorAlt = NyfalisColors.floodLightColor;
 
     public PropellerCoreBlock(String name){
         super(name);
+        clipSize = 500; //floodlight
+    }
+
+    @Override
+    public void load(){
+        blur = Core.atlas.find(name + "-blur");
+        super.load();
     }
 
     @Override
@@ -22,7 +39,6 @@ public class PropellerCoreBlock extends CoreBlock {
         float fout = renderer.getLandTime() / coreLandDuration;
 
         if(renderer.isLaunching()) fout = 1f - fout;
-
         float fin = 1f - fout;
 
         float scl = Scl.scl(4f) / renderer.getDisplayScale();
@@ -55,14 +71,17 @@ public class PropellerCoreBlock extends CoreBlock {
 
         Drawf.spinSprite(teamRegions[build.team.id], x, y, rotation);
 
+
         Draw.color();
+
+        drawProps(x, y, rotation, thrusterFrame, scl);
         Draw.scl();
         Draw.reset();
     }
 
     @Override
     protected void drawLandingThrusters(float x, float y, float rotation, float frame){
-        /*Renders thrusters/propellers in flight*/
+        /*Renders propeller base in flight*/
         float length = thrusterLength * (frame - 1f) - 1f/4f;
         float alpha = Draw.getColor().a;
 
@@ -89,22 +108,53 @@ public class PropellerCoreBlock extends CoreBlock {
     }
 
 
+    protected void drawProps(float x, float y, float rotation, float frame, float scl){
+        if(!blur.found()) return;
+        /*Renders spinny propellers in flight*/
+        float length = 1- (thrusterLength * (frame - 1f) - 1f/4f);
+
+        for(int i = 0; i < 4; i++){
+            float rot =  (i * 90) + rotation % 90f;
+            Tmp.v1.trns(rot, (offset + length) * Draw.xscl);
+
+            Drawf.spinSprite(blur,  x + Tmp.v1.x, y+ Tmp.v1.y, Math.max(rotateSpeed, scl * 2 ) *  Time.time);
+        }
+
+
+    }
+
+
     public class PropellerCoreBuild extends CoreBuild {
 
         @Override
-        public void updateLandParticles(){
-            if(renderer.getLandTime() >= 1f){
+        public void updateLandParticles() {
+            if (renderer.getLandTime() >= 1f) {
                 tile.getLinkedTiles(t -> {
-                    if(Mathf.chance(0.65f)){
-                        float rotation = Interp.pow2In.apply(renderer.getLandTime() / coreLandDuration ) * 540f;
-                        /*  -50 so it doesn't end at the corner and align with the propellers*/
-                        Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx(), t.worldy()) + rotation - 50, Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
+                    if (Mathf.chance(0.65f)) {
+                        float rotation = Interp.pow2In.apply(renderer.getLandTime() / coreLandDuration) * 540f;
+                        /*  -45 so it doesn't end at the corner and align with the propellers*/
+                        Fx.coreLandDust.at(t.worldx(), t.worldy(), angleTo(t.worldx() + Mathf.range(0.05f), t.worldy() + Mathf.range(0.25f)) + rotation - 45, Tmp.c1.set(t.floor().mapColor).mul(1.5f + Mathf.range(0.15f)));
                     }
                 });
 
-                renderer.setLandPTimer(0f);
+                super.updateLandParticles();
             }
         }
-    }
 
+        @Override
+        public void drawThrusters(float frame) {
+            float length = thrusterLength * (frame - 1f) - 1f / 8f;
+            for (int i = 0; i < 4; i++) {
+                var reg = i >= 2 ? thruster2 : thruster1;
+                float dx = Geometry.d4x[i] * length, dy = Geometry.d4y[i] * length;
+                Draw.rect(reg, x + dx, y + dy, i * 90);
+            }
+        }
+
+        @Override
+        public void drawLight() {
+            if(emitLight)Drawf.light(x, y, fogRadius * 8, lightColorAlt, lightColorAlt.a);
+            super.drawLight();
+        }
+    }
 }

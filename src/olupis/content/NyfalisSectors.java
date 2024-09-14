@@ -1,22 +1,41 @@
 package olupis.content;
 
 import arc.func.Cons;
+import arc.struct.Seq;
 import mindustry.content.Items;
 import mindustry.game.Rules;
 import mindustry.type.ItemStack;
 import mindustry.type.SectorPreset;
+import mindustry.world.Block;
 
+import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisSectors {
+    public static final float sectorVersion = 1.1f;
 
-    public  static SectorPreset
-        /*Arthin*/
-        sanctuary, vakinyaDesert, muddyLakes, mossyRavine, naturalParkOasis, lushyRiverComplex,
+    public static SectorPreset
+        /*Arthin / Seredris*/
+        sanctuary, dyingForest, terrarootCaves, muddyLakes, ironCurtain, glasierSea, abandonedPayloadTerminal, conciditRuins, coldFlats,
         /*Nyfalis*/
-        placeholder2,
-        /*Spelta*/
+        conservatorium, forestOfSerenity,
+        /*Spelta / Vorgin*/
          dormantCell, forestOfHope
+    ;
+
+    public static final Seq<Block> //Used by the planet generators, Not in NyfalisBLock so it's not null
+            mossGreen = Seq.with(mossStone, mossyStone, mossierStone, mossiestStone),
+            mossGreenExtra = Seq.with(mossyDirt, mossyhardenMud, mossyVent),
+            mossGreenAll = Seq.with(mossGreen).addAll(mossGreenExtra),
+            mossYellow = Seq.with(yellowGrass, yellowMossyWater),
+            waterFeatures = Seq.with(kelp, redCorals, blueCorals, greenCorals),
+            treesGreen = Seq.with(nyfalisTree, mossTree, mossDeadTree, mossTree),
+            treesYellow = Seq.with(yellowTree, yellowTreeBlooming, mossDeadTree, mossTree),
+            treesAll = Seq.with(treesGreen).addAll(treesYellow),
+            solidMossYellow = Seq.with(yellowShrubs, yellowShrubsCrooked, yellowShrubsIrregular, yellowTree, yellowTreeBlooming),
+            solidMossYellowAll = Seq.with(solidMossYellow).addAll(yellowTree),
+            solidShurbsGrass = Seq.with(greenShrubsIrregular, greenShrubsCrooked),
+            overlayFlowers = Seq.with(glowSprouts, lumaSprouts)
     ;
 
     public static void LoadSectors(){
@@ -30,56 +49,87 @@ public class NyfalisSectors {
             rules = commonRules(captureWave);
         }};
 
-        mossyRavine = new SectorPreset("mossy-ravine", arthin, 31){{
+        terrarootCaves = new SectorPreset("terraroot-caves", arthin, 31){{
             overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
             difficulty = 2;
-            captureWave = 33;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700));
+            captureWave = 13;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 300, Items.lead, 200));
         }};
 
         muddyLakes = new SectorPreset("muddy-lakes", arthin, 21){{
             addStartingItems  = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics = false;
 
-            captureWave = 38;
-            difficulty = 2;
+            captureWave = 17;
+            difficulty = 4;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 500, Items.lead, 500));
         }};
 
-        vakinyaDesert = new SectorPreset("vakinya-desert", arthin, 10){{
+        dyingForest = new SectorPreset("dying-forest", arthin, 10){{
             overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics  = false;
 
             captureWave = 16;
-            difficulty = 2;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000, NyfalisItemsLiquid.iron, 200));
+            difficulty = 3;
+            rules = commonRules(captureWave, ItemStack.with(Items.copper, 75, NyfalisItemsLiquid.rustyIron,300, Items.lead, 300, NyfalisItemsLiquid.iron, 250));
         }};
 
-        naturalParkOasis = new SectorPreset("natural-park-oasis", arthin, 12){{
+        glasierSea = new SectorPreset("glasier-sea", arthin, 7){{
             addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 5;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1200, Items.lead, 1200, NyfalisItemsLiquid.iron, 200, Items.copper, 300,  Items.graphite, 200));
+        }};
+
+        conciditRuins = new SectorPreset("concidit-ruins", arthin, 6){{
+            addStartingItems = overrideLaunchDefaults = true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
             difficulty = 3;
-            captureWave = 26;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 700, Items.lead, 700, NyfalisItemsLiquid.iron, 250));
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 200, NyfalisItemsLiquid.iron, 50));
         }};
 
-        lushyRiverComplex = new SectorPreset("lushy-river-complex", arthin, 25){{
+        coldFlats = new SectorPreset("cold-flats", arthin, 29){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
-            difficulty = 4;
-            captureWave = 22;
-            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1500, Items.lead, 1500, NyfalisItemsLiquid.iron, 500, Items.graphite, 500));
+            difficulty = 5;
+            captureWave = 13;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000,Items.copper, 500, NyfalisItemsLiquid.iron, 550));
         }};
+
+        ironCurtain = new SectorPreset("iron-curtain", arthin, 11){{
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 6;
+            captureWave = 21;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 100, Items.lead, 100));
+        }};
+
+        abandonedPayloadTerminal = new SectorPreset("abandoned-payload-terminal", arthin, 0){{
+            addStartingItems = overrideLaunchDefaults =  true;
+            allowLaunchLoadout = allowLaunchSchematics =  false;
+
+            difficulty = 5;
+            captureWave = 21;
+            rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 0, Items.lead, 0));
+        }};
+
         //endregion
         //region Nyfalis
 
-        placeholder2 = new SectorPreset("placeholder2", nyfalis, 69){{
+        conservatorium = new SectorPreset("conservatorium", nyfalis, 0){{
             captureWave = 20;
             difficulty = 3;
+            rules = commonRules(captureWave);
+        }};
+
+        forestOfSerenity  = new SectorPreset("forest-of-serenity", nyfalis, 43){{
+            difficulty = 4;
             rules = commonRules(captureWave);
         }};
 
@@ -95,6 +145,7 @@ public class NyfalisSectors {
             difficulty = 2;
             rules = commonRules(captureWave);
         }};
+        //endregion
     }
 
     //moved it here, so players switching planets rule isn't affected & per map dropZonesRadius are possible
@@ -102,10 +153,8 @@ public class NyfalisSectors {
         if(dzRadius <= 0)r.dropZoneRadius = 400f;
         else r.dropZoneRadius = dzRadius;
         r.enemyCoreBuildRadius = 650f;
+        r.env = nyfalis.defaultEnv;
 
-
-        NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
-        NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
         if(startItems.length >= 1)r.loadout.set(startItems);
     }
 

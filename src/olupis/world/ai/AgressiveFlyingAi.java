@@ -34,6 +34,10 @@ public class AgressiveFlyingAi extends FlyingAI {
     public AgressiveFlyingAi(){
 
     }
+    public AgressiveFlyingAi(boolean hunt, boolean shouldCircle){
+        if (hunt)fallback = new SearchAndDestroyFlyingAi();
+        this.shouldCircle = shouldCircle;
+    }
 
     @Override
     public void updateMovement(){
@@ -46,7 +50,7 @@ public class AgressiveFlyingAi extends FlyingAI {
         }else if(unit.type instanceof AmmoLifeTimeUnitType unt && hasParent){
             unit.ammo = unt.deathThreshold * 0.5f;
         }else if(target != null && unit.hasWeapons()){
-            if(unit.type.circleTarget){
+            if(unit.type.circleTarget || shouldCircle){
                 circleAttack(circleDistance);
             }else{
                 moveTo(target, unit.type.range * 0.8f);
@@ -93,5 +97,9 @@ public class AgressiveFlyingAi extends FlyingAI {
     @Override
     public boolean useFallback(){ /*allowed to be used in waves*/
         return parent == null && (unit.team.isAI() || unit.team == state.rules.waveTeam);
+    }
+
+    public boolean hasTarget (){
+        return target != null && !invalid(target);
     }
 }

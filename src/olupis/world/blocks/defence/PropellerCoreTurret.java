@@ -88,7 +88,6 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
         super.setStats();
         stats.add(Stat.targetsAir, targetAir);
         stats.add(Stat.targetsGround, targetGround);
-        stats.add(Stat.inaccuracy, (int)inaccuracy, StatUnit.degrees);
         stats.add(Stat.shootRange, range / tilesize, StatUnit.blocks);
         stats.add(Stat.reload, 60f / (reload) * shoot.shots, StatUnit.perSecond);
     }
@@ -318,6 +317,7 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
                     updateShooting();
                 }
             }
+            super.updateTile();
         }
 
         public void targetPosition(Posc pos) {

@@ -1,6 +1,8 @@
 package olupis.world.entities.units;
 
-import arc.graphics.g2d.*;
+import arc.Core;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Tmp;
@@ -9,22 +11,28 @@ import mindustry.gen.Legsc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
-import olupis.world.ai.NyfalisPathfind;
 
 public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     private static final Vec2 legOffset = new Vec2();
     public float groundSpeed =  1f, navalSpeed = groundSpeed;
-    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true, floaterOnHiddenLegs = false;
+    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true, floaterOnHiddenLegs = false, boostUsesNaval, customShadow = false;
 
     public LeggedWaterUnit(String name){
         super(name);
         speed = groundSpeed;
+        canDrown = false;
     }
 
     @Override
     public void init(){
         super.init();
-        pathCost = NyfalisPathfind.costLeggedNaval;
+        //pathCost = NyfalisPathfind.costLeggedNaval;
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        if(customShadow) softShadowRegion = Core.atlas.find("olupis-shadow-long");
     }
 
     @Override
@@ -114,16 +122,14 @@ public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
 
     @Override
     public void update(Unit unit){
-        if (onWater(unit)){
+        if (onWater(unit) || (unit.isFlying() && boostUsesNaval) ){
             speed = navalSpeed;
             omniMovement = false;
         }else {
             speed = groundSpeed;
             omniMovement = true;
         }
-        speed = onWater(unit) ? navalSpeed : groundSpeed;
-        /*Workaround so they don't drown */
-        unit.drownTime = 0f;
+
         super.update(unit);
     }
 

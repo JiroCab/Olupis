@@ -19,6 +19,7 @@ import static mindustry.Vars.content;
 public class NyfalisPlanets {
     public static Planet nyfalis, arthin, spelta, system;
     private static final Seq<Sector> systemSector = new Seq<>();
+    public static final Seq<Planet> planetList = new Seq<>();
 
     public static Cons<Rules> commonRules = r ->{
         r.unitCrashDamageMultiplier = 0.25f;
@@ -26,12 +27,10 @@ public class NyfalisPlanets {
         r.bannedBlocks.clear();
         r.waveTeam = Team.green;
 
-        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = false;
-        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear =  r.hideBannedBlocks = r.coreIncinerates = r.fog = r.blockWhitelist = true;
+        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
+        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = r.hideBannedBlocks = true;
 
-        //TODO: fix changing planets will add them but remove, move to sector presents maybe
-        NyfalisBlocks.nyfalisBuildBlockSet.each(b -> r.bannedBlocks.add(b));
-        NyfalisBlocks.sandBoxBlocks.each(b -> r.bannedBlocks.add(b));
+        r.env =  Env.oxygen | NyfalisAttributeWeather.nyfalian;
     };
 
     public  static void LoadPlanets(){
@@ -58,15 +57,16 @@ public class NyfalisPlanets {
             totalRadius = 2.7f;
             atmosphereRadIn = 0.01f;
             atmosphereRadOut = 0.05f;
-            startSector = sectorSeed = 2;
+            startSector = 0;
+            sectorSeed = 2;
             launchCapacityMultiplier = 0.4f;
 
             systemSector.add(sectors);
             ruleSetter = commonRules;
             system.position = this.position;
             defaultCore = NyfalisBlocks.coreRemnant;
-            generator = new NyfalisPlanetGenerator();
-            defaultEnv = Env.terrestrial | Env.oxygen;
+            generator = new NyfalisPlanetGenerator() ;
+            defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             iconColor = NyfalisBlocks.redSand.mapColor;
             atmosphereColor = Color.valueOf("87CEEB");
             landCloudColor = new Color().set(Color.valueOf("C7E7F1").cpy().lerp(Color.valueOf("D7F5DC"), 0.55f));
@@ -80,25 +80,27 @@ public class NyfalisPlanets {
         }};
 
         //1st moon
-        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 0.8f, 1){{
-            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics =  true;
+        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 1.1f, 1){{
+            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = allowWaveSimulation = true;
 
             startSector = 2;
+            lightDstTo = 0.8f;
+            lightDstFrom = 0f;
             enemyBuildSpeedMultiplier = 0.4f;
             icon = "effect";
             ruleSetter = commonRules;
             systemSector.add(sectors);
             defaultCore = NyfalisBlocks.coreRemnant;
             generator = new ArthinPlanetGenerator();
-            defaultEnv = Env.terrestrial | Env.oxygen;
+            defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             iconColor = NyfalisItemsLiquid.condensedBiomatter.color;
             meshLoader = () -> new HexMesh(this, 5);
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
 
-        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.8f, 2){{
+        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
-            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= true;
+            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= allowWaveSimulation = true;
 
             startSector = 1;
             enemyBuildSpeedMultiplier = 0.4f;
@@ -108,16 +110,29 @@ public class NyfalisPlanets {
             generator = new SpeltaPlanetGenerator();
             defaultCore = NyfalisBlocks.coreRemnant;
             iconColor = NyfalisBlocks.pinkTree.mapColor;
-            defaultEnv = Env.terrestrial | Env.oxygen;
+            defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             meshLoader = () -> new HexMesh(this, 5);
             hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
 
         //TODO: rework the planets generators
         //TODO: Caves, capture 1, get 2 sectors!
+        //TODO: LUMA THEMED ASTEROID
     }
 
     public  static void PostLoadPlanet(){
-        system.sectors.set(systemSector);
+         Seq<Sector> finalSectors = new Seq<>();
+         finalSectors.add(systemSector.find(t -> t.preset == NyfalisSectors.sanctuary)); //prevents launching at sector 0 of nyfalis if you double tap while system is selected
+         systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
+         finalSectors.add(systemSector);
+        system.sectors.set(finalSectors);
+        planetList.add(nyfalis, arthin, spelta, system);
+    }
+
+    public static boolean isNyfalianPlanet (Planet planet){
+        if (planet == null) return false;
+        if (planet == arthin) return true;
+        if (planet == spelta) return true;
+        return planet == nyfalis;
     }
 }

@@ -1,45 +1,58 @@
 package olupis.content;
 
+import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.struct.*;
+import arc.struct.EnumSet;
+import arc.struct.ObjectSet;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.RegionPart;
-import mindustry.entities.pattern.ShootAlternate;
+import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.Wall;
+import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.legacy.LegacyBlock;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.payloads.PayloadConveyor;
-import mindustry.world.blocks.payloads.PayloadRouter;
-import mindustry.world.blocks.power.Battery;
-import mindustry.world.blocks.power.BeamNode;
+import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.StorageBlock;
 import mindustry.world.consumers.ConsumePower;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import olupis.input.NyfalisShaders;
 import olupis.world.blocks.defence.*;
+import olupis.world.blocks.distribution.*;
+import olupis.world.blocks.environment.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
+import olupis.world.blocks.turret.UnstablePowerTurret;
+import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.HealOnlyBulletType;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
+import olupis.world.entities.pattern.ShootAlternateAlt;
+
+import java.util.Objects;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
+import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.oil;
@@ -49,60 +62,73 @@ import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisBlocks {
-    //region Blocks Variables
+        //region Blocks Variables
     public static Block
         //environment
-        /*Ores / Overlays */
-        oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead, oreQuartz,
-        glowSprouts, lumaSprouts,
+        /*Ores / SpreadingOres / Overlays */
+        oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead, oreQuartz, oreAlco,
+        mossyCopper, mossyOxidizedCopper, mossyLead, mossyOxidizedLead, mossyScrap, mossyCoal, mossyIron,
+        glowSprouts, lumaSprouts, redCorals, blueCorals, greenCorals, kelp,
 
         /*Floors*/
-        redSand, lumaGrass, yellowGrass, pinkGrass, frozenGrass,
+        redSand, riverSand, lumaGrass, yellowGrass, pinkGrass, mossyDirt,  hardenMud, mossyhardenMud,
+        frozenGrass, frozenDirt, frozenMud, crackedIce, redSandSnow, snowySand, frozenTar, frozenSlop,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        grassyVent, mossyVent, stoneVent, basaltVent, mossyDirt,
+        grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
 
         /*Liquid floors*/
-        redSandWater, lumaGrassWater, brimstoneSlag, mossyWater, pinkGrassWater, yellowMossyWater,
+        redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop,
 
         /*props*/
-        yellowBush, lumaFlora, bush, mossyBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush,
+        yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly,
 
         /*walls*/
         redDune, pinkShrubs, lightWall, lumaWall,
         greenShrubsIrregular, greenShrubsCrooked, yellowShrubs, yellowShrubsIrregular, yellowShrubsCrooked,
-        mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall,
+        mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall, growingWall,
+
+        /*Env Hazzard*/
+        boomPuffPassive, boomPuffActive,
 
         /*Trees*/
-        nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree,
+        nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, mossDeadTree, spruceTree,
 
         //Buildings, sorted by category
-        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator,
 
-        rustyDrill, steamDrill, hydroElectricDrill,
+        heavyMine,fragMine,glitchMine,mossMine,
+        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator, slash, laceration,strata,
+
+        rustyDrill, steamDrill, hydroElectricDrill, steamAgitator, garden, fortifiedRadiator,
 
         rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader, rustedBridge,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
-        steamBoiler, steamAgitator, broiler, oilSeparator,
+        steamBoiler, broiler, oilSeparator, lubricantMixer, demulsifier,
 
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine,
 
-        rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic,
+        rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        garden, bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver,
+        bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
 
-        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, unitReplicator, unitReplicatorSmall,
+        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, ultimateAssembler, fortifiePayloadConveyor, fortifiePayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
-        coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal,
-        mendFieldProjector, taurus,
+        coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
+        mendFieldProjector, taurus, ladar,
 
-        fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry
-    ; //endregionf
+        fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
 
-    public static Color nyfalisBlockOutlineColour = Color.valueOf("371404");
-    public static ObjectSet<Block> nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>();
+        /*special*/
+        scarabRadar, floodDisruptor
+    ; //endregion
+    public static UnstablePowerTurret cascade;
+    public static Replicator unitReplicator, unitReplicatorSmall;
 
-    //revamp early game
+    public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
+    public static ObjectSet<Block>
+            nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
+            rainRegrowables = new ObjectSet<>();
+
     public static void LoadWorldTiles(){
         //region Ores / Overlays
         oreIron = new OreBlock("ore-iron", rustyIron);
@@ -120,9 +146,57 @@ public class NyfalisBlocks {
         oreQuartz = new OreBlock("ore-quartz", quartz){{
             variants = 3;
         }};
+
+        oreAlco = new OreBlock("ore-alco", alcoAlloy){{
+            variants = 1;
+        }};
+
+        glowSprouts = new OverlayFloor("glow-sprout"){{
+            emitLight = true;
+            needsSurface = false;
+            variants = 1;
+            lightRadius = 10f;
+            //is sad that BlockRenderer.java does not render light from overlays, but ill keep it incase TnT
+        }};
+
+        lumaSprouts = new OverlayFloor("luma-sprout"){{
+            variants = 1;
+            needsSurface = false;
+        }};
+
+        redCorals = new OverlayFloor("red-corals"){{
+            variants = 1;
+            needsSurface = false;
+        }};
+
+        blueCorals = new OverlayFloor("blue-corals"){{
+            variants = 1;
+            needsSurface = false;
+        }};
+
+        greenCorals = new OverlayFloor("green-corals"){{
+            variants = 1;
+            needsSurface = false;
+        }};
+
+        kelp = new OverlayFloor("kelp"){{
+            variants = 1;
+            needsSurface = false;
+        }};
+
         //endregion
         // region Floors
         redSand = new Floor("red-sand-floor"){{
+            itemDrop = Items.sand;
+            playerUnmineable = true;
+            attributes.set(Attribute.oil, 1.5f);
+        }};
+		riverSand = new Floor("river-sand"){{
+            itemDrop = Items.sand;
+            attributes.set(Attribute.oil, 1.2f);
+        }};
+
+        redSandSnow = new Floor("red-sand-snow"){{
             itemDrop = Items.sand;
             playerUnmineable = true;
             attributes.set(Attribute.oil, 1.5f);
@@ -175,24 +249,70 @@ public class NyfalisBlocks {
             attributes.set(Attribute.water, 0.25f);
         }};
 
-        mossyStone = new Floor("mossy-stone"){{
+        mossyStone = new RotatingFloor("mossy-stone"){{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }}  ;
+
+        mossierStone = new RotatingFloor("mossier-stone"){{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        /*TODO: diff gray-greens for each stage*/
-        mossierStone = new Floor("mossier-stone"){{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-
-        mossiestStone = new Floor("mossiest-stone"){{
+        mossiestStone = new RotatingFloor("mossiest-stone"){{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
         mossStone = new Floor("moss-stone"){{
             attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+
+        mossyDirt = new RotatingFloor("mossy-dirt"){{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+
+        frozenDirt = new Floor("frozen-dirt"){{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.3f);
+        }};
+
+        frozenMud = new Floor("frozen-mud"){{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.3f);
+        }};
+
+        hardenMud = new Floor("harden-mud"){{
+            attributes.set(Attribute.water, 0.1f);
+            variants = 3;
+        }};
+
+        frozenTar = new Floor("frozen-tar"){{
+            attributes.set(Attribute.water, 0.3f);
+            attributes.set(Attribute.oil, 1.2f);
+            variants = 3;
+        }};
+
+        frozenSlop = new Floor("frozen-slop"){{
+            attributes.set(Attribute.water, 0.6f);
+            attributes.set(Attribute.oil, 0.6f);
+            variants = 3;
+        }};
+
+        snowySand = new Floor("snowy-sand"){{
+            attributes.set(Attribute.water, 0.1f);
+            variants = 3;
+        }};
+
+        crackedIce = new Floor("cracked-ice"){{
+            attributes.set(Attribute.water, 0.3f);
+            variants = 3;
+        }};
+
+        mossyhardenMud = new RotatingFloor("mossy-harden-mud"){{
+            attributes.set(bio, 0.2f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
@@ -214,11 +334,30 @@ public class NyfalisBlocks {
             attributes.set(Attribute.steam, 1f);
         }};
 
+        hardenMuddyVent = new SteamVent("harden-muddy-vent"){{
+            effectColor = Color.white;
+            parent = blendGroup = hardenMud;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
         basaltVent = new SteamVent("basalt-vent"){{
             effectColor = Color.white;
             parent = blendGroup = basalt;
             attributes.set(Attribute.steam, 1f);
         }};
+
+        snowVent = new SteamVent("snow-vent"){{
+            effectColor = Color.white;
+            parent = blendGroup = snow;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
+        redSandVent = new SteamVent("red-sand-vent"){{
+            effectColor = Color.white;
+            parent = blendGroup = redSand;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
         //endregion
         //region Liquid floor
 
@@ -261,15 +400,28 @@ public class NyfalisBlocks {
             lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
-        mossyWater = new Floor("mossy-water"){{
+        algaeWater = new Floor("mossy-water"){{
             isLiquid = supportsOverlay = true;
 
-            variants = 0;
+            variants = 3;
             albedo = 0.9f;
             statusDuration = 50f;
             speedMultiplier = 0.8f;
             status = StatusEffects.wet;
             liquidDrop = Liquids.water;
+            cacheLayer = CacheLayer.water;
+        }};
+
+        algaeWaterDeep = new Floor("mossy-water-deep"){{ //Remind rushie to update the bundles thx -past rushie
+            variants = 3;
+            albedo = 0.9f;
+            drownTime = 200f;
+            statusDuration = 120f;
+            liquidMultiplier = 1.5f;
+            speedMultiplier = 0.2f;
+            isLiquid = supportsOverlay = true;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
             cacheLayer = CacheLayer.water;
         }};
 
@@ -297,6 +449,31 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
+        coralReef = new Floor("coral-reef"){{
+            variants = 0;
+            albedo = 0.9f;
+            drownTime = 200f;
+            statusDuration = 120f;
+            liquidMultiplier = 1.5f;
+            speedMultiplier = 0.2f;
+            isLiquid = supportsOverlay = true;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
+        }};
+
+        slop = new Floor("slop"){{
+            isLiquid = supportsOverlay = true;
+
+            variants = 0;
+            albedo = 0.9f;
+            statusDuration = 50f;
+            speedMultiplier = 0.7f;
+            status = NyfalisStatusEffects.sloppy;
+            liquidDrop = emulsiveSlop;
+            cacheLayer = NyfalisShaders.slopC;
+        }};
+
         //endregion
         //region Props
         yellowBush = new Prop("yellow-bush"){{
@@ -315,17 +492,21 @@ public class NyfalisBlocks {
 
         bush = new Prop("bush"){{
             variants = 2;
-            breakSound = Sounds.plantBreak;
+            breakSound = Sounds.plantBreak; // Buildable via planty mush
         }};
 
         mossyBoulder = new Prop("mossy-boulder"){{
             variants = 2;
             frozenGrass.asFloor().decoration = this;
             mossierStone.asFloor().decoration = this;
+        }};
+        mossBoulder = new Prop("moss-boulder"){{
+            variants = 2;
+            mossStone.asFloor().decoration = this;
             mossiestStone.asFloor().decoration = this;
         }};
 
-        infernalBloom = new Prop("infernal-bloom"){{
+        infernalBloom = new RotatingProp("infernal-bloom"){{
             variants = 3;
             breakSound = Sounds.plantBreak;
             cinderBloomGrass.asFloor().decoration = this;
@@ -338,11 +519,27 @@ public class NyfalisBlocks {
             redSand.asFloor().decoration = this;
         }};
 
-        glowBloom = new Prop("glow-bloom"){{
+        glowBloom = new RotatingProp("glow-bloom"){{
             variants = 3;
-
             lightRadius = 10f;
             emitLight = true;
+            lightColor = NyfalisColors.glowPlantLight;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        deadBush = new RotatingProp("dead-bush"){{
+            hasShadow = false;
+            variants = 3;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        glowLilly = new RotatingProp("glow-lilly"){{
+            variants = 1;
+            lightRadius = 8.5f;
+            hasShadow = false;
+            lightColor = NyfalisColors.glowPlantLight;
+            floating = placeableLiquid = emitLight = true;
+            breakSound = Sounds.plantBreak;
         }};
 
         //endregion
@@ -386,37 +583,42 @@ public class NyfalisBlocks {
             layer = Layer.power + 0.9f;
         }};
 
-        mossyStoneWall = new StaticWall("mossy-stone-wall"){{
+        mossyStoneWall = new StaticWallTree("mossy-stone-wall"){{
             attributes.set(Attribute.sand, 1f);
             mossierStone.asFloor().wall = this;
         }};
 
-        mossierStoneWall = new StaticWall("mossier-stone-wall"){{
+        mossierStoneWall = new StaticWallTree("mossier-stone-wall"){{
             mossierStone.asFloor().wall = this;
             attributes.set(Attribute.sand, 0.8f);
         }};
 
-        mossiestStoneWall = new StaticWall("mossiest-stone-wall"){{
+        mossiestStoneWall = new StaticWallTree("mossiest-stone-wall"){{
             mossiestStone.asFloor().wall = this;
             attributes.set(Attribute.sand, 0.6f);
         }};
 
-        mossStoneWall = new StaticWall("moss-stone-wall"){{
+        mossStoneWall = new StaticWallTree("moss-stone-wall"){{
             mossStone.asFloor().wall = this;
             attributes.set(Attribute.sand, 0.6f);
+            layer = Layer.power + 0.9f;
         }};
 
         //endregion
         //region Trees
         nyfalisTree = new TreeBlock("olupis-tree"){{
-            variants = 3;
+            variants = 2;
         }};
         mossTree = new TreeBlock("moss-tree"){{
-            variants = 3;
+            variants = 2;
         }};
-        pinkTree = new TreeBlock("pink-tree");
+        pinkTree = new TreeBlock("pink-tree"){{
+            variants = 2;
+        }};
         yellowTree = new TreeBlock("yellow-tree");
-        yellowTreeBlooming = new TreeBlock("yellow-tree-blooming");
+        yellowTreeBlooming = new TreeBlock("yellow-tree-blooming"){{
+            variants = 2;
+        }};
         infernalMegaBloom = new TreeBlock("infernal-megabloom"){{
             variants = 4;
             clipSize = 128f;
@@ -424,9 +626,100 @@ public class NyfalisBlocks {
         orangeTree = new TreeBlock("orange-tree"){{
             variants = 3;
         }};
+        deadTree = new TreeBlock("dead-tree"){{
+            variants = 2;
+        }};
+        mossDeadTree = new TreeBlock("moss-dead-tree"){{
+            variants = 2;
+        }};
+
+        //endregion
+        //region Spreading & related floor
+
+        /* Note: The last stage of anything from the spreading types should go FIRST,
+        last stage -> middle stage -> first stage, otherwise stuff WILL break */
+
+        // TODO: Add Fx (spreadEffect [floors, ores], upgradeEffect [floors], growEffect [walls])
+        growingWall = new GrowingWall("walltest", 0){{
+            growTries = 11;
+            growChance = 0.04d;
+            next = mossiestStoneWall;
+        }};
+        theircelium = new Floor("moss", 3){{
+            mapColor = Color.valueOf("#1e2f0a");
+        }};
+        mossyCopper = new SpreadingOre("moss-ore-copper", theircelium){{
+            variants = 3;
+        }};
+        mossyOxidizedCopper = new SpreadingOre("moss-ore-oxidized-copper", theircelium){{
+            variants = 3;
+        }};
+        mossyLead = new SpreadingOre("moss-ore-lead", theircelium){{
+            variants = 3;
+        }};
+        mossyOxidizedLead = new SpreadingOre("moss-ore-oxidized-lead", theircelium){{
+            variants = 3;
+        }};
+        mossyScrap = new SpreadingOre("moss-ore-scrap", theircelium){{
+            variants = 3;
+        }};
+        mossyCoal = new SpreadingOre("moss-ore-coal", theircelium){{
+            variants = 3;
+        }};
+        mossyIron = new SpreadingOre("moss-ore-oxidized-iron", theircelium){{
+            variants = 3;
+        }};
+        ourcelium = new SpreadingFloor("mossiest-overlay", 3){{
+            // this doesn't spread, but growth is affected by these settings too
+            overlay = true;
+            spreadTries = 6;
+            spreadChance = 0.0095d;
+
+            next = theircelium;
+
+            mapColor = Color.valueOf("#3c5e14");
+            spreadSound = NyfalisSounds.mossSpread;
+            blacklist.addAll(coreZone); //doesnt work
+        }};
+        yourcelium = new SpreadingFloor("mossier-overlay", 3){{
+            // this doesn't spread, but growth is affected by these settings too
+            overlay = true;
+            spreadTries = 4;
+            spreadChance = 0.013d;
+
+            next = ourcelium;
+
+            mapColor = Color.valueOf("#5a8d1d");
+            spreadSound = NyfalisSounds.mossSpread;
+        }};
+        mycelium = new SpreadingFloor("mossy-overlay", 3){{
+            growSpread = true;
+            overlay = true;
+            spreadTries = 3;
+            spreadChance = 0.021d;
+            drillEfficiency = 0.66f;
+
+            replacements.putAll(
+                    oreCopper, mossyCopper,
+                    oreOxidizedCopper, mossyOxidizedCopper,
+                    oreLead, mossyLead,
+                    oreOxidizedLead, mossyOxidizedLead,
+                    oreCoal, mossyCoal,
+                    oreIron, mossyIron,
+                    oreScrap, mossyScrap,
+                    stoneWall, growingWall
+            );
+            blacklist.addAll(coreZone, theircelium); // does work now
+
+            next = yourcelium;
+
+            mapColor = Color.valueOf("#78bc27");
+            spreadSound = NyfalisSounds.mossSpread;
+        }};
 
         //endregion
     }
+
     public static void LoadBlocks(){
         //region Distribution
         rustyIronConveyor = new Conveyor("rusty-iron-conveyor"){{
@@ -446,6 +739,7 @@ public class NyfalisBlocks {
             itemCapacity = 1;
             displayedSpeed = 4.8f;
             poweredSpeed = 0.05f;
+            powerRequired = 15f/60f;
             buildCostMultiplier = 0.45f;
             unpoweredSpeed = 0.025f;
             displayedSpeedPowered = 7f;
@@ -463,18 +757,19 @@ public class NyfalisBlocks {
             speed = 0.06f;
             itemCapacity = 1;
             displayedSpeed = 0f;
-            poweredSpeed = 0.09f;
-            unpoweredSpeed = 0.020f;
+            poweredSpeed = 0.095f;
+            unpoweredSpeed = 0.023f;
             displayedSpeedPowered = 9f;
             buildCostMultiplier = 2f;
 
-            consumePower (1f/60);
+            consumePower (5f/60);
             researchCost = with(cobalt, 500, lead, 500);
             requirements(Category.distribution, with(cobalt, 1, lead, 5 ));
         }};
 
         ironRouter = new Router("iron-router"){{
             buildCostMultiplier = 1.5f;
+            speed = 16;
 
             researchCost = with(rustyIron, 10, lead, 10);
             requirements(Category.distribution, with(rustyIron, 3, lead, 1));
@@ -484,12 +779,14 @@ public class NyfalisBlocks {
             size = 2;
             health = 200;
             buildCostMultiplier = 2f;
+            hasPower = conductivePower = consumesPower = noUpdateDisabled = true;
             researchCost = with(rustyIron, 300, lead, 300, iron, 10);
+            consumePower (6f/60);
             requirements(Category.distribution, with(rustyIron, 3, lead, 3, iron, 1));
         }};
 
         ironJunction = new Junction("iron-junction"){{
-            speed = 26;
+            speed = 45;
             armor = 1f;
             health = 50;
             capacity = 6;
@@ -508,8 +805,8 @@ public class NyfalisBlocks {
             armor = 1f;
             health = 50;
             speed = 47.55f;
-            itemCapacity =5;
-            arrowSpacing = 6f;
+            itemCapacity = 5;
+            arrowSpacing = 5f;
             buildCostMultiplier = 0.3f;
             range = bufferCapacity = 3;
 
@@ -519,9 +816,10 @@ public class NyfalisBlocks {
             requirements(Category.distribution, with(rustyIron, 6, lead, 6));
         }};
 
-        ironBridge = new BufferedItemBridge("iron-bridge"){{
+        ironBridge = new PoweredBufferItemBridge("iron-bridge"){{
             /*Same throughput as an iron conv*/
             fadeIn = moveArrows = false;
+            hasPower = true;
 
             range = 6;
             armor = 1f;
@@ -532,9 +830,10 @@ public class NyfalisBlocks {
             bufferCapacity = 8;
             buildCostMultiplier = 0.4f;
 
-            researchCost = with(iron, 100, rustyIron, 500, lead, 500);
+            consumePower(10f / 60f); 
             ((PowerConveyor)ironConveyor).bridgeReplacement = this;
-            requirements(Category.distribution, with(iron, 5, rustyIron, 10, lead, 10));
+            researchCost = with(iron, 100, rustyIron, 500, lead, 500);
+            requirements(Category.distribution, with(iron, 12, rustyIron, 35, lead, 8));
         }};
 
         ironOverflow = new OverflowSorter("iron-overflow"){{
@@ -570,6 +869,7 @@ public class NyfalisBlocks {
         rustyDrill = new BoostableBurstDrill("rusty-drill"){{
             hasPower = true;
             squareSprite = false;
+            itemCapacity = 25;
 
             tier = 1;
             size = 3;
@@ -590,8 +890,8 @@ public class NyfalisBlocks {
 
 
             envEnabled ^= Env.space;
-            consumePower(25f/60f);
-            consumeLiquid(steam, 0.05f);
+            consumePower(50f/60f);
+            consumeLiquid(NyfalisItemsLiquid.steam, 0.05f);
             researchCost = with(iron, 300, lead, 700);
             consumeLiquid(Liquids.slag, 0.06f).boost();
             requirements(Category.production, with( iron, 40, lead, 20));
@@ -604,7 +904,7 @@ public class NyfalisBlocks {
             liquidBoostIntensity = 1.7f;
 
             envEnabled ^= Env.space;
-            consumeLiquid(steam, 0.1f);
+            consumeLiquid(NyfalisItemsLiquid.steam, 0.1f);
             consumePower(30f/60f);
             consumeLiquid(Liquids.slag, 0.1f).boost();
             researchCost = with(iron, 1000, graphite, 1000, silicon, 500);
@@ -629,13 +929,52 @@ public class NyfalisBlocks {
             );
             consumePower(40f / 60f);
             consumeLiquid(Liquids.water, 18f / 60f);
-            researchCost = with(iron, 700, lead, 1500, rustyIron, 1500, condensedBiomatter, 500);
+            researchCost = with(iron, 700, lead, 1500, rustyIron, 1500);
             outputItem = new ItemStack(condensedBiomatter, 1);
             requirements(Category.production, ItemStack.with(iron, 30, lead, 60, rustyIron, 60));
         }};
 
+        steamAgitator = new AttributeCrafter("steam-agitator"){{
+            outputsLiquid = solid = hasLiquids = true;
+            displayEfficiency = rotate = false;
+
+            size = 3;
+            boostScale = 0.1f;
+            craftTime = 150f;
+            baseEfficiency = 0f;
+            scaledHealth = 50f;
+            liquidCapacity = 30f;
+            minEfficiency = 9f - 0.0001f;
+            envEnabled = Env.any;
+            updateEffect = Fx.steam;
+            attribute = Attribute.steam;
+
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NyfalisItemsLiquid.steam, 1f),
+                    new DrawDefault()
+            );
+            researchCost = with(lead, 750, rustyIron, 750, copper, 750);
+            outputLiquid = new LiquidStack(NyfalisItemsLiquid.steam, 15/60f);
+            requirements(Category.production, with(rustyIron, 30, lead, 30, copper, 30));
+        }};
+
+        fortifiedRadiator = new RadiatorCrafter("fortified-radiator"){{
+
+            size = 5;
+            liquidCapacity = 50f;
+            buildCostMultiplier = 2f;
+            passiveOutput = (24f/60f)/ 9f; //really meant for vents that are 3x3, anything more is a boost
+            consumePower(1f);
+            attribute = Attribute.steam;
+            consumeLiquid(NyfalisItemsLiquid.steam, 40/60f);
+            outputLiquid = new LiquidStack(Liquids.water, 6/60f);
+            researchCost = with(rustyIron, 750, copper, 750, lead, 750);
+            requirements(Category.production, with(rustyIron, 150, lead, 150, copper, 150));
+        }};
+
         //endregion
-        //region liquid
+        //region Liquid
         rustyPump = new Pump("rusty-pump"){{
             size = 1;
             liquidCapacity = 10f;
@@ -647,19 +986,21 @@ public class NyfalisBlocks {
 
         ironPump = new Pump("iron-pump"){{
             size = 2;
-            liquidCapacity = 15f;
-            pumpAmount = 0.075f;
+            liquidCapacity = 20f;
+            pumpAmount = 0.08f;
             buildCostMultiplier = 2.1f;
-            researchCost = with(lead, 500, iron, 100);
-            requirements(Category.liquid, with(iron, 12, lead, 12));
+            researchCost = with(lead, 500, iron, 100, copper, 500);
+            requirements(Category.liquid, with(iron, 20, lead, 20, copper, 20));
         }};
 
         displacementPump = new BurstPump("displacement-pump"){{
             size = 3;
-            pumpAmount = 140f;
+            pumpTime = 310;
+            dumpScale = 1.3f;
             leakAmount = 0.02f;
-            liquidCapacity = 150f;
-            consumePower(0.3f);
+            pumpAmount = 140f;
+            liquidCapacity = 300f;
+            consumePower(25f/60f);
             researchCost = with(iron, 250, lead, 800, graphite, 250, rustyIron, 800);
             requirements(Category.liquid, with(iron, 15, graphite, 15, lead, 30, rustyIron, 30));
         }};
@@ -667,12 +1008,13 @@ public class NyfalisBlocks {
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{
             size = 4;
             leakAmount = 0.1f;
-            pumpAmount = liquidCapacity = 200f;
+            pumpTime = 320;
+            pumpAmount = 200f;
+            liquidCapacity = 400f;
             consumePower(0.6f);
             researchCost = with(iron, 500, lead, 1000, graphite, 250, silicon, 250);
             requirements(Category.liquid, with(iron, 30, graphite, 30, lead, 75, silicon, 30));
         }};
-
 
         leadPipe = new Conduit("lead-pipe"){{
             leaks = underBullets = true;
@@ -708,6 +1050,7 @@ public class NyfalisBlocks {
         fortifiedCanister = new LiquidRouter("pipe-canister"){{
             solid = true;
             size = 2;
+            liquidPadding = 2f;
             liquidCapacity = 850f;
             liquidPressure = 0.95f;
             researchCost = with(lead, 300, iron, 50);
@@ -717,6 +1060,7 @@ public class NyfalisBlocks {
         fortifiedTank = new LiquidRouter("pipe-tank"){{
             solid = true;
             size = 3;
+            liquidPadding = 2f;
             liquidCapacity = 2300f;
             researchCost = with(lead, 800, iron, 250);
             requirements(Category.liquid, with(lead, 75, iron, 30));
@@ -754,39 +1098,30 @@ public class NyfalisBlocks {
             rotate = false;
 
             size = 2;
-            craftTime = 150f;
+            craftTime = 140f;
             boostScale = 0.1f;
-            liquidCapacity = 30f;
+            scaledHealth = 50f;
+            liquidCapacity = 50f;
             envEnabled = Env.any;
             attribute = Attribute.heat;
 
             consumePower(1f);
             consumeLiquid(Liquids.water, 20/60f);
-            researchCost = with(rustyIron, 50, lead, 50);
-            outputLiquid = new LiquidStack(steam, 12/60f);
-            requirements(Category.liquid, with(rustyIron, 10, lead, 10));
+            researchCost = with(rustyIron, 50, lead, 50, copper, 50);
+            outputLiquid = new LiquidStack(NyfalisItemsLiquid.steam, 12/60f);
+            requirements(Category.liquid, with(rustyIron, 10, lead, 10, copper, 10));
+
+            drawer = new DrawMulti(
+                new DrawDefault(),
+                new DrawLiquidTile(Liquids.water),
+                new DrawLiquidTile(NyfalisItemsLiquid.steam),
+                new DrawRegion("-mid"),
+                new DrawFlame()
+            );
         }};
 
-        steamAgitator = new AttributeCrafter("steam-agitator"){{
-            outputsLiquid = solid = true;
-            displayEfficiency = rotate = false;
-
-            size = 3;
-            boostScale = 0.1f;
-            craftTime = 150f;
-            baseEfficiency = 0f;
-            liquidCapacity = 30f;
-            envEnabled = Env.any;
-            attribute = Attribute.steam;
-            minEfficiency = 9f - 0.0001f;
-
-            researchCost = with(lead, 750, rustyIron, 750);
-            outputLiquid = new LiquidStack(steam, 10/60f);
-            requirements(Category.liquid, with(rustyIron, 30, lead, 30));
-        }};
-
-        broiler = new GenericCrafter("broiler"){{
-            hasLiquids = hasPower = true;
+        broiler = new BoostableGenericCrafter("broiler"){{
+            hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
 
             size = 2;
             health = 600;
@@ -800,10 +1135,47 @@ public class NyfalisBlocks {
             requirements(Category.liquid, with(graphite, 25, iron, 20, lead, 40, silicon, 10));
         }};
 
+        lubricantMixer = new GenericCrafter("lubricant-mixer"){{
+            hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
+
+            size = 3;
+
+            consumeItem(silicon);
+            lightLiquid = lubricant;
+            consumePower(1f);
+            consumeLiquid(Liquids.oil, 12f / 60f);
+            outputLiquid = new LiquidStack(lubricant, 10/60f);
+            requirements(Category.liquid, with(quartz, 25, iron, 50, silicon, 40, cobalt, 10));
+        }};
+
+        demulsifier = new GenericCrafter("demulsifier"){{
+            hasLiquids = hasPower =  outputsLiquid = consumesPower = rotate = true;
+            size = 2;
+
+            liquidCapacity =25f;
+            craftTime = 2f / 60f;
+            consumePower(1f);
+            liquidOutputDirections = new int[]{1, 3};
+            consumeLiquid(emulsiveSlop, 15f/ 60f);
+            researchCost = with(iron, 500, lead, 800, copper, 800, rustyIron, 800);
+            outputLiquids = LiquidStack.with(Liquids.water, 13f / 60f, Liquids.oil, 10f / 60f);
+            requirements(Category.liquid, with(quartz, 40, iron, 25, lead, 50,copper, 50));
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water){{
+                        padLeft = 7f;
+                    }},
+                    new DrawLiquidTile(Liquids.oil){{
+                        padRight = 7f;
+                    }},
+                    new DrawDefault()
+            );
+        }};
+
         //endregion
         //region Production
         rustElectrolyzer = new GenericCrafter("rust-electrolyzer"){{
-            hasPower = hasItems = hasLiquids = solid = outputsLiquid = true;
+            hasPower = hasItems = hasLiquids = solid = true;
             rotate = false;
 
             size = 2;
@@ -820,35 +1192,93 @@ public class NyfalisBlocks {
             consumeItems(with(lead, 2, rustyIron, 2));
             researchCost = with(rustyIron, 50, lead, 50);
             requirements(Category.crafting, with(rustyIron, 15, lead, 30));
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawLiquidTile(Liquids.cryofluid){{drawLiquidLight = true;}}, new DrawDefault());
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawDefault());
+        }};
+
+        rustEngraver = new BoostableGenericCrafter("rust-engraver"){{
+            hasPower = hasItems = hasLiquids = solid  = true;
+            rotate = false;
+
+            size = 4;
+            craftTime = 250;
+            envEnabled = Env.any;
+            buildCostMultiplier = 0.4f;
+
+            lightLiquid = Liquids.cryofluid;
+            consumePower(200f / 60f);
+            craftEffect = Fx.pulverizeMedium;
+            outputItem = new ItemStack(iron, 2);
+            consumeLiquid(Liquids.water, 38f / 60f).boost();
+            consumeItems(with(quartz, 1, rustyIron, 6));
+            researchCost = with(iron, 2000, lead, 2000, rustyIron, 2000, quartz, 1000, cobalt, 500);
+            requirements(Category.crafting, with(iron, 25, lead, 30, rustyIron, 30, quartz, 25, cobalt, 25));
         }};
 
         hydrochloricGraphitePress  = new GenericCrafter("hydro-graphite-press"){{
             hasItems = hasLiquids = hasPower = true;
 
             size = 3;
-            craftTime = 40f;
+            craftTime = 50f;
             itemCapacity = 20;
             buildCostMultiplier = 0.5f;
             craftEffect = Fx.pulverizeMedium;
 
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(NyfalisItemsLiquid.steam),
+                    new DrawLiquidTile(Liquids.oil, 10f),
+                    new DrawDefault()
+            );
             consumePower(30f/60f);
-            researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             outputItem = new ItemStack(Items.graphite, 1);
+            researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
             requirements(Category.crafting, with(iron, 10, lead, 50, rustyIron, 40));
-            consumeLiquids(LiquidStack.with(Liquids.oil, 5f / 60f, NyfalisItemsLiquid.steam, 7f/60f));
+            consumeLiquids(LiquidStack.with(Liquids.oil, 10f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
+        }};
+
+        siliconKiln = new GenericCrafter("silicon-kiln"){{
+            size = 2;
+            craftTime = 40f;
+            liquidCapacity = 30f;
+            ambientSoundVolume = 0.07f;
+            consumeItem(quartz, 4);
+            consumeLiquid(oil, 25f/60f);
+            consumePower(0.50f);
+            hasPower = hasLiquids = true;
+            craftEffect = Fx.smeltsmoke;
+            ambientSound = Sounds.smelter;
+            outputItem = new ItemStack(Items.silicon, 1);
+            requirements(Category.crafting, with(Items.copper, 30, Items.lead, 30, iron, 20));
+            drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("ffef99")));
         }};
 
         siliconArcSmelter = new GenericCrafter("silicon-arc-smelters") {{
             hasPower= hasItems = true;
             size = 4;
             craftTime = 30f;
-            itemCapacity = 20;
+            itemCapacity = 30;
+            liquidCapacity = 15f;
 
-            consumePower(30f/60f);
-            outputItem = new ItemStack(silicon, 1);
+            consumePower(70f/60f);
+            outputItem = new ItemStack(silicon, 3);
             consumeItems(with(quartz, 2, graphite, 1));
-            requirements(Category.crafting, with(lead, 65, rustyIron, 65, graphite, 15, iron, 15));
+            requirements(Category.crafting, with(lead, 65, iron, 65, graphite, 15, silicon, 15, cobalt, 15));
+        }};
+
+        inductionSmelter = new SeparatorWithLiquidOutput("induction-smelter"){{
+            size = 3;
+            craftTime = 80f;
+            liquidCapacity = 30;
+            results = with(
+                aluminum, 3,
+                cobalt, 1
+            );
+            consumeItem(alcoAlloy);
+            consumePower(80f /60f);
+            liquidOutputDirections = new int[]{4};
+            hasLiquids = outputsLiquid = rotate = quickRotate = true;
+            liquidOutputs = LiquidStack.with(Liquids.slag, 5f / 60f);
+            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, alcoAlloy, 20));
         }};
 
         bioMatterPress = new GenericCrafter("biomatter-press"){{
@@ -856,7 +1286,6 @@ public class NyfalisBlocks {
             size = 2;
             health = 320;
             craftTime = 20f;
-            liquidCapacity = 60f;
 
             craftEffect = Fx.none;
             drawer = new DrawMulti(
@@ -870,12 +1299,12 @@ public class NyfalisBlocks {
             );
             consumePower(35f /60f);
             consumeItem(condensedBiomatter, 1);
-            researchCost = with(iron, 250, lead, 500);
+            researchCost = with(iron, 250, lead, 500, copper, 250);
             outputLiquid = new LiquidStack(oil, 20f / 60f);
-            requirements(Category.crafting, with(iron, 25, lead, 25));
+            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
-        ironSieve  = new GenericCrafter("iron-sieve"){{
+        ironSieve  = new Separator("iron-sieve"){{
             //not to be confused with iron shiv
             hasPower = hasItems = true;
             hasLiquids = false;
@@ -884,13 +1313,39 @@ public class NyfalisBlocks {
             craftTime = 30f;
             itemCapacity = 20;
 
-            craftEffect = Fx.pulverizeMedium;
-            consumePower(1.8f);
-            consumeItem(Items.sand, 2);
-            outputItem = new ItemStack(rustyIron, 2);
+            results = with(
+                rustyIron, 3,
+                quartz, 1
+            );
+            consumePower(2f);
+            consumeItem(Items.sand, 3);
+            consumeItem(scrap, 3).boost();
             researchCost = with(lead, 700, rustyIron, 700);
             requirements(Category.crafting, with(rustyIron, 20, lead, 50));
+
+            drawer = new DrawMulti(
+                new DrawDefault(),
+                new DrawPistons(){{
+                    sides = 1;
+                    lenOffset = -2f;
+                    sinScl = 2.8f;
+                }}
+            );
         }};
+
+        discardDriver = new DiscardDriver("discard-driver"){{
+            range = itemCapacity = 110;
+            size = 1;
+            bullet = new BasicBulletType(2.5f, 9){{
+                width = 7f;
+                height = 9f;
+                lifetime = 10f;
+                scaleLife = true;
+            }};
+            requirements(Category.crafting, with(iron, 25, copper, 25));
+        }};
+
+        //discardDriver -> mass driver that discards item in a random direction
 
         //endregion
         //region Units
@@ -898,14 +1353,17 @@ public class NyfalisBlocks {
             size = 4;
             shootY = 0f;
             reload = 1200f;
-            itemCapacity = 20;
+            maxAmmo = 16;
+            itemCapacity = 40;
+            alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
-            powerBulletType = new SpawnHelperBulletType(){{
-                shootEffect = Fx.unitLand;
-                ammoMultiplier = 1f;
-                spawnUnit = spirit;
-            }};
             ammo(
+                powerAmmoItem ,new SpawnHelperBulletType(){{
+                    shootEffect = Fx.unitLand;
+                    ammoMultiplier = 1f;
+                    reloadMultiplier = 1.2f;
+                    spawnUnit = spirit;
+                }},
                 quartz, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
@@ -917,12 +1375,18 @@ public class NyfalisBlocks {
                     ammoMultiplier = 1f;
                     reloadMultiplier = 0.65f;
                     spawnUnit = phantom;
+                }},
+                silicon, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 1f;
+                    reloadMultiplier = 0.65f;
+                    spawnUnit = revenant;
                 }}
             );
-            alwaysShooting = true;
+            alwaysShooting = unitFactory = true;
             consumePower(80f / 60f);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            requiredItems = with(lead, 10, copper, 10);
+            requiredItems = with(lead, 20, copper, 20);
             researchCost = with(lead, 1000, iron, 600, rustyIron, 1000);
             requirements(Category.units, with(iron, 50, lead, 50, rustyIron, 50));
         }};
@@ -932,7 +1396,9 @@ public class NyfalisBlocks {
             size = 4;
             shootY = 0f;
             reload = 1200f;
-            itemCapacity = 20;
+            maxAmmo = 15;
+            itemCapacity = 80;
+            alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
 
             ammo(
@@ -940,39 +1406,70 @@ public class NyfalisBlocks {
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 2f;
                     spawnUnit = aero;
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = striker;
+                    }};
+                }},
+                graphite, new SpawnHelperBulletType(){{
+                    shootEffect = Fx.shootBig;
+                    ammoMultiplier = 2f;
+                    spawnUnit = pteropus;
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = acerodon;
+                    }};
                 }}
             );
-            alwaysShooting = true;
-            requiredItems = with(copper, 10);
+            alwaysShooting = unitFactory = true;
+            requiredItems = with(copper, 40);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            researchCost = with(lead, 100, silicon, 600,  iron, 600);
+            researchCost = with(lead, 800, copper, 800,  iron, 600);
             requirements(Category.units, with(iron, 100, lead, 100, copper, 100));
         }};
 
         // groundConstruct -> offensive ground units
         groundConstruct = new ItemUnitTurret("ground-construct"){{
             size = 4;
-            shootY = 2.5f * Vars.tilesize;
             reload = 1200f;
-            itemCapacity = 20;
+            maxAmmo = 15;
+            itemCapacity = 80;
+            alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
+            shootY = 3f * Vars.tilesize;
 
             ammo(
                 lead, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = supella;
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = germanica;
+                    }};
                 }},
                 graphite, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = venom;
+                        alternateType = new SpawnHelperBulletType(){{
+                            shootEffect = Fx.shootBig;
+                            ammoMultiplier = 2f;
+                            reloadMultiplier = 0.45f;
+                            spawnUnit = serpent;
+                        }};
                 }}
             );
-            requiredItems = with(copper, 10);
-            alwaysShooting = hoverShowsSpawn = arrowShootPos = true;
+            requiredItems = with(copper, 40);
+            alwaysShooting = hoverShowsSpawn = arrowShootPos = unitFactory = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            researchCost = with(rustyIron, 5000, silicon, 300,  iron, 300);
+            researchCost = with(rustyIron, 500, copper, 500,  iron, 300);
             requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
         }};
 
@@ -980,7 +1477,9 @@ public class NyfalisBlocks {
         navalConstruct = new ItemUnitTurret("naval-construct"){{
             size = 4;
             reload = 1200f;
-            itemCapacity = 20;
+            maxAmmo = 15;
+            itemCapacity = 80;
+            alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
             shootY = 2.5f * Vars.tilesize;
 
@@ -989,19 +1488,42 @@ public class NyfalisBlocks {
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = bay;
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = blitz;
+                    }};
                 }},
                 iron, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
                     spawnUnit = porter;
+                    alternateType = new SpawnHelperBulletType(){{
+                        shootEffect = Fx.shootBig;
+                        ammoMultiplier = 2f;
+                        reloadMultiplier = 0.45f;
+                        spawnUnit = essex;
+                    }};
                 }}
             );
-            consumePower(80f / 60f);
-            requiredItems = with(copper, 10);
+            requiredItems = with(copper, 40);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            alwaysShooting = hoverShowsSpawn = hasPower = floating = arrowShootPos = true;
-            researchCost = with(lead, 500, silicon, 300,  iron, 300);
-            requirements(Category.units, with(iron, 100, lead, 100, silicon, 50));
+            alwaysShooting = hoverShowsSpawn = floating = arrowShootPos = unitFactory = true;
+            researchCost = with(lead, 1500, graphite, 500,  iron, 800);
+            requirements(Category.units, with(iron, 100, lead, 100, graphite, 50));
+        }};
+
+        alternateArticulator = new Articulator("alternate-articulator"){{
+            size = 3;
+
+            ((ItemUnitTurret) arialConstruct).statArticulator = this;
+            ((ItemUnitTurret) navalConstruct).statArticulator = this;
+            ((ItemUnitTurret) groundConstruct).statArticulator = this;
+
+
+            hasPower = consumesPower = conductivePower = true;
+            requirements(Category.units, with(aluminum, 100, rustyIron, 100, copper, 100));
         }};
 
         //Unit Tree: t1 = construct
@@ -1009,6 +1531,55 @@ public class NyfalisBlocks {
         // t3 = t1 + reconstructor
         // t4 = t2 + t3 reconstructor + Articulator
         // t5 = t1-t4 at assembler
+
+        scoutPad = new MechPad("scout-pad"){{
+            hasPower = consumesPower = solid = true;
+            consumePower(100f / 60f);
+            requirements(Category.units, with(lead, 150, iron, 50, rustyIron, 150, copper, 110));
+            size = 4;
+        }};
+
+        repairPin = new UnitRailingRepairTurret("repair-pin"){{
+            //Intrusive bottom thoughts won -Rushie
+            size = 3;
+            shootY = 10;
+            repairSpeed = 3f;
+            repairRadius = 110;
+            powerUse =100f / 60f;
+
+            length = 100f;
+            lineFx = new Effect(20f, e -> {
+                if(!(e.data instanceof Vec2 v)) return;
+                color(e.color);
+                stroke(e.fout() * 0.9f + 0.6f);
+                Fx.rand.setSeed(e.id);
+                for(int i = 0; i < 7; i++){
+                    Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                    Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                }
+                e.scaled(14f, b -> {
+                    stroke(b.fout() * 1.5f);
+                    color(e.color);
+                    Lines.line(e.x, e.y, v.x, v.y);
+                });
+            });
+
+            fireFx = new Effect(10, e -> {
+                color(e.color);
+                float w = 1.2f + 7 * e.fout();
+
+                Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+                color(e.color);
+
+                for(int i : Mathf.signs){
+                    Drawf.tri(e.x, e.y, w * 0.9f, 18f * e.fout(), e.rotation + i * 90f);
+                }
+
+                Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+            });
+            requirements(Category.units, with(iron, 15, Items.lead, 20, copper, 20));
+        }};
+
 
         fortifiePayloadConveyor = new PayloadConveyor("fortified-payload-conveyor"){{
             requirements(Category.units, with(Items.graphite, 10 , iron, 5));
@@ -1024,22 +1595,133 @@ public class NyfalisBlocks {
             size = 4;
         }};
 
-        //TODO: payloadLifter -> payload into a air unit to drop off at configured location, air unit can be killed
 
         unitReplicator = new Replicator("unit-replicator"){{
             size = 5;
             delay = 5f;
-
-            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
         }};
 
         unitReplicatorSmall = new Replicator("unit-replicator-small"){{
             size = 4;
             delay = 4f;
 
-            this.requirements(Category.units, BuildVisibility.editorOnly, ItemStack.with());
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
         }};
 
+        blackHoleContainer = new PayloadVoid("black-hole-container"){{
+            size = 4;
+            this.requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.with());
+        }};
+
+        //endregion
+        //region Mines
+        heavyMine = new ShockMine("heavy-mine"){{
+            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, iron, 12}));
+            hasShadow = false;
+            size = 1;
+            health = 50;
+            damage = tileDamage = tendrils = length = 0;
+            shots = 1;
+            rebuildable = false;
+            bullet = new ExplosionBulletType(200, 20*8){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 2f;
+                    speed = 3;
+                    lifetime = 20;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
+                    hitEffect =  Fx.none;
+                    collidesAir = false;
+                    status = StatusEffects.slow;
+                    statusDuration = 260;
+                }};
+            }};
+        }};
+        glitchMine = new ShockMine("glitch-mine"){{
+            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, cobalt, 12}));
+            hasShadow = false;
+            size = 1;
+            health = 30;
+            damage = tileDamage = tendrils = length = 0;
+            shots = 1;
+            rebuildable = false;
+            bullet = new ExplosionBulletType(80, 5*8){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 2f;
+                    speed = 3;
+                    lifetime = 10;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
+                    hitEffect =  Fx.none;
+                    collidesAir = false;
+                    status = NyfalisStatusEffects.glitch;
+                    statusDuration = 260;
+                }};
+            }};
+        }};
+        fragMine = new ShockMine("frag-mine"){{
+            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, quartz, 12}));
+            hasShadow = false;
+            size = 1;
+            health = 40;
+            damage = tileDamage = tendrils = length = 0;
+            shots = 1;
+            rebuildable = false;
+            bullet = new ExplosionBulletType(100, 10*8){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BasicBulletType(3.0F, 10.0F) {{
+                    width = 5.0F;
+                    height = 12.0F;
+                    shrinkY = 1.0F;
+                    lifetime = 30.0F;
+                    backColor = NyfalisItemsLiquid.quartz.color;
+                    frontColor = Color.white;
+                    despawnEffect = Fx.none;
+                }};
+            }};
+        }};
+        mossMine = new ShockMine("moss-mine"){{
+            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, condensedBiomatter, 12}));
+            hasShadow = false;
+            size = 1;
+            health = 20;
+            damage = tileDamage = tendrils = length = 0;
+            shots = 1;
+            rebuildable = false;
+            bullet = new ExplosionBulletType(50, 15*8){{
+                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                killShooter = collidesAir = true;
+                fragBullets = 8;
+                fragRandomSpread = 0;
+                fragSpread = 45;
+                fragBullet = new BulletType(){{
+                    damage = 0;
+                    knockback = 0.2f;
+                    speed = 3;
+                    lifetime = 10;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = Fx.none;
+                    hitEffect =  Fx.none;
+                    collidesAir = false;
+                    status = NyfalisStatusEffects.mossed;
+                    statusDuration = 260;
+                }};
+            }};
+        }};
         //endregion
         NyfalisTurrets.LoadTurrets();
         //region Power
@@ -1061,11 +1743,11 @@ public class NyfalisBlocks {
             armor = 5;
             health = 150;
             baseExplosiveness = 0.7f;
-            researchCost = with(iron, 250, cobalt, 100);
-            requirements(Category.power, with(cobalt, 10, iron, 5));
+            researchCost = with(iron, 250, cobalt, 100, copper, 250);
+            requirements(Category.power, with(cobalt, 10, iron, 5, copper, 10));
         }};
 
-        wireBridge = new BeamNode("wire-bridge"){{
+        wireBridge = new WireBridge("wire-bridge"){{
             consumesPower = outputsPower = floating = true;
             range = 5;
             armor = 3;
@@ -1085,30 +1767,47 @@ public class NyfalisBlocks {
             size = 3;
             boosterMultiplier = 3.8f;/* rationed for press + 2 gardens*/
             powerProduction = 20f/60f;
-            displayEfficiencyScale = 1.1f;
             attribute = Attribute.steam;
             consumeLiquid(oil, 10f / 60f).boost();
-            researchCost = with(rustyIron, 20);
-            requirements(Category.power, with(rustyIron, 35));
+            researchCost = with(rustyIron, 20, Items.lead, 2);
+            requirements(Category.power, with(rustyIron, 35, Items.lead, 1));
         }};
 
         hydroMill = new ThermalGeneratorNoLight("hydro-mill"){{
-            floating = true;
+                floating = true;
 
-            size = 3;
-            effectChance = 0.011f;
-            powerProduction = 20f/60f;
-            ambientSoundVolume = 0.06f;
+                size = 3;
+                powerProduction = 20f/60f;
+                ambientSoundVolume = 0.06f;
 
-            attribute = hydro;
-            generateEffect = Fx.steam;
-            ambientSound = Sounds.hum;
-            researchCost = with(iron, 750, silicon, 500, lead, 1500, cobalt, 500);
-            requirements(Category.power, with(iron, 20, silicon, 20, lead, 50, cobalt, 20));
-            drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
-                blurThresh = 0.01f;
-            }});
-        }};
+                attribute = hydro;
+                ambientSound = Sounds.hum;
+                researchCost = with(iron, 750, silicon, 500, lead, 1500, cobalt, 500);
+                requirements(Category.power, with(iron, 20, silicon, 20, lead, 50, cobalt, 20));
+                drawer = new DrawMulti(
+                        new DrawRegion("-bottom"),
+                        new DrawLiquidTile(Liquids.water, 2f){
+                            @Override
+                            public void draw(Building build){
+                                Liquid drawn = build.floor().isLiquid && build.floor().asFloor().liquidDrop != null ?  build.floor().asFloor().liquidDrop : (drawLiquid != null ? drawLiquid : build.liquids.current());
+                                LiquidBlock.drawTiledFrames(build.block.size, build.x, build.y, padLeft, padRight, padTop, padBottom, drawn, alpha);
+                            }
+                        },
+                        new DrawBubbles(){{spread = 9f;}},
+                        new DrawDefault(),
+                        new DrawBlurSpin("-rotator", 0.45f * 9f){{blurThresh =  0.01f;}}
+                );
+            }
+            @Override
+            public void drawPlace(int x, int y, int rotation, boolean valid){
+                drawPotentialLinks(x, y);
+                drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
+
+                if(displayEfficiency && sumAttribute(attribute, x, y) != 0){
+                    drawPlaceText(Core.bundle.formatFloat("bar.nyfalis-windmill", (sumAttribute(attribute, x, y) * 10) * 2, 0), x, y, valid);
+                }
+            }
+        };
 
         hydroElectricGenerator = new ThermalGeneratorNoLight("hydro-electric-generator"){{
             placeableLiquid = floating = true;
@@ -1136,6 +1835,14 @@ public class NyfalisBlocks {
             requirements(Category.power, with(quartz, 50, lead, 50, silicon, 50));
         }};
 
+        steamTurbine = new ConsumeGenerator("steam-turbine"){{
+            size = 6;
+            powerProduction = 145f/60f;
+
+            consumeLiquid(NyfalisItemsLiquid.steam, 24f/60f);
+            consumeLiquid(oil, 20f / 60f).boost();
+            requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
+        }};
         //TODO: Solar receiver & Mirror -> Super structure `Mirror(s)->Redirector->Solar tower+water=steam->steam turbine(s)`
         // Mirror -> SolarTower -> Heat + water-> SteamTurbine -> power
 
@@ -1191,6 +1898,52 @@ public class NyfalisBlocks {
             requirements(Category.defense,with(iron, 24));
         }};
 
+        quartzWall = new Wall("quartz-wall"){{
+            absorbLasers = true;
+            size = 1;
+            health = 1100;
+            buildCostMultiplier = 0.7f;
+            researchCost = with(quartz, 500, lead, 200);
+            requirements(Category.defense,with(quartz, 6, lead, 2));
+        }};
+
+        quartzWallLarge = new Wall("quartz-wall-large"){{
+            absorbLasers = true;
+            size = 2;
+            health = 4600;
+            buildCostMultiplier = 0.7f;
+            researchCost = with(quartz, 1000, lead, 200);
+            requirements(Category.defense,with(quartz, 24, lead, 8));
+        }};
+
+
+        cobaltWall = new PoweredLightingWall("cobalt-wall"){{
+            conductivePower = consumesPower = update = true;
+            size = 1;
+            health = 1500;
+            buildCostMultiplier = 0.7f;
+            lightningChancePowered = 0.06f;
+            consumePower(5f / 60f);
+            researchCost = with(cobalt, 500, copper, 200);
+            requirements(Category.defense,with(cobalt, 6, silicon, 2));
+            lightningColor = new Color().set(cobalt.color).lerp(surgeAlloy.color, 0.5f);
+        }};
+
+        cobaltWallLarge = new PoweredLightingWall("cobalt-wall-large"){{
+            conductivePower = consumesPower = update = true;
+            size = 2;
+            health = 5700;
+            buildCostMultiplier = 0.7f;
+            lightningChancePowered = 0.06f;
+            consumePower(20f / 60f);
+            researchCost = with(cobalt, 1000, copper, 200);
+            requirements(Category.defense,with(cobalt, 24, silicon, 8));
+            lightningColor = new Color().set(cobalt.color).lerp(surgeAlloy.color, 0.5f);
+        }};
+
+        //TODO: late game wall is also a router
+
+
         rustyScrapWall = new Wall("rusty-scrap-wall"){{
             size = 1;
             variants = 1;
@@ -1208,66 +1961,97 @@ public class NyfalisBlocks {
         rustyScrapWallHuge = new Wall("rusty-scrap-wall-huge"){{
             size = 3;
             variants  = 2;
-            health = 3840;
+            health = 2160;
             requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 9));
         }};
 
         rustyScrapWallGigantic = new Wall("rusty-scrap-wall-gigantic"){{
             size = 4;
-            health = 2530;
+            health = 3840;
+            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 16));
+        }};
+
+        rustyScrapWallHumongous = new Wall("rusty-scrap-wall-humongous"){{
+            size = 5;
+            health = 6000;
             requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 16));
         }};
 
         //endregion
-        //region Effect
+        //region Effect / Storage
         mendFieldProjector = new DirectionalMendProjector("mend-field-projector");
 
         taurus = new PowerTurret("taurus"){{
             size = 3;
-            recoils = 2;
-            reload = 10f;
-            inaccuracy = 10f;
-            shootEffect = Fx.shootHeal;
-            outlineColor = nyfalisBlockOutlineColour;
+            reload = 100f;
+            rotateSpeed = 3;
+            inaccuracy = 15f;
+            shootCone = 12f;
+            coolantMultiplier = 1.6f;
+            shootY = (size * tilesize / 2f) -2f;
 
+            hasPower = targetHealing = true;
+            targetAir = targetGround  = false;
+            shootType = new HealOnlyBulletType(5.2f, -5, "olupis-diamond-bullet"){{
+                collidesTeam = despawnHit = splashDamagePierce = alwaysSplashDamage = despawnHitEffect = true;
+                collidesAir = absorbable = false;
+                width = 8f;
+                height = 13f;
+                healPercent = 0.75f;
+                splashDamage = 0f;
+                /*added slight homing, so it can hit 1x1 blocks better or at all*/
+                homingRange = 5f;
+                homingPower = 0.2f;
+                splashDamageRadius = Vars.tilesize * 2;
+                backColor = Pal.heal;
+                hitEffect = despawnEffect = NyfalisFxs.taurusHeal;
+                frontColor = Color.white;
+                shootSound = Sounds.sap;
+            }};
+            shootEffect = NyfalisFxs.shootTaurus;
+            smokeEffect = Fx.none;
+            group = BlockGroup.projectors;
+            outlineColor = nyfalisBlockOutlineColour;
+            consumePower(100f / 60f);
+            researchCost = with(iron, 100, lead, 200);
+            shoot = new ShootAlternateAlt(9f);
+            shoot.shots = 4;
+            shoot.shotDelay = 11f;
+
+            recoils = 2;
+            recoil = 0.5f;
             drawer = new DrawTurret("iron-"){{
                 for(int i = 0; i < 2; i ++){
                     int f = i;
                     parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
-                        under = true;
-                        moveY = -1.5f;
-                        recoilIndex = f;
                         progress = PartProgress.recoil;
+                        recoilIndex = f;
+                        under = true;
+                        moveY = -3;
                     }});
                 }
             }};
-            shootType = new HealOnlyBulletType(5.2f, -5, "olupis-diamond-bullet"){{
-                collidesTeam = true;
-                collidesAir = absorbable = false;
-                width = 10f;
-                height = 16f;
-                lifetime = 30f;
-                healPercent = 7f;
-                splashDamage = -3f;
-                /*added slight homing, so it can hit 1x1 blocks better or at all*/
-                homingRange = 10f;
-                homingPower = 0.07f;
-                splashDamageRadius = 25f * 0.75f;
-                backColor = Pal.heal;
-                frontColor = Color.white;
-                shootSound = Sounds.sap;
-            }};
-            hasPower = targetHealing = true;
-            targetAir = targetGround  = false;
-            group = BlockGroup.projectors;
-            limitRange(3f);
-            consumePower(100f / 60f);
-            shoot = new ShootAlternate(9f);
-            researchCost = with(iron, 100, lead, 200);
+            limitRange(-23f);
             flags = EnumSet.of(BlockFlag.repair, BlockFlag.turret);
-            requirements(Category.effect, with(iron, 15, Items.lead, 20));
+            coolant = consume(new ConsumeLubricant(45f / 60f));
+            requirements(Category.effect, with(iron, 40, Items.lead, 30));
         }};
 
+
+        ladar = new Ladar("ladar"){{
+            emitLight = true;
+            size = 2;
+            fogRadius = 64;
+            lightRadius = 200;
+            rotateSpeed = 20f;
+            glowMag = glowScl = 0f;
+            discoveryTime = 60f * 80f;
+            consumePower(240f/60f);
+            glowColor = Color.valueOf("00000000");
+            requirements(Category.effect, with(Items.lead, 60, Items.graphite, 50, iron, 10));
+        }};
+
+        //Healing turret that has ammo and water to heal better
 
         //TODO: Mister -> phase fluid = to give units a temp shied
         //  -> Nanite Fluid = repair
@@ -1292,77 +2076,51 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 75, iron, 50, silicon, 50));
         }};
 
-//        deliveryCannon == payload cannon
-//         deliveryTerminal == redirects all cannons in a planet to this sector (since only 1 sector can be played)
-//        Vars.state.getPlanet().sectors.forEach(a -> {a.info.destination = Vars.state.getSector();});
+        int coreBaseHp = 600, coreUnitCap = 2;
 
         coreRemnant = new PropellerCoreBlock("core-remnant"){{
-            alwaysUnlocked = isFirstTier = true;
+            alwaysUnlocked = isFirstTier = requiresCoreZone = true;
             size = 2;
-            health = 1750;
             itemCapacity = 1500;
-            buildCostMultiplier = 0.5f;
+            unitCapModifier  = 8;
+            health = coreBaseHp * 3;
+            thrusterLength = (14f/2.4f)/4f;
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
 
             unitType = gnat;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300));
         }};
 
         coreVestige = new PropellerCoreBlock("core-vestige"){{
-            size = 3;
-            health = 3500;
-            itemCapacity = 3000;
-            buildCostMultiplier = 0.5f;
-            researchCostMultiplier = 0.5f;
 
-            unitType = gnat;
+            size = 3;
+            offset = 17.5f;
+            itemCapacity = 3000;
+            health = Math.round(coreBaseHp * 3.5f);
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
+            unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap));
+            researchCost = with(lead, 13500, rustyIron, 13500, iron, 13500);
+
+            unitType = pedicia;
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300, iron, 1000));
         }};
 
         coreRelic = new PropellerCoreTurret("core-relic"){{
             size = 4;
-            reload = 72f;
-            health = 70000;
+            offset = 25f;
+            reload = 80f;
             itemCapacity = 4500;
             shootX = shootY = 0f;
-            buildCostMultiplier = 0.5f;
-            range = 19.5f * Vars.tilesize;
-            researchCostMultiplier = 0.5f;
+            range = 20f * Vars.tilesize;
+            health = Math.round(coreBaseHp * 5f);
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
+            unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap * 2));
 
             unitType = phorid;
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
             requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500, graphite, 500));
-            shootType = new SapBulletType(){{
-                damage = 10f;
-                width = 0.8f;
-                lifetime = 20f;
-                sapStrength = 0f;
-                length = 19.5f * Vars.tilesize;
-                status = StatusEffects.none;
-                despawnEffect = Fx.none;
-                color = hitColor = rustyIron.color;
-                collidesTiles = false;
-                collidesAir = collidesGround = collidesTeam = true;
-            }};
-        }};
-
-        coreShrine = new PropellerCoreTurret("core-shrine"){{
-            size = 5;
-            reload = 55f;
-            health = 140000;
-            itemCapacity = 6000;
-            shootX = shootY = 0f;
-            buildCostMultiplier = 0.5f;
-            range = 22.5f * Vars.tilesize;
-            researchCostMultiplier = 0.5f;
-
-
-            unitType = phorid;
-            limitRange(0);
-            shootEffect = Fx.none;
-            shootSound = Sounds.bigshot;
-            requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500));
-            shootType = new ArtilleryBulletType(3f, 25){{
+            shootType = new ArtilleryBulletType(3f, 10){{
                 lifetime = 80f;
                 knockback = 0.8f;
                 homingRange = 50f;
@@ -1380,15 +2138,44 @@ public class NyfalisBlocks {
             }};
         }};
 
+        coreShrine = new PropellerCoreTurret("core-shrine"){{
+            size = 5;
+            reload = 55f;
+            itemCapacity = 6000;
+            shootX = shootY = 0f;
+            range = 25f * Vars.tilesize;
+            health = Math.round(coreBaseHp * 6.5f);
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
+            unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap) * 3);
+
+            unitType = phorid;
+            limitRange(0);
+            shootEffect = Fx.none;
+            shootSound = Sounds.bigshot;
+            requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500));
+            shootType = new SapBulletType(){{
+                damage = 25f;
+                width = 0.8f;
+                lifetime = 20f;
+                sapStrength = 0f;
+                length = 25f * Vars.tilesize;
+                status = StatusEffects.none;
+                despawnEffect = Fx.none;
+                color = hitColor = rustyIron.color;
+                collidesTiles = false;
+                collidesAir = collidesGround = collidesTeam = true;
+            }};
+        }};
+
         coreTemple = new PropellerCoreTurret("core-temple"){{
             size = 6;
             reload = 35f;
-            health = 280000;
             itemCapacity = 7500;
             shootX = shootY = 0f;
-            buildCostMultiplier = 0.5f;
-            range = 32 * Vars.tilesize;
-            researchCostMultiplier = 0.5f;
+            range = 35 * Vars.tilesize;
+            health = Math.round(coreBaseHp * 8f);
+            buildCostMultiplier = researchCostMultiplier = 0.5f;
+            unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap) * 4);
 
             unitType = phorid;
             shootEffect = Fx.none;
@@ -1419,12 +2206,24 @@ public class NyfalisBlocks {
             }};
         }};
 
+        deliveryCannon = new LimitedLaunchPad("delivery-cannon"){{
+            size = 4;
+            itemCapacity = 100;
+            launchTime = 60f * 20;
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawPistons()
+            );
+            requirements(Category.effect, BuildVisibility.campaignOnly, with(rustyIron, 75, iron, 50, silicon, 50, cobalt, 10));
+        }};
+
         lightWall = new PrivilegedLightBlock("light-wall"){{
             alwaysUnlocked = true;
             brightness = 0.75f;
             radius = 140f;
             requirements(Category.effect, BuildVisibility.editorOnly, with());
         }};
+
         //endregion
         //region Logic
         fortifiedMessageBlock = new MessageBlock("fortified-message-block"){{
@@ -1455,25 +2254,94 @@ public class NyfalisBlocks {
             researchCost = with(iron, 400, graphite, 400, silicon, 200);
         }};
 
+        floodDisruptor = new ImpactReactor("flood-disruptor"){{
+            //Flood helper
+            requirements(Category.logic, with(rustyIron, 500, Items.silicon, 100, Items.graphite, 250, iron, 250, copper, 300, lead, 300));
+            size = 5;
+            health = 900;
+            powerProduction = 20f/60f;
+            itemDuration = 3f * 60f;
+            ambientSound = Sounds.pulse;
+            ambientSoundVolume = 0.07f;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawDefault(),
+                    new DrawPlasma(){
+                        @Override
+                        public void draw(Building build){
+                            Draw.blend(Blending.additive);
+                            for(int i = 0; i < regions.length; i++){
+                                float r = ((float)regions[i].width * regions[i].scl() - 3f + Mathf.absin(Time.time, 2f + i * 1f, 5f - i * 0.5f));
 
+                                Draw.color(plasma1, plasma2, (float)i / regions.length);
+                                Draw.alpha((0.3f + Mathf.absin(Time.time, 2f + i * 2f, 0.3f + i * 0.05f)) * build.warmup());
+                                Draw.rect(regions[i], build.x, build.y, r, r); //no spin
+                            }
+                            Draw.color();
+                            Draw.blend();
+                        }
+                    }
+            );
+
+            consumePower(300f/60f);
+            consumeItems(new ItemStack(iron, 1), new ItemStack(silicon, 1));
+            consumeLiquid(lubricant, 0.25f);
+        }};
         //endregion
+        //special
+        scarabRadar = new Ladar("scarab-block-radar"){{
+            underBullets = true;
+            health = 10;
+            size = 1;
+            discoveryTime = 3400;
+            glowColor = Color.valueOf("3ed09a");
+            outlineColor = NyfalisColors.contentOutline;
+            requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.with(new Object[]{Items.silicon, 1}));
+            fogRadius = 20;
+        }};
+
     }
 
     public static void NyfalisBlocksPlacementFix(){
         nyfalisBuildBlockSet.clear();
+
+        sandBoxBlocks.addAll(
+                /*just to make it easier for testing and/or sandbox*/
+                itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid, powerSource, powerVoid, heatSource,
+                worldProcessor, worldMessage, boomPuffActive, boomPuffPassive
+        );
+
         Vars.content.blocks().each(b->{
             if(b.name.startsWith("olupis-")){
-                if(b.isVisible()) nyfalisBuildBlockSet.add(b);
+                if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 allNyfalisBlocks.add(b);
+                b.envEnabled = NyfalisAttributeWeather.nyfalian;
             }
         });
 
         nyfalisCores.addAll(coreRemnant, coreRelic, coreShrine, coreTemple, coreVestige);
 
-        sandBoxBlocks.addAll(
-            /*just to make it easier for testing and/or sandbox*/
-            itemSource, itemVoid, liquidSource, liquidVoid, payloadSource, payloadVoid, powerSource, powerVoid, heatSource,
-            worldProcessor, worldMessage
-        );
+        for (Planet p : Vars.content.planets()) {
+            if (Objects.equals(p.name, "serpulo")) p.techTree.each(n -> {
+                if (n.content instanceof Block b && !sandBoxBlocks.contains(b)) hiddenNyfalisBlocks.add(b);
+            });
+        }
+
+        rainRegrowables.addAll(grass, moss, mossierStone, mossyStone, yellowGrass, cinderBloomGrass, cinderBloomiest, cinderBloomiest, mossyDirt, frozenDirt, frozenGrass, frozenSlop);
+
+
+        unitReplicator.replacement = NyfalisBlocks.rustyScrapWallHumongous;
+        unitReplicatorSmall.replacement = NyfalisBlocks.rustyScrapWallGigantic;
+
+        if(headless) return;
+        cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
+        cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);
+        cinderBloomiest.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.25f);
+        mossyStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.75f);
+        mossierStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.5f);
+        mossiestStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.25f);
+        mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
+        frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
+        coralReef.mapColor = deepwater.mapColor;
     }
 }

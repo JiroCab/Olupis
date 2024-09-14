@@ -1,7 +1,10 @@
 package olupis.content;
 
+import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.Texture;
 import arc.util.Time;
+import arc.util.Tmp;
 import mindustry.content.StatusEffects;
 import mindustry.game.Team;
 import mindustry.gen.*;
@@ -14,11 +17,13 @@ import static mindustry.content.Blocks.*;
 import static olupis.content.NyfalisBlocks.*;
 
 public class NyfalisAttributeWeather {
+    public static final int nyfalian = 1 << 910; //this is a random number from rushie keyboard smashing
+
     /*Used by the biomatter compressor */
     public static final Attribute bio = Attribute.add("bio");
     /*Used by hydroMill yield*/
     public static final Attribute hydro = Attribute.add("hydro");
-    public static Weather acidRain, mossMist;
+    public static Weather acidRain, mossMist, cloudShadow;
 
     public static void AddAttributes(){
         ice.attributes.set(bio, 0.01f);
@@ -38,11 +43,14 @@ public class NyfalisAttributeWeather {
         deepTaintedWater.attributes.set(hydro, 0.3f);
         darksandTaintedWater.attributes.set(hydro, 0.3f);
 
-        mossyWater.attributes.set(hydro, 0.3f);
+        algaeWater.attributes.set(hydro, 0.3f);
         redSandWater.attributes.set(hydro, 0.3f);
         pinkGrassWater.attributes.set(hydro, 0.3f);
         lumaGrassWater.attributes.set(hydro, 0.3f);
         yellowMossyWater.attributes.set(hydro, 0.3f);
+        algaeWaterDeep.attributes.set(hydro, 0.5f);
+        coralReef.attributes.set(hydro, 0.5f);
+        slop.attributes.set(hydro, 0.08f);
 
         mossyStone.asFloor().decoration = bush;
         mossyStone.asFloor().decoration = boulder;
@@ -96,11 +104,66 @@ public class NyfalisAttributeWeather {
             density = 10000f;
             baseSpeed = 0.03f;
         }};
+
+        cloudShadow = new ParticleWeather("cloud-shadow"){{
+                duration = 15f * Time.toMinutes;
+                noiseLayers = 3;
+                noiseLayerAlphaM = 0.4f;
+                noiseLayerSpeedM = 2f;
+                noiseLayerSclM = 0.6f;
+                baseSpeed = 0.035f;
+                color = noiseColor = Color.grays(0.1f);
+                noiseScale = 1100f;
+                noisePath = "clouds";
+                drawParticles = false;
+                drawNoise = true;
+                useWindVector = false;
+                xspeed = 1f;
+                yspeed = 0.01f;
+                opacityMultiplier = 0.47f;
+                maxAlpha = 0.8f;
+            }
+            @Override
+            public void drawOver(WeatherState state){
+                if(!Core.settings.getBool("nyfalis-cloud-shadows"))return;
+                float windx, windy;
+                if(useWindVector){
+                    float speed = baseSpeed * state.intensity;
+                    windx = state.windVector.x * speed;
+                    windy = state.windVector.y * speed;
+                }else{
+                    windx = this.xspeed;
+                    windy = this.yspeed;
+                }
+
+                if(drawNoise){
+                    if(noise == null){
+                        noise = Core.assets.get("sprites/" + noisePath + ".png", Texture.class);
+                        noise.setWrap(Texture.TextureWrap.repeat);
+                        noise.setFilter(Texture.TextureFilter.linear);
+                    }
+
+                    float sspeed = 1f, sscl = 1f, salpha = 1f, offset = 0f;
+                    Color col = Tmp.c1.set(noiseColor);
+                    for(int i = 0; i < noiseLayers; i++){
+                        drawNoise(noise, noiseColor, noiseScale * sscl, state.opacity * salpha * opacityMultiplier, sspeed * (useWindVector ? 1f : baseSpeed), state.intensity, windx, windy, offset);
+                        sspeed *= noiseLayerSpeedM;
+                        salpha *= noiseLayerAlphaM;
+                        sscl *= noiseLayerSclM;
+                        offset += 0.29f;
+                        col.mul(noiseLayerColorM);
+                    }
+                }
+
+                if(drawParticles){drawParticles(region, color, sizeMin, sizeMax, density, state.intensity, state.opacity, windx, windy, minAlpha, maxAlpha, sinSclMin, sinSclMax, sinMagMin, sinMagMax, randomParticleRotation);}
+            }
+        };
     }
 
     public static class AcidRainWeather extends RainWeather{
-        public float damageDelay = 1.5f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f;
-        boolean coolDown = false;
+        public float damageDelay = 1.5f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f,
+                          regrowPercent = 0.1f;
+        boolean coolDown = false, coolDownRegrow = false;
 
         public AcidRainWeather(String name){
             super(name);
@@ -117,6 +180,19 @@ public class NyfalisAttributeWeather {
                 });
                 /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
                 if(damageUnits > 0)Groups.unit.each(u -> u.damage(damageUnits));
+//                if(!coolDownRegrow){
+//                    int range = Math.round((Vars.world.height() + Vars.world.height()) * regrowPercent);
+//                    Log.err("nya");
+//                    for(int r = range ; r > 0 ; r-- ){
+//                        int x = (int) Mathf.range(0, Vars.world.width()), y = (int) Mathf.range(0, Vars.world.height());
+//
+//                        Tile t = Vars.world.tiles.get(x, y);
+//                        if(t.block() == air && rainRegrowables.contains(t.floor())){
+//                            t.setNet(t.floor().decoration);
+//                        }
+//                    }
+//                }
+//                coolDownRegrow = !coolDownRegrow;
                 coolDown = false;
             });
         }

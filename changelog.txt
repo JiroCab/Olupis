@@ -1,8 +1,54 @@
 == Olupis Major change log ==
 https://github.com/JiroCab/Olupis
-Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
+Last updated on 14/09/2024 (+8utc) by Jirocab/RushieWashie
 
-= Version 1-6 () =
+= Version 1-7() =
+    + Units added: regioner, germanica, serpent, essex, revenant, pteropus, acerodon, flea, lice, tick
+    + Blocks added: steamTurbine, lubricantMixer, discardDriver, siliconKiln, rustEngraver, alternateArticulator, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge, lidar, inductionSmelter, deliveryCanon, blockHoleContainer, scoutPad, slash
+    + Tiles added: glowSprouts, lumaSprouts, mossyDirt, frozenDirt, hardenMud, mossyhardenMud, deadBush, deadTree, hardenMuddyVent, oreAlco, glowLilly
+    + Status Effect added: lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained
+    + Maps added:  dyingForest, terrarootCaves. ironCurtain, glasierSea, abandonedPayloadTerminal, conciditRuins, coldFlats, conservatorium , forestOfSerenity, bendingCaverns (for custom game)
+    + Items added: alcoAlloy, aluminum
+    + Added: Buttons to clear Nyfalis Sectors and research data
+    + Added: Disclaimer system that warns the player if their sectors are outdated
+    + Added: Toggleable weather effect for cloud shadows (still needs to be manually added as a weather)
+    + Seredis is now flushed out in story sectors! numbered sectors improved but may not be a final version
+    ~ Balance: Reduced Rusted Junction to better scale with other blocks
+    ~ Balance: Iron bridge now requires power
+    ~ Balance: Core health scale 2x -> 1.5x from previous their, Remnant buffed to 1800hp, active units now scale to core teir
+    ~ Balance: Relic & Vestige Weapon types swapped, stats unchanged
+    ~ Balance: Taurus rework = 7% > heal 0.75%, 2 Tiles aoe, faster rotate speed & better consistency
+    ~ Balance: Blast pump (150 -> 300) & Impact pump (200 -> 400) liquid capacity
+    ~ Balance: reworked avenger, less attack speed fore more damage, synergies and ability to attack ground with great penalty
+    ~ Balance: cascade has been rewored for everyone's fps sake
+    ~ Balance: All turrets emits light when they're able to fire, except for hive and strata
+    ~ Bug Fix: Fix Regioner's Ai being stuck following a phantom when no other units are present & used in waves
+    ~ Bug Fix: Colours of certain content not being set correctly
+    ~ Bug Fix: Hit boxes of certain units being small/bigger than appropriate
+    ~ Bug Fix: Double tapping on Nyfalian System will launch you in sector 0 of nyfalis
+    ~ Bug Fix: Liquid Tank and Canister liquid layer are visible in corners
+    ~ Bug Fix: Broiler now gets it production boosted with scrap and is functional
+    ~ Bug Fix: Constructs not properly using power while making spirits
+    ~ Bug Fix: Bay's front machine gun not changing target leading to lost dps
+    ~ Bug Fix: (Foo's) Other buttons such Disclaimer not showing (Thanks buthed for the help!)
+    ~ Improved: Gnat and Phorid's attacking visual design to better indicate area of damage
+    ~ Improved: Stats and general core database changes
+    ~ Improved: Increased `space` variety slightly
+    ~ Improved: Number Sectors now have Nyfalis Waves
+    ~ Improved: Cores now better Launching/Landing Sprite
+    ~ Sprites: Recoloured blocks & units to have new iron pallet and overall more consistent pallet
+    ~ Sprites Contributed by Otamamori: cobalt (item), aluminum (item), alcoAlloy(item), quartz (item), quartz (ore), lubricant (liquid), aegis, scrab, scarabRadar, avenger, deliveryCannon, strata, slash (blade), laceration, corupt (effect), glitch (effect), drained (effect), malfuct (effect), unloaded (effect), boomPuffPassive, boomPuffActive
+    ~ Sprites Contributed by Ethanol10: acerodon, germanica, essex, serpent, avenger
+    ~ Sprites Contributed by Catana: spirit, banshee, ironRouter, steamDrill
+    ~ Sprites Contributed by Lixie: spirit: rustyIron (item), rustedBridge, rustyConveyor, ironDistributor, ironJunction, steamBoiler, pipeCanister, ironSieve, ironOverflow, ironUnderflow, rustyWall, rustyWallLarge, rustyWallHuge, rustyDrill, oreIron, windMill, wireBridge, wire
+    ~ Sprites Contributed by TwCash: arialConstruct, groundConstruct, navalConstruct, construct, cobalt (item), cobaltite (item), dirium (item), duralumin (item), plasteel (item), quartz (item), siliconCarbide (item), pteropus
+    ~ Sprites Contributed by ItsKirby69: bush, deadTree, olupisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall, mossyBoulder, bush, deadMossTree, mossyVent, mossyWater, mossyWaterDeep, mossStone, mossBoulder,
+    ~ Sprites Contributed by RushieWashie: coreRelic, coreVestige, hydroMill, demulsifier, hydroGraphitePress, siliconKiln, slash (body)
+    ~ Functionally Contributed by Wmf: Mycelium Spread
+    ~ Functionally Contributed by Otamamori: Shroom Spread, starta's mine placing
+    -- Music removed from content mod - https://github.com/JiroCab/Nyfalis-Music
+
+= Version 1-6 (9d343a0) = https://github.com/JiroCab/Olupis/tree/9d343a0e5fc3aab9c5efc5073e9b9d7e4edfb1e5
     + Support/Ammo limited units have ammo visual indicators
     + Made planets be hidden until a sector is unlocked for it
     + Weather added: acidRain, mossMist
@@ -50,7 +96,7 @@ Last updated on 21/11/2023 (+8utc) by Jirocab/RushieWashie
     ~ Internal: Vaguely sorted classes of block types
     ~ Internal: toxopid updated (3.0.0 -> 3.2.0)
     ~ Improve Planet rules, Custom unit Ai, Tech tree, Core database and Fx
-    ~ Sprites Contributed by Remington Thomas: rustyIron, venom, bay, blitz, crusader
+    ~ Sprites Contributed by NightmarishWolf: rustyIron, venom, bay, blitz, crusader
     ~ Given coreRelic, coreShrine, coreTemple a weapon
     --  Blocks removed: mendFieldProjector
     --  Deprecated DirectionalMendProjector and made into legacyBlock

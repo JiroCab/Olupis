@@ -1,7 +1,9 @@
 package olupis.world.blocks.misc;
 
+import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.ui.Label;
@@ -15,34 +17,32 @@ import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Gamemode;
-import mindustry.gen.Building;
-import mindustry.gen.Bullet;
-import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Shaders;
 import mindustry.type.UnitType;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
-import mindustry.world.blocks.payloads.Payload;
-import mindustry.world.blocks.payloads.PayloadBlock;
-import mindustry.world.blocks.payloads.UnitPayload;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.BlockGroup;
+import olupis.content.NyfalisBlocks;
 
-import static mindustry.Vars.content;
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class Replicator extends PayloadBlock {
-    public float maxDelay = 30f, speedScl, time, progress;
-
-    public float delay = 1;
+    public float maxDelay = 300f, speedScl, time;
+    public Interp riseInterp = Interp.circle;
+    public float delay = maxDelay;
     public Seq<UnitType> spawnableUnits = new Seq<>();
+    public Block replacement = NyfalisBlocks.rustyScrapWall;
 
     public Replicator(String name){
         super(name);
 
         //size = 4;
         update = outputsPayload = rotate = noUpdateDisabled = clearOnDoubleTap = teamPassable = commandable = configurable = solid = privileged = true;
-        hasPower = quickRotate = destructible =  false;
+        hasPower = quickRotate = destructible =  targetable = false;
         //make sure to display large units.
 
         clipSize = 120;
@@ -96,8 +96,8 @@ public class Replicator extends PayloadBlock {
 
     public class ReplicatorBuild extends PayloadBlockBuild<Payload>{
         public @Nullable Vec2 commandPos;
-        public float dynamicDelay = delay,
-                delayTimer = 0;
+        public float dynamicDelay = delay * 60,
+                delayTimer = delay * 60;
         public int selectedUnit = -1;
         public float scl;
 
@@ -129,9 +129,19 @@ public class Replicator extends PayloadBlock {
             table.row();
             table.slider(1,maxDelay,0.5f,dynamicDelay, true,(f) -> {
                 configure(f);
-                delayTimer = 0;
+                delayTimer = dynamicDelay * 60;
                 delayDisplay.get().setText("Delay: " + dynamicDelay + " sec");
-            });
+            }).growX();
+            if(Core.settings.getBool("nyfalis-debug")){
+                table.row();
+                table.table().update(t -> {
+                    t.clear();
+                    t.add(Math.round(delayTimer/60) + "s ").row();
+                    t.add(delayTimer + "t");
+                }).growX();
+
+
+            }
         }
 
         @Override
@@ -145,12 +155,11 @@ public class Replicator extends PayloadBlock {
             delayTimer = Mathf.approachDelta(delayTimer,0,1);
             speedScl = Mathf.lerpDelta(speedScl, 0f, 0.05f);
             time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
-            progress += edelta() * Vars.state.rules.unitBuildSpeed(team);
 
             if (delayTimer <= 0) {
-                delayTimer = dynamicDelay * 60;
-                if (unlockedNowHost() && state.isCampaign()) return;
+                if (team == state.rules.defaultTeam && unlockedNowHost() && state.isCampaign()) return;
                 if (payload == null) {
+                    delayTimer = dynamicDelay * 60;
                     scl = 0f;
                     if (selectedUnit != -1) {
                         payload = new UnitPayload(spawnableUnits.get(selectedUnit).create(team));
@@ -177,15 +186,32 @@ public class Replicator extends PayloadBlock {
             Draw.rect(region, x, y);
             Draw.rect(outRegion, x, y, rotdeg());
 
-            if(selectedUnit != -1){
-                Draw.draw(Layer.blockOver, () -> Drawf.construct(this, spawnableUnits.get(selectedUnit), rotdeg() - 90f, progress / delay, speedScl, time ));
+            if(selectedUnit != -1 && !inFogTo(Vars.player.team())){
+                UnitType unit = spawnableUnits.get(selectedUnit);
+                Draw.draw(Layer.blockOver, () ->{
+                    Shaders.build.region = unit.fullIcon;
+                    Shaders.build.progress = Mathf.clamp(1 - riseInterp.apply(delayTimer / (dynamicDelay * 60)));
+                    Shaders.build.color.set(spawnableUnits.get(selectedUnit).outlineColor);
+                    Shaders.build.color.a =riseInterp.apply((delayTimer / (dynamicDelay * 60))) ;
+                    Shaders.build.time = riseInterp.apply(delayTimer / (dynamicDelay * 60)) * 10;
+
+                    Draw.shader(Shaders.build);
+                    Draw.rect(unit.fullIcon, x, y, rotdeg() - 90f);
+                    Draw.shader();
+                    Draw.color();
+                    Draw.reset();
+                } );
             }
 
-            if(topRegion.found())Draw.rect(topRegion, x, y);
+            if(topRegion.found())Draw.rect(topRegion, x, y, rotdeg());
 
             Draw.scl(scl);
             drawPayload();
             Draw.reset();
+        }
+
+        public void drawPayload(){
+          if(!headless && this.inFogTo(player.team()))super.drawPayload();
         }
 
         @Override
@@ -193,6 +219,7 @@ public class Replicator extends PayloadBlock {
             super.write(write);
             write.i(selectedUnit);
             write.f(dynamicDelay);
+            write.f(delayTimer);
         }
 
         @Override
@@ -200,7 +227,13 @@ public class Replicator extends PayloadBlock {
             super.read(read, revision);
             selectedUnit = read.i();
             dynamicDelay = read.f();
+            if(revision>= 1) delayTimer = read.f();
         }
+
+        public byte version() {
+            return 1;
+        }
+
         @Override
         public boolean canPickup(){
             return false;
@@ -217,6 +250,10 @@ public class Replicator extends PayloadBlock {
         @Override
         public boolean collide(Bullet other){
             return !privileged;
+        }
+
+        public Block getReplacement(){
+            return replacement;
         }
     }
 }

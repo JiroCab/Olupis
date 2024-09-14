@@ -9,8 +9,8 @@ import arc.math.*;
 import arc.math.geom.Geometry;
 import arc.math.geom.Vec2;
 import arc.scene.style.Drawable;
-import arc.scene.ui.ButtonGroup;
-import arc.scene.ui.ImageButton;
+import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.*;
@@ -36,40 +36,43 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.UnitPayload;
+import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import olupis.NyfalisMain;
 import olupis.content.NyfalisFxs;
+import olupis.content.NyfalisItemsLiquid;
 import olupis.world.entities.bullets.SpawnHelperBulletType;
 import olupis.world.entities.units.NyfalisUnitType;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 import static mindustry.Vars.*;
 
-/*The cross bread of a Turret and Unit factory, for the sake of being different*/
+/*The cross bread of a Turret and Unit factory, for the sake of being different
+Now with hints of UnitAssembler for extra spice */
 public class ItemUnitTurret extends ItemTurret {
     /*common required items for all unit types*/
-    public ItemStack[] requiredAlternate = ItemStack.with(Items.copper, 20, Items.silicon, 15);
-    /*Minimum Items needed*/
+    public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20);
+    public ItemStack[] requiredAlternate = ItemStack.with(NyfalisItemsLiquid.aluminum, 30, Items.copper, 60);
+    public int alternateCapacity = itemCapacity * 2;
     /*Parameters when failing to make a unit*/
-    public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20, Items.silicon, 15);
     public Sound failedMakeSound = Sounds.dullExplosion;
-    public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 1f;
+    public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 0.6f;
     public Effect failedMakeFx = NyfalisFxs.failedMake;
-    public TextureRegion bottomRegion;
+    public TextureRegion bottomRegion, rotatorRegion;
     /*Hovering Shows the unit creation*/
-    public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false;
+    public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false, unitFactory = false;
     /*Aim at the rally point*/
     public boolean rallyAim = true;
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
+    public boolean setDynamicConsumer = true;
+    public Block statArticulator;
 
-    //For Shooting whatever is in playload as a bullet
-    BulletType fallbackBullet;
+    //For Shooting whatever is in payload as a bullet
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
-    public Block alternate;
-
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
 
@@ -85,38 +88,35 @@ public class ItemUnitTurret extends ItemTurret {
         configClear((ItemUnitTurretBuild build) -> build.command = null);
     }
 
+
     public void setBars(){
         super.setBars();
         addBar("bar.progress", (ItemUnitTurretBuild entity) -> new Bar("bar.progress", Pal.ammo,() -> entity.reloadCounter / reload));
 
-        /*TODO: Takes a bit to update*/
-        addBar("units", (ItemUnitTurretBuild e) -> e.peekAmmo() == null || e.peekAmmo().spawnUnit != null &&  !e.peekAmmo().spawnUnit.useUnitCap ? null : new Bar(() ->
-                e.peekAmmo().spawnUnit == null ? "[lightgray]" + Iconc.cancel :
+        addBar("units", (ItemUnitTurretBuild e) -> e.peekAmmo() == null || e.getUnit() != null &&  !e.getUnit().useUnitCap ? null : new Bar(() ->
+                e.getUnit() == null ? "[lightgray]" + Iconc.cancel :
                         Core.bundle.format("bar.unitcap",
-                                !Objects.equals(Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name), "") ? Fonts.getUnicodeStr(e.peekAmmo().spawnUnit.name) : Iconc.units,
-                                e.team.data().countType(e.peekAmmo().spawnUnit),
+                                !Objects.equals(Fonts.getUnicodeStr(e.getUnit().name), "") ? Fonts.getUnicodeStr(e.getUnit().name) : Iconc.units,
+                                e.team.data().countType(e.getUnit()),
                                 Units.getStringCap(e.team)
                         ),
                 () -> Pal.power,
-                () -> e.peekAmmo() == null ? 0f : e.peekAmmo().spawnUnit == null ? 0f : (float) e.team.data().countType(e.peekAmmo().spawnUnit) / Units.getCap(e.team)
+                () -> e.peekAmmo() == null ? 0f : e.getUnit() == null ? 0f : (float) e.team.data().countType(e.getUnit()) / Units.getCap(e.team)
         ));
 
     }
 
     @Override
     public void load(){
-        bottomRegion = Core.atlas.find(name + "-bottom");
+        bottomRegion = Core.atlas.find(name + "-bottom", "olupis-construct-bottom");
+        rotatorRegion = Core.atlas.find(name + "-rotator", "olupis-construct-rotator");
         super.load();
     }
 
     @Override
     public TextureRegion[] icons(){
         if(!(drawer instanceof  DrawDefault))return drawer.finalIcons(this);
-        else {
-            //use team region in vanilla team blocks
-            TextureRegion r = variants > 0 ? Core.atlas.find(name + "1") : region;
-            return teamRegion.found() && minfo.mod == null ? new TextureRegion[]{bottomRegion, r, teamRegions[Team.sharded.id]} : new TextureRegion[]{bottomRegion, r};
-        }
+        else return new TextureRegion[]{bottomRegion, region, rotatorRegion, teamRegions[Team.sharded.id]};
     }
 
     @Override
@@ -133,34 +133,129 @@ public class ItemUnitTurret extends ItemTurret {
         stats.remove(Stat.targetsAir);
         stats.remove(Stat.inaccuracy);
         stats.remove(Stat.targetsGround);
+        stats.remove(Stat.input);
 
         if(range <= 1)stats.remove(Stat.shootRange);
-        stats.add(Stat.output, table -> this.ammoTypes.each((item, bul) -> {
-            UnitType displayUnit = bul.spawnUnit;
-            if(displayUnit == null) return;
-            table.row();
-            table.table(Styles.grayPanel, b -> {
-                if(!displayUnit.isBanned()) b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+        stats.add(Stat.output, table ->{
+            HashMap<Item, BulletType> alts = new HashMap<>();
+            boolean[] show = {true, true};
+            //Normal items
+            if((requiredItems.length > 0)){
+                table.row();
 
-                b.table(info -> {
-                    if(item != null) info.table(title -> {
-                        title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
-                        title.add(item.localizedName).left().top();
-                    }).left().row();
-                    info.add(displayUnit.localizedName).left().row();
-                    if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                table.add(new Table(statArticulator != null ? NyfalisMain.gayerPanel : Styles.none, b ->{
+                    b.button(Icon.upOpen, Styles.emptyi, () -> show[0] = !show[0]).update(i -> i.getStyle().imageUp = (!show[0] ? Icon.upOpen : Icon.downOpen)).pad(10).padRight(4).left();
+                    for(ItemStack stack : requiredItems){
+                        b.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
+                    }
+                }).align(statArticulator != null ? Align.center : Align.left)).growX().pad(5);
+                table.row();
+            }
+
+            //Normal Units
+            table.collapser(nu -> {
+                this.ammoTypes.each((item, bul) -> {
+                    if(bul instanceof SpawnHelperBulletType spw && spw.alternateType != null ) alts.put(item, spw.alternateType);
+                    UnitType displayUnit = bul.spawnUnit;
+                    if(displayUnit == null) return;
+                    nu.row();
+                    nu.table(Styles.grayPanel, b -> {
+                        if(!displayUnit.isBanned()) b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                        else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                        b.table(info -> {
+                            if(item != null) info.table(title -> {
+                                title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                                title.add(item.localizedName).left().padLeft(5f).top();
+                            }).left().row();
+                            info.add(displayUnit.localizedName).left().row();
+                            info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
+                            if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                        });
+                        b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                    }).growX().pad(5);
                 });
-                b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
-            }).growX().pad(5).row();
-        }));
+            }, () -> show[0]).growX();
+            table.row();
+
+            //Alternate banned check
+            if(statArticulator != null && (!statArticulator.unlockedNow() || !statArticulator.isVisible())){
+                table.row();
+                table.table(Styles.grayPanel, b -> {
+                    b.image(Icon.cancel.getRegion()).color(Pal.remove).size(30).pad(10f).left().scaling(Scaling.fit).tooltip(statArticulator.localizedName);
+                    b.add(new Table(o -> o.add(new Image(statArticulator.uiIcon)).size(30f).scaling(Scaling.fit).tooltip(statArticulator.localizedName))).left().pad(10f);
+                }).growX().pad(5);
+                return;
+            }
+
+            //Divider
+            table.image().color(Pal.accent).height(3.0F).pad(3.0F).growX().row();
+
+            //Alternate Items
+            if(statArticulator != null && statArticulator.unlockedNow() && statArticulator.isVisible() ){
+                table.add(new Table(NyfalisMain.gayerPanel, r ->{
+                    r.add(new Table(c ->{
+                        c.add(new Table(o -> {
+                            o.add(new Image(statArticulator.uiIcon)).size(32f).scaling(Scaling.fit);
+                        })).left().pad(10f);
+                        c.table(info -> {
+                            info.add(statArticulator.localizedName).left();
+                            if (Core.settings.getBool("console")) {
+                                info.row();
+                                info.add(statArticulator.name).left().color(Color.lightGray);
+                            }
+                        });
+                        c.button("?", Styles.flatBordert, () -> ui.content.show(statArticulator)).size(40f).pad(10).right().grow().visible(statArticulator::unlockedNow);
+                    })).row();
+                    r.add(new Table(i -> {
+                        i.button(Icon.upOpen, Styles.emptyi, () -> show[1] = !show[1]).update(iu -> iu.getStyle().imageUp = (!show[1] ? Icon.upOpen : Icon.downOpen)).pad(10).padRight(4).left();
+                        for (ItemStack stack : requiredAlternate) {
+                            i.add(new ItemDisplay(stack.item, stack.amount, false)).padRight(5);
+                        }
+                    }));
+                })).growX().pad(5);
+                table.row();
+            }
+
+            //Alternate Units
+            table.collapser(nu -> {
+                for (Map.Entry<Item, BulletType> entry : alts.entrySet()) {
+                    Item item = entry.getKey();
+                    BulletType bul = entry.getValue();
+                    if (bul instanceof SpawnHelperBulletType spw && spw.alternateType != null)
+                        alts.put(item, spw.alternateType);
+                    UnitType displayUnit = bul.spawnUnit;
+                    if (displayUnit == null) continue;
+                    nu.row();
+                    nu.table(Styles.grayPanel, b -> {
+                        if (!displayUnit.isBanned())
+                            b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                        else
+                            b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+
+                        b.table(info -> {
+                            if (item != null) info.table(title -> {
+                                title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                                title.add(item.localizedName).left().top().padLeft(5f);
+                            }).left().row();
+                            info.add(displayUnit.localizedName).left().row();
+                            info.add("[lightgray]"+Math.round(bul.reloadMultiplier * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
+                            if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                        });
+                        b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                    }).growX().pad(5);
+                }
+            }, () -> show[1]).growX();
+        });
+
+        if(heatRequirement > 0) stats.add(Stat.input, heatRequirement, StatUnit.heatUnits);
     }
 
     @Override
     public void init(){
-        if(requiredItems.length >= 1) for (ItemStack i : requiredItems) consumeItem(i.item, i.amount);
+        if(setDynamicConsumer) consume(new ConsumeItemDynamic((ItemUnitTurretBuild e) -> e.useAlternate ? requiredAlternate : requiredItems));
 
-        /*Todo: Hover icon for the unit (UnitFactory)*/
+        consumeBuilder.each(c -> c.multiplier = b -> unitFactory ? state.rules.unitCost(b.team) : 1f);
         super.init();
     }
 
@@ -171,34 +266,73 @@ public class ItemUnitTurret extends ItemTurret {
         public @Nullable UnitPayload payload;
         public Vec2 payVector = new Vec2();
         public @Nullable UnitCommand command;
+        public Seq<Articulator.ArticulatorBuild> modules = new Seq<>(), prevModules = new Seq<>();
+        public boolean useAlternate = false;
+
+        public void updateModules(Articulator.ArticulatorBuild build){
+            modules.addUnique(build);
+            checkTier();
+            prevModules.add(build);
+        }
+
+        public void removeModule(Articulator.ArticulatorBuild build){
+            modules.remove(build);
+            checkTier();
+            prevModules.remove(build);
+        }
+
+        public void checkTier(){
+            useAlternate = modules.size > 0;
+        }
+
+        @Override
+        public void onProximityUpdate() {
+            super.onProximityUpdate();
+
+            if(!useAlternate && modules.size == 0 && prevModules.size != 0) reloadCounter = 0;
+            else if(useAlternate && modules.size >= 1 && prevModules.size == 0) reloadCounter = 0;
+        }
 
         @Override
         public boolean acceptItem(Building source, Item item){
-            return ((ammoTypes.get(item) != null && totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo && !ammoTypes.get(item).spawnUnit.isBanned())
-                     || (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)));
+            return ((super.acceptItem(source, item) && !ammoTypes.get(item).spawnUnit.isBanned())
+                     || !useAlternate && (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)))
+                    || useAlternate && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < alternateCapacity);
         }
-
 
         @Override
         public int acceptStack(Item item, int amount, Teamc source){
-            if(acceptItem(self(), item) && block.hasItems && (source == null || source.team() == team)){
-                return Math.min(getMaximumAccepted(item) - items.get(item), amount);
+            if(acceptItem(self(), item) && block.hasItems && (source == null || source.team() == team) && !ammoTypes.containsKey(item)){
+                return Math.min((useAlternate ? alternateCapacity : getMaximumAccepted(item)) - items.get(item), amount);
             } else return super.acceptStack(item, amount, source);
         }
 
         @Override
         public void handleItem(Building source, Item item){
-            if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item)) {
+            if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item) && Arrays.stream(requiredAlternate).noneMatch(i -> item == i.item)) {
                 super.handleItem(source, item);
-            } else if(items.get(item) < getMaximumAccepted(item)) {
+            } else if (useAlternate && items.get(item) < alternateCapacity || (items.get(item) < getMaximumAccepted(item))) {
                 items.add(item, 1);
             }
+        }
+
+        public int getMaximumAccepted(Item item) {
+            if(unitFactory){
+                if(useAlternate){
+                    if(Arrays.stream(requiredAlternate).anyMatch(i -> item == i.item)) return Math.round(itemCapacity * state.rules.unitCost(team));
+                } else {
+                    if(Arrays.stream(requiredItems).anyMatch(i -> item == i.item)) return Math.round(alternateCapacity * state.rules.unitCost(team));
+                }
+            }
+
+
+            return this.block.itemCapacity;
         }
 
         @Override
         public void updateTile(){
             speedScl = Mathf.lerpDelta(speedScl, 1f, 0.05f);
-            time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
+            time += edelta() * speedScl * (unitFactory ? Vars.state.rules.unitBuildSpeed(team) : 1f);
 
             moveOutPayload();
             super.updateTile();
@@ -222,9 +356,19 @@ public class ItemUnitTurret extends ItemTurret {
             return super.hasAmmo();
         }
 
+        public UnitType getUnit(){
+            if(ammo.size > 0 && peekAmmo().spawnUnit != null){
+                if(useAlternate && peekAmmo() instanceof  SpawnHelperBulletType bt ){
+                    if(bt.alternateType != null) return bt.alternateType.spawnUnit;
+                }
+                return peekAmmo().spawnUnit;
+            }
+            return null;
+        }
+
         public boolean hasReqItems(){
-            for (ItemStack req : requiredItems) {
-                if(items.get(req.item) >= req.amount) continue;
+            for (ItemStack req : useAlternate ? requiredAlternate : requiredItems) {
+                if(items.get(req.item) >= req.amount *  state.rules.unitCost(team)) continue;
                 return false;
             }
             return true;
@@ -234,6 +378,17 @@ public class ItemUnitTurret extends ItemTurret {
             return !type.spawnUnit.isBanned() && (type.spawnUnit.unlockedNowHost() && state.isCampaign() || !state.isCampaign());
         }
 
+        @Override
+        protected void updateShooting(){
+            if(reloadCounter >= reload && !charging() && shootWarmup >= minWarmup){
+                BulletType type = peekAmmo();
+                if(useAlternate && type instanceof SpawnHelperBulletType spw && spw.alternateType != null) type = spw.alternateType;
+
+                shoot(type);
+
+                reloadCounter %= reload;
+            }
+        }
         @Override
         protected void shoot(BulletType type){
             boolean creatable = shootCreatable(type);
@@ -360,6 +515,16 @@ public class ItemUnitTurret extends ItemTurret {
             if(payload != null) payload.set(x + payVector.x, y + payVector.y, (direction + 1) * 90);
         }
 
+        protected void updateReload(){
+            float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
+            multiplier *= unitFactory ? state.rules.unitBuildSpeed(team) : 1f;
+            reloadCounter += delta() * multiplier * baseReloadSpeed();
+
+            //cap reload for visual reasons
+            reloadCounter = Math.min(reloadCounter, reload);
+        }
+
+
         @Override
         public void draw(){
             if(!(drawer instanceof DrawDefault)){
@@ -367,12 +532,13 @@ public class ItemUnitTurret extends ItemTurret {
             }else{
                 float rot = direction == -1 ? rotation -90: direction * 90;
                 Draw.rect(bottomRegion, x, y);
-                if (peekAmmo() != null && peekAmmo().spawnUnit != null) {
-                    UnitType unt = peekAmmo().spawnUnit;
-                    if (shootCreatable(peekAmmo())) {
-                        Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unt, rot, reloadCounter / reload, speedScl, time));
-                    } else {
-                        Draw.draw(Layer.blockOver, () -> {
+                Draw.rect(rotatorRegion, x, y, rot);
+
+                if (peekAmmo() != null) {
+                    UnitType unt = useAlternate && peekAmmo() instanceof SpawnHelperBulletType spw && spw.alternateType != null ? spw.alternateType.spawnUnit : peekAmmo().spawnUnit;
+                    if (unt != null) { Draw.draw(Layer.blockOver, () ->{
+                        if (shootCreatable(peekAmmo())) { Drawf.construct(this, unt.fullIcon != null ? unt.fullIcon : unt.region, rot, this.reloadCounter / reload, speedScl, time);}
+                        else {
                             Draw.alpha(reloadCounter / reload);
                             Draw.rect(unt.fullIcon, x, y, rot);
 
@@ -384,10 +550,10 @@ public class ItemUnitTurret extends ItemTurret {
                             Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.8f));
                             Draw.rect(Icon.warning.getRegion(), x, y);
                             Draw.reset();
-                        });
-                    }
+                        }
+                    });}
                 }
-                Draw.z(Layer.blockOver + 0.1f);
+                Draw.z(Layer.blockBuilding + 0.1f);
                 if(payload != null){
                     payload.draw();
                 }
@@ -418,6 +584,25 @@ public class ItemUnitTurret extends ItemTurret {
 
             super.drawSelect();
         }
+
+        @Override
+        public void display(Table table) {
+            super.display(table);
+
+            TextureRegionDrawable reg = new TextureRegionDrawable();
+
+            table.row();
+            table.collapser(t ->{
+                t.left();
+                t.image().update(i -> {
+                    i.setDrawable(getUnit() == null ? Icon.cancel : reg.set(getUnit().uiIcon));
+                    i.setScaling(Scaling.fit);
+                    i.setColor(getUnit() == null ? Color.lightGray : Color.white);
+                }).size(32).padBottom(-4).padRight(2);
+                t.label(() -> getUnit() == null ? "@none" : getUnit().localizedName).wrap().width(230f).color(Color.lightGray);
+            }, true, () -> getUnit() != null).left();
+        }
+
 
         @Override
         public Vec2 getCommandPosition(){return commandPos;}
@@ -522,6 +707,10 @@ public class ItemUnitTurret extends ItemTurret {
             return hasReqItems() ? efficiency : 0f;
         }
 
+        public boolean isUnitFactory(){
+            return unitFactory;
+        }
+
         @Override
         public void write(Writes write){
             super.write(write);
@@ -546,6 +735,13 @@ public class ItemUnitTurret extends ItemTurret {
         public byte version(){
             return 5;
         }
+
+        @Override
+        public float estimateDps(){
+            if(unitFactory) return 0f;
+            return super.estimateDps();
+        }
+
     }
 
 }
