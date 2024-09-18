@@ -1,11 +1,11 @@
 package olupis.world.blocks.turret;
 
+import arc.Core;
 import arc.Events;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
-import arc.util.Log;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -27,7 +27,7 @@ import olupis.world.entities.parts.DrawUnstableTurret;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 public class UnstablePowerTurret extends PowerTurret {
 
@@ -90,11 +90,12 @@ public class UnstablePowerTurret extends PowerTurret {
             super.updateTile();
 
             if(heatT >= soundThreshold){
+
                 beepT += this.delta() / Mathf.lerp(maxBeepRate, minBeepRate, heatT);
                 beepT = Mathf.clamp(beepT);
                 if(beepT >= 0.999f){
                     beepT = 0;
-                    warningSound.at(this);
+                    makeBeep();
                 }
             }
 
@@ -135,6 +136,16 @@ public class UnstablePowerTurret extends PowerTurret {
                 Events.fire(Trigger.thoriumReactorOverheat);
                 createExplosion();
                 kill();
+            }
+        }
+
+        public void makeBeep(){
+            float vol = Core.settings.getInt("nyfalis-beep-volume");
+            if(vol == -1) vol = Core.settings.getInt("sfxvol");
+            if(Core.app.isHeadless()) vol = 0;
+            vol *= warningSound.calcFalloff(x, y);
+            if(vol > 0.01f){
+                warningSound.play(vol / 100, 1, warningSound.calcPan(this.x, this.y));
             }
         }
 

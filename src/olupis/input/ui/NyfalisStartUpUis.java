@@ -85,7 +85,16 @@ public class NyfalisStartUpUis {
 
     public static void  saveDisclaimerDialog(){
         //This is here bc in the beta versions, placeholder was int (`1`) and would crash with the new check
-        float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
+        @Nullable float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
+        if((lVer >= NyfalisSectors.sectorVersion)){
+            Log.info("Nyf data: @ >= @ ", lVer, NyfalisSectors.sectorVersion);
+            return;
+        }
+        if(lVer == 0){
+            Log.info("no nyf data detected! (0)");
+            return;
+        }
+
         boolean hasSave = false;
         for (Planet p : content.planets()) {
             if (!p.name.contains("olupis-")) continue;
@@ -95,7 +104,7 @@ public class NyfalisStartUpUis {
                 break;
             }
         }
-        if (hasSave && lVer >= 1 && !(lVer < NyfalisSectors.sectorVersion)) return;
+        if(!hasSave)return;
         showSaveDisclaimerDialog();
     }
 
