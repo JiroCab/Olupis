@@ -41,7 +41,7 @@ public class Replicator extends PayloadBlock {
         super(name);
 
         //size = 4;
-        update = outputsPayload = rotate = noUpdateDisabled = clearOnDoubleTap = teamPassable = commandable = configurable = solid = privileged = true;
+        update = outputsPayload = rotate = noUpdateDisabled = clearOnDoubleTap = teamPassable = commandable = configurable = solid = true;
         hasPower = quickRotate = destructible =  targetable = false;
         //make sure to display large units.
 
@@ -68,7 +68,7 @@ public class Replicator extends PayloadBlock {
     }
 
     public boolean accessible(){
-        return !privileged || state.rules.editor || state.playtestingMap != null || state.rules.mode() == Gamemode.sandbox;
+        return state.rules.editor || state.playtestingMap != null || state.rules.mode() == Gamemode.sandbox;
     }
 
     @Override
