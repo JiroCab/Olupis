@@ -532,6 +532,82 @@ public class NyfalisTurrets {
                 stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
             }
         };
+        porcupine = new NyfalisLiquidTurret("porcupine"){{
+            //TODO: check for clear path to unit
+            targetAir = false;
+            emitLight = true;
+
+            size = 3;
+            armor = 5;
+            reload = 90f;
+            range = 8*80;
+            health = 750;
+            shootCone =inaccuracy= 25f;
+            lightRadius = 200;
+            rotateSpeed = 0.5f;
+            coolantMultiplier = 6f;
+            ammoUseEffect = Fx.casing1;
+            researchCostMultiplier = 0.05f;
+            shootY = (Vars.tilesize * size) - 10f;
+            outlineColor = nyfalisBlockOutlineColour;
+            lightColor = turretLightColor;
+            drawer = new DrawTurret("iron-");
+            shootSound = NyfalisSounds.barrelLaunch;
+            researchCost = with(lead, 1);
+            requirements(Category.turret, with(iron, 1));
+            ammo(
+                    heavyOil, new BarrelBulletType(1.5f, 300){{
+                        bounceOnEnemyWalls = collidesTiles = true;
+                        max = 30;
+                        height = 8f;
+                        width = 16f;
+                        lifetime = 400f;
+                        knockback= 8f;
+                        homingDelay = bounceDelay = 15;
+                        homingPower = 0.3f;
+                        homingRange = 50f;
+                        buildingDamageMultiplier = 0.4f;
+                        ammoMultiplier = 2;
+                        shootEffect = smokeEffect = Fx.none;
+                        frontColor = new Color().set(Pal.bulletYellowBack).lerp(heavyOil.color, 0.3f);
+                        backColor = new Color().set(Pal.bulletYellow).lerp(heavyOil.color, 0.3f);
+                        fragBullets = 1;
+                        fragBullet = new FirePuddleBulletType(50,30){{
+                            splashDelay = 10;
+                            splashAmount = 16;
+                        }};
+                    }},
+                    lubricant, new BarrelBulletType(3f, 150){{
+                        collidesTiles = true;
+                        maxBounces = 5;
+                        height = 8f;
+                        width = 16f;
+                        lifetime = 200f;
+                        knockback= 2f;
+                        homingDelay = bounceDelay = 15;
+                        homingPower = 0.3f;
+                        homingRange = 50f;
+                        buildingDamageMultiplier = 0.8f;
+                        ammoMultiplier = 2;
+                        shootEffect = smokeEffect = Fx.none;
+                        frontColor = new Color().set(Pal.bulletYellowBack).lerp(lubricant.color, 0.3f);
+                        backColor = new Color().set(Pal.bulletYellow).lerp(lubricant.color, 0.3f);
+                        fragBullets = 1;
+                        fragBullet = new FirePuddleBulletType(50,60){{
+                            splashDelay = 5;
+                            splashAmount = 8;
+                        }};
+                    }}
+            );
+        }
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
+            }
+        };
 
         hive = new ItemUnitTurret("hive"){{
             size = 4;
