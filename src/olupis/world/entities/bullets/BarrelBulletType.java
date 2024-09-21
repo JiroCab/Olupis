@@ -30,7 +30,8 @@ public class BarrelBulletType extends RollBulletType{
         layer = Layer.legUnit +1f;
     }
     public BarrelBulletType(float speed, float damage){
-        this(speed, damage, "barrel");
+        this(speed, damage, "olupis-barrel");
+        backSprite = "olupis-barrel-back";
         collidesAir = false;
         this.collides = this.collidesGround = collidesTiles = true;
         layer = Layer.legUnit +1f;

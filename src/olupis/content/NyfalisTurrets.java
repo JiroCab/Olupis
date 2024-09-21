@@ -2,6 +2,7 @@ package olupis.content;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
 import arc.util.Log;
@@ -551,10 +552,72 @@ public class NyfalisTurrets {
             shootY = (Vars.tilesize * size) - 10f;
             outlineColor = nyfalisBlockOutlineColour;
             lightColor = turretLightColor;
-            drawer = new DrawTurret("iron-");
             shootSound = NyfalisSounds.barrelLaunch;
             researchCost = with(lead, 1);
             requirements(Category.turret, with(iron, 1));
+
+            drawer = new DrawTurret("iron-"){{
+                parts.addAll(
+                        new RegionPart("-mid"){{
+                            progress = PartProgress.recoil;
+                            heatProgress = PartProgress.recoil;
+                            heatColor = Pal.techBlue;
+                            mirror = false;
+                            under = true;
+                            children.addAll(new RegionPart("-barrel") {{
+                                progress = PartProgress.reload.curve(Interp.pow2In);
+
+                                colorTo = new Color(1f, 1f, 1f, 0f);
+                                color = Color.white;
+                                mixColorTo = Pal.accent;
+                                mixColor = new Color(1f, 1f, 1f, 0f);
+                                outline = false;
+                                under = true;
+                                y = 2;
+
+
+
+                                layerOffset = -0.2f;
+
+                                moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
+                            }}, new RegionPart("-front-r"){{
+                                mirror = false;
+                                under = true;
+                                layerOffset = -0.1f;
+                                progress = PartProgress.recoil;
+                                moveX = 1;
+                                moveY = 1;
+                                moveRot = 5;
+                            }}, new RegionPart("-back-r"){{
+                                mirror = false;
+                                under = true;
+                                layerOffset = -0.1f;
+                                progress = PartProgress.smoothReload;
+                                moveX = -4;
+                                moveY = 4;
+                                moves.add(new PartMove(PartProgress.recoil, 4f, -4f, 0));
+                            }}, new RegionPart("-front-l"){{
+                                mirror = false;
+                                under = true;
+                                layerOffset = -0.1f;
+                                progress = PartProgress.recoil;
+                                moveX = -1;
+                                moveY = 1;
+                                moveRot = -5;
+                            }}, new RegionPart("-back-l"){{
+                                mirror = false;
+                                under = true;
+                                layerOffset = -0.1f;
+                                progress = PartProgress.smoothReload;
+                                moveX = -4;
+                                moveY = 4;
+                                moves.add(new PartMove(PartProgress.recoil, 4f, -4f, 0));
+                            }});
+                        }}
+                );
+            }};
+
+
             ammo(
                     heavyOil, new BarrelBulletType(1.5f, 300){{
                         bounceOnEnemyWalls = collidesTiles = true;
