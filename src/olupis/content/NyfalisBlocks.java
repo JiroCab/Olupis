@@ -1535,6 +1535,7 @@ public class NyfalisBlocks {
         scoutPad = new MechPad("scout-pad"){{
             hasPower = consumesPower = solid = true;
             consumePower(100f / 60f);
+            researchCost = with(rustyIron, 3000, lead, 3000, copper, 3000, iron, 1500);
             requirements(Category.units, with(lead, 150, iron, 50, rustyIron, 150, copper, 110));
             size = 4;
         }};

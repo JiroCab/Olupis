@@ -12,6 +12,7 @@ import mindustry.ai.UnitCommand;
 import mindustry.ai.types.BuilderAI;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootAlternate;
@@ -56,7 +57,7 @@ public class NyfalisUnits {
         supella, germanica , luridiblatta , vaga , parcoblatta, //smallest cockroaches
 
         /*naval*/
-        porter, essex, lexington, excess, nimitz,
+        porter, essex, lexington, resolute, nimitz,
         bay, blitz, crusader, torrent, vanguard,
 
         /*core units*/
@@ -69,7 +70,7 @@ public class NyfalisUnits {
         scarab,
 
         /*Misc/pending purpose units*/
-        firefly,
+        firefly, excess,
         lootbug
     ;
 
@@ -505,7 +506,7 @@ public class NyfalisUnits {
             }});
         }};
 
-        //district -> a gun ship, light gun as primary and ammo limited secondary that resupplies from mother ship/maker (excess)
+        //district -> a gun ship, light gun as primary and ammo limited secondary that resupplies from mother ship/maker (resolute)
 
         //endregion
         //region Ground - Snek
@@ -816,14 +817,15 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
 
 //            abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f));
-            weapons.add(new LaserPointerPointDefenceWeapon("point-defense-mount"){{
+            weapons.add(new LaserPointerPointDefenceWeapon("olupis-lexington-point-defense"){{
                 x = 0;
                 y = -7f;
                 reload = 6f;
                 targetInterval = targetSwitchInterval = 12f;
                 mirror = false;
-                minWarmup = 0.8f;
+                minWarmup = 0.9f;
 
+                hitAoeEffect = new MultiEffect( NyfalisFxs.miniPointHit);
                 bullet = new BulletType(){{
                     shootEffect = Fx.shootSmokeSquare;
                     hitEffect = Fx.pointHit;
@@ -834,27 +836,6 @@ public class NyfalisUnits {
         }};
 
         //T4, a slow gunship carrier (district), flies and can carry ground units /payload
-        excess = new LeggedWaterUnit("excess"){{
-            groundSpeed = 0.4f;
-            navalSpeed = 2;
-            constructor = PayloadUnit::create;
-            pathCost = NyfalisPathfind.costPreferNaval; //Still prefer liquid movement
-            canBoost = hovering = boostUsesNaval = naval = true;
-            canDrown = ammoDepletesOverTime = killOnAmmoDepletion = false;
-            payloadCapacity = (5.5f * 5.5f) * tilePayload;
-            weapons.add(new Weapon("large-weapon"){{
-                reload = 13f;
-                x = 4f;
-                y = 2f;
-                top = false;
-                ejectEffect = Fx.casing1;
-                bullet = new BasicBulletType(2.5f, 9){{
-                    width = 7f;
-                    height = 9f;
-                    lifetime = 60f;
-                }};
-            }});
-        }};
 
         //endregion
         //region Naval - Guard
@@ -1861,6 +1842,36 @@ public class NyfalisUnits {
             public void update(Unit unit){
                 super.update(unit);
                 spirit.spawn( unit.team, unit.x(), unit.y());
+                unit.remove();
+            }
+        };
+        // 1.7 leftover just convert it when ever
+        excess = new LeggedWaterUnit("excess"){{
+            groundSpeed = 0.4f;
+            navalSpeed = 2;
+            constructor = PayloadUnit::create;
+            pathCost = NyfalisPathfind.costPreferNaval; //Still prefer liquid movement
+            canBoost = hovering = boostUsesNaval = naval = true;
+            canDrown = ammoDepletesOverTime = killOnAmmoDepletion = false;
+            payloadCapacity = (5.5f * 5.5f) * tilePayload;
+            weapons.add(new Weapon("large-weapon"){{
+                reload = 13f;
+                x = 4f;
+                y = 2f;
+                top = false;
+                ejectEffect = Fx.casing1;
+                bullet = new BasicBulletType(2.5f, 9){{
+                    width = 7f;
+                    height = 9f;
+                    lifetime = 60f;
+                }};
+            }});
+        }
+            @Override
+            public void update(Unit unit){
+                super.update(unit);
+                //TODO: uncomment this when Resolute exists thanks!
+                //resolute.spawn( unit.team, unit.x(), unit.y());
                 unit.remove();
             }
         };

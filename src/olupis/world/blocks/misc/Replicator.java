@@ -1,32 +1,37 @@
 package olupis.world.blocks.misc;
 
 import arc.Core;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Label;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Eachable;
-import arc.util.Nullable;
+import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.Vars;
+import mindustry.entities.Units;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Gamemode;
 import mindustry.gen.*;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Shaders;
+import mindustry.graphics.*;
 import mindustry.type.UnitType;
+import mindustry.ui.Bar;
+import mindustry.ui.Fonts;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.BlockGroup;
 import olupis.content.NyfalisBlocks;
+
+import java.util.Objects;
 
 import static mindustry.Vars.*;
 
@@ -80,6 +85,24 @@ public class Replicator extends PayloadBlock {
     public TextureRegion[] icons(){
         if(topRegion.found()) return new TextureRegion[]{region, outRegion, topRegion};
         return new TextureRegion[]{region, outRegion};
+    }
+
+    public void setBars() {
+        super.setBars();
+        removeBar("units");
+
+        addBar("bar.progress", (ReplicatorBuild entity) -> new Bar("bar.progress", Pal.ammo,() -> entity.dynamicDelay / entity.delayTimer));
+        addBar("units", (ReplicatorBuild e) -> {
+            if(e.selectedUnit == -1) return null ;
+            UnitType unit = spawnableUnits.get(e.selectedUnit);
+            if (unit == null) return null;
+            return new Bar(() -> Core.bundle.format("bar.unitcap",
+                    !Objects.equals(Fonts.getUnicodeStr(unit.localizedName), "") ? Fonts.getUnicodeStr(unit.localizedName) : Iconc.units,
+                    e.team.data().countType(unit),
+                    Units.getStringCap(e.team)
+            ), () -> Pal.accent,
+                    () -> (float) e.team.data().countType(unit) / Units.getCap(e.team));
+        });
     }
 
     @Override
@@ -240,8 +263,26 @@ public class Replicator extends PayloadBlock {
         }
 
         @Override
+        public void display(Table table){
+            super.display(table);
+
+            TextureRegionDrawable reg = new TextureRegionDrawable();
+
+            table.row();
+            table.table(t -> {
+                t.left();
+                t.image().update(i -> {
+                    i.setDrawable(selectedUnit == -1 ? Icon.cancel : reg.set(spawnableUnits.get(selectedUnit).uiIcon));
+                    i.setScaling(Scaling.fit);
+                    i.setColor(selectedUnit == -1 ? Color.lightGray : Color.white);
+                }).size(32).padBottom(-4).padRight(2);
+                t.label(() -> selectedUnit == -1 ? "@none" : spawnableUnits.get(selectedUnit).localizedName).wrap().width(230f).color(Color.lightGray);
+            }).left();
+        }
+
+        @Override
         public void damage(float damage){
-            if(!privileged){
+            if(privileged){
                 super.damage(damage);
             }
         }
@@ -249,7 +290,7 @@ public class Replicator extends PayloadBlock {
         //editor-only processors cannot be damaged or destroyed
         @Override
         public boolean collide(Bullet other){
-            return !privileged;
+            return privileged;
         }
 
         public Block getReplacement(){

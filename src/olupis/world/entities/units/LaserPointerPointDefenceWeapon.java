@@ -5,21 +5,26 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Nullable;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
 import mindustry.entities.part.DrawPart;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
 import mindustry.type.weapons.PointDefenseWeapon;
-import olupis.content.NyfalisFxs;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.state;
 
 public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
     public float aoe = 50,
                      laserSize = 2f,
-                     laserAlpha = 0.5f
+                     laserAlphaMin = 0.1f, laserAlphaMax = 0.5f,
+                     trackingRange = 2f
     ;
+    public Effect hitAoeEffect = Fx.none;
+    /*visual tracking that lags to remove stutter since bullets tracking is snappy*/
+    @Nullable float lastx = Float.NEGATIVE_INFINITY, lasty = Float.NEGATIVE_INFINITY, lastdiv = 5;
 
     public LaserPointerPointDefenceWeapon(String name){
         super(name);
@@ -66,10 +71,9 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
 
 
         if(mount.target != null){
-            Lines.stroke(laserSize);
-            Draw.color(unit.type.cellColor(unit), laserAlpha);
-            Lines.line(wx, wy, mount.target.x(), mount.target.y());
-            Lines.circle(mount.target.x(), mount.target.y(), aoe);
+            Lines.stroke(laserSize, unit.type.cellColor(unit));
+            Draw.color(unit.type.cellColor(unit), Mathf.lerp(laserAlphaMin, laserAlphaMax, mount.warmup));
+            Lines.dashLine(wx, wy, lastx, lasty,Math.round(lastdiv));
             Draw.color();
         }
 
@@ -92,7 +96,6 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
         Draw.xscl = 1f;
 
         if(parts.size > 0){
-            //TODO does it need an outline?
             for(int i = 0; i < parts.size; i++){
                 var part = parts.get(i);
                 DrawPart.params.setRecoil(part.recoilIndex >= 0 && mount.recoils != null ? mount.recoils[part.recoilIndex] : mount.recoil);
@@ -107,6 +110,27 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
         Draw.z(z);
     }
 
+
+    @Override
+    protected boolean checkTarget(Unit unit, Teamc target, float x, float y, float range){
+        boolean check = !(target.within(unit, range) && target.team() != unit.team && target instanceof Bullet bullet && bullet.type != null && bullet.type.hittable);
+
+        if(!check){
+            if(!target.within(lastx, lasty, trackingRange) || lastx == Float.NEGATIVE_INFINITY || lasty == Float.NEGATIVE_INFINITY){
+                lastx = target.x() ;
+                lasty = target.y();
+            }
+            lastx = Mathf.lerp(lastx, target.x() , 0.5f);
+            lasty = Mathf.lerp(lasty, target.y(), 0.5f);
+            lastdiv = Math.max(Mathf.lerp( lastdiv, (target.dst(unit) / 5), 0.5f), 5);
+        } else {
+            lastx = Float.NEGATIVE_INFINITY;
+            lasty = Float.NEGATIVE_INFINITY;
+        }
+        return check;
+    }
+
+
     @Override
     protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
         if(!(mount.target instanceof Bullet target)) return;
@@ -115,28 +139,10 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
         float bulletDamage = bullet.damage * unit.damageMultiplier() * state.rules.unitDamage(unit.team);
         if(target.damage() > bulletDamage){
             target.damage(target.damage() - bulletDamage);
-            target.damage(target.damage() + bulletDamage);
+            bulletDamage -= target.damage();
         }else{
             target.remove();
         }
-
-        if(aoe >= 0){
-            Groups.bullet.intersect(target.x, target.y, aoe * tilesize, aoe * tilesize, s -> {
-                if(s == target) return;
-                if(s.team != unit.team && s.type().hittable){
-                    if(target.damage() > bulletDamage){
-                        s.damage(s.damage() - bulletDamage);
-                    }else{
-                        s.remove();
-                    }
-
-                    NyfalisFxs.hitEmpSpark.at(target.x, target.y, Pal.redSpark); //TODO dedicate a fx here
-                }
-            });
-
-
-        }
-
 
         //beamEffect.at(shootX, shootY, rotation, color, new Vec2().set(target));
         bullet.shootEffect.at(shootX, shootY, rotation, color);
@@ -144,6 +150,25 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
         shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
         mount.recoil = 1f;
         mount.heat = 1f;
+
+        if(aoe >= 0 && bulletDamage  > 0){
+            
+            final float[] aoeData = {bulletDamage, aoe/2};
+            Groups.bullet.intersect(target.x - aoeData[1], target.y - aoeData[1], aoe, aoe, s -> {
+                if(s == target ) return;
+                if(s.team != unit.team && s.type().hittable){
+                    if(target.damage() > aoeData[0]){
+                        s.damage(s.damage() - aoeData[0]);
+                        aoeData[0] -= s.damage;
+                    }
+
+                    else s.remove();
+                    hitAoeEffect.at(s.x, s.y, color);
+                }
+            });
+
+
+        }
     }
 
 }

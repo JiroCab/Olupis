@@ -142,6 +142,11 @@ public class NyfalisFxs extends Fx {
             });
         }),
 
+        miniPointHit = new Effect(8f, e -> {
+            color(Color.white, e.color, e.fin());
+            Lines.circle(e.x, e.y, e.fin() * 6f);
+        }),
+
         shootTaurus = new Effect(14, e -> {
             color(Pal.heal);
             float w = 1f + 5 * e.fout();
