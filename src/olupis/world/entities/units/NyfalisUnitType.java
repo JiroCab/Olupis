@@ -153,6 +153,7 @@ public class NyfalisUnitType extends UnitType {
     @Override
     public Unit create(Team team){
         Unit unit = constructor.get();
+
         unit.team = team;
         unit.setType(this);
         unit.ammo = ammoCapacity; //fill up on ammo upon creation
@@ -169,7 +170,7 @@ public class NyfalisUnitType extends UnitType {
     @Override
     public void draw(Unit unit){
         if(parts.size > 0){
-            NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit) );
+            NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit), onWater(unit) ? 1 : 0);
         }
         super.draw(unit);
     }
@@ -259,7 +260,7 @@ public class NyfalisUnitType extends UnitType {
         @Override
         public void draw(Unit unit, WeaponMount mount){
             if(parts.size > 0){
-                NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit));
+                NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit), onWater(unit) ? 1 : 0);
             }
             super.draw(unit, mount);
         }
@@ -446,4 +447,11 @@ public class NyfalisUnitType extends UnitType {
 
     }
 
+    public boolean onWater(Unit unit){
+        return unit.floorOn().isLiquid;
+    }
+
+    public boolean onDeepWater(Unit unit){
+        return unit.floorOn().isLiquid && unit.floorOn().drownTime > 0;
+    }
 }

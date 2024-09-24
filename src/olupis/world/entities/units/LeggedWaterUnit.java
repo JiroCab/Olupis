@@ -14,8 +14,12 @@ import mindustry.graphics.Pal;
 
 public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     private static final Vec2 legOffset = new Vec2();
-    public float groundSpeed =  1f, navalSpeed = groundSpeed;
-    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true, floaterOnHiddenLegs = false, boostUsesNaval, customShadow = false;
+    public float groundSpeed =  1f, navalSpeed = groundSpeed, deepSpeed = -1;
+    public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true,
+            floaterOnHiddenLegs = false,
+            boostUsesNaval, customShadow = false,
+            omniMovementNaval = omniMovement, omniMovementGround = omniMovement;
+    ;
 
     public LeggedWaterUnit(String name){
         super(name);
@@ -26,7 +30,6 @@ public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     @Override
     public void init(){
         super.init();
-        //pathCost = NyfalisPathfind.costLeggedNaval;
     }
 
     @Override
@@ -123,21 +126,14 @@ public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     @Override
     public void update(Unit unit){
         if (onWater(unit) || (unit.isFlying() && boostUsesNaval) ){
-            speed = navalSpeed;
-            omniMovement = false;
+            if(deepSpeed > -1 && onDeepWater(unit)) speed = deepSpeed;
+            else speed = navalSpeed;
+            omniMovement = omniMovementNaval;
         }else {
             speed = groundSpeed;
-            omniMovement = true;
+            omniMovement = omniMovementGround;
         }
 
         super.update(unit);
-    }
-
-    public boolean onWater(Unit unit){
-        return unit.floorOn().isLiquid;
-    }
-
-    public boolean onDeepWater(Unit unit){
-        return unit.floorOn().isLiquid && unit.floorOn().drownTime > 0;
     }
 }

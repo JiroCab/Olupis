@@ -33,8 +33,7 @@ import olupis.world.ai.*;
 import olupis.world.entities.abilities.MicroWaveFieldAbility;
 import olupis.world.entities.abilities.UnitRallySpawnAblity;
 import olupis.world.entities.bullets.*;
-import olupis.world.entities.parts.CellPart;
-import olupis.world.entities.parts.NyfPartParms;
+import olupis.world.entities.parts.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
@@ -803,18 +802,23 @@ public class NyfalisUnits {
         }};
 
         //lexington -> Carrier a long range PDL w/ warm up & laser pointer
-        lexington = new NyfalisUnitType("lexington"){{
+        lexington = new LeggedWaterUnit("lexington"){{
+            groundSpeed = 0.6f;
+            navalSpeed = 1f;
+
             armor = 6f;
             hitSize = 12f;
             health = 850;
-            speed = 0.75f;
             itemCapacity = 0;
-            treadPullOffset = 3;
+            legCount = 0;
             rotateSpeed = 3.5f;
             researchCostMultiplier = 0f;
 
-            rotateMoveFirst = canDeploy = true;
-            constructor = UnitWaterMove::create;
+            immunities.add(StatusEffects.wet);
+            rotateMoveFirst = canDeploy = naval = hovering = true;
+            canDrown = ammoDepletesOverTime = killOnAmmoDepletion = omniMovementGround = omniMovementNaval = legPhysicsLayer = allowLegStep = false;
+            constructor = LegsUnit::create; //Legged so it doesnt slow down in deep water
+            pathCost = NyfalisPathfind.costPreferNaval;
 
 //            abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f));
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-lexington-point-defense"){{
@@ -834,6 +838,17 @@ public class NyfalisUnits {
                     damage = 60f;
                 }};
             }});
+            parts.addAll(
+                    new FloaterTreadsPart("-tracks"){{
+                        mirror = under = true;
+                        x = 3;
+                        y = 0;
+                        moveX = 5;
+                        layerOffset = -0.001f;
+                        progress = NyfPartParms.NyfPartProgress.floatingP.inv();
+                        alphaProgress =  NyfPartParms.NyfPartProgress.floatingP.inv();
+                    }}
+            );
         }};
 
         //T4, a slow gunship carrier (district), flies and can carry ground units /payload
