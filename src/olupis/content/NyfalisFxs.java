@@ -4,6 +4,8 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Position;
+import arc.math.geom.Vec2;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -147,6 +149,15 @@ public class NyfalisFxs extends Fx {
             Lines.circle(e.x, e.y, e.fin() * 6f);
         }),
 
+        getMiniPointHit = new Effect(25f, 300f, e -> {
+            if(!(e.data instanceof Position pos)) return;
+
+            Draw.color(e.color, e.fout() / 2);
+            Lines.stroke(0.75f);
+            Lines.line(e.x, e.y, pos.getX(), pos.getY());
+            Drawf.light(e.x, e.y, pos.getX(), pos.getY(), 20f, e.color, 0.6f * e.fout());
+        }),
+
         shootTaurus = new Effect(14, e -> {
             color(Pal.heal);
             float w = 1f + 5 * e.fout();
@@ -154,6 +165,36 @@ public class NyfalisFxs extends Fx {
             Drawf.tri(e.x, e.y, w, 8f * e.fout(), e.rotation - 45f);
             Drawf.tri(e.x, e.y, w, 17f * e.fout(), e.rotation);
             Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+        }),
+
+        repairPinShoot =  new Effect(10, e -> {
+            color(e.color);
+            float w = 1.2f + 7 * e.fout();
+
+            Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+            color(e.color);
+
+            for(int i : Mathf.signs){
+                Drawf.tri(e.x, e.y, w * 0.9f, 18f * e.fout(), e.rotation + i * 90f);
+            }
+
+            Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+        }),
+
+        repairPinBeam = new Effect(20f, e -> {
+            if(!(e.data instanceof Vec2 v)) return;
+            color(e.color);
+            stroke(e.fout() * 0.9f + 0.6f);
+            Fx.rand.setSeed(e.id);
+            for(int i = 0; i < 7; i++){
+                Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+            }
+            e.scaled(14f, b -> {
+                stroke(b.fout() * 1.5f);
+                color(e.color);
+                Lines.line(e.x, e.y, v.x, v.y);
+            });
         }),
 
         replicatorDie = new Effect(80f, e -> {

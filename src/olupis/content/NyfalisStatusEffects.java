@@ -44,7 +44,7 @@ public class NyfalisStatusEffects {
                     unit.unapply(this);
                     unit.unapply(malfuct);
                     unit.apply(glitch,12.711f * 60); //Time is now constant regardless of setting to avoid desync
-                    if(Core.settings.getBool("nyfalis-rainbow-music")) NyfalisSounds.rainbow2.at(unit.x, unit.y);
+                    if(Core.settings.getBool("nyfalis-rainbow-music") && !unit.dead()) NyfalisSounds.rainbow2.at(unit.x, unit.y);
                 }
             }
             @Override

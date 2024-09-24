@@ -23,7 +23,7 @@ public class UnitRailingRepairTurret extends RepairTurret {
     static final Rect rect = new Rect();
 
     protected float reloadTimer;
-    public float reload = 50f, statusDuration = 60f * 6f, shootX = 0f, shootY = 0f;
+    public float reload = 100f, statusDuration = 60f * 6f, shootX = 0f, shootY = 0f;
     public Effect fireFx = Fx.none, lineFx = Fx.none;
     public StatusEffect healStatus = StatusEffects.none;
 
@@ -76,20 +76,7 @@ public class UnitRailingRepairTurret extends RepairTurret {
             if(target != null && efficiency > 0){
                 float angle = Angles.angle(x, y, target.x + offset.x, target.y + offset.y);
                 if(Angles.angleDist(angle, rotation) < (target.hitSize() * 0.9f) && (reloadTimer += Time.delta) >= reload){
-                    target.heal(repairSpeed * edelta() * multiplier);
-                    reloadTimer = 0f;
-                    float xf = x + Angles.trnsx(rotation - 90, shootX, shootY),
-                            yf = y + Angles.trnsy(rotation - 90, shootX, shootY);
-                    boolean onTop = !target.within(x, y, size);
-
-                    if(onTop)fireFx.at(xf, yf, rotation, Pal.heal);
-                    else fireFx.at(target.x, target.y, rotation, Pal.heal);
-
-                    if(lineFx != Fx.none && onTop){
-                        Vec2 nor = Tmp.v1.trns(rotation, 1f).nor();
-                        lineFx.at(xf, yf, rotation, Pal.heal, new Vec2(xf, yf).mulAdd(nor, Math.min(this.dst(target.x, target.y), length) - shootY));
-                    }
-                    if(healStatus != StatusEffects.none) target.apply(healStatus, statusDuration);
+                   shoot(multiplier);
                 }
                 rotation = Mathf.slerpDelta(rotation, angle, 0.5f * efficiency * timeScale);
             }
@@ -98,6 +85,22 @@ public class UnitRailingRepairTurret extends RepairTurret {
                 rect.setSize(repairRadius * 2).setCenter(x, y);
                 target = Units.closest(team, x, y, repairRadius, Unit::damaged);
             }
+        }
+
+        public void shoot( float  multiplier){
+            target.heal(repairSpeed * edelta() * multiplier);
+            reloadTimer = 0f;
+            float xf = x + Angles.trnsx(rotation - 90, shootX, shootY),
+                    yf = y + Angles.trnsy(rotation - 90, shootX, shootY);
+            boolean onTop = !target.within(x, y, size);
+
+            if(onTop)fireFx.at(xf, yf, rotation, Pal.heal);
+            else fireFx.at(target.x, target.y, rotation, Pal.heal);
+
+            if(lineFx != Fx.none && onTop){
+                lineFx.at(xf, yf, rotation, Pal.heal, new Vec2().set(target));
+            }
+            if(healStatus != StatusEffects.none) target.apply(healStatus, statusDuration);
         }
     }
 }

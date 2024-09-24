@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.util.Nullable;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -18,11 +19,12 @@ import static mindustry.Vars.state;
 
 public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
     public float aoe = 50,
-                     laserSize = 2f,
+                     laserSize = 1.5f,
                      laserAlphaMin = 0.1f, laserAlphaMax = 0.5f,
                      trackingRange = 2f
     ;
-    public Effect hitAoeEffect = Fx.none;
+    public Effect hitAoeEffect = Fx.none,
+                        aoeBeamEffect = Fx.pointBeam;
     /*visual tracking that lags to remove stutter since bullets tracking is snappy*/
     @Nullable float lastx = Float.NEGATIVE_INFINITY, lasty = Float.NEGATIVE_INFINITY, lastdiv = 5;
 
@@ -144,7 +146,7 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
             target.remove();
         }
 
-        //beamEffect.at(shootX, shootY, rotation, color, new Vec2().set(target));
+        beamEffect.at(shootX, shootY, rotation, color, new Vec2().set(target));
         bullet.shootEffect.at(shootX, shootY, rotation, color);
         bullet.hitEffect.at(target.x, target.y, color);
         shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
@@ -161,12 +163,11 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
                         s.damage(s.damage() - aoeData[0]);
                         aoeData[0] -= s.damage;
                     }
-
                     else s.remove();
+                    aoeBeamEffect.at(target.x, target.y, rotation, color, new Vec2().set(s));
                     hitAoeEffect.at(s.x, s.y, color);
                 }
             });
-
 
         }
     }

@@ -828,6 +828,7 @@ public class NyfalisUnits {
                 hitAoeEffect = new MultiEffect( NyfalisFxs.miniPointHit);
                 bullet = new BulletType(){{
                     shootEffect = Fx.shootSmokeSquare;
+                    aoeBeamEffect = NyfalisFxs.getMiniPointHit;
                     hitEffect = Fx.pointHit;
                     maxRange = 320f;
                     damage = 60f;
