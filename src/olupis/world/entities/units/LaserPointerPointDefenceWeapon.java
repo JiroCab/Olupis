@@ -21,8 +21,10 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
     public float aoe = 50,
                      laserSize = 1.5f,
                      laserAlphaMin = 0.1f, laserAlphaMax = 0.5f,
-                     trackingRange = 2f
+                     trackingRange = 2f,
+                     soundVol = 1f
     ;
+    boolean drawPointer = true;
     public Effect hitAoeEffect = Fx.none,
                         aoeBeamEffect = Fx.pointBeam;
     /*visual tracking that lags to remove stutter since bullets tracking is snappy*/
@@ -72,7 +74,7 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
         unit.type.applyColor(unit);
 
 
-        if(mount.target != null){
+        if(mount.target != null && drawPointer){
             Lines.stroke(laserSize, unit.type.cellColor(unit));
             Draw.color(unit.type.cellColor(unit), Mathf.lerp(laserAlphaMin, laserAlphaMax, mount.warmup));
             Lines.dashLine(wx, wy, lastx, lasty,Math.round(lastdiv));
@@ -149,7 +151,7 @@ public class LaserPointerPointDefenceWeapon extends PointDefenseWeapon {
         beamEffect.at(shootX, shootY, rotation, color, new Vec2().set(target));
         bullet.shootEffect.at(shootX, shootY, rotation, color);
         bullet.hitEffect.at(target.x, target.y, color);
-        shootSound.at(shootX, shootY, Mathf.random(0.9f, 1.1f));
+        shootSound.at(shootX, shootY, Mathf.random(soundPitchMin, soundPitchMax), soundVol);
         mount.recoil = 1f;
         mount.heat = 1f;
 

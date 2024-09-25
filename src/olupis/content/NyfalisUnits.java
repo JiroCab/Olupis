@@ -25,7 +25,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.BuildWeapon;
-import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 import olupis.input.NyfalisUnitCommands;
@@ -36,7 +35,7 @@ import olupis.world.entities.bullets.*;
 import olupis.world.entities.parts.*;
 import olupis.world.entities.units.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilePayload;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 
@@ -785,14 +784,17 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
             treadRects = new Rect[]{new Rect(12 - 32f, 7 - 32f, 14, 51)};
             abilities.add(new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f));
-            weapons.add(new PointDefenseWeapon("olupis-essex-point-defense"){{
+            weapons.add(new LaserPointerPointDefenceWeapon("olupis-essex-point-defense"){{
                 x = 0;
                 y = -7f;
+                aoe = 0;
                 reload = 6f;
+                soundVol = 0.7f;
                 targetInterval = targetSwitchInterval = 14f;
                 mirror = false;
-
+                shootSound = NyfalisSounds.cncZhAcengerPdl;
                 bullet = new BulletType(){{
+
                     shootEffect = Fx.shootSmokeSquare;
                     hitEffect = Fx.pointHit;
                     maxRange = 160f;
@@ -825,9 +827,13 @@ public class NyfalisUnits {
                 x = 0;
                 y = -7f;
                 reload = 6f;
+                minWarmup = 0.9f;
+                soundVol = 0.7f;
+                soundPitchMin = 0.65f;
+                soundPitchMax = 0.8f;
                 targetInterval = targetSwitchInterval = 12f;
                 mirror = false;
-                minWarmup = 0.9f;
+                shootSound = NyfalisSounds.cncZhAcengerPdl;
 
                 hitAoeEffect = new MultiEffect( NyfalisFxs.miniPointHit);
                 bullet = new BulletType(){{

@@ -452,6 +452,6 @@ public class NyfalisUnitType extends UnitType {
     }
 
     public boolean onDeepWater(Unit unit){
-        return unit.floorOn().isLiquid && unit.floorOn().drownTime > 0;
+        return onWater(unit) && unit.floorOn().drownTime > 0;
     }
 }
