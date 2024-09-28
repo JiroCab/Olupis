@@ -1,19 +1,24 @@
 package olupis.world.blocks.defence;
 
+import arc.Core;
 import arc.audio.Sound;
 import arc.func.Boolf;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import arc.util.*;
 import mindustry.content.Fx;
 import mindustry.content.UnitTypes;
 import mindustry.core.World;
 import mindustry.entities.*;
 import mindustry.entities.bullet.BulletType;
+import mindustry.entities.part.DrawPart;
 import mindustry.entities.pattern.ShootPattern;
 import mindustry.game.Team;
 import mindustry.gen.*;
@@ -28,7 +33,7 @@ import static mindustry.Vars.*;
 /*CoreBlock  & PowerTurret's very horrible offspring*/
 public class PropellerCoreTurret extends PropellerCoreBlock {
     /*Refer to Turret for what these do*/
-    public final int timerTarget = timers++, maxAmmo = 30,recoils = -1;
+    public final int timerTarget = timers++, recoils = -1;
     public final static float logicControlCooldown = 60 * 2;
     public float
         reload = 10f,
@@ -59,6 +64,8 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
     public @Nullable Effect shootEffect, smokeEffect;
     public Sound shootSound = Sounds.shoot, chargeSound = Sounds.none;
     public Boolf<Building> buildingFilter = b -> targetUnderBlocks || !b.block.underBullets;
+    public Seq<DrawPart> parts = new Seq<>();
+    TextureRegion topRegion;
 
     public PropellerCoreTurret(String name){
         super(name);
@@ -100,6 +107,18 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
         if(cooldownTime < 0f) cooldownTime = reload;
 
         super.init();
+    }
+
+    @Override
+    public void load(){
+        topRegion = Core.atlas.find(name + "-top");
+
+        super.load();
+
+        for(var part : parts){
+            part.turretShading = true;
+            part.load(name);
+        }
     }
 
     @Override
@@ -178,9 +197,33 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
             return alwaysShooting || (logicControlled() ? logicShooting : target != null);
         }
 
-        public BulletType useAmmo() {
-            //nothing used directly
-            return shootType;
+        @Override
+        public void draw(){
+            super.draw();
+
+            if(parts.size > 0) {
+                float progress = progress();
+                //No making parts weird for now as all that uses it looks weird
+                DrawPart.params.set(warmup(), progress, progress, heat, curRecoil, charge, x + recoilOffset.x, y + recoilOffset.y, 0);
+
+                for (var part : parts) {
+                    DrawPart.params.setRecoil(part.recoilIndex >= 0 && curRecoils != null ? curRecoils[part.recoilIndex] : curRecoil);
+                    part.draw(DrawPart.params);
+                }
+            }
+
+            if(topRegion.found())Draw.rect(topRegion, this.x, this.y, this.drawrot());
+
+        }
+
+        @Override
+        public float progress(){
+            return Mathf.clamp(reloadCounter / reload);
+        }
+
+        @Override
+        public float warmup(){
+            return shootWarmup;
         }
 
         public boolean hasAmmo() {

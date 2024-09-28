@@ -246,6 +246,8 @@ public class NyfalisUnitType extends UnitType {
         float shootXf = shootX, shootYf = shootY;
         boolean altWeaponPos = false;
         public float ammoPerShot = -1;
+        public boolean weaponIconUseFullString = false;
+        public String weaponIconString = "-ui";
 
         public NyfalisWeapon(String name){super(name);}
         public NyfalisWeapon(String name, boolean boostShoot, boolean groundShoot ){

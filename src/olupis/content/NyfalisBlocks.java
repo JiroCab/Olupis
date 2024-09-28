@@ -2090,6 +2090,34 @@ public class NyfalisBlocks {
             buildCostMultiplier = researchCostMultiplier = 0.5f;
             unitCapModifier = (coreRemnant.unitCapModifier + (coreUnitCap * 2));
 
+            parts.add(
+                        new RegionPart("-door-bl"){{
+                            progress = PartProgress.warmup;
+                            moveX = moveY = -2.8f;
+                            growX = growY = -1f;
+                            mirror = outline = false;
+                        }},
+                        new RegionPart("-door-tl"){{
+                            progress = PartProgress.warmup;
+                            moveX = -2.8f;
+                            moveY = 2.8f;
+                            growX = growY = -1f;
+                            mirror = outline = false;
+                        }},
+                        new RegionPart("-door-br"){{
+                            progress = PartProgress.warmup;
+                            moveX = 2.8f;
+                            moveY = -2.8f;
+                            growX = growY = -1f;
+                            mirror = outline = false;
+                        }},
+                        new RegionPart("-door-tr"){{
+                            progress = PartProgress.warmup;
+                            moveX = moveY = 2.8f;
+                            growX = growY = -1f;
+                            mirror = outline = false;
+                        }}
+            );
             unitType = phorid;
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;

@@ -319,8 +319,15 @@ public class NyfalisStats extends StatValues {
             for(int i = 0; i < weapons.size; ++i) {
                 Weapon weapon = weapons.get(i);
                 if (!weapon.flipSprite && weapon.hasStats(unit)) { //haha supella work around
-                    TextureRegion region = !weapon.name.isEmpty() ? Core.atlas.find(weapon.name + "-preview", weapon.region) :
-                        !weapon.parts.isEmpty() && weapon.parts.first() instanceof RegionPart rp ? rp.regions[0] : null;
+                    TextureRegion preRegion = null;
+                    if(!weapon.name.isEmpty()) preRegion = Core.atlas.find(weapon.name + "-preview", weapon.region);
+                    else if(!weapon.parts.isEmpty() && weapon.parts.first() instanceof RegionPart rp) preRegion = rp.regions[0];
+                    else if(weapon instanceof NyfalisUnitType.NyfalisWeapon nyft) {
+                        if(nyft.weaponIconUseFullString) preRegion = Core.atlas.find(nyft.weaponIconString);
+                        else preRegion = Core.atlas.find(weapon.name + nyft.weaponIconString);
+                    }
+                    TextureRegion region = preRegion;
+
 
                     table.table(Styles.grayPanel, (w) -> {
                         w.left().top().defaults().padRight(3.0F).left();
