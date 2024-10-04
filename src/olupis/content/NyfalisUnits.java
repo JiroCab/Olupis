@@ -34,6 +34,7 @@ import olupis.world.entities.abilities.UnitRallySpawnAblity;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.parts.*;
 import olupis.world.entities.units.*;
+import olupis.world.entities.weapons.*;
 
 import static mindustry.Vars.tilePayload;
 import static mindustry.content.Items.*;
@@ -658,9 +659,30 @@ public class NyfalisUnits {
             omniMovement = drawBody =  false;
             allowLegStep = canDash = canCharge = true;
 
-            weapons.addAll(
-
-            );
+            weapons.addAll(new SnekWeapon("olupis-dark-pew"){{
+                x = 0f;
+                y = 10f;
+                reload = 0.5f;
+                shootY = 0.5f;
+                shootCone = 55f;
+                rotationLimit = 90;
+                weaponSegmentParent = 1;
+                autoTarget = mirror = top = false;
+                rotate = controllable = parentizeEffects = continuous = alwaysContinuous = true;
+                ejectEffect = Fx.casing1;
+                bullet = new TracterBeamBullet(){{
+                    shake = 0f;
+                    width = 1f;
+                    length = 100f;
+                    lifetime = 20;
+                    lightStroke = 10;
+                    damage = 40 / 12f;
+                    incendChance = incendSpread = 0f;
+                    smokeEffect = shootEffect = Fx.none;
+                    chargeEffect = hitEffect = Fx.hitLancer;
+                    colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
+                }};
+            }});
         }};
         //endregion
         //region Ground - Roach

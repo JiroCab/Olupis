@@ -1,4 +1,4 @@
-package olupis.world.entities.units;
+package olupis.world.entities.weapons;
 
 import arc.graphics.Blending;
 import arc.graphics.g2d.Draw;

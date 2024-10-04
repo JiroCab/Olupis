@@ -1,4 +1,4 @@
-package olupis.world.entities.units;
+package olupis.world.entities.weapons;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
@@ -8,6 +8,7 @@ import arc.math.Mathf;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Unit;
 import mindustry.type.weapons.RepairBeamWeapon;
+import olupis.world.entities.units.AmmoLifeTimeUnitType;
 
 public class LimitedRepairBeamWeapon extends RepairBeamWeapon {
     public TextureRegion ammoRegion;
@@ -37,7 +38,7 @@ public class LimitedRepairBeamWeapon extends RepairBeamWeapon {
                     wx = unit.x + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, -realRecoil),
                     wy = unit.y + Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, -realRecoil);
 
-            if(unit.type instanceof  AmmoLifeTimeUnitType)Draw.color(((AmmoLifeTimeUnitType) unit.type).ammoColor(unit));
+            if(unit.type instanceof AmmoLifeTimeUnitType)Draw.color(((AmmoLifeTimeUnitType) unit.type).ammoColor(unit));
             Draw.rect(ammoRegion, wx, wy, weaponRotation);
             Draw.color();
         }

@@ -26,6 +26,7 @@ import mindustry.world.meta.Env;
 import olupis.content.NyfalisFxs;
 import olupis.world.ai.*;
 import olupis.world.entities.packets.NyfalisUnitTimedOutPacket;
+import olupis.world.entities.weapons.NyfalisWeapon;
 
 import static mindustry.Vars.*;
 
@@ -282,7 +283,7 @@ public class AmmoLifeTimeUnitType extends  NyfalisUnitType {
 
     public boolean inRange(Unit unit){
         if(unit.type.aiController instanceof AgressiveFlyingAi ai && ai.hasParent && ai.parent != null) return unit.within(ai.parent.vel, maxRange);
-        if(startPos != null && maxRange != -1) return true; //<--- TODO:  WTF IS THIS
+        if(startPos == null || maxRange == -1) return true;
         return unit.within(startPos.x * 8, startPos.y * 8, maxRange);
     }
 

@@ -25,6 +25,7 @@ import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.meta.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.units.NyfalisUnitType;
+import olupis.world.entities.weapons.NyfalisWeapon;
 
 import java.util.Iterator;
 
@@ -322,7 +323,7 @@ public class NyfalisStats extends StatValues {
                     TextureRegion preRegion = null;
                     if(!weapon.name.isEmpty()) preRegion = Core.atlas.find(weapon.name + "-preview", weapon.region);
                     else if(!weapon.parts.isEmpty() && weapon.parts.first() instanceof RegionPart rp) preRegion = rp.regions[0];
-                    else if(weapon instanceof NyfalisUnitType.NyfalisWeapon nyft) {
+                    else if(weapon instanceof NyfalisWeapon nyft) {
                         if(nyft.weaponIconUseFullString) preRegion = Core.atlas.find(nyft.weaponIconString);
                         else preRegion = Core.atlas.find(weapon.name + nyft.weaponIconString);
                     }
