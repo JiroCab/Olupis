@@ -254,7 +254,9 @@ public class NyfalisUnits {
                     reload = shootCone = 15f;
                     ejectEffect = Fx.casing1;
 
-                    showStatSprite = false;
+
+                    weaponIconUseFullString = true;
+                    weaponIconString = "olupis-pteropus-ui-front";
                     bullet = new BasicBulletType(2.5f, 3, "olupis-diamond-bullet"){{
                         width = 4;
                         height = 6f;
@@ -276,6 +278,8 @@ public class NyfalisUnits {
                     recoils = 1;
                     top = alternate = mirror = false;
                     rotate = alwaysRotate = true;
+
+                    weaponIconString = "olupis-pteropus-turret-ui";
 
                     parts.addAll(
                         new RegionPart("olupis-pteropus-weapon"){{
@@ -659,24 +663,27 @@ public class NyfalisUnits {
             omniMovement = drawBody =  false;
             allowLegStep = canDash = canCharge = true;
 
-            weapons.addAll(new SnekWeapon("olupis-dark-pew"){{
+            weapons.addAll(new SnekWeapon(""){{
                 x = 0f;
                 y = 10f;
                 reload = 0.5f;
-                shootY = 0.5f;
-                shootCone = 55f;
-                rotationLimit = 90;
+                shootY = 1.5f;
+                shootCone = 60f;
+                rotationLimit = 180;
                 weaponSegmentParent = 1;
                 autoTarget = mirror = top = false;
                 rotate = controllable = parentizeEffects = continuous = alwaysContinuous = true;
+                shootSound = Sounds.tractorbeam;
                 ejectEffect = Fx.casing1;
                 bullet = new TracterBeamBullet(){{
                     shake = 0f;
-                    width = 1f;
+                    width = 0.7f;
                     length = 100f;
                     lifetime = 20;
                     lightStroke = 10;
                     damage = 40 / 12f;
+                    status = StatusEffects.slow;
+                    statusDuration = 60f;
                     incendChance = incendSpread = 0f;
                     smokeEffect = shootEffect = Fx.none;
                     chargeEffect = hitEffect = Fx.hitLancer;
@@ -953,8 +960,9 @@ public class NyfalisUnits {
                 rotationLimit = 45f;
                 targetInterval = 10f;
                 targetSwitchInterval = 20f;
-                autoTarget = rotate = partialControl = true;
+                autoTarget = rotate = partialControl = weaponIconUseFullString = true;
                 mirror = controllable = false;
+                weaponIconString = "olupis-bay-ui-front";
                 bullet = new BasicBulletType(2.5f, 10){{
                     width = 5f;
                     height = 6f;
@@ -1924,6 +1932,7 @@ public class NyfalisUnits {
                             unitRange = 100f;
                             spawnUnit = embryo;
                             //rangeOverride = mineRange;
+                            intervalDelay = 0.5f;
                             intervalBullet =  new BulletType() {{
                                 instantDisappear = collidesAir = true;
                                 collidesTiles = collides = hittable = false;

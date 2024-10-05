@@ -49,7 +49,7 @@ public  class NyfalisWeapon extends Weapon {
     boolean altWeaponPos = false;
     public float ammoPerShot = -1;
     public boolean weaponIconUseFullString = false;
-    public String weaponIconString = "-ui";
+    public String weaponIconString = "";
 
     public NyfalisWeapon(String name){super(name);}
     public NyfalisWeapon(String name, boolean boostShoot, boolean groundShoot ){

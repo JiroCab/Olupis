@@ -28,6 +28,7 @@ import olupis.world.entities.units.NyfalisUnitType;
 import olupis.world.entities.weapons.NyfalisWeapon;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import static mindustry.Vars.*;
 
@@ -322,11 +323,11 @@ public class NyfalisStats extends StatValues {
                 if (!weapon.flipSprite && weapon.hasStats(unit)) { //haha supella work around
                     TextureRegion preRegion = null;
                     if(!weapon.name.isEmpty()) preRegion = Core.atlas.find(weapon.name + "-preview", weapon.region);
-                    else if(!weapon.parts.isEmpty() && weapon.parts.first() instanceof RegionPart rp) preRegion = rp.regions[0];
-                    else if(weapon instanceof NyfalisWeapon nyft) {
+                    else if(weapon instanceof NyfalisWeapon nyft && !Objects.equals(nyft.weaponIconString, "")) {
                         if(nyft.weaponIconUseFullString) preRegion = Core.atlas.find(nyft.weaponIconString);
                         else preRegion = Core.atlas.find(weapon.name + nyft.weaponIconString);
                     }
+                    else if(!weapon.parts.isEmpty() && weapon.parts.first() instanceof RegionPart rp) preRegion = rp.regions[0];
                     TextureRegion region = preRegion;
 
 
