@@ -663,33 +663,64 @@ public class NyfalisUnits {
             omniMovement = drawBody =  false;
             allowLegStep = canDash = canCharge = true;
 
-            weapons.addAll(new SnekWeapon(""){{
-                x = 0f;
-                y = 10f;
-                reload = 0.5f;
-                shootY = 1.5f;
-                shootCone = 60f;
-                rotationLimit = 180;
-                weaponSegmentParent = 1;
-                autoTarget = mirror = top = false;
-                rotate = controllable = parentizeEffects = continuous = alwaysContinuous = true;
-                shootSound = Sounds.tractorbeam;
-                ejectEffect = Fx.casing1;
-                bullet = new TracterBeamBullet(){{
-                    shake = 0f;
-                    width = 0.7f;
-                    length = 100f;
-                    lifetime = 20;
-                    lightStroke = 10;
-                    damage = 40 / 12f;
-                    status = StatusEffects.slow;
-                    statusDuration = 60f;
-                    incendChance = incendSpread = 0f;
-                    smokeEffect = shootEffect = Fx.none;
-                    chargeEffect = hitEffect = Fx.hitLancer;
-                    colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
-                }};
-            }});
+            weapons.addAll(
+                new SnekWeapon(""){{
+                    x = 0f;
+                    y = 10f;
+                    reload = 0.5f;
+                    shootY = 1.5f;
+                    shootCone = 60f;
+                    rotationLimit = 180;
+                    weaponSegmentParent = 1;
+                    autoTarget = mirror = top = false;
+                    rotate = controllable = parentizeEffects = continuous = alwaysContinuous = true;
+                    shootSound = Sounds.tractorbeam;
+                    ejectEffect = Fx.casing1;
+                    shootStatus = StatusEffects.slow;
+                    bullet = new TracterBeamBullet(){{
+                        shake = 0f;
+                        width = 0.7f;
+                        length = 100f;
+                        lifetime = 20;
+                        lightStroke = 10;
+                        damage = 40 / 12f;
+                        status = StatusEffects.slow;
+                        statusDuration = 60f;
+                        incendChance = incendSpread = 0f;
+                        smokeEffect = shootEffect = Fx.none;
+                        chargeEffect = hitEffect = Fx.hitLancer;
+                        colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
+                    }};
+                }},
+                new SnekWeapon("flamethrower"){{
+                    top = false;
+                    shootSound = Sounds.flame;
+                    shootY = 2f;
+                    reload = 35f;
+                    shootCone = 360f;
+                    baseRotation = 180f;
+                    minShootVelocity = 0.1f; //So they don't dash while on the target or something
+                    weaponSegmentParent = 1;
+                    ignoreRotation = dashShoot = dashExclusive = partialControl = true;
+                    rotate = alternate = mirror = aiControllable = false;
+                    ejectEffect = Fx.none;
+                    bullet = new BulletType(4.2f, 37f){{
+                        ammoMultiplier = 3f;
+                        hitSize = 7f;
+                        lifetime = 13f;
+                        recoil = 10f;
+                        pierce = true;
+                        pierceBuilding = true;
+                        pierceCap = 2;
+                        statusDuration = 60f * 4;
+                        shootEffect = Fx.shootSmallFlame;
+                        hitEffect = Fx.hitFlameSmall;
+                        despawnEffect = Fx.none;
+                        status = StatusEffects.burning;
+                        keepVelocity = false;
+                        hittable = false;
+                    }};
+                }});
         }};
         //endregion
         //region Ground - Roach

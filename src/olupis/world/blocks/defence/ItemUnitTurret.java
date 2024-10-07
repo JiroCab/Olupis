@@ -85,7 +85,12 @@ public class ItemUnitTurret extends ItemTurret {
         fogRadius = -1;
         range = 0f;
         config(UnitCommand.class, (ItemUnitTurretBuild build, UnitCommand command) -> build.command = command);
-        configClear((ItemUnitTurretBuild build) -> build.command = null);
+        config(Integer.class, (ItemUnitTurretBuild build, Integer direction) -> build.direction = direction);
+
+        configClear((ItemUnitTurretBuild build) ->{
+            build.command = null;
+            build.direction = -1;
+        });
     }
 
 
@@ -271,26 +276,16 @@ public class ItemUnitTurret extends ItemTurret {
 
         public void updateModules(Articulator.ArticulatorBuild build){
             modules.addUnique(build);
-            checkTier();
-            prevModules.add(build);
         }
 
         public void removeModule(Articulator.ArticulatorBuild build){
             modules.remove(build);
-            checkTier();
-            prevModules.remove(build);
         }
 
         public void checkTier(){
-            useAlternate = modules.size > 0;
-        }
-
-        @Override
-        public void onProximityUpdate() {
-            super.onProximityUpdate();
-
-            if(!useAlternate && modules.size == 0 && prevModules.size != 0) reloadCounter = 0;
-            else if(useAlternate && modules.size >= 1 && prevModules.size == 0) reloadCounter = 0;
+            boolean check =  modules.size > 0;
+            if(check != useAlternate) reloadCounter = 0;
+            useAlternate = check;
         }
 
         @Override
@@ -347,6 +342,8 @@ public class ItemUnitTurret extends ItemTurret {
                 shootRegular(nya, shootCreatable(nya), false);
                 payload = null;
             }
+
+            checkTier();
         }
 
         @Override
@@ -681,6 +678,11 @@ public class ItemUnitTurret extends ItemTurret {
                 configure(conf);
                 deselect();
             }).checked(direction == conf);
+        }
+
+        @Override
+        public Object config() {
+            return direction;
         }
 
         @Override
