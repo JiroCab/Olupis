@@ -5,7 +5,6 @@ import arc.graphics.Color;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
-import arc.util.Log;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.Effect;
@@ -533,6 +532,7 @@ public class NyfalisTurrets {
                 stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
             }
         };
+
         porcupine = new NyfalisLiquidTurret("porcupine"){{
             //TODO: check for clear path to unit
             targetAir = false;

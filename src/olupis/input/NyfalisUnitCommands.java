@@ -53,9 +53,13 @@ public class NyfalisUnitCommands {
             drawTarget = true;
         }},
         nyfalisChargeCommand = new UnitCommand("nyfalis-charge", "commandAttack", u ->{
-                var ai = new  NyfalisGroundAi();
-                ai.shouldCharge = true;
-                return ai;
+                if(u.type instanceof  NyfalisUnitType nyf && nyf.alwaysBoosts){
+                    return  new DeployedAi();
+                } else {
+                    var ai = new NyfalisGroundAi();
+                    ai.shouldCharge = true;
+                    return ai;
+                }
         }){{
             switchToMove = resetTarget = false;
             drawTarget = true;

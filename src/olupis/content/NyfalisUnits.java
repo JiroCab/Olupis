@@ -45,18 +45,25 @@ public class NyfalisUnits {
     public static AmmoType lifeTimeDrill, lifeTimeWeapon, lifeTimeSupport;
     public static NyfalisUnitType
         /*Air units*/
+        //Spearhead
         aero, striker, falcon, vortex, tempest,
+        //Zoning / area denial - very funny i know
         zoner, regioner, district, division, territory,
+        //Tank
         pteropus, acerodon, nyctalus, mirimiri , vampyrum, //Bat Genus
 
         /*segmented units*/
+        //Spearhead
         venom, serpent, reaper, goliath, snek,
 
         /*Ground units*/
+        //seige
         supella, germanica , luridiblatta , vaga , parcoblatta, //smallest cockroaches
 
         /*naval*/
+        //support
         porter, essex, lexington, resolute, nimitz,
+        //naval glass cannons
         bay, blitz, crusader, torrent, vanguard,
 
         /*core units*/
@@ -231,50 +238,56 @@ public class NyfalisUnits {
         //endregion
         //region Air - Bats
         pteropus = new NyfalisUnitType("pteropus"){{
-            hitSize = 10f;
+            hitSize = 11f;
             drag = 0.06f;
             accel = 0.08f;
             health = 250f;
             speed = 2.20f;
             engineSize = -1f;
-            rotateSpeed = 19f;
+            rotateSpeed = 25f;
             itemCapacity = 20;
             engineOffset = 7f;
 
             constructor = UnitEntity::create;
-            aiController = AgressiveFlyingAi::new;
+            aiController = DeployedAi::new;
             deployEffect = NyfalisStatusEffects.deployed;
-            lowAltitude = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
+            lowAltitude = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = canCharge = true;
             weapons.addAll(
                 new NyfalisWeapon("", true, false){{
-                    top = alternate = false;
-                    y = 3.8f;
-                    x = -2f;
+                    top = alternate = mirror = false;
+                    y = 3f;
+                    x = 0f;
+                    reload = 20f;
                     inaccuracy = 3f;
-                    reload = shootCone = 15f;
+                    shootCone = 45f;
                     ejectEffect = Fx.casing1;
 
-
+                    shootSound = Sounds.missile;
                     weaponIconUseFullString = true;
                     weaponIconString = "olupis-pteropus-ui-front";
-                    bullet = new BasicBulletType(2.5f, 3, "olupis-diamond-bullet"){{
-                        width = 4;
-                        height = 6f;
-                        lifetime = 40f;
-                        homingPower = 0.04f;
+                    bullet = new BasicBulletType(6, 7, "missile"){{
+                        width = 7f;
+                        height = 9f;
+                        lifetime = 16f;
+                        homingPower = 0.1f;
+                        collidesGround = false;
                         shootEffect = Fx.none;
                         smokeEffect = Fx.shootSmallSmoke;
-                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                        frontColor = NyfalisColors.rustyBullet;
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
-                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                        backColor = NyfalisColors.rustyBulletBack;
+
+                        trailColor = NyfalisColors.rustyBullet;
+                        trailWidth = 1.5f;
+                        trailLength = 3;
                     }};
                 }},
 
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
-                    shootY = 4.5f;
+                    shootY = 5f;
                     recoil = 0.5f;
-                    reload = 15f;
+                    reload = 35f;
                     recoils = 1;
                     top = alternate = mirror = false;
                     rotate = alwaysRotate = true;
@@ -302,17 +315,18 @@ public class NyfalisUnits {
                         }}
                     );
 
-                    bullet = new BasicBulletType(2.6f, 9){{
+                    bullet = new BasicBulletType(4f, 18){{
                         spin = 30f;
                         width = 6f;
                         height = 8f;
-                        lifetime = 40f;
+                        lifetime = 28f;
                         splashDamage = 1f;
                         splashDamageRadius = 5f * 0.75f;
-                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
-                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
+                        frontColor = NyfalisColors.ironBullet;
+                        backColor = NyfalisColors.ironBulletBack;
                         hitEffect = despawnEffect = Fx.hitBulletSmall;
                         sprite = "mine-bullet";
+                        collidesAir = false;
                     }};
                 }}
             );
@@ -322,7 +336,7 @@ public class NyfalisUnits {
         }};
 
         acerodon = new NyfalisUnitType("acerodon"){{
-            hitSize = 10f;
+            hitSize = 12f;
             armor = 2;
             drag = 0.06f;
             accel = 0.08f;
@@ -334,33 +348,33 @@ public class NyfalisUnits {
             itemCapacity = 20;
 
             constructor = UnitEntity::create;
-            aiController = AgressiveFlyingAi::new;
+            aiController = DeployedAi::new;
             deployEffect = NyfalisStatusEffects.deployed;
-            lowAltitude  = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = true;
+            lowAltitude  = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = canCharge = inverseLanding = true;
             weapons.addAll(
                 new NyfalisWeapon("", true, false){{
                     top = alternate = false;
                     reload = 25f;
-                    inaccuracy = 3f;
-                    shootX = x = 0;
+                    shootY = 5;
+                    x = 0;
                     shootCone = 15f;
                     ejectEffect = Fx.casing1;
                     shootSound = Sounds.missile;
 
+                    shoot = new ShootSpread(5, 5);
+
                     showStatSprite = mirror = false;
-                    bullet = new ArtilleryBulletType(3.5f, 3, "olupis-diamond-bullet"){{
+                    bullet = new BasicBulletType(7f, 6.5f){{
+                        lifetime = 20f;
+                        sprite = "mine-bullet";
                         width = 8;
                         height = 10f;
-                        trailSize = 2f;
-                        lifetime = 40f;
-                        knockback = 0.3f;
-                        splashDamage = 27f;
-                        splashDamageRadius = 25f * 0.75f;
-                        shootEffect = Fx.none;
-                        smokeEffect = Fx.shootSmallSmoke;
-                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                        hitSize = 4f;
+                        hitColor = backColor = trailColor = NyfalisColors.ironBulletBack;
+                        frontColor = NyfalisColors.ironBullet;
+                        trailWidth = 1.8f;
+                        trailLength = 3;
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
-                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
                         collidesAir = false;
                     }};
                 }},
@@ -369,9 +383,12 @@ public class NyfalisUnits {
                     x = y = 0;
                     recoils = 1;
                     recoil = 0.5f;
-                    reload = 25f;
-                    shootY = -0.5f;
+                    reload = 30f;
+                    shootY = 0.5f;
                     rotateSpeed = 10f;
+                    shootCone = 10f;
+                    targetInterval = 20;
+                    targetSwitchInterval = 20f;
                     rotate = alwaysRotate = true;
                     top = alternate = mirror = false;
 
@@ -398,19 +415,34 @@ public class NyfalisUnits {
                         }}
                     );
 
-                    bullet = new BasicBulletType(2.6f, 9){{
-                        spin = 60f;
-                        lifetime = 40f;
-                        trailWidth = 2f;
-                        trailLength = 10;
-                        trailChance = -1f;
-                        splashDamage = 1f;
-                        width = height = 10f;
-                        splashDamageRadius = 5f * 0.75f;
-                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
-                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
-                        hitEffect = despawnEffect = Fx.hitBulletSmall;
-                        sprite = "mine-bullet";
+                    bullet = new BasicBulletType(7, 10, "missile-large"){{
+                        width = 8f;
+                        height = 10f;
+                        lifetime = 20f;
+                        homingPower = 0.25f;
+                        collidesGround = false;
+                        shootEffect = Fx.none;
+                        smokeEffect = Fx.shootSmallSmoke;
+                        frontColor = NyfalisColors.ironBullet;
+                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        backColor = NyfalisColors.ironBulletBack;
+
+                        trailColor = NyfalisColors.rustyBullet;
+                        trailWidth = 1.5f;
+                        trailLength = 3;
+
+                        fragRandomSpread = 0;
+                        fragBullets = 1;
+                        fragBullet = new BasicBulletType(7f, 5){{
+                            width = 5f;
+                            height = 12f;
+                            shrinkY = 1f;
+                            lifetime = 10f;
+                            backColor = NyfalisColors.rustyBulletBack;
+                            frontColor = NyfalisColors.rustyBullet;
+                            despawnEffect = Fx.none;
+                            collidesGround = false;
+                        }};
                     }};
                 }}
 
@@ -458,9 +490,9 @@ public class NyfalisUnits {
                     buildingDamageMultiplier = 0.5f;
                     shootEffect = Fx.none;
                     smokeEffect = Fx.shootSmallSmoke;
-                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                    frontColor = NyfalisColors.rustyBullet;
                     hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
-                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                    backColor = NyfalisColors.rustyBulletBack;
                 }};
             }});
         }};
@@ -502,9 +534,9 @@ public class NyfalisUnits {
                     lifetime = 20f;
                     buildingDamageMultiplier = 0.3f;
 
-                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
+                    frontColor = NyfalisColors.rustyBullet;
                     hitEffect = despawnEffect = NyfalisFxs.scatterDebris;
-                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                    backColor = NyfalisColors.rustyBulletBack;
                 }};
             }});
         }};
@@ -777,8 +809,8 @@ public class NyfalisUnits {
                         width = 5f;
                         height = 6f;
                         lifetime = 36f;
-                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
-                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                        frontColor = NyfalisColors.rustyBullet;
+                        backColor = NyfalisColors.rustyBulletBack;
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                     }};
                 }}
@@ -999,8 +1031,8 @@ public class NyfalisUnits {
                     height = 6f;
                     lifetime = 60f;
                     collidesAir = false;
-                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
-                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                    frontColor = NyfalisColors.rustyBullet;
+                    backColor = NyfalisColors.rustyBulletBack;
                     hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                 }};
             }});
@@ -1039,7 +1071,7 @@ public class NyfalisUnits {
                             shootY = 6f;
                             recoilIndex = f;
                             outlineLayerOffset = 0f;
-                            outlineColor = NyfalisColors.contentOutline;;
+                            outlineColor = NyfalisColors.contentOutline;
                             outline = drawRegion = under = true;
                             progress = PartProgress.recoil;
                             moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
@@ -1053,8 +1085,8 @@ public class NyfalisUnits {
                         splashDamage = 7f;
                         splashDamageRadius = 2.5f *8f;
                         collidesAir = false;
-                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
-                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
+                        frontColor = NyfalisColors.ironBullet;
+                        backColor = NyfalisColors.ironBulletBack;
                         hitEffect = despawnEffect = Fx.hitBulletSmall;
                     }};
                 }},
@@ -1077,7 +1109,7 @@ public class NyfalisUnits {
                             y = 2f;
                             recoilIndex = f;
                             outlineLayerOffset = 0f;
-                            outlineColor = NyfalisColors.contentOutline;;
+                            outlineColor = NyfalisColors.contentOutline;
                             outline = drawRegion = under = true;
                             progress = PartProgress.recoil;
                             moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
@@ -1088,8 +1120,8 @@ public class NyfalisUnits {
                         height = 6f;
                         lifetime = 78f;
                         collidesAir = false;
-                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f);
-                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f);
+                        frontColor = NyfalisColors.rustyBullet;
+                        backColor = NyfalisColors.rustyBulletBack;
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                         shootEffect = Fx.shootSmallSmoke;
                     }};
@@ -1125,7 +1157,7 @@ public class NyfalisUnits {
                         shootY = 6f;
                         recoilIndex = f;
                         outlineLayerOffset = 0f;
-                        outlineColor = NyfalisColors.contentOutline;;
+                        outlineColor = NyfalisColors.contentOutline;
                         outline = drawRegion = under = true;
                         progress = PartProgress.recoil;
                         moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
@@ -1140,8 +1172,8 @@ public class NyfalisUnits {
                     homingPower = 0.15f;
                     splashDamageRadius = 25f * 0.75f;
                     collidesAir = false;
-                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.9f);
-                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.9f);
+                    frontColor = NyfalisColors.ironBullet;
+                    backColor = NyfalisColors.ironBulletBack;
                     hitEffect = despawnEffect = Fx.hitBulletSmall;
                 }};
             }},

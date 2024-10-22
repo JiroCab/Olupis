@@ -44,7 +44,7 @@ public class NyfalisUnitType extends UnitType {
     /*Face targets when idle/not moving, assumes `customMoveCommand` = true  */
     public boolean idleFaceTargets = false;
     /*forces the unit to be landed on deploy*/
-    public boolean deployLands = false, alwaysBoosts = false, deployHasEffect = false;
+    public boolean deployLands = false, alwaysBoosts = false, deployHasEffect = false, inverseLanding = false;
     public StatusEffect deployEffect = StatusEffects.none;
     public float deployEffectTime = 20f;
     /*Reload cooldown on spawn (gant cheese fix)*/
