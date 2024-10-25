@@ -204,11 +204,10 @@ public class NyfalisUnitType extends UnitType {
                 boolean deployed = (unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDeployCommand);
                 if(deployed && unit.isGrounded())unit.apply(deployEffect, deployEffectTime);
 
+                //let the ai handle boosting
                 if (!deployed && alwaysBoosts) {
-                    unit.updateBoosting(true);
                     unit.unapply(deployEffect);
                 } else if (deployLands) unit.updateBoosting(!(deployed && unit.canLand()));
-                else if (alwaysBoosts) unit.updateBoosting(true);
             }
         }
 

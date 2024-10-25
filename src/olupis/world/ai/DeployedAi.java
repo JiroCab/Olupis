@@ -4,8 +4,8 @@ import arc.math.Angles;
 import arc.util.Tmp;
 import mindustry.ai.types.CommandAI;
 import mindustry.ai.types.FlyingAI;
-import mindustry.gen.Flyingc;
-import mindustry.gen.Teamc;
+import mindustry.entities.Units;
+import mindustry.gen.*;
 import olupis.input.NyfalisUnitCommands;
 import olupis.world.entities.units.NyfalisUnitType;
 
@@ -24,40 +24,61 @@ public class DeployedAi extends FlyingAI {
     }
 
     @Override
-    public Teamc findMainTarget(float x, float y, float range, boolean air, boolean ground){
-        if(unit.controller() instanceof CommandAI ai && ai.attackTarget != null) return ai.attackTarget;
-        return super.findMainTarget(x, y, range, air, ground);
-    }
-
-    @Override
     public void updateMovement(){
         if(unit.isFlying()) {
-            if (!unit.type.flying && unit.controller() instanceof CommandAI ai) {
+            if (unit.controller() instanceof CommandAI ai) {
                 ai.defaultBehavior();
 
                 if(ai.attackTarget != null && unit.within(ai.attackTarget, unit.type.range) && shouldLand(ai.attackTarget)){
-                    if (!unit.canLand() || (unit.elevation < 1)) circleAttack(unit.type.range + 5f, ai.attackTarget);
-                    else moveTo(Tmp.v3.set(unit.x, unit.y), 5f, 100, false, null);
+                    if (!unit.canLand() || (unit.elevation < 1)) circleAltAttack(unit.type.range + 5f, ai.attackTarget);
                 }
+            }else if (target != null){
+                if(unit.within(target, unit.type.range) && shouldLand(target)){
+                    if (!unit.canLand() || (unit.elevation < 1)) circleAltAttack(unit.type.range + 5f, target);
+                } else {
+                    if(unit.type.circleTarget) circleAttack(unit.type.range + 10f);
+                    else{
+                        moveTo(target, unit.type.range * 0.8f);
+                        unit.lookAt(target);
+                    }
+                }
+
             }
-        } else {
-            moveTo(Tmp.v3.set(unit.x, unit.y), 5f, 100, false, null);
+
+        } else moveTo(Tmp.v3.set(unit.x, unit.y), 5f, 100, false, null);
+
+        if (unit.type.canBoost && unit.type instanceof NyfalisUnitType nyf && nyf.deployLands && shouldLand(target)) {
+            if(unit.isCommandable() && unit.controller() instanceof CommandAI) unit.updateBoosting(unit.command().command != NyfalisUnitCommands.nyfalisDeployCommand);
+
+            else{
+                boolean boost =(target != null && !unit.within(target, unit.range() + 10f)) && shouldLand(target) ;
+                unit.updateBoosting(boost);
+            }
         }
 
-        if (unit.type.canBoost && unit.type instanceof NyfalisUnitType nyf && nyf.deployLands ) {
-            if(unit.isCommandable()) unit.updateBoosting(unit.command().command != NyfalisUnitCommands.nyfalisDeployCommand);
-            else unit.updateBoosting(shouldLand(target));
-        }
+    }
 
+    @Override
+    public void updateWeapons(){
+        super.updateWeapons();
+        if(!unit.isShooting && unit().hasWeapons()){
+            /*shoot range regardless if it's the target & there's enemies nearby*/
+            Teamc check = Units.closestTarget(unit.team, unit.x, unit.y, unit.range(), u -> u.checkTarget(unit.type.targetAir, unit.type.targetGround));
+            unit.isShooting = check != null;
+        }
     }
 
     public boolean shouldLand(Teamc target){
-        boolean out = target instanceof Flyingc f && f.isFlying();
-        if(unit.type instanceof NyfalisUnitType nyf && !nyf.inverseLanding) out = !out;
+        boolean out = (target instanceof Flyingc f && f.isFlying()) || (target instanceof Mechc m && m.isFlying());
+        if(inverseLanding()) out = !out;
         return out;
     }
 
-    public void circleAttack(float circleLength, Teamc tar){
+    public boolean inverseLanding(){
+        return unit.type instanceof NyfalisUnitType nyf && !nyf.inverseLanding;
+    }
+
+    public void circleAltAttack(float circleLength, Teamc tar){
         vec.set(tar).sub(unit);
 
         float ang = unit.angleTo(tar);

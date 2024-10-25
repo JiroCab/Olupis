@@ -53,7 +53,7 @@ public class NyfalisUnits {
         pteropus, acerodon, nyctalus, mirimiri , vampyrum, //Bat Genus
 
         /*segmented units*/
-        //Spearhead
+        //Spearheadx
         venom, serpent, reaper, goliath, snek,
 
         /*Ground units*/
@@ -67,10 +67,10 @@ public class NyfalisUnits {
         bay, blitz, crusader, torrent, vanguard,
 
         /*core units*/
-        gnat, pedicia, phorid, diptera, midges, //Fruit flies
+        gnat, pedicia, phorid, diptera, midges, vespera, //Fruit flies
 
         /*assistant core units*/
-        embryo, larva, pupa,
+        embryo, larva, pupa, sephera,
 
         /*scout boi*/
         scarab,
