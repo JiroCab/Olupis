@@ -6,6 +6,8 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.*;
+import mindustry.gen.*;
+import mindustry.io.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.production.*;
@@ -14,252 +16,251 @@ import olupis.world.blocks.environment.*;
 import static mindustry.Vars.*;
 
 public class EnvUpdater{
-    public static final ObjectMap<Tile, Block> replacedTiles = new ObjectMap<>();
-    private static final ObjectIntMap<Tile> tiles = new ObjectIntMap<>(), ores = new ObjectIntMap<>(), walls = new ObjectIntMap<>();
-    private static final Seq<Tile> dormantTiles = new Seq<>(), dormantOres = new Seq<>();
-    private static Timer.Task validator, dormantValidator;
+    private static final Seq<Tile> tiles = new Seq<>(), dormantTiles = new Seq<>();
+    public static short[][][] data = {}, replaced = {};
+    private static Timer.Task validator;
+    private static int timer;
 
     public static void load(){
         Log.info("EnvUpdater loaded");
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            tiles.clear();
-            ores.clear();
-            walls.clear();
+        SaveVersion.addCustomChunk("envupdater-data", new EnvSaveIO());
+
+        Events.on(EventType.ResetEvent.class, e -> {
+            data = null;
+            replaced = null;
+
             dormantTiles.clear();
-            dormantOres.clear();
-            replacedTiles.clear();
-
+            tiles.clear();
+        });
+        Events.on(EventType.WorldLoadEvent.class, e -> {
             if(net.client() || state.isEditor()) return;
-            Log.info("Setting up EnvUpdater...");
+            Log.info("Creating world snapshot for EnvUpdater");
 
+            if(data == null || replaced == null)
+                data = replaced = new short[world.width()][world.height()][4];
+
+            timer = 0;
             world.tiles.eachTile(t -> {
-                if(t.floor() instanceof SpreadingFloor f && f.spreadChance > 0
-                || t.overlay() instanceof SpreadingFloor s && s.spreadChance > 0){
-                    tiles.put(t, 0);
+                var floor = t.floor() instanceof SpreadingFloor f ? f : t.overlay() instanceof SpreadingFloor f ? f : null;
+                var ore = t.overlay() instanceof SpreadingOre f ? f : null;
+                var wall = t.block() instanceof GrowingWall w ? w : null;
 
-                    if(t.floor() instanceof SpreadingFloor c && c.overlay){
+                if(floor != null || ore != null || wall != null){
+                    tiles.add(t);
+
+                    if(floor != null && floor.overlay){
                         Seq<Floor> tmp = new Seq<>();
                         for(int i = 0; i <= 3; i++){
                             Tile nearby = t.nearby(i);
                             if(nearby != null && nearby.floor() != null && !(nearby.floor() instanceof SpreadingFloor sf && sf.overlay))
                                 tmp.add(nearby.floor());
                         }
-                        t.setFloorNet(tmp.isEmpty() ? Blocks.stone : tmp.random(), c);
+                        t.setFloorNet(tmp.isEmpty() ? Blocks.stone : tmp.random(), floor);
                     }
                 }
-
-
-                else if(t.overlay() instanceof SpreadingOre o && o.spreadChance > 0)
-                    ores.put(t, 0);
-
-                if(t.block() instanceof GrowingWall w && w.growChance > 0)
-                    walls.put(t, 0);
             });
 
-            Log.info("EnvUpdater setup complete, " + (tiles.size + ores.size) + " objects to update");
+            Log.info("Snapshot created, " + (tiles.size) + " tiles to update");
 
             if(validator == null || !validator.isScheduled())
-                validator = Timer.schedule(EnvUpdater::updateSpread, 0, 1);
-            if(dormantValidator == null || !dormantValidator.isScheduled())
-                dormantValidator = Timer.schedule(EnvUpdater::updateDormant, 0, 10);
+                validator = Timer.schedule(() -> {
+                    if(!state.isGame() || state.isEditor() || state.isPaused()) return;
+
+                    updateSpread();
+                    if(timer++ >= 10){
+                        updateDormant();
+                        timer = 0;
+                    }
+                }, 0, 1);
         });
     }
 
     private static void updateSpread(){
-        if(state.isGame() && !state.isEditor()){
-            if(state.isPaused()) return;
+        var it = tiles.iterator();
+        while(it.hasNext()){
+            Tile tile = it.next();
+            if(tile == null) continue;
 
-            for(ObjectIntMap.Entry<Tile> entry : tiles){
-                if(entry.key == null) continue;
+            int iter = 0, complete = 0;
+            var floor = tile.floor() instanceof SpreadingFloor f ? f : null;
+            if(updateStatus(floor, tile, iter)) ++complete;
 
-                if(entry.key.floor() instanceof SpreadingFloor || entry.key.overlay() instanceof SpreadingFloor){
-                    var t = entry.key.floor() instanceof SpreadingFloor s ? s : (SpreadingFloor) entry.key.overlay();
+            ++iter;
+            var overlay = tile.overlay() instanceof SpreadingFloor f ? f : null;
+            if(updateStatus(overlay, tile, iter)) ++complete;
 
-                    if(t.next != null){
-                        if(entry.value > t.spreadTries){
-                            if(!(t.next.isOverlay() || (t.next instanceof SpreadingFloor f && f.overlay) && t.blacklist.contains(entry.key.floor()))) continue;
-                            tiles.remove(entry.key);
-                            t.upgradeEffect.at(entry.key);
-                            if(t.next instanceof SpreadingFloor f){
-                                entry.key.setFloorNet(f.overlay ? entry.key.floor() : f.set, f.overlay ? f.set : (t.overlay ? Blocks.air : entry.key.overlay()));
-                                tiles.put(entry.key, 0);
-                            }else entry.key.setFloorNet(t.next.isOverlay() ? entry.key.floor() : t.next, entry.key.overlay() instanceof SpreadingFloor ? (t.next.isOverlay() ? t.next : Blocks.air) : entry.key.overlay());
-
-                            if(t.growSpread){
-                                Seq<Tile> nearby = getNearby(entry.key, 0, t.blacklist);
-                                if(nearby.isEmpty()) continue;
-
-                                t.spreadSound.at(entry.key);
-                                for(Tile tile : nearby){
-                                    replacedTiles.put(tile, t.overlay ? tile.overlay() : tile.floor());
-                                    setFloor(tile, t);
-                                    tiles.put(tile, 0);
-                                }
-                            }
-                        }else if(Mathf.chance(t.spreadChance)) tiles.increment(entry.key);
-
-                        continue;
-                    }
-
-                    if(entry.value >= t.spreadTries){
-                        tiles.remove(entry.key);
-                        Seq<Tile> nearby = getNearby(entry.key, t.spreadOffset, t.blacklist);
-                        if(nearby.isEmpty()){
-                            dormantTiles.addUnique(entry.key);
-                            continue;
-                        }
-
-                        tiles.put(entry.key, 0);
-                        t.spreadSound.at(entry.key);
-                        if(t.fullSpread) for(Tile tile : nearby){
-                            replacedTiles.put(tile, t.overlay ? tile.overlay() : tile.floor());
-                            setFloor(tile, t);
-                            tiles.put(tile, 0);
-                        }
-                        else{
-                            Tile next = nearby.random();
-                            replacedTiles.put(next, t.overlay ? next.overlay() : next.floor());
-                            setFloor(next, t);
-                            tiles.put(next, 0);
-                        }
-                    }
-
-                    if(Mathf.chance(t.spreadChance))
-                        tiles.increment(entry.key);
-                }
-            }
-
-            for(ObjectIntMap.Entry<Tile> entry : ores){
-                if(entry.key == null) continue;
-                var o = (SpreadingOre) entry.key.overlay();
-                if(o.drillEfficiency < 1 && entry.key.build instanceof Drill.DrillBuild d && d.timeScale() > o.drillEfficiency)
-                    d.applySlowdown(o.drillEfficiency, Float.MAX_VALUE); //TODO: Make this slowdown removable when the SpreadingOre is cleared up
-
-                if(entry.value >= o.spreadTries){
-                    ores.remove(entry.key);
-                    Seq<Tile> nearby = getNearby(entry.key, o.spreadOffset, o.blacklist);
-                    ores.put(entry.key, 0);
-                    if(nearby.isEmpty()){
-                        for(int i = 0; i <= 3; i++){
-                            Tile tile = entry.key.nearby(i);
-                            if(tile != null && tile.floor() == o.baseFloor){
-                                if(!o.blacklist.contains(entry.key.floor())){
-                                    o.spreadEffect.at(entry.key);
-                                    o.spreadSound.at(entry.key);
-                                    replacedTiles.put(entry.key, entry.key.floor());
-                                    entry.key.setFloorNet(o.baseFloor, entry.key.overlay());
-                                    if(o.baseFloor instanceof SpreadingFloor) tiles.put(entry.key, 0);
-                                }
-
-                                dormantOres.addUnique(entry.key);
-                            }
-                        }
-
-                        continue;
-                    }
-
-                    o.spreadSound.at(entry.key);
-                    if(o.fullSpread) for(Tile tile : nearby){
-                        o.spreadEffect.at(tile);
-                        replacedTiles.put(tile, tile.overlay());
-                        (o.parent.replacements.containsKey(tile.overlay()) ? ores : tiles).put(tile, 0);
-                        tile.setFloorNet(tile.floor(), o.parent.replacements.containsKey(tile.overlay()) ? o.parent.replacements.get(tile.overlay()) : o.parent);
-                    }
-                    else{
-                        Tile next = nearby.random();
-                        o.spreadEffect.at(next);
-                        replacedTiles.put(next, next.overlay());
-                        (o.parent.replacements.containsKey(next.overlay()) ? ores : tiles).put(next, 0);
-                        next.setFloorNet(next.floor(), o.parent.replacements.containsKey(next.overlay()) ? o.parent.replacements.get(next.overlay()) : o.parent);
-                    }
-
-                    if(o.parent.replacements.containsKey(entry.key.block()) && entry.key.block().isStatic()){
-                        var b = o.parent.replacements.get(entry.key.block());
-                        entry.key.setNet(b);
-                        if(b instanceof GrowingWall)
-                            walls.put(entry.key, 0);
-                    }
-
-                }else if(Mathf.chance(o.spreadChance)) ores.increment(entry.key);
-            }
-
-            for(ObjectIntMap.Entry<Tile> entry : walls){
-                if(entry.key == null) continue;
-                var w = (GrowingWall) entry.key.block();
-
-                if(w.next == null){
-                    walls.remove(entry.key);
-                    continue;
-                }
-
-                if(entry.value >= w.growTries){
-                    w.growEffect.at(entry.key);
-                    walls.remove(entry.key);
-                    replacedTiles.put(entry.key, entry.key.block());
-                    entry.key.setNet(w.next);
-                    if(w.next instanceof GrowingWall)
-                        walls.put(entry.key, 0);
-                }else if(Mathf.chance(w.growChance)) walls.increment(entry.key);
-            }
-        }else{
-            tiles.clear();
-            ores.clear();
-            walls.clear();
-            dormantTiles.clear();
-            dormantOres.clear();
-            replacedTiles.clear();
-
-            if(validator != null)
-                validator.cancel();
-            if(dormantValidator != null)
-                dormantValidator.cancel();
-            Log.info("EnvUpdater disposed, tile cache empty");
-        }
-    }
-
-    private static void updateDormant(){
-        if(state.isGame() && !state.isEditor()){
-            if(state.isPaused()) return;
-
-            if(tiles.size > 0)
-                Log.info(Strings.format("Total objects: @, Active - (@ tiles, @ ores, @ walls), Dormant - (@ tiles, @ ores)",
-                tiles.size + ores.size + dormantTiles.size + dormantOres.size, tiles.size, ores.size, walls.size, dormantTiles.size, dormantOres.size));
-
-            dormantTiles.each(t -> {
-                var tmp = (SpreadingFloor) t.floor();
-                Seq<Tile> check = getNearby(t, tmp.spreadOffset, tmp.blacklist);
-                if(check.isEmpty()) return;
-
-                dormantTiles.remove(t);
-                tiles.put(t, 0);
-            });
-
-            dormantOres.each(o -> {
-                var tmp = (SpreadingOre) o.overlay();
-                if(tmp.drillEfficiency < 1 && o.build instanceof Drill.DrillBuild d && d.timeScale() > tmp.drillEfficiency)
-                    d.applySlowdown(tmp.drillEfficiency, Float.MAX_VALUE);
-
-                Seq<Tile> check = getNearby(o, tmp.spreadOffset, tmp.blacklist);
-
-                boolean replaced = true;
-                for(Tile tile : check){
-                    if(tile.floor() != tmp.baseFloor){
-                        replaced = false;
+            ++iter;
+            var ore = tile.overlay() instanceof SpreadingOre f ? f : null;
+            if(ore != null && (tile.floor() != ore.baseFloor || canSpread(tile, ore.spreadOffset, ore.blacklist))){
+                boolean canGrow = false;
+                for(int i = 0; i <= 3; i++){
+                    var t = tile.nearby(i);
+                    if(t != null && t.floor() == ore.baseFloor){
+                        canGrow = true;
                         break;
                     }
                 }
 
-                if(replaced) return;
+                if(canGrow){
+                    if(Mathf.chance(ore.spreadChance)) ++data[tile.x][tile.y][iter];
 
-                dormantOres.remove(o);
-                ores.put(o, 0);
-            });
+                    if(data[tile.x][tile.y][iter] >= ore.spreadTries){
+                        data[tile.x][tile.y][iter] = 0;
+
+                        replaced[tile.x][tile.y][0] = tile.floor().id;
+                        tile.setFloorNet(ore.baseFloor, ore);
+
+                        Seq<Tile> nearby = getNearby(tile, ore.spreadOffset, ore.blacklist);
+                        if(!nearby.isEmpty()){
+                            if(ore.fullSpread){
+                                for(Tile t : nearby)
+                                    spreadOre(ore, t, iter);
+                            }else spreadOre(ore, nearby.random(), iter);
+                        }
+                    }
+                }
+            }else ++complete;
+
+            ++iter;
+            var wall = tile.block() instanceof GrowingWall w ? w : null;
+            if(wall != null){
+                if(Mathf.chance(wall.growChance)) ++data[tile.x][tile.y][iter];
+
+                if(data[tile.x][tile.y][iter] >= wall.growTries){
+                    data[tile.x][tile.y][iter] = 0;
+
+                    Call.effect(wall.growEffect, tile.worldx(), tile.worldy(), 0, null);
+                    tile.setNet(wall.next);
+                }
+            }else ++complete;
+
+            if(complete >= 4){
+                it.remove();
+                dormantTiles.add(tile);
+            }
+        }
+    }
+
+    private static void updateDormant(){
+        Log.info(Strings.format("Tiles: @ (@ active, @ dormant)", tiles.size + dormantTiles.size, tiles.size, dormantTiles.size));
+
+        var it = dormantTiles.iterator();
+        while(it.hasNext()){
+            Tile t = it.next();
+
+            var floor = t.floor() instanceof SpreadingFloor f ? f : null;
+            var overlay = t.overlay() instanceof SpreadingFloor f ? f : null;
+            var ore = t.overlay() instanceof SpreadingOre o ? o : null;
+
+            if(floor == null && overlay == null && ore == null){ // tiles like these do not need re-instancing, so we remove them
+                it.remove();
+                continue;
+            }
+
+            boolean replaced = true;
+            if(ore != null){
+                if(ore.drillEfficiency < 1 && t.build instanceof Drill.DrillBuild d)
+                    d.applySlowdown(ore.drillEfficiency, 660);
+
+                Seq<Tile> check = getNearby(t, ore.spreadOffset, ore.blacklist);
+
+                if(!check.isEmpty()){
+                    for(Tile tile : check){
+                        if(tile.floor() != ore.baseFloor){
+                            replaced = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            var op = floor == null ? overlay : floor;
+            if(op != null && !getNearby(t, op.spreadOffset, op.blacklist).isEmpty())
+                replaced = false;
+
+            if(replaced) continue;
+
+            it.remove();
+            tiles.add(t);
         }
     }
 
     public static void debugUpdateActive(){
         updateSpread();
         updateDormant();
+    }
+
+    private static boolean updateStatus(SpreadingFloor var, Tile tile, int iter){
+        if(var != null && (canGrow(var, tile) || canSpread(tile, var.spreadOffset, var.blacklist))){
+            if(Mathf.chance(var.spreadChance)) ++data[tile.x][tile.y][iter];
+
+            if(data[tile.x][tile.y][iter] >= var.spreadTries){
+                data[tile.x][tile.y][iter] = 0;
+
+                if(var.next != null){
+                    Call.effect(var.upgradeEffect, tile.worldx(), tile.worldy(), 0, null);
+
+                    var next = var.next instanceof SpreadingFloor s ? s : null;
+                    boolean isOverlay = next != null ? next.overlay : var.next.isOverlay();
+
+                    if(isOverlay) tile.setOverlayNet(var.next);
+                    else tile.setFloorNet(var.next, tile.overlay());
+                }
+
+                if(var.set != null){
+                    Seq<Tile> nearby = getNearby(tile, var.spreadOffset, var.blacklist);
+                    if(nearby.isEmpty()) return false;
+
+                    if(var.fullSpread){
+                        for(Tile t : nearby)
+                            spreadFloor(var, t, iter);
+                    }else spreadFloor(var, nearby.random(), iter);
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void spreadFloor(SpreadingFloor floor, Tile tile, int iter){
+        Call.effect(floor.spreadEffect, tile.worldx(), tile.worldy(), 0, null);
+        Call.soundAt(floor.spreadSound, tile.worldx(), tile.worldy(), 0.6f, 1f);
+
+        tiles.add(tile);
+        replaced[tile.x][tile.y][iter] = iter == 0 ? tile.floor().id : tile.overlay().id;
+
+        if(iter == 0) tile.setFloorNet(floor.replacements.containsKey(tile.floor()) ? floor.replacements.get(tile.floor()) : floor.set, floor.replacements.containsKey(tile.overlay()) ? floor.replacements.get(tile.overlay()) : tile.overlay());
+        else tile.setOverlayNet(floor.replacements.containsKey(tile.overlay()) ? floor.replacements.get(tile.overlay()) : floor.set);
+        if(floor.replacements.containsKey(tile.block())){
+            replaced[tile.x][tile.y][3] = tile.block().id;
+            tile.setNet(floor.replacements.get(tile.block()));
+        }
+    }
+
+    private static void spreadOre(SpreadingOre ore, Tile tile, int iter){
+        if(ore.parent.replacements.containsKey(tile.overlay())){
+            Call.effect(ore.spreadEffect, tile.worldx(), tile.worldy(), 0, null);
+            Call.soundAt(ore.spreadSound, tile.worldx(), tile.worldy(), 0.6f, 1f);
+
+            tiles.add(tile);
+            replaced[tile.x][tile.y][iter] = tile.overlay().id;
+
+            tile.setOverlayNet(ore.parent.replacements.get(tile.overlay()));
+            if(ore.parent.replacements.containsKey(tile.block())){
+                replaced[tile.x][tile.y][3] = tile.block().id;
+                tile.setNet(ore.parent.replacements.get(tile.block()));
+            }
+        }
+    }
+
+    private static boolean canSpread(Tile tile, int radius, ObjectSet<Block> blacklist){
+        return !getNearby(tile, radius, blacklist).isEmpty();
+    }
+
+    private static boolean canGrow(SpreadingFloor var, Tile tile){
+        return var.next != null && (var.next instanceof SpreadingFloor next ? next.overlay ? tile.overlay() != next : tile.floor() != next : var.next.isOverlay() ? tile.overlay() != var.next : tile.floor() != var.next);
     }
 
     private static Seq<Tile> getNearby(Tile tile, int radius, ObjectSet<Block> blacklist){
@@ -271,30 +272,15 @@ public class EnvUpdater{
         if(radius <= 0)
             for(int i = 0; i <= 3; i++){ // linear
                 t = tile.nearby(i);
-                if(t != null && t.floor() != null && !(blacklist.contains(t.floor()) || blacklist.contains(t.overlay())))
+                if(t != null && !(blacklist.contains(t.floor()) || blacklist.contains(t.overlay())))
                     tiles.add(t);
             }
         else
             tile.circle(radius, tmp -> { // random
-                if(tmp != null && tmp.floor() != null && !(blacklist.contains(tmp.floor()) || blacklist.contains(tmp.overlay())))
+                if(tmp != null && !(blacklist.contains(tmp.floor()) || blacklist.contains(tmp.overlay())))
                     tiles.add(tmp);
             });
 
         return tiles;
-    }
-
-    private static void setFloor(Tile tile, SpreadingFloor t){
-        if(t.replacements.containsKey(tile.overlay()) && tile.drop() != null)
-            ores.put(tile, 0);
-        if(t.replacements.containsKey(tile.block()) && (t.replacements.get(tile.block()) instanceof GrowingWall)){
-            tile.setNet(t.replacements.get(tile.block()));
-            walls.put(tile, 0);
-        }
-
-        t.spreadEffect.at(tile);
-        tile.setFloorNet(
-            t.overlay ? tile.floor() : (t.replacements.containsKey(tile.floor()) ? t.replacements.get(tile.floor()) : t.set),
-            t.overlay ? (t.replacements.containsKey(tile.overlay()) ? t.replacements.get(tile.overlay()) : t.set) : tile.overlay()
-        );
     }
 }

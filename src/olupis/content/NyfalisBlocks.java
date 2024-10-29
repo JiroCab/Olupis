@@ -700,16 +700,16 @@ public class NyfalisBlocks {
             drillEfficiency = 0.66f;
 
             replacements.putAll(
-                    oreCopper, mossyCopper,
-                    oreOxidizedCopper, mossyOxidizedCopper,
-                    oreLead, mossyLead,
-                    oreOxidizedLead, mossyOxidizedLead,
-                    oreCoal, mossyCoal,
-                    oreIron, mossyIron,
-                    oreScrap, mossyScrap,
-                    stoneWall, growingWall
+                oreCopper, mossyCopper,
+                oreOxidizedCopper, mossyOxidizedCopper,
+                oreLead, mossyLead,
+                oreOxidizedLead, mossyOxidizedLead,
+                oreCoal, mossyCoal,
+                oreIron, mossyIron,
+                oreScrap, mossyScrap,
+                stoneWall, growingWall
             );
-            blacklist.addAll(coreZone, theircelium); // does work now
+            blacklist.addAll(coreZone, theircelium);
 
             next = yourcelium;
 

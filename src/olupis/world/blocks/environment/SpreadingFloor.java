@@ -50,6 +50,8 @@ public class SpreadingFloor extends Floor{
     public void init(){
         super.init();
 
+        useColor = !overlay;
+
         if(growSpread)
             fullSpread = true;
 

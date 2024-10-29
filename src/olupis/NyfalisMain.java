@@ -33,7 +33,6 @@ import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisMain extends Mod{
-
     public static NyfalisSounds soundHandler = new NyfalisSounds();
     public static LimitedLauncherSelect sectorSelect;
     public static NyfalisLogicDialog logicDialog;
