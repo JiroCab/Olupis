@@ -1,0 +1,48 @@
+name: Send Artifact To Discord
+
+on:
+  workflow_run:
+    workflows: [Build Mod]
+    types: [completed]
+    branches: [experimental]
+  workflow_call:
+
+jobs:
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: 'Download artifact'
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: deploy.yml
+          branch: experimental
+
+      - name: Message Commit Author to the nyfalis-beta-files channel of the discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: '*${{github.actor}}* Committed to experimental:'
+
+      - name: Message Commit title & message to the nyfalis-beta-files channel of the discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: '> ${{github.event.workflow_run.head_commit.message}}'
+
+      - name: Send file Jar to the nyfalis-beta-files channel of the discord
+        uses: sinshutu/upload-to-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: Nyfalis-but-a-jar.jar
+
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed sadge'
