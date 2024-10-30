@@ -242,7 +242,7 @@ public class NyfalisUnits {
             drag = 0.06f;
             accel = 0.08f;
             health = 250f;
-            speed = 2.20f;
+            speed = 2.3f;
             engineSize = -1f;
             rotateSpeed = 25f;
             itemCapacity = 20;
