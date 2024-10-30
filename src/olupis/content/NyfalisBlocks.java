@@ -83,7 +83,7 @@ public class NyfalisBlocks {
         yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly,
 
         /*walls*/
-        redDune, pinkShrubs, lightWall, lumaWall,
+        redDune, pinkShrubs, lightWall, lumaWall, rustedMetal,
         greenShrubsIrregular, greenShrubsCrooked, yellowShrubs, yellowShrubsIrregular, yellowShrubsCrooked,
         mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall, growingWall,
 
@@ -557,6 +557,8 @@ public class NyfalisBlocks {
         lumaWall = new StaticTree("luma-wall"){{
             variants = 2;
         }};
+
+        rustedMetal = new StaticWall("rusted-metal");
 
         greenShrubsIrregular = new TallBlock("green-shrubs-irregular"){{
             variants = 2;
