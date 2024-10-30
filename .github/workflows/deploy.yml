@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Nyfalis-but-a-jar.jar
-          path: build/libs/Olupis-but-a-jar.jar
+          path: build/libs/Nyfalis-but-a-jar.jar
