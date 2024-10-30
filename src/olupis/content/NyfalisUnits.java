@@ -337,10 +337,10 @@ public class NyfalisUnits {
 
         acerodon = new NyfalisUnitType("acerodon"){{
             hitSize = 12f;
-            armor = 2;
+            armor = 3;
             drag = 0.06f;
             accel = 0.08f;
-            health = 550f;
+            health = 600f;
             speed = 2.20f;
             engineSize = 4f;
             engineOffset = 8f;
