@@ -762,7 +762,7 @@ public class NyfalisUnits {
             canBoost = lowAltitude = true;
             boostMultiplier = 0.8f;
 
-            armor = 1;
+            armor = 2;
             hitSize = 8;
             health = 200;
             speed = 0.65f;
@@ -823,7 +823,7 @@ public class NyfalisUnits {
             constructor = MechUnit::create;
 
             canBoost = lowAltitude = alwaysShootWhenMoving = true;
-            armor = 4;
+            armor = 5;
             hitSize = 12f;
             range = 1.5f;
             health = 620;
