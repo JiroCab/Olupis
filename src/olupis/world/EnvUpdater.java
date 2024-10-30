@@ -1,6 +1,7 @@
 package olupis.world;
 
 import arc.*;
+import arc.graphics.Color;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
@@ -129,7 +130,8 @@ public class EnvUpdater{
                 if(data[tile.x][tile.y][iter] >= wall.growTries){
                     data[tile.x][tile.y][iter] = 0;
 
-                    Call.effect(wall.growEffect, tile.worldx(), tile.worldy(), 0, null);
+                    if(wall.growEffect != null)
+                        Call.effect(wall.growEffect, tile.worldx(), tile.worldy(), 0, Color.clear);
                     tile.setNet(wall.next);
                 }
             }else ++complete;
@@ -225,8 +227,10 @@ public class EnvUpdater{
     }
 
     private static void spreadFloor(SpreadingFloor floor, Tile tile, int iter){
-        Call.effect(floor.spreadEffect, tile.worldx(), tile.worldy(), 0, null);
-        Call.soundAt(floor.spreadSound, tile.worldx(), tile.worldy(), 0.6f, 1f);
+        if(floor.spreadEffect != null)
+            Call.effect(floor.spreadEffect, tile.worldx(), tile.worldy(), 0, Color.clear);
+        if(floor.spreadSound != null)
+            Call.soundAt(floor.spreadSound, tile.worldx(), tile.worldy(), 0.6f, 1f);
 
         tiles.add(tile);
         replaced[tile.x][tile.y][iter] = iter == 0 ? tile.floor().id : tile.overlay().id;
@@ -241,8 +245,10 @@ public class EnvUpdater{
 
     private static void spreadOre(SpreadingOre ore, Tile tile, int iter){
         if(ore.parent.replacements.containsKey(tile.overlay())){
-            Call.effect(ore.spreadEffect, tile.worldx(), tile.worldy(), 0, null);
-            Call.soundAt(ore.spreadSound, tile.worldx(), tile.worldy(), 0.6f, 1f);
+            if(ore.spreadEffect != null)
+                Call.effect(ore.spreadEffect, tile.worldx(), tile.worldy(), 0, Color.clear);
+            if(ore.spreadSound != null)
+                Call.soundAt(ore.spreadSound, tile.worldx(), tile.worldy(), 0.6f, 1f);
 
             tiles.add(tile);
             replaced[tile.x][tile.y][iter] = tile.overlay().id;
