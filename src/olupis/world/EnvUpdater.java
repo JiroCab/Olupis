@@ -1,7 +1,7 @@
 package olupis.world;
 
 import arc.*;
-import arc.graphics.Color;
+import arc.graphics.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
