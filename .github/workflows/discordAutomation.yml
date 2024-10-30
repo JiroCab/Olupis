@@ -39,7 +39,7 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          args: Olupis-but-a-jar.jar/Nyfalis-but-a-jar.jar
+          args: Nyfalis-but-a-jar.jar
 
   on-failure:
     runs-on: ubuntu-latest
