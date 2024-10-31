@@ -553,7 +553,7 @@ public class NyfalisTurrets {
             outlineColor = nyfalisBlockOutlineColour;
             lightColor = turretLightColor;
             shootSound = NyfalisSounds.barrelLaunch;
-            researchCost = with(lead, 1);
+            researchCost = with(iron, 1);
             requirements(Category.turret, with(iron, 1));
 
             drawer = new DrawTurret("iron-"){{
@@ -619,7 +619,7 @@ public class NyfalisTurrets {
 
 
             ammo(
-                    heavyOil, new BarrelBulletType(1.5f, 300){{
+                    heavyOil, new BarrelBulletType(4f, 300){{
                         bounceOnEnemyWalls = collidesTiles = true;
                         max = 30;
                         height = 8f;
@@ -631,6 +631,7 @@ public class NyfalisTurrets {
                         homingRange = 50f;
                         buildingDamageMultiplier = 0.4f;
                         ammoMultiplier = 2;
+                        trailInterval = trailParam = 1.5f;
                         shootEffect = smokeEffect = Fx.none;
                         frontColor = new Color().set(Pal.bulletYellowBack).lerp(heavyOil.color, 0.3f);
                         backColor = new Color().set(Pal.bulletYellow).lerp(heavyOil.color, 0.3f);
@@ -640,7 +641,7 @@ public class NyfalisTurrets {
                             splashAmount = 16;
                         }};
                     }},
-                    lubricant, new BarrelBulletType(3f, 150){{
+                    lubricant, new BarrelBulletType(4, 150){{
                         collidesTiles = true;
                         maxBounces = 5;
                         height = 8f;
@@ -648,6 +649,7 @@ public class NyfalisTurrets {
                         lifetime = 200f;
                         knockback= 2f;
                         homingDelay = bounceDelay = 15;
+                        trailInterval = trailParam = 1.5f;
                         homingPower = 0.3f;
                         homingRange = 50f;
                         buildingDamageMultiplier = 0.8f;
@@ -662,6 +664,7 @@ public class NyfalisTurrets {
                         }};
                     }}
             );
+            limitRange(2f);
         }
 
             @Override

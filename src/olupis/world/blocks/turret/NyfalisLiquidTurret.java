@@ -11,6 +11,13 @@ public class NyfalisLiquidTurret  extends LiquidTurret {
         super(name);
     }
 
+    /** Limits bullet range to this turret's range value. */
+    public void limitRange(float margin){
+        for(var entry : ammoTypes.entries()){
+            limitRange(entry.value, margin);
+        }
+    }
+
     public class NyfalisLiquidTurretBuild extends LiquidTurretBuild{
         public float progressLight;
 

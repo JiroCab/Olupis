@@ -243,7 +243,8 @@ public class NyfalisStats extends StatValues {
                         }
 
                         if (type.homingPower > 0.01f) {
-                            if(type instanceof  RollBulletType r  && r.ricochetHoming) sep(bt, "@stat.olupis-ricochet");
+                            if(type instanceof  BarrelBulletType) sep(bt, "@stat.olupis-bouncy");
+                            else if(type instanceof  RollBulletType r  && r.ricochetHoming) sep(bt, "@stat.olupis-ricochet");
                             else sep(bt, "@bullet.homing");
                         }
 
