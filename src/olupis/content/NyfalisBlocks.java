@@ -1546,7 +1546,7 @@ public class NyfalisBlocks {
             //Intrusive bottom thoughts won -Rushie
             size = 3;
             shootY = 10;
-            repairSpeed = 6f;
+            repairSpeed = 10f;
             repairRadius = 110;
             powerUse =100f / 60f;
 
