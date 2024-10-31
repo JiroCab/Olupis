@@ -200,7 +200,8 @@ public class EnvUpdater{
                 data[tile.x][tile.y][iter] = 0;
 
                 if(var.next != null){
-                    Call.effect(var.upgradeEffect, tile.worldx(), tile.worldy(), 0, null);
+                    if(var.upgradeEffect != null)
+                        Call.effect(var.upgradeEffect, tile.worldx(), tile.worldy(), 0, Color.clear);
 
                     var next = var.next instanceof SpreadingFloor s ? s : null;
                     boolean isOverlay = next != null ? next.overlay : var.next.isOverlay();
