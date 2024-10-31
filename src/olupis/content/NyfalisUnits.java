@@ -242,7 +242,7 @@ public class NyfalisUnits {
             drag = 0.06f;
             accel = 0.08f;
             health = 250f;
-            speed = 2.20f;
+            speed = 2.3f;
             engineSize = -1f;
             rotateSpeed = 25f;
             itemCapacity = 20;
@@ -337,10 +337,10 @@ public class NyfalisUnits {
 
         acerodon = new NyfalisUnitType("acerodon"){{
             hitSize = 12f;
-            armor = 2;
+            armor = 3;
             drag = 0.06f;
             accel = 0.08f;
-            health = 550f;
+            health = 600f;
             speed = 2.20f;
             engineSize = 4f;
             engineOffset = 8f;
@@ -762,7 +762,7 @@ public class NyfalisUnits {
             canBoost = lowAltitude = true;
             boostMultiplier = 0.8f;
 
-            armor = 1;
+            armor = 2;
             hitSize = 8;
             health = 200;
             speed = 0.65f;
@@ -823,7 +823,7 @@ public class NyfalisUnits {
             constructor = MechUnit::create;
 
             canBoost = lowAltitude = alwaysShootWhenMoving = true;
-            armor = 4;
+            armor = 5;
             hitSize = 12f;
             range = 1.5f;
             health = 620;
