@@ -28,7 +28,7 @@ jobs:
           color: "#3ED09A"
           username: "${{github.actor}}"
           message: "${{github.event.workflow_run.head_commit.message}}"
-          file: "${{ github.event.repository.name }}-${{ steps.version.outputs.prop }}.jar/${{ github.event.repository.name }}-${{ steps.version.outputs.prop }}.jar"
+          file: "${{ github.event.repository.name }}.jar"
 
 
   on-failure:
