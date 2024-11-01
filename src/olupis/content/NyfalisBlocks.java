@@ -643,14 +643,18 @@ public class NyfalisBlocks {
 
         // TODO: Add Fx (spreadEffect [floors, ores], upgradeEffect [floors], growEffect [walls])
         growingWall = new GrowingWall("walltest", 0){{
+            inEditor = false;
+
             growTries = 11;
             growChance = 0.04d;
             next = mossiestStoneWall;
         }};
         theircelium = new Floor("moss", 3){{
             mapColor = Color.valueOf("#1e2f0a");
+            inEditor = false;
         }};
-        mossyCopper = new SpreadingOre("moss-ore-copper", theircelium){{
+
+        /*mossyCopper = new SpreadingOre("moss-ore-copper", theircelium){{
             variants = 3;
         }};
         mossyOxidizedCopper = new SpreadingOre("moss-ore-oxidized-copper", theircelium){{
@@ -670,10 +674,13 @@ public class NyfalisBlocks {
         }};
         mossyIron = new SpreadingOre("moss-ore-oxidized-iron", theircelium){{
             variants = 3;
-        }};
+        }};*/
+
         ourcelium = new SpreadingFloor("mossiest-overlay", 3){{
             // this doesn't spread, but growth is affected by these settings too
             overlay = true;
+            inEditor = false;
+
             spreadTries = 6;
             spreadChance = 0.0095d;
 
@@ -686,6 +693,8 @@ public class NyfalisBlocks {
         yourcelium = new SpreadingFloor("mossier-overlay", 3){{
             // this doesn't spread, but growth is affected by these settings too
             overlay = true;
+            inEditor = false;
+
             spreadTries = 4;
             spreadChance = 0.013d;
 
@@ -697,18 +706,12 @@ public class NyfalisBlocks {
         mycelium = new SpreadingFloor("mossy-overlay", 3){{
             growSpread = true;
             overlay = true;
+
             spreadTries = 3;
             spreadChance = 0.021d;
             drillEfficiency = 0.66f;
 
             replacements.putAll(
-                oreCopper, mossyCopper,
-                oreOxidizedCopper, mossyOxidizedCopper,
-                oreLead, mossyLead,
-                oreOxidizedLead, mossyOxidizedLead,
-                oreCoal, mossyCoal,
-                oreIron, mossyIron,
-                oreScrap, mossyScrap,
                 stoneWall, growingWall
             );
             blacklist.addAll(coreZone, theircelium);

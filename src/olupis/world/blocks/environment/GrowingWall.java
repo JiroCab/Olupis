@@ -14,7 +14,7 @@ public class GrowingWall extends StaticWall{
     public Effect growEffect = Fx.none;
     /** Block this will grow into */
     public Block next = null;
-    /** Block to replace this with when removed */
+    /** Default block to replace this with when removed */
     public Block replacement = Blocks.stoneWall;
 
     public GrowingWall(String name, int variants){
